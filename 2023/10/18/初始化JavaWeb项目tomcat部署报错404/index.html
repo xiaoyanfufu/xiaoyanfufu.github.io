@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   
   
-  <title>专业英语(Unit1 homework) | YAN</title>
+  <title>初始化JavaWeb项目tomcat部署报错404 | YAN</title>
   
   <meta name="author" content="xiaoyan" />
   <meta http-equiv="Cache-Control" content="no-transform" />
@@ -17,17 +17,22 @@
   
     <meta name="keywords" content="" />
   
-  <meta name="description" content="Dear Mr. Wood, In our recent team meeting, the idea of purchasing a coffee maker for our department was brought up. I wanted to share my thoughts and findings on this matter with you. Why a Coffee Mak">
+  <meta name="description" content="问题近期创建了一个Web项目，但在运行时遭遇了404错误，这严重影响了项目的进展。  问题原因出现这个问题的主要原因是文件缺失。在之前的项目中，由于误操作，我删除了部分文件，导致当前项目无法正常运行。 如何确定问题所在？检查Tomcat安装目录下的webapps &gt; ROOT文件夹，发现其中文件数量明显减少。 错误的： 正常的： 解决方案 恢复缺失文件：从原始的Tomcat包中复制缺失的文件">
 <meta property="og:type" content="article">
-<meta property="og:title" content="专业英语(Unit1 homework)">
-<meta property="og:url" content="http://example.com/2023/12/05/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B%E4%B8%93%E4%B8%9A%E8%8B%B1%E8%AF%AD(Unit1%20homework)/index.html">
+<meta property="og:title" content="初始化JavaWeb项目tomcat部署报错404">
+<meta property="og:url" content="http://example.com/2023/10/18/%E5%88%9D%E5%A7%8B%E5%8C%96JavaWeb%E9%A1%B9%E7%9B%AEtomcat%E9%83%A8%E7%BD%B2%E6%8A%A5%E9%94%99404/index.html">
 <meta property="og:site_name" content="YAN">
-<meta property="og:description" content="Dear Mr. Wood, In our recent team meeting, the idea of purchasing a coffee maker for our department was brought up. I wanted to share my thoughts and findings on this matter with you. Why a Coffee Mak">
+<meta property="og:description" content="问题近期创建了一个Web项目，但在运行时遭遇了404错误，这严重影响了项目的进展。  问题原因出现这个问题的主要原因是文件缺失。在之前的项目中，由于误操作，我删除了部分文件，导致当前项目无法正常运行。 如何确定问题所在？检查Tomcat安装目录下的webapps &gt; ROOT文件夹，发现其中文件数量明显减少。 错误的： 正常的： 解决方案 恢复缺失文件：从原始的Tomcat包中复制缺失的文件">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2023-12-05T04:12:50.000Z">
-<meta property="article:modified_time" content="2024-01-10T05:28:25.550Z">
+<meta property="og:image" content="d:\code\myblog\blog\source_posts\10.18\7ad4c3604ba54a0e986946539d4fb3e7.png">
+<meta property="og:image" content="d:\code\myblog\blog\source_posts\10.18\7671f3bf7ab14f99843994c5720c79c0.png">
+<meta property="og:image" content="d:\code\myblog\blog\source_posts\10.18\b00e79f4c6d64d928d114351b2e58c79.png">
+<meta property="og:image" content="d:\code\myblog\blog\source_posts\10.18\484ef29f0df44656ba1bc1b2805222bf.png">
+<meta property="article:published_time" content="2023-10-18T05:03:51.000Z">
+<meta property="article:modified_time" content="2024-01-10T05:24:12.494Z">
 <meta property="article:author" content="xiaoyan">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="d:\code\myblog\blog\source_posts\10.18\7ad4c3604ba54a0e986946539d4fb3e7.png">
   
   <!-- 站点验证相关 -->
   
@@ -119,15 +124,15 @@
 
             <article itemscope itemtype="https://schema.org/Article">
     
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/12/05/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B%E4%B8%93%E4%B8%9A%E8%8B%B1%E8%AF%AD(Unit1%20homework)/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/10/18/%E5%88%9D%E5%A7%8B%E5%8C%96JavaWeb%E9%A1%B9%E7%9B%AEtomcat%E9%83%A8%E7%BD%B2%E6%8A%A5%E9%94%99404/">
     <div class="kratos-hentry kratos-post-inner clearfix">
         <header class="kratos-entry-header">
             
-                <h1 class="kratos-entry-title text-center" itemprop="name headline">专业英语(Unit1 homework)</h1>
+                <h1 class="kratos-entry-title text-center" itemprop="name headline">初始化JavaWeb项目tomcat部署报错404</h1>
             
             
             <ul class="kratos-post-meta text-center">
-                <li><time datetime="2023-12-05T04:12:50.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2023-12-05</time></li>
+                <li><time datetime="2023-10-18T05:03:51.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2023-10-18</time></li>
                 <li itemprop="author" itemscope itemtype="https://schema.org/Person">
                     <i class="fa fa-user"></i> 作者 <span itemprop="name">xiaoyan</span>
                 </li>
@@ -136,7 +141,7 @@
                         <i class="fa fa-edit"></i> 
                         
                         
-                            1243
+                            406
                         
                         字
                     </li>
@@ -148,23 +153,25 @@
             
             <div id="expire-alert" class="alert alert-warning hidden" role="alert">
                 <div class="icon"><i class="fa fa-warning"></i></div>
-                <div class="text"><p>本文最后编辑于 <time datetime="1704864505550"></time> 前，其中的内容可能需要更新。</p></div>
+                <div class="text"><p>本文最后编辑于 <time datetime="1704864252494"></time> 前，其中的内容可能需要更新。</p></div>
             </div>
             
             
             
             <hr />
-            <div itemprop="articleBody"><p><strong>Dear Mr. Wood,</strong></p>
-<p>In our recent team meeting, the idea of purchasing a coffee maker for our department was brought up. I wanted to share my thoughts and findings on this matter with you.</p>
-<p><strong>Why a Coffee Maker?</strong></p>
-<p>Our department members are often busy and could benefit from a pick-me-up during their workdays. A coffee maker can provide a convenient way to make coffee, enhancing our productivity.</p>
-<p><strong>Market Research</strong></p>
-<p>I’ve done some market research and found numerous high-quality, reasonably priced coffee makers available. These coffee makers are easy to use and efficient. Some even have a keep-warm feature, ensuring our coffee is ready whenever we need it, even on our busiest days.</p>
-<p><strong>Impact on the Team</strong></p>
-<p>Not only will it be a practical addition, but it can also strengthen our team spirit. By making coffee together, we can improve team morale and encourage more communication and interaction among team members.</p>
-<p><strong>Conclusion</strong></p>
-<p>In conclusion, I believe purchasing a high-quality coffee maker is a wise investment for our department. It will not only improve our productivity but also enhance our team cohesion. If you have any questions or require further information, please don’t hesitate to contact me.</p>
-<p>Thank you for taking the time to read this report.</p>
+            <div itemprop="articleBody"><h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><p>近期创建了一个Web项目，但在运行时遭遇了404错误，这严重影响了项目的进展。</p>
+<p><img src="D:\code\myblog\blog\source_posts\10.18\7ad4c3604ba54a0e986946539d4fb3e7.png" alt="alt text"></p>
+<h3 id="问题原因"><a href="#问题原因" class="headerlink" title="问题原因"></a>问题原因</h3><p>出现这个问题的主要原因是<strong>文件缺失</strong>。在之前的项目中，由于误操作，我删除了部分文件，导致当前项目无法正常运行。</p>
+<h3 id="如何确定问题所在？"><a href="#如何确定问题所在？" class="headerlink" title="如何确定问题所在？"></a>如何确定问题所在？</h3><p>检查Tomcat安装目录下的<code>webapps &gt; ROOT</code>文件夹，发现其中文件数量明显减少。</p>
+<p>错误的：<img src="D:\code\myblog\blog\source_posts\10.18\7671f3bf7ab14f99843994c5720c79c0.png" alt="img"></p>
+<p>正常的：<br><img src="D:\code\myblog\blog\source_posts\10.18\b00e79f4c6d64d928d114351b2e58c79.png" alt="img"></p>
+<h3 id=""><a href="#" class="headerlink" title=""></a></h3><h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><ol>
+<li><strong>恢复缺失文件</strong>：从原始的Tomcat包中复制缺失的文件，并覆盖到相应位置。</li>
+<li><strong>重新启动Tomcat</strong>：执行完上述操作后，重新启动Tomcat服务器。</li>
+<li><strong>检查问题</strong>：访问<code>localhost</code>，查看项目是否能够正常访问。</li>
+</ol>
+<p>然而，在尝试上述步骤后，问题依然存在。这可能是由于我修改了Tomcat的配置文件，超出了我的知识范围。<img src="D:\code\myblog\blog\source_posts\10.18\484ef29f0df44656ba1bc1b2805222bf.png" alt="img"></p>
+<h3 id="终极解决方案：重装Tomcat"><a href="#终极解决方案：重装Tomcat" class="headerlink" title="终极解决方案：重装Tomcat"></a>终极解决方案：重装Tomcat</h3><p>如果上述步骤无法解决问题，最简单粗暴的方法是<strong>重新安装Tomcat服务器</strong>。具体的重装步骤可以参考<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_63537536/article/details/133897903">CSDN博客上的这篇文章</a>。</p>
 </div>
         </div>
         
@@ -218,7 +225,7 @@
     <script type="text/javascript">
         $(()=>{
             new QRCode("wechat-qr", {
-                text: "http://example.com/2023/12/05/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B%E4%B8%93%E4%B8%9A%E8%8B%B1%E8%AF%AD(Unit1%20homework)/",
+                text: "http://example.com/2023/10/18/%E5%88%9D%E5%A7%8B%E5%8C%96JavaWeb%E9%A1%B9%E7%9B%AEtomcat%E9%83%A8%E7%BD%B2%E6%8A%A5%E9%94%99404/",
                 width: 150,
                 height: 150,
                 correctLevel : QRCode.CorrectLevel.H
@@ -230,10 +237,12 @@
             const qzoneBase     = "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?";
             const facebookBase  = "https://www.facebook.com/sharer/sharer.php?";
             const twitterBase   = "https://twitter.com/intent/tweet?";
-            const hostUrl       = "http://example.com/2023/12/05/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B%E4%B8%93%E4%B8%9A%E8%8B%B1%E8%AF%AD(Unit1%20homework)/";
-            const title         = "「专业英语(Unit1 homework)」";
-            const excerpt       = `Dear Mr. Wood,
-In our recent team meeting, the idea of purchasing a coffee maker for our department was brought up. I...`;
+            const hostUrl       = "http://example.com/2023/10/18/%E5%88%9D%E5%A7%8B%E5%8C%96JavaWeb%E9%A1%B9%E7%9B%AEtomcat%E9%83%A8%E7%BD%B2%E6%8A%A5%E9%94%99404/";
+            const title         = "「初始化JavaWeb项目tomcat部署报错404」";
+            const excerpt       = `问题近期创建了一个Web项目，但在运行时遭遇了404错误，这严重影响了项目的进展。
+
+问题原因出现这个问题的主要原因是文件缺失。在之前的项目中，由于误操作，我删除了部分文件，导致当前项目无法正常运行。
+如何确定问题所在？检查Tomca...`;
             let _URL;
             switch (dest) {
                 case "qq"       : _URL = qqBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";     break;
@@ -255,7 +264,7 @@ In our recent team meeting, the idea of purchasing a coffee maker for our depart
                     
                 </div>
                 <div class="pull-date">
-                    <time datetime="2024-01-10T05:28:25.550Z" itemprop="dateModified">最后编辑：2024-01-10</time>
+                    <time datetime="2024-01-10T05:24:12.494Z" itemprop="dateModified">最后编辑：2024-01-10</time>
                 </div>
             </div>
         </footer>
@@ -263,13 +272,9 @@ In our recent team meeting, the idea of purchasing a coffee maker for our depart
     
         <nav class="navigation post-navigation clearfix" role="navigation">
             
-            <div class="nav-previous clearfix">
-                <a title=" 初始化JavaWeb项目tomcat部署报错404" href="/2023/10/18/初始化JavaWeb项目tomcat部署报错404/">&lt; 上一篇</a>
-            </div>
-            
             
             <div class="nav-next clearfix">
-                <a title=" Hello World" href="/2024/01/10/hello-world/">下一篇 &gt;</a>
+                <a title=" 专业英语(Unit1 homework)" href="/2023/12/05/软件工程专业英语(Unit1 homework)/">下一篇 &gt;</a>
             </div>
             
         </nav>
