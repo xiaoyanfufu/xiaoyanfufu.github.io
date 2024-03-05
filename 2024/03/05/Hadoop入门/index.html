@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   
   
-  <title>Python中readline与input两种输入方式如何选择 | YAN</title>
+  <title>Hadoop入门 | YAN</title>
   
   <meta name="author" content="xiaoyan" />
   <meta http-equiv="Cache-Control" content="no-transform" />
@@ -15,22 +15,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <meta name="format-detection" content="telphone=no, email=no" />
   
-    <meta name="keywords" content="algorithm" />
+    <meta name="keywords" content="" />
   
-  <meta name="description" content="Python中的readline和input：区别与使用场景  1. 引言 在Python中，readline和input都是常用的从标准输入（通常是键盘）读取数据的方法。但它们之间存在一些关键的区别。本篇博客将详细讨论这两种方法的区别以及各自的使用场景。  2. readline方法  功能：readline是sys模块的一个方法，用于从标准输入读取一行数据。 特点：它是阻塞性的，意味着程序会等">
+  <meta name="description" content="一个时常在CSDN翻垃圾吃的小小初学者">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Python中readline与input两种输入方式如何选择">
-<meta property="og:url" content="http://xiaoyanfufu.gitee.io/2024/01/01/Python%E4%B8%ADreadline%E4%B8%8Einput%E4%B8%A4%E7%A7%8D%E8%BE%93%E5%85%A5%E6%96%B9%E5%BC%8F%E5%A6%82%E4%BD%95%E9%80%89%E6%8B%A9/index.html">
+<meta property="og:title" content="Hadoop入门">
+<meta property="og:url" content="http://xiaoyanfufu.gitee.io/2024/03/05/Hadoop%E5%85%A5%E9%97%A8/index.html">
 <meta property="og:site_name" content="YAN">
-<meta property="og:description" content="Python中的readline和input：区别与使用场景  1. 引言 在Python中，readline和input都是常用的从标准输入（通常是键盘）读取数据的方法。但它们之间存在一些关键的区别。本篇博客将详细讨论这两种方法的区别以及各自的使用场景。  2. readline方法  功能：readline是sys模块的一个方法，用于从标准输入读取一行数据。 特点：它是阻塞性的，意味着程序会等">
+<meta property="og:description" content="一个时常在CSDN翻垃圾吃的小小初学者">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://xiaoyanfufu.gitee.io/2024/01/01/Python%E4%B8%ADreadline%E4%B8%8Einput%E4%B8%A4%E7%A7%8D%E8%BE%93%E5%85%A5%E6%96%B9%E5%BC%8F%E5%A6%82%E4%BD%95%E9%80%89%E6%8B%A9/cover.png">
-<meta property="article:published_time" content="2024-01-01T09:29:38.000Z">
-<meta property="article:modified_time" content="2024-02-02T04:10:32.909Z">
+<meta property="og:image" content="http://xiaoyanfufu.gitee.io/2024/03/05/Hadoop%E5%85%A5%E9%97%A8/cover.png">
+<meta property="article:published_time" content="2024-03-05T07:55:48.000Z">
+<meta property="article:modified_time" content="2024-03-05T08:13:05.443Z">
 <meta property="article:author" content="xiaoyan">
-<meta property="article:tag" content="algorithm">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://xiaoyanfufu.gitee.io/2024/01/01/Python%E4%B8%ADreadline%E4%B8%8Einput%E4%B8%A4%E7%A7%8D%E8%BE%93%E5%85%A5%E6%96%B9%E5%BC%8F%E5%A6%82%E4%BD%95%E9%80%89%E6%8B%A9/cover.png">
+<meta name="twitter:image" content="http://xiaoyanfufu.gitee.io/2024/03/05/Hadoop%E5%85%A5%E9%97%A8/cover.png">
   
   <!-- 站点验证相关 -->
   
@@ -122,15 +121,15 @@
 
             <article itemscope itemtype="https://schema.org/Article">
     
-    <link itemprop="mainEntityOfPage" href="http://xiaoyanfufu.gitee.io/2024/01/01/Python%E4%B8%ADreadline%E4%B8%8Einput%E4%B8%A4%E7%A7%8D%E8%BE%93%E5%85%A5%E6%96%B9%E5%BC%8F%E5%A6%82%E4%BD%95%E9%80%89%E6%8B%A9/">
+    <link itemprop="mainEntityOfPage" href="http://xiaoyanfufu.gitee.io/2024/03/05/Hadoop%E5%85%A5%E9%97%A8/">
     <div class="kratos-hentry kratos-post-inner clearfix">
         <header class="kratos-entry-header">
             
-                <h1 class="kratos-entry-title text-center" itemprop="name headline">Python中readline与input两种输入方式如何选择</h1>
+                <h1 class="kratos-entry-title text-center" itemprop="name headline">Hadoop入门</h1>
             
             
             <ul class="kratos-post-meta text-center">
-                <li><time datetime="2024-01-01T09:29:38.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2024-01-01</time></li>
+                <li><time datetime="2024-03-05T07:55:48.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2024-03-05</time></li>
                 <li itemprop="author" itemscope itemtype="https://schema.org/Person">
                     <i class="fa fa-user"></i> 作者 <span itemprop="name">xiaoyan</span>
                 </li>
@@ -139,7 +138,7 @@
                         <i class="fa fa-edit"></i> 
                         
                         
-                            ~1.76K
+                            0
                         
                         字
                     </li>
@@ -151,67 +150,13 @@
             
             <div id="expire-alert" class="alert alert-warning hidden" role="alert">
                 <div class="icon"><i class="fa fa-warning"></i></div>
-                <div class="text"><p>本文最后编辑于 <time datetime="1706847032909"></time> 前，其中的内容可能需要更新。</p></div>
+                <div class="text"><p>本文最后编辑于 <time datetime="1709626385443"></time> 前，其中的内容可能需要更新。</p></div>
             </div>
             
             
             
             <hr />
-            <div itemprop="articleBody"><p><strong>Python中的<code>readline</code>和<code>input</code>：区别与使用场景</strong></p>
-<hr>
-<p><strong>1. 引言</strong></p>
-<p>在Python中，<code>readline</code>和<code>input</code>都是常用的从标准输入（通常是键盘）读取数据的方法。但它们之间存在一些关键的区别。本篇博客将详细讨论这两种方法的区别以及各自的使用场景。</p>
-<hr>
-<p><strong>2. <code>readline</code>方法</strong></p>
-<ul>
-<li><strong>功能</strong>：<code>readline</code>是<code>sys</code>模块的一个方法，用于从标准输入读取一行数据。</li>
-<li><strong>特点</strong>：它是阻塞性的，意味着程序会等待用户输入，直到按下回车键。此外，它不会自动去除行尾的换行符。</li>
-<li><strong>使用场景</strong>：通常用于需要逐行读取大量数据的情况，尤其是从文件或其他输入源中。</li>
-</ul>
-<hr>
-<p><strong>3. <code>input</code>函数</strong></p>
-<ul>
-<li><strong>功能</strong>：<code>input</code>是Python内置的一个函数，用于从标准输入获取用户输入的数据。</li>
-<li><strong>特点</strong>：它也是阻塞性的，但与<code>readline</code>不同的是，它会去除行尾的换行符，并返回一个字符串。此外，<code>input</code>还允许你指定一个提示字符串，以便更好地指导用户输入。</li>
-<li><strong>使用场景</strong>：适用于需要简单获取用户输入的情况，尤其是需要格式化输入或提供提示时。</li>
-</ul>
-<hr>
-<p><strong>4. 示例与比较</strong></p>
-<ul>
-<li><strong>示例1：简单的字符串读取</strong>：使用<code>input</code>更为直观和易用。</li>
-</ul>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用input函数</span></span><br><span class="line">user_input = <span class="built_in">input</span>(<span class="string">&quot;请输入您的姓名：&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;您好, <span class="subst">&#123;user_input&#125;</span>!&quot;</span>)</span><br></pre></td></tr></table></figure>
-<ul>
-<li><strong>示例2：逐行读取文件内容</strong>：使用<code>readline</code>更合适。</li>
-</ul>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;example.txt&#x27;</span>, <span class="string">&#x27;r&#x27;</span>) <span class="keyword">as</span> file:</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        line = sys.stdin.readline()  <span class="comment"># 逐行读取文件内容</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> line:  <span class="comment"># 当读取到文件末尾时退出循环</span></span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        <span class="built_in">print</span>(line.strip())  <span class="comment"># 打印每一行，去除行尾的换行符</span></span><br></pre></td></tr></table></figure>
-<hr>
-<p>在讨论Python中的<code>readline</code>和<code>input</code>时，除了基本的用法和适用场景，我们还需要深入探讨它们的效率。特别是在处理大量数据或需要高吞吐量的应用中，效率是一个关键的考量因素。本篇博客将深入探讨这两种方法的效率差异。</p>
-<hr>
-<p><strong>5. <code>readline</code>的效率考量</strong></p>
-<ul>
-<li><strong>逐行读取</strong>：<code>readline</code>每次只读取一行数据，这意味着对于大量数据，它需要进行多次系统调用。这在某些情况下可能会降低效率。</li>
-<li><strong>内存管理</strong>：由于<code>readline</code>逐行读取，它不会一次性加载整个文件到内存中。这对于处理大文件特别有利，因为它可以减少内存使用。</li>
-<li><strong>阻塞性</strong>：<code>readline</code>是阻塞的，这意味着它会等待用户输入。在需要连续处理多个输入流的情况下，这可能会成为性能瓶颈。</li>
-</ul>
-<hr>
-<p><strong>6. <code>input</code>的效率考量</strong></p>
-<ul>
-<li><strong>一次性读取</strong>：<code>input</code>函数会一次性读取所有输入，直到遇到EOF（文件结束标记）。这可能导致大量的内存占用，特别是当用户输入大量数据时。</li>
-<li><strong>非阻塞性</strong>：与<code>readline</code>不同，<code>input</code>是非阻塞的。这意味着它可以立即返回，而不需要等待用户输入。这在某些高吞吐量的应用中可能是一个优势。</li>
-<li><strong>去除换行符</strong>：虽然这为用户提供了方便，但每次去除换行符的操作可能会稍微增加一些处理时间。</li>
-</ul>
-<hr>
-<p><strong>7. 最佳实践与性能优化</strong></p>
-<ul>
-<li><strong>对于大量数据</strong>：如果你要处理大量数据，并且关心内存使用，<code>readline</code>可能更合适。你可以结合其他技术（如多线程或多进程）来提高吞吐量。</li>
-<li><strong>交互式输入</strong>：对于交互式应用，特别是需要提示或格式化输入的情况，<code>input</code>更为方便。你可以通过缓存用户输入或使用其他I&#x2F;O优化技术来提高性能。</li>
-<li><strong>混合使用</strong>：在某些情况下，结合使用<code>readline</code>和<code>input</code>可能是一个好策略。例如，你可以使用<code>input</code>获取结构化的输入，然后使用<code>readline</code>逐行处理其他数据。</li>
-</ul>
-<hr>
-<p><strong>8. 结论</strong></p>
-<p>在Python中，选择使用<code>readline</code>还是<code>input</code>不仅取决于需求，还取决于性能和效率的考量。根据应用的具体需求和场景，合理选择这两种方法可以帮助你实现更好的性能和更高的效率。在处理大量数据或需要高吞吐量的应用中，了解这些方法的内部工作原理和性能特点尤为重要。</p>
-</div>
+            <div itemprop="articleBody"></div>
         </div>
         
             <div class="kratos-copyright text-center clearfix">
@@ -264,7 +209,7 @@
     <script type="text/javascript">
         $(()=>{
             new QRCode("wechat-qr", {
-                text: "http://xiaoyanfufu.gitee.io/2024/01/01/Python%E4%B8%ADreadline%E4%B8%8Einput%E4%B8%A4%E7%A7%8D%E8%BE%93%E5%85%A5%E6%96%B9%E5%BC%8F%E5%A6%82%E4%BD%95%E9%80%89%E6%8B%A9/",
+                text: "http://xiaoyanfufu.gitee.io/2024/03/05/Hadoop%E5%85%A5%E9%97%A8/",
                 width: 150,
                 height: 150,
                 correctLevel : QRCode.CorrectLevel.H
@@ -276,12 +221,9 @@
             const qzoneBase     = "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?";
             const facebookBase  = "https://www.facebook.com/sharer/sharer.php?";
             const twitterBase   = "https://twitter.com/intent/tweet?";
-            const hostUrl       = "http://xiaoyanfufu.gitee.io/2024/01/01/Python%E4%B8%ADreadline%E4%B8%8Einput%E4%B8%A4%E7%A7%8D%E8%BE%93%E5%85%A5%E6%96%B9%E5%BC%8F%E5%A6%82%E4%BD%95%E9%80%89%E6%8B%A9/";
-            const title         = "「Python中readline与input两种输入方式如何选择」";
-            const excerpt       = `Python中的readline和input：区别与使用场景
-
-1. 引言
-在Python中，readline和input都是常用的从标准输入（通常是键盘）读取数据的方法。但它们之间存在一些关键的区别。本篇博客将详细讨论这两种方法的区...`;
+            const hostUrl       = "http://xiaoyanfufu.gitee.io/2024/03/05/Hadoop%E5%85%A5%E9%97%A8/";
+            const title         = "「Hadoop入门」";
+            const excerpt       = ``;
             let _URL;
             switch (dest) {
                 case "qq"       : _URL = qqBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";     break;
@@ -300,10 +242,10 @@
             <div class="footer-tag clearfix">
                 <div class="pull-left">
                 <i class="fa fa-tags"></i>
-                    <a class="tag-none-link" href="/tags/algorithm/" rel="tag">algorithm</a>
+                    
                 </div>
                 <div class="pull-date">
-                    <time datetime="2024-02-02T04:10:32.909Z" itemprop="dateModified">最后编辑：2024-02-02</time>
+                    <time datetime="2024-03-05T08:13:05.443Z" itemprop="dateModified">最后编辑：2024-03-05</time>
                 </div>
             </div>
         </footer>
@@ -312,13 +254,9 @@
         <nav class="navigation post-navigation clearfix" role="navigation">
             
             <div class="nav-previous clearfix">
-                <a title=" 前后端分离项目之完美解决跨域冲突问题" href="/2023/11/11/前后端分离项目之完美解决跨域冲突问题/">&lt; 上一篇</a>
+                <a title=" 使用SSH优雅连接在家里的主机" href="/2024/02/25/使用SSH优雅连接在家里的主机/">&lt; 上一篇</a>
             </div>
             
-            
-            <div class="nav-next clearfix">
-                <a title=" 如何高效地进行软件测试？" href="/2024/01/09/如何高效地进行软件测试？/">下一篇 &gt;</a>
-            </div>
             
         </nav>
     

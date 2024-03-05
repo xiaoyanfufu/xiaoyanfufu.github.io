@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  
+  
+  <title>使用SSH优雅连接在家里的主机 | YAN</title>
+  
+  <meta name="author" content="xiaoyan" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="" />
+  
+  <meta name="description" content="如何使用SSH远程连接在家的主机前言 事情的起因是自己搭了个服务器玩(使用的镜像是Ubuntu20.04 LTS)，也想让身边的同学也能自己搞来玩。奈何自己是个小菜鸟，自己也整不明白，所以写这篇博客来记录这个学习(折腾)过程，方便自己下次配置学习。 一、安装并开启SSH服务首先当然是SSH服务的安装环节~ 服务器端安装 在远程主机安装ssh-server 12sudo apt update">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用SSH优雅连接在家里的主机">
+<meta property="og:url" content="http://xiaoyanfufu.gitee.io/2024/02/25/%E4%BD%BF%E7%94%A8SSH%E4%BC%98%E9%9B%85%E8%BF%9E%E6%8E%A5%E5%9C%A8%E5%AE%B6%E9%87%8C%E7%9A%84%E4%B8%BB%E6%9C%BA/index.html">
+<meta property="og:site_name" content="YAN">
+<meta property="og:description" content="如何使用SSH远程连接在家的主机前言 事情的起因是自己搭了个服务器玩(使用的镜像是Ubuntu20.04 LTS)，也想让身边的同学也能自己搞来玩。奈何自己是个小菜鸟，自己也整不明白，所以写这篇博客来记录这个学习(折腾)过程，方便自己下次配置学习。 一、安装并开启SSH服务首先当然是SSH服务的安装环节~ 服务器端安装 在远程主机安装ssh-server 12sudo apt update">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://xiaoyanfufu.gitee.io/2024/02/25/%E4%BD%BF%E7%94%A8SSH%E4%BC%98%E9%9B%85%E8%BF%9E%E6%8E%A5%E5%9C%A8%E5%AE%B6%E9%87%8C%E7%9A%84%E4%B8%BB%E6%9C%BA/cover.png">
+<meta property="article:published_time" content="2024-02-25T11:21:50.000Z">
+<meta property="article:modified_time" content="2024-03-05T08:51:13.447Z">
+<meta property="article:author" content="xiaoyan">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://xiaoyanfufu.gitee.io/2024/02/25/%E4%BD%BF%E7%94%A8SSH%E4%BC%98%E9%9B%85%E8%BF%9E%E6%8E%A5%E5%9C%A8%E5%AE%B6%E9%87%8C%E7%9A%84%E4%B8%BB%E6%9C%BA/cover.png">
+  
+  <!-- 站点验证相关 -->
+  
+    
+    
+    
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kratosr.min.css" media="all"></script>
+  
+    <link rel="stylesheet" id="darkmode-css" href="/css/kr-color-dark.min.css" media="(prefers-color-scheme: dark)"></script>
+    <script src="/js/kr-dark.min.js"></script>
+  
+  
+  <link rel="stylesheet" id="fontawe-css" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css" media="all"></script>
+  <link rel="stylesheet" id="nprogress-css" href="/vendors/nprogress@0.2.0/nprogress.css" media="all"></script>
+  
+  
+    <link rel="stylesheet" href="/vendors/aplayer@1.10.1/dist/APlayer.min.css"></script>
+  
+  
+    <link rel="stylesheet" href="/vendors/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css"></script>
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  <script src="/vendors/jquery@3.6.0/dist/jquery.min.js"></script>
+  
+    <script src="/vendors/qrcode_js@1.0.0/qrcode.min.js"></script>
+  
+  
+  <style>
+    
+    
+  </style>
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    
+                                    
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">YAN</a></div>
+                    <div class="nav-toggle">
+                        <a class="kratos-nav-toggle js-kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>YAN</h2> <br />
+                        <span>无限进步</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+                    
+
+        
+
+            <section class="col-md-8">
+
+        
+
+            <article itemscope itemtype="https://schema.org/Article">
+    
+    <link itemprop="mainEntityOfPage" href="http://xiaoyanfufu.gitee.io/2024/02/25/%E4%BD%BF%E7%94%A8SSH%E4%BC%98%E9%9B%85%E8%BF%9E%E6%8E%A5%E5%9C%A8%E5%AE%B6%E9%87%8C%E7%9A%84%E4%B8%BB%E6%9C%BA/">
+    <div class="kratos-hentry kratos-post-inner clearfix">
+        <header class="kratos-entry-header">
+            
+                <h1 class="kratos-entry-title text-center" itemprop="name headline">使用SSH优雅连接在家里的主机</h1>
+            
+            
+            <ul class="kratos-post-meta text-center">
+                <li><time datetime="2024-02-25T11:21:50.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2024-02-25</time></li>
+                <li itemprop="author" itemscope itemtype="https://schema.org/Person">
+                    <i class="fa fa-user"></i> 作者 <span itemprop="name">xiaoyan</span>
+                </li>
+                
+                    <li>
+                        <i class="fa fa-edit"></i> 
+                        
+                        
+                            ~2.05K
+                        
+                        字
+                    </li>
+                
+                
+            </ul>
+        </header>
+        <div class="kratos-post-content">
+            
+            <div id="expire-alert" class="alert alert-warning hidden" role="alert">
+                <div class="icon"><i class="fa fa-warning"></i></div>
+                <div class="text"><p>本文最后编辑于 <time datetime="1709628673447"></time> 前，其中的内容可能需要更新。</p></div>
+            </div>
+            
+            
+            
+                <div class="kratos-post-inner-toc toc-div-class" >
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8SSH%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5%E5%9C%A8%E5%AE%B6%E7%9A%84%E4%B8%BB%E6%9C%BA"><span class="toc-number">1.</span> <span class="toc-text">如何使用SSH远程连接在家的主机</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%AE%89%E8%A3%85%E5%B9%B6%E5%BC%80%E5%90%AFSSH%E6%9C%8D%E5%8A%A1"><span class="toc-number">1.1.</span> <span class="toc-text">一、安装并开启SSH服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%86%85%E7%BD%91%E9%85%8D%E7%BD%AE%E8%BF%9E%E6%8E%A5"><span class="toc-number">1.2.</span> <span class="toc-text">二、内网配置连接</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E7%94%9F%E6%88%90%E5%AF%86%E9%92%A5"><span class="toc-number">1.2.1.</span> <span class="toc-text">1.生成密钥</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%9B%B4%E6%94%B9%E6%9D%83%E9%99%90"><span class="toc-number">1.2.2.</span> <span class="toc-text">2.更改权限</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%AF%86%E9%92%A5%E9%85%8D%E7%BD%AE"><span class="toc-number">1.2.3.</span> <span class="toc-text">3.密钥配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%AF%86%E9%92%A5%E7%99%BB%E9%99%86"><span class="toc-number">1.2.4.</span> <span class="toc-text">4.密钥登陆</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E5%A4%96%E7%BD%91%E9%85%8D%E7%BD%AE%E8%BF%9E%E6%8E%A5-%E4%BD%BF%E7%94%A8%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F"><span class="toc-number">1.3.</span> <span class="toc-text">三、外网配置连接(使用内网穿透)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E9%85%8D%E7%BD%AE%E7%A9%BF%E9%80%8F%E9%9A%A7%E9%81%93"><span class="toc-number">1.3.1.</span> <span class="toc-text">1.配置穿透隧道</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%BC%80%E5%90%AF%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F"><span class="toc-number">1.3.2.</span> <span class="toc-text">2.开启内网穿透</span></a></li></ol></li></ol></li></ol>
+                </div>
+            
+            <hr />
+            <div itemprop="articleBody"><h1 id="如何使用SSH远程连接在家的主机"><a href="#如何使用SSH远程连接在家的主机" class="headerlink" title="如何使用SSH远程连接在家的主机"></a><strong>如何使用SSH远程连接在家的主机</strong></h1><p><strong>前言</strong></p>
+<p>事情的起因是自己搭了个服务器玩(使用的镜像是Ubuntu20.04 LTS)，也想让身边的同学也能自己搞来玩。奈何自己是个小菜鸟，自己也整不明白，所以写这篇博客来记录这个学习(折腾)过程，方便自己下次配置学习。</p>
+<h2 id="一、安装并开启SSH服务"><a href="#一、安装并开启SSH服务" class="headerlink" title="一、安装并开启SSH服务"></a><strong>一、安装并开启SSH服务</strong></h2><p>首先当然是SSH服务的安装环节~</p>
+<p><strong>服务器端安装</strong></p>
+<p>在远程主机安装ssh-server</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update					#更新软件库</span><br><span class="line">sudo apt install openssh-server	#安装</span><br></pre></td></tr></table></figure>
+
+<p>运行以下命令检测主机是否已开启ssh服务，正在运行ssh服务终端会显示<code>active</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl status ssh</span><br></pre></td></tr></table></figure>
+
+<p>或者使用以下命令，显示<code>sshd</code>表示正在运行ssh-server</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps -e | grep ssh</span><br></pre></td></tr></table></figure>
+
+<p><strong>客户端安装</strong></p>
+<p>我们日常生活客户端一般采用windows系统，自带ssh客户端服务，想用图形化界面的直接下载几个ssh工具就好了（如PuTTY、Terminal等）。而Ubuntu系统也是自openssh-client，所以我们待会直接在终端输入命令就行。</p>
+<h2 id="二、内网配置连接"><a href="#二、内网配置连接" class="headerlink" title="二、内网配置连接"></a><strong>二、内网配置连接</strong></h2><h3 id="1-生成密钥"><a href="#1-生成密钥" class="headerlink" title="1.生成密钥"></a>1.生成密钥</h3><p>如果是在client端生成密钥对，则把client端的公钥copy到server端，如果是在server端生成密钥对，则把私钥copy到client端。</p>
+<p>在服务器主机端生成密钥对。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen</span><br></pre></td></tr></table></figure>
+
+<p>出现提示 ‘Enter file in which to save the key (&#x2F;home&#x2F;user&#x2F;.ssh&#x2F;id_rsa): ‘ 时，可以输入想要更改的秘钥名称xxx。下一步显示输入加密信息，咱们小白也不懂，直接连续按两次回车生成密钥对。</p>
+<p>生成完会保存在<code>当前路径</code>，使用<code>ls</code>命令可以看到当前路径多了两个文件，分别是“xxx”和“xxx.pub”。</p>
+<p>将生成的公钥内容写入authorized_keys文件中，输入以下命令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat xxx.pub &gt;&gt; /root/.ssh/authorized_keys</span><br></pre></td></tr></table></figure>
+
+<p>然后想办法将私钥发给客户端，我是通过FTP发送给客户端，FTP配置方法网上有很多在此不再赘述。</p>
+<h3 id="2-更改权限"><a href="#2-更改权限" class="headerlink" title="2.更改权限"></a>2.更改权限</h3><p>修改服务器端文件权限</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">chmod 600 /root/.ssh/authorized_keys</span><br><span class="line">chmod 700 /root/.ssh</span><br></pre></td></tr></table></figure>
+
+<p>修改客户端文件权限</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod 400 &lt;文件路径&gt;/xxx</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="3-密钥配置"><a href="#3-密钥配置" class="headerlink" title="3.密钥配置"></a>3.密钥配置</h3><p>编辑服务器端配置：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim /etc/ssh/sshd_config</span><br></pre></td></tr></table></figure>
+
+<p>取消以下内容的注释:</p>
+<p><code>PubkeyAuthentication yes</code></p>
+<p><code>AuthorizedKeysFile .ssh/authorized_keys</code></p>
+<p>重启服务</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service sshd restart</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="4-密钥登陆"><a href="#4-密钥登陆" class="headerlink" title="4.密钥登陆"></a>4.密钥登陆</h3><p>在客户端登录时加载密钥</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh -i  ~/.ssh/秘钥 -p &lt;端口&gt; &lt;登录名&gt;@&lt;主机IP&gt; </span><br></pre></td></tr></table></figure>
+
+<p>按照提示登录即可~到此配置内网ssh连接完成！！！</p>
+<p>如果你想关闭服务器端的密码登录功能，可以修改服务器端的配置：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo vim /etc/ssh/sshd_config</span><br><span class="line">#找到以下内容，改为“no”</span><br><span class="line">##PasswordAuthentication no</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="三、外网配置连接-使用内网穿透"><a href="#三、外网配置连接-使用内网穿透" class="headerlink" title="三、外网配置连接(使用内网穿透)"></a><strong>三、外网配置连接(使用内网穿透)</strong></h2><p>使用内网穿透于我这种小白而言是肥肠煎蛋的，但是有个小弊端就是服务器不能关机，关机后需要重启穿透服务。废话不多说直接开整。</p>
+<h3 id="1-配置穿透隧道"><a href="#1-配置穿透隧道" class="headerlink" title="1.配置穿透隧道"></a>1.配置穿透隧道</h3><ul>
+<li><strong>注册和下载</strong></li>
+</ul>
+<p>注册<a target="_blank" rel="noopener" href="https://natapp.cn/">NATAPP</a>账号(为什么用NATAPP？因为他是免费的hhh)，注册完之后回到首页，选择适合服务器系统的客户端进行下载，将客户端程序拷贝到服务器你想要保存的路径。</p>
+<ul>
+<li><strong>开通隧道</strong></li>
+</ul>
+<p>在隧道开通前要进行实名验证。完成实名验证之后我们点击左上角购买通道，选择免费的这个<img src="/2024/02/25/%E4%BD%BF%E7%94%A8SSH%E4%BC%98%E9%9B%85%E8%BF%9E%E6%8E%A5%E5%9C%A8%E5%AE%B6%E9%87%8C%E7%9A%84%E4%B8%BB%E6%9C%BA/image-20240305162950375.png" alt="开通隧道"></p>
+<p>隧道协议选择<code>TCP</code>，本地的端口选择<code>22</code>(也就是你的服务器开放SSH服务的端口，与config文件保持一致)，点击购买即可。</p>
+<p><img src="/2024/02/25/%E4%BD%BF%E7%94%A8SSH%E4%BC%98%E9%9B%85%E8%BF%9E%E6%8E%A5%E5%9C%A8%E5%AE%B6%E9%87%8C%E7%9A%84%E4%B8%BB%E6%9C%BA/image-20240305163226622.png" alt="选择购买隧道配置"></p>
+<p>之后可以看到自己刚才买的隧道，我们需要的是隧道token，复制他！！！</p>
+<p><img src="/2024/02/25/%E4%BD%BF%E7%94%A8SSH%E4%BC%98%E9%9B%85%E8%BF%9E%E6%8E%A5%E5%9C%A8%E5%AE%B6%E9%87%8C%E7%9A%84%E4%B8%BB%E6%9C%BA/image-20240305163457041.png" alt="隧道管理"></p>
+<h3 id="2-开启内网穿透"><a href="#2-开启内网穿透" class="headerlink" title="2.开启内网穿透"></a><strong>2.开启内网穿透</strong></h3><p>首先进入刚才存放NATAPP程序的路径，运行以下命令(xxx替换为authtoken)</p>
+<ul>
+<li><p>运行命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./natapp -authtoken=xxx</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>后台运行命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nohup ./natapp -authtoken=xxx -log=stdout &amp;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>检查服务是否在运行命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps -ef|grep natapp</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>运行成功得到以下界面</p>
+<p><img src="/2024/02/25/%E4%BD%BF%E7%94%A8SSH%E4%BC%98%E9%9B%85%E8%BF%9E%E6%8E%A5%E5%9C%A8%E5%AE%B6%E9%87%8C%E7%9A%84%E4%B8%BB%E6%9C%BA/image-20240305164244035.png" alt="内网穿透"></p>
+<p>记下这个域名和后面的端口，复制下来~</p>
+<ul>
+<li><strong>测试连接</strong></li>
+</ul>
+<p>打开客户端的SSH工具，<code>IP</code>输入刚才内网穿透得到的域名，<code>port</code>输入刚才得到的端口，点击连接…</p>
+<p>进来啦！！！放一首好运来~</p>
+<p>到此内网穿透进行远程SSH连接到此结束~</p>
+</div>
+        </div>
+        
+            <div class="kratos-copyright text-center clearfix">
+                <h5 itemprop="copyrightNotice">本作品采用 <a rel="license nofollow" target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">知识共享署名-相同方式共享 4.0 国际许可协议</a> 进行许可</h5>
+            </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+                <div class="post-like-donate text-center clearfix" id="post-like-donate">
+                
+                
+                    <a class="share" href="javascript:;"><i class="fa fa-share-alt"></i> 分享</a>
+                    <div class="share-wrap" style="display: none;">
+    <div class="share-group">
+        <a href="javascript:;" class="share-plain qq" onclick="share('qq');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-qq"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain qzone" onclick="share('qzone');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-star"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weixin pop style-plain" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weixin"></i>
+            </div>
+            <div class="share-int">
+                <div class="qrcode" id="wechat-qr"></div>
+                <p>打开微信“扫一扫”，打开网页后点击屏幕右上角分享按钮</p>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain weibo" onclick="share('weibo');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-weibo"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain facebook style-plain" onclick="share('facebook');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-facebook"></i>
+            </div>
+        </a>
+        <a href="javascript:;" class="share-plain twitter style-plain" onclick="share('twitter');" rel="nofollow">
+            <div class="icon-wrap">
+                <i class="fa fa-twitter"></i>
+            </div>
+        </a>
+    </div>
+    <script type="text/javascript">
+        $(()=>{
+            new QRCode("wechat-qr", {
+                text: "http://xiaoyanfufu.gitee.io/2024/02/25/%E4%BD%BF%E7%94%A8SSH%E4%BC%98%E9%9B%85%E8%BF%9E%E6%8E%A5%E5%9C%A8%E5%AE%B6%E9%87%8C%E7%9A%84%E4%B8%BB%E6%9C%BA/",
+                width: 150,
+                height: 150,
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        });
+        function share(dest) {
+            const qqBase        = "https://connect.qq.com/widget/shareqq/index.html?";
+            const weiboBase     = "https://service.weibo.com/share/share.php?";
+            const qzoneBase     = "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?";
+            const facebookBase  = "https://www.facebook.com/sharer/sharer.php?";
+            const twitterBase   = "https://twitter.com/intent/tweet?";
+            const hostUrl       = "http://xiaoyanfufu.gitee.io/2024/02/25/%E4%BD%BF%E7%94%A8SSH%E4%BC%98%E9%9B%85%E8%BF%9E%E6%8E%A5%E5%9C%A8%E5%AE%B6%E9%87%8C%E7%9A%84%E4%B8%BB%E6%9C%BA/";
+            const title         = "「使用SSH优雅连接在家里的主机」";
+            const excerpt       = `如何使用SSH远程连接在家的主机前言
+事情的起因是自己搭了个服务器玩(使用的镜像是Ubuntu20.04 LTS)，也想让身边的同学也能自己搞来玩。奈何自己是个小菜鸟，自己也整不明白，所以写这篇博客来记录这个学习(折腾)过程，方便自己...`;
+            let _URL;
+            switch (dest) {
+                case "qq"       : _URL = qqBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";     break;
+                case "weibo"    : _URL = weiboBase+"url="+hostUrl+"&title="+title+excerpt;                                 break;
+                case "qzone"    : _URL = qzoneBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";  break;
+                case "facebook" : _URL = facebookBase+"u="+hostUrl;                                                        break;
+                case "twitter"  : _URL = twitterBase+"text="+title+excerpt+"&url="+hostUrl;                                break;
+            }
+            window.open(_URL);
+        };
+    </script>
+</div>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    
+                </div>
+                <div class="pull-date">
+                    <time datetime="2024-03-05T08:51:13.447Z" itemprop="dateModified">最后编辑：2024-03-05</time>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" Python算竞基础" href="/2024/02/04/算竞Python基础/">&lt; 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" Hadoop入门" href="/2024/03/05/Hadoop入门/">下一篇 &gt;</a>
+            </div>
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+        
+
+                
+            
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/avatar.webp" loading="lazy" decoding="auto" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">一个时常在CSDN翻垃圾吃的小小初学者</p>
+    </div>
+    <div class="site-meta">
+        <a class="meta-item" href="/archives/">
+            <span class="title">
+                文章
+            </span>
+            <span class="count">
+                9
+            </span>
+        </a>
+        <a class="meta-item" href="/categories/">
+            <span class="title">
+                分类
+            </span>
+            <span class="count">
+                4
+            </span>
+        </a>
+        <a class="meta-item" href="/tags/">
+            <span class="title">
+                标签
+            </span>
+            <span class="count">
+                1
+            </span>
+        </a>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix toc-div-class" >
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar" role="progressbar" aria-label="阅读进度："></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8SSH%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5%E5%9C%A8%E5%AE%B6%E7%9A%84%E4%B8%BB%E6%9C%BA"><span class="toc-text">如何使用SSH远程连接在家的主机</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%AE%89%E8%A3%85%E5%B9%B6%E5%BC%80%E5%90%AFSSH%E6%9C%8D%E5%8A%A1"><span class="toc-text">一、安装并开启SSH服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%86%85%E7%BD%91%E9%85%8D%E7%BD%AE%E8%BF%9E%E6%8E%A5"><span class="toc-text">二、内网配置连接</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E7%94%9F%E6%88%90%E5%AF%86%E9%92%A5"><span class="toc-text">1.生成密钥</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%9B%B4%E6%94%B9%E6%9D%83%E9%99%90"><span class="toc-text">2.更改权限</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%AF%86%E9%92%A5%E9%85%8D%E7%BD%AE"><span class="toc-text">3.密钥配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%AF%86%E9%92%A5%E7%99%BB%E9%99%86"><span class="toc-text">4.密钥登陆</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E5%A4%96%E7%BD%91%E9%85%8D%E7%BD%AE%E8%BF%9E%E6%8E%A5-%E4%BD%BF%E7%94%A8%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F"><span class="toc-text">三、外网配置连接(使用内网穿透)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E9%85%8D%E7%BD%AE%E7%A9%BF%E9%80%8F%E9%9A%A7%E9%81%93"><span class="toc-text">1.配置穿透隧道</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%BC%80%E5%90%AF%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F"><span class="toc-text">2.开启内网穿透</span></a></li></ol></li></ol></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类目录</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/JavaWeb/">JavaWeb</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Server/">Server</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E4%B8%93%E4%B8%9A%E8%8B%B1%E8%AF%AD/">专业英语</a><span class="category-list-count">1</span></li></ul>
+  </aside>
+
+
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/algorithm/" style="font-size: 0.6em;">algorithm</a>
+      </div>
+  </aside>
+
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/2024/03/05/Hadoop%E5%85%A5%E9%97%A8/"><i class="fa  fa-book"></i> Hadoop入门</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/02/25/%E4%BD%BF%E7%94%A8SSH%E4%BC%98%E9%9B%85%E8%BF%9E%E6%8E%A5%E5%9C%A8%E5%AE%B6%E9%87%8C%E7%9A%84%E4%B8%BB%E6%9C%BA/"><i class="fa  fa-book"></i> 使用SSH优雅连接在家里的主机</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/02/04/%E7%AE%97%E7%AB%9EPython%E5%9F%BA%E7%A1%80/"><i class="fa  fa-book"></i> Python算竞基础</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/02/01/Web%E9%A1%B9%E7%9B%AE%E5%BC%80%E5%8F%91%EF%BC%9A%E7%BC%93%E5%AD%98/"><i class="fa  fa-book"></i> Web项目开发：缓存</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/01/09/%E5%A6%82%E4%BD%95%E9%AB%98%E6%95%88%E5%9C%B0%E8%BF%9B%E8%A1%8C%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95%EF%BC%9F/"><i class="fa  fa-book"></i> 如何高效地进行软件测试？</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+        
+        </div>
+    </div>
+</div>
+<footer>
+    <div id="footer"  class="ap-lrc"  >
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        <!-- Keep for compatibility -->
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <!-- New links -->
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2024 YAN 版权所有.</li>
+                            <li>本站已运行<span id="span_dt">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>Theme <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a></li>
+                            <li>Site built with&nbsp;<i class="fa fa-heart throb" style="color:#d43f57"></i>&nbsp;by xiaoyan.</li>
+                        </div>
+                        <div>
+                            <li>Powered by <a href="https://hexo.io" target="_blank" rel="nofollow">Hexo</a></li>
+                            <li>Hosted on <a href="https://github.io" target="_blank">Github Pages</a></li>
+                        </div>
+                        <div>
+                            
+                            
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search/">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="box theme-box" id="darkmode-switch">
+                        <span class="fa fa-adjust"></span>
+                    </div>
+                
+                
+                    <div class="box theme-box" id="snow-switch">
+                        <span class="fa fa-snowflake-o"></span>
+                    </div>
+                
+                
+            </div>
+            <div class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+        <script defer src="/vendors/bootstrap@3.3.4/dist/js/bootstrap.min.js"></script>
+<script defer src="/vendors/nprogress@0.2.0/nprogress.js"></script>
+<script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
+</script>
+
+    <div>
+        <canvas id="snow"></canvas>
+        <script async src="/js/snow.min.js"></script>
+    </div>
+
+
+    <script async src="/js/candy.min.js"></script>
+
+
+
+    <script defer src="/vendors/aplayer@1.10.1/dist/APlayer.min.js"></script>
+    
+    <script defer src="/vendors/meting@2.0.1/dist/Meting.min.js"></script>
+    <meting-js
+        server="netease"
+        type="playlist"
+        id="7487864674"
+        order="random"
+        fixed="true"
+    >
+    </meting-js>
+
+
+
+    <script defer src="/vendors/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+<script defer src="/js/kratosr.min.js"></script>
+<script defer src="/js/pjax.min.js"></script>
+
+
+
+<!-- Extra support for third-party plguins  -->
+
+
+    </body>
+</html>
