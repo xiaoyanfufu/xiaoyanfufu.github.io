@@ -17,16 +17,16 @@
   
     <meta name="keywords" content="" />
   
-  <meta name="description" content="一个时常在CSDN翻垃圾吃的小小初学者">
+  <meta name="description" content="Hadoop运行搭建Linux镜像：CentOS7 系统安装：CentOS安装参考教程 系统网卡设置：  参考教程：CentOS配置静态IP  NAT参数：   系统配置信息：  hadoop100：  用户名：user  密码：***  内网IP：192.168.62.140     本博客参考(转载)教程：Hadoop入门 声明:本博客仅作为笔者小白自己学习,作为流程记录方便自己理解 一、虚拟">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Hadoop入门">
 <meta property="og:url" content="http://xiaoyanfufu.gitee.io/2024/03/05/Hadoop%E5%85%A5%E9%97%A8/index.html">
 <meta property="og:site_name" content="YAN">
-<meta property="og:description" content="一个时常在CSDN翻垃圾吃的小小初学者">
+<meta property="og:description" content="Hadoop运行搭建Linux镜像：CentOS7 系统安装：CentOS安装参考教程 系统网卡设置：  参考教程：CentOS配置静态IP  NAT参数：   系统配置信息：  hadoop100：  用户名：user  密码：***  内网IP：192.168.62.140     本博客参考(转载)教程：Hadoop入门 声明:本博客仅作为笔者小白自己学习,作为流程记录方便自己理解 一、虚拟">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://xiaoyanfufu.gitee.io/2024/03/05/Hadoop%E5%85%A5%E9%97%A8/cover.png">
 <meta property="article:published_time" content="2024-03-05T07:55:48.000Z">
-<meta property="article:modified_time" content="2024-03-05T09:04:03.979Z">
+<meta property="article:modified_time" content="2024-03-06T10:22:59.338Z">
 <meta property="article:author" content="xiaoyan">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://xiaoyanfufu.gitee.io/2024/03/05/Hadoop%E5%85%A5%E9%97%A8/cover.png">
@@ -138,7 +138,7 @@
                         <i class="fa fa-edit"></i> 
                         
                         
-                            0
+                            ~3.57K
                         
                         字
                     </li>
@@ -150,13 +150,203 @@
             
             <div id="expire-alert" class="alert alert-warning hidden" role="alert">
                 <div class="icon"><i class="fa fa-warning"></i></div>
-                <div class="text"><p>本文最后编辑于 <time datetime="1709629443979"></time> 前，其中的内容可能需要更新。</p></div>
+                <div class="text"><p>本文最后编辑于 <time datetime="1709720579338"></time> 前，其中的内容可能需要更新。</p></div>
             </div>
             
             
             
+                <div class="kratos-post-inner-toc toc-div-class" >
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Hadoop%E8%BF%90%E8%A1%8C%E6%90%AD%E5%BB%BA"><span class="toc-number">1.</span> <span class="toc-text">Hadoop运行搭建</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="toc-number">1.1.</span> <span class="toc-text">一、虚拟机环境准备</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%A3%80%E6%9F%A5%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%BD%91%E7%BB%9C"><span class="toc-number">1.1.1.</span> <span class="toc-text">1.检查虚拟机网络</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%B7%BB%E5%8A%A0%E8%BD%AF%E4%BB%B6%E6%BA%90"><span class="toc-number">1.1.2.</span> <span class="toc-text">2.添加软件源</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%85%B3%E9%97%AD%E9%98%B2%E7%81%AB%E5%A2%99"><span class="toc-number">1.1.3.</span> <span class="toc-text">3.关闭防火墙</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E8%AE%BE%E7%BD%AE%E7%94%A8%E6%88%B7%E8%B4%A6%E5%8F%B7-%E6%8C%89%E9%9C%80%E8%AE%BE%E7%BD%AE"><span class="toc-number">1.1.4.</span> <span class="toc-text">4.设置用户账号(按需设置)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E7%BB%99%E7%94%A8%E6%88%B7%E6%B7%BB%E5%8A%A0%E7%AE%A1%E7%90%86%E5%91%98%E6%9D%83%E9%99%90-%E6%8C%89%E9%9C%80%E8%AE%BE%E7%BD%AE"><span class="toc-number">1.1.5.</span> <span class="toc-text">5.给用户添加管理员权限(按需设置)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E5%88%9B%E5%BB%BA%E5%B7%A5%E4%BD%9C%E6%96%87%E4%BB%B6%E5%A4%B9"><span class="toc-number">1.1.6.</span> <span class="toc-text">6.创建工作文件夹</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E5%8D%B8%E8%BD%BD%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%87%AA%E5%B8%A6JDK"><span class="toc-number">1.1.7.</span> <span class="toc-text">7.卸载虚拟机自带JDK</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%85%8B%E9%9A%86%E8%99%9A%E6%8B%9F%E6%9C%BA"><span class="toc-number">1.2.</span> <span class="toc-text">二、克隆虚拟机</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%85%8B%E9%9A%86%E5%88%9B%E5%BB%BA%E8%99%9A%E6%8B%9F%E6%9C%BA"><span class="toc-number">1.2.1.</span> <span class="toc-text">1.克隆创建虚拟机</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E4%BF%AE%E6%94%B9%E5%85%8B%E9%9A%86%E8%99%9A%E6%8B%9F%E6%9C%BAIP"><span class="toc-number">1.2.2.</span> <span class="toc-text">2.修改克隆虚拟机IP</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E9%85%8D%E7%BD%AE%E5%85%8B%E9%9A%86%E6%9C%BA%E4%B8%BB%E6%9C%BA%E5%90%8D%E6%98%A0%E5%B0%84"><span class="toc-number">1.2.3.</span> <span class="toc-text">3.配置克隆机主机名映射</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E5%AE%89%E8%A3%85JDK"><span class="toc-number">1.3.</span> <span class="toc-text">三、安装JDK</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%A3%80%E6%9F%A5JDK"><span class="toc-number">1.3.1.</span> <span class="toc-text">1.检查JDK</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%AE%89%E8%A3%85JDK"><span class="toc-number">1.3.2.</span> <span class="toc-text">2.安装JDK</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E9%85%8D%E7%BD%AEJDK%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="toc-number">1.3.3.</span> <span class="toc-text">3.配置JDK环境变量</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%AE%89%E8%A3%85Hadoop"><span class="toc-number">1.4.</span> <span class="toc-text">四、安装Hadoop</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%AE%89%E8%A3%85Hadoop"><span class="toc-number">1.4.1.</span> <span class="toc-text">1.安装Hadoop</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E9%85%8D%E7%BD%AEHadoop%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="toc-number">1.4.2.</span> <span class="toc-text">2.配置Hadoop环境变量</span></a></li></ol></li></ol></li></ol>
+                </div>
+            
             <hr />
-            <div itemprop="articleBody"></div>
+            <div itemprop="articleBody"><h1 id="Hadoop运行搭建"><a href="#Hadoop运行搭建" class="headerlink" title="Hadoop运行搭建"></a>Hadoop运行搭建</h1><p>Linux镜像：CentOS7</p>
+<p>系统安装：<a target="_blank" rel="noopener" href="http://t.csdnimg.cn/Ni3ba">CentOS安装参考教程</a></p>
+<p>系统网卡设置：</p>
+<ul>
+<li><p>参考教程：<a target="_blank" rel="noopener" href="http://t.csdnimg.cn/VU4QF">CentOS配置静态IP</a></p>
+</li>
+<li><p>NAT参数：<img src="/2024/03/05/Hadoop%E5%85%A5%E9%97%A8/image-20240305210248897.png" alt="虚拟机NAT设置参数" style="zoom: 67%;"></p>
+</li>
+</ul>
+<p>系统配置信息：</p>
+<ul>
+<li><p>hadoop100：</p>
+<ul>
+<li><p>用户名：user</p>
+</li>
+<li><p>密码：***</p>
+</li>
+<li><p>内网IP：192.168.62.140</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>本博客参考(转载)教程：<a target="_blank" rel="noopener" href="http://t.csdnimg.cn/5Qzoz">Hadoop入门</a></p>
+<p>声明:本博客仅作为笔者小白自己学习,作为流程记录方便自己理解</p>
+<h2 id="一、虚拟机环境准备"><a href="#一、虚拟机环境准备" class="headerlink" title="一、虚拟机环境准备"></a>一、虚拟机环境准备</h2><h3 id="1-检查虚拟机网络"><a href="#1-检查虚拟机网络" class="headerlink" title="1.检查虚拟机网络"></a>1.检查虚拟机网络</h3><p>先检查虚拟机是否可以与外网连接，ping一下百度瞅瞅（如果提示没有<code>ping</code>命令，先下载一下网络工具包<code>yum install net-tool</code>）。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ping baidu.com</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-添加软件源"><a href="#2-添加软件源" class="headerlink" title="2.添加软件源"></a>2.添加软件源</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum update	#养成先更新一下的好习惯</span><br><span class="line">yum install -y epel-release</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-关闭防火墙"><a href="#3-关闭防火墙" class="headerlink" title="3.关闭防火墙"></a>3.关闭防火墙</h3><p>方便之后的操作，防止出现由于防火墙安全策略而产生的错误。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">systemctl stop firewalld	#关闭防火墙</span><br><span class="line">systemctl disable firewalld.service #关闭防火墙开机自启</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-设置用户账号-按需设置"><a href="#4-设置用户账号-按需设置" class="headerlink" title="4.设置用户账号(按需设置)"></a>4.设置用户账号(按需设置)</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">useradd Tom	#添加用户</span><br><span class="line">passwd Tom	#修改用户密码</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-给用户添加管理员权限-按需设置"><a href="#5-给用户添加管理员权限-按需设置" class="headerlink" title="5.给用户添加管理员权限(按需设置)"></a>5.给用户添加管理员权限(按需设置)</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/sudoers	#先切换到root用户，才能执行此命令</span><br></pre></td></tr></table></figure>
+
+<p>找到<code>%wheel</code>(大概在99行，vim设置显示行号命令为<code>“:set nu&quot;</code>)，在该项下面添加刚才创建的用户的配置。</p>
+<img src="/2024/03/05/Hadoop%E5%85%A5%E9%97%A8/image-20240305214059297.png" alt="为用户添加sudo权限" style="zoom:50%;">
+
+<p>在网上教程看到的注意事项：”添加user这一行不要直接放到 root行下面，因为所有用户都属于 <code>wheel</code>组，你先配置了user具有免密功能，但是程序执行到 <code>%wheel</code>行时， 该功能又被覆盖回需要密码 。所以user要放到 <code>%wheel</code>这行下面。“</p>
+<h3 id="6-创建工作文件夹"><a href="#6-创建工作文件夹" class="headerlink" title="6.创建工作文件夹"></a>6.创建工作文件夹</h3><p>在&#x2F;opt目录下创建文件夹方便一会进行文件传输，并修改所属用户和所属组。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mkdir /opt/module</span><br><span class="line">mkdir /opt/software</span><br><span class="line">chown user:user /opt/module</span><br><span class="line">chown user:user /opt/software</span><br></pre></td></tr></table></figure>
+
+<h3 id="7-卸载虚拟机自带JDK"><a href="#7-卸载虚拟机自带JDK" class="headerlink" title="7.卸载虚拟机自带JDK"></a>7.卸载虚拟机自带JDK</h3><p>虚拟机自带的JDK版本可能与Hadoop所需的JDK版本不同。如果两者版本不兼容，可能导致Hadoop无法正常运行。卸载自带JDK可以避免版本冲突、减少资源占用、降低管理复杂性，并提升Hadoop的性能。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpm -qa | grep -i java | xargs -n1 rpm -e --nodeps</span><br></pre></td></tr></table></figure>
+
+<p>命令解释：</p>
+<p>​	<code>rpm -qa</code>：查询所安装的所有rpm软件包<br>​			<code>grep -i</code>：忽略大小写<br>​			<code>xargs -n1</code>：表示每次只传递一个参数<br>​			<code>rpm -e --nodeps</code>：强制卸载软件</p>
+<p>8.重启虚拟机</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reboot</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="二、克隆虚拟机"><a href="#二、克隆虚拟机" class="headerlink" title="二、克隆虚拟机"></a>二、克隆虚拟机</h2><h3 id="1-克隆创建虚拟机"><a href="#1-克隆创建虚拟机" class="headerlink" title="1.克隆创建虚拟机"></a>1.克隆创建虚拟机</h3><p>我们需要构建好几台类似配置的虚拟机，直接克隆已配置好的hadoop100模板节省时间。</p>
+<p>怎么克隆？？？直接复制虚拟机的所在文件夹，拷贝几份就可以了~</p>
+<img src="/2024/03/05/Hadoop%E5%85%A5%E9%97%A8/image-20240305223432398.png" alt="克隆虚拟机" style="zoom:50%;">
+
+<p>在VM中打开刚才复制下来的虚拟机，修改一下虚拟机名称方便区分。</p>
+<img src="/2024/03/05/Hadoop%E5%85%A5%E9%97%A8/image-20240305223208764.png" alt="更改虚拟机名称" style="zoom: 50%;">
+
+<h3 id="2-修改克隆虚拟机IP"><a href="#2-修改克隆虚拟机IP" class="headerlink" title="2.修改克隆虚拟机IP"></a>2.修改克隆虚拟机IP</h3><p>不同的虚拟机设置独立IP，设置连续的IP方便处理，设置hadoop102为例，仅修改IP地址，其余不要动，103、104同理。（如果hadoop100静态IP没有就没有设置好，请参考这篇<a target="_blank" rel="noopener" href="http://t.csdnimg.cn/VU4QF">CentOS配置静态IP</a>)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/sysconfig/network-scripts/ifcfg-ens32 </span><br></pre></td></tr></table></figure>
+
+<img src="/2024/03/05/Hadoop%E5%85%A5%E9%97%A8/image-20240305224257343.png" alt="修改虚拟机IP" style="zoom: 50%;">
+
+<h3 id="3-配置克隆机主机名映射"><a href="#3-配置克隆机主机名映射" class="headerlink" title="3.配置克隆机主机名映射"></a>3.配置克隆机主机名映射</h3><p>以Hadoop102为例，其余虚拟机同样操作。</p>
+<ul>
+<li><strong>修改主机名称</strong>(这步没搞清楚要干啥，先空着)</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/hostname </span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>配置Linux克隆机主机名称映射<code>hosts</code>文件 打开<code>/etc/hosts</code></strong></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/hosts</span><br></pre></td></tr></table></figure>
+
+<p>添加以下映射配置(IP地址按实际修改)：</p>
+<p><img src="/2024/03/05/Hadoop%E5%85%A5%E9%97%A8/image-20240305230105836.png" alt="添加主机名称映射配置"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">192.168.62.140 hadoop100	#写出一条样例，方便复制粘贴</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>重启克隆机</strong></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reboot</span><br></pre></td></tr></table></figure>
+
+<p>剩余的虚拟机重复以上操作即可(ps：记得从第2步修改克隆虚拟机IP开始~)。</p>
+<ul>
+<li><strong>配置主机映射文件</strong></li>
+</ul>
+<p>以上映射文件配置完成后，修改<code>Windows</code>的主机映射文件。进入<code>C:\Windows\System32\drivers\etc</code>路径，打开 hosts文件(用记事本打开，可以看到里边空空如也)，添加并保存以下内容 (和刚才在虚拟机配置的一样)。</p>
+<img src="/2024/03/05/Hadoop%E5%85%A5%E9%97%A8/image-20240306094411172.png" alt="配置Windows主机映射文件" style="zoom:50%;">
+
+
+
+<h2 id="三、安装JDK"><a href="#三、安装JDK" class="headerlink" title="三、安装JDK"></a>三、安装JDK</h2><p>仍然先以Hadoop103为例。</p>
+<h3 id="1-检查JDK"><a href="#1-检查JDK" class="headerlink" title="1.检查JDK"></a><strong>1.检查JDK</strong></h3><p>确保已卸载虚拟机自带JDK。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">java -version	#先查看，如果返回版本信息则说明没有卸载</span><br><span class="line">rpm -qa | grep -i java | xargs -n1 rpm -e --nodeps	#卸载JDK命令，1.7已解释</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-安装JDK"><a href="#2-安装JDK" class="headerlink" title="2.安装JDK"></a><strong>2.安装JDK</strong></h3><ul>
+<li><strong>下载JDK</strong></li>
+</ul>
+<p>JDK可以在主机下载好之后再通过FTP传给虚拟机(虚拟机搭建FTP服务器的方法有很多，这里不再赘述，小白可移步<a target="_blank" rel="noopener" href="http://t.csdnimg.cn/SkmwO">Linux搭建FTP服务器参考文章</a>)，由于我们使用VMware，可以直接从Windows复制粘贴到虚拟机(偷懒，想要掌握技术不建议)。</p>
+<p>官网下载有一捏捏麻烦，下载速度也些许感人，我们直接在清华大学镜像下载openJDK8<a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/Adoptium/8/jdk/x64/linux/">清华源JDK8下载链接</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://mirrors.tuna.tsinghua.edu.cn/Adoptium/8/jdk/x64/linux/</span><br></pre></td></tr></table></figure>
+
+<p>单击它开始下载<img src="/2024/03/05/Hadoop%E5%85%A5%E9%97%A8/image-20240306142710326.png" alt="下载JDK" style="zoom:80%;"></p>
+<p>下载完成之后用FTP工具传给虚拟机，传输过程省略。</p>
+<p>这里我直接从Windows主机粘贴到虚拟机目录，一步到位hhh~</p>
+<img src="/2024/03/05/Hadoop%E5%85%A5%E9%97%A8/image-20240306143623713.png" alt="将JDK传给虚拟机" style="zoom:50%;">
+
+<ul>
+<li><strong>将JDK导入软件工作目录</strong></li>
+</ul>
+<p>将刚才的JDK存放到<code>/opt/software/</code>路径下。(注意，虚拟机没有经过配置的话无法输入中文，如果懒得去配置可以鼠标选中中文部分右键复制，再在你的命令行右键粘贴。)</p>
+<p>(小<code>tip</code>：在输入文件名字时过长不用一个个准确输入，只需输入文件前缀，然后按<code>Tab</code>键自动补全即可)</p>
+<p><img src="/2024/03/05/Hadoop%E5%85%A5%E9%97%A8/image-20240306144415926.png" alt="导入JDK"></p>
+<ul>
+<li><strong>将JDK解压到<code>/opt/module</code></strong></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf /opt/software/OpenJDK8U-jdk_x64_linux_hotspot_8u402b06.tar.gz -C /opt/module/</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-配置JDK环境变量"><a href="#3-配置JDK环境变量" class="headerlink" title="3.配置JDK环境变量"></a><strong>3.配置JDK环境变量</strong></h3><ul>
+<li><strong>配置环境变量</strong></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ls /opt/module/		#先查看当前jdk包</span><br><span class="line">sudo nano /etc/profile.d/my_env.sh </span><br></pre></td></tr></table></figure>
+
+<img src="/2024/03/05/Hadoop%E5%85%A5%E9%97%A8/image-20240306155537752.png" alt="配置JDK环境变量" style="zoom:80%;">
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#JAVA_HOME</span><br><span class="line">export JAVA_HOME=/opt/module/jdk8u402-b06	#这里要与刚才看到的JDK包一致</span><br><span class="line">export PATH=$PATH:$JAVA_HOME/bin</span><br></pre></td></tr></table></figure>
+
+<p>引入刚配置的环境变量文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">source /etc/profile</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>测试JDK是否可用</strong></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -version</span><br></pre></td></tr></table></figure>
+
+<img src="/2024/03/05/Hadoop%E5%85%A5%E9%97%A8/image-20240306150716282.png" alt="查看JDK版本" style="zoom:50%;">
+
+<p>返回JDK版本信息，说明安装JDK成功~</p>
+<h2 id="四、安装Hadoop"><a href="#四、安装Hadoop" class="headerlink" title="四、安装Hadoop"></a>四、安装Hadoop</h2><h3 id="1-安装Hadoop"><a href="#1-安装Hadoop" class="headerlink" title="1.安装Hadoop"></a>1.安装Hadoop</h3><ul>
+<li><strong>下载Hadoop</strong></li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://www.apache.org/dyn/closer.cgi/hadoop/common/hadoop-3.3.6/hadoop-3.3.6-aarch64.tar.gz">hadoop下载链接</a>(有点慢，可能需要一些魔法)</p>
+<ul>
+<li><strong>导入Hadoop软件包</strong></li>
+</ul>
+<p>通过FTP或者其他方式将刚下载的包导入<code>/opt/software/</code>目录</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cp /home/user/下载/hadoop-3.3.6-aarch64.tar.gz /opt/software/</span><br><span class="line">ls /opt/software/	#查看是否已复制</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2024/03/05/Hadoop%E5%85%A5%E9%97%A8/image-20240306153018664.png" alt="导入Hadoop软件包"></p>
+<ul>
+<li><strong>解压Hadoop</strong></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf /opt/software/hadoop-3.3.6-aarch64.tar.gz -C /opt/module/</span><br><span class="line">ls /opt/module/		#查看是否解压成功</span><br></pre></td></tr></table></figure>
+
+<img src="/2024/03/05/Hadoop%E5%85%A5%E9%97%A8/image-20240306153901849.png" alt="Hadoop解压成功" style="zoom:50%;">
+
+<h3 id="2-配置Hadoop环境变量"><a href="#2-配置Hadoop环境变量" class="headerlink" title="2.配置Hadoop环境变量"></a>2.配置Hadoop环境变量</h3><ul>
+<li><strong>添加Hadoop环境变量</strong></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim /etc/profile.d/hadoop_env.sh</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2024/03/05/Hadoop%E5%85%A5%E9%97%A8/image-20240306182242482.png" alt="配置Hadoop环境变量"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#HADOOP_HOME</span><br><span class="line">export HADOOP_HOME=/opt/module/hadoop-3.3.6	#与刚才解压的Hadoop包保持一致</span><br><span class="line">export PATH=$PATH:$HADOOP_HOME/bin</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>加入新配置的环境变量</strong></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">source /etc/profile</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>检查Hadoop可用性</strong></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hadoop version</span><br></pre></td></tr></table></figure>
+
+<img src="/2024/03/05/Hadoop%E5%85%A5%E9%97%A8/image-20240306180824896.png" alt="验证Hadoop可用性" style="zoom:80%;">
+
+<p>返回版本信息，Hadoop安装成功并添加进环境变量~</p>
+<ul>
+<li><strong>重启虚拟机</strong></li>
+</ul>
+<p>刚配置完环境变量,重启电脑检查配置是不是临时性的,避免等到用时因配置恢复而造成不知名错误.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reboot</span><br></pre></td></tr></table></figure>
+
+</div>
         </div>
         
             <div class="kratos-copyright text-center clearfix">
@@ -223,7 +413,22 @@
             const twitterBase   = "https://twitter.com/intent/tweet?";
             const hostUrl       = "http://xiaoyanfufu.gitee.io/2024/03/05/Hadoop%E5%85%A5%E9%97%A8/";
             const title         = "「Hadoop入门」";
-            const excerpt       = ``;
+            const excerpt       = `Hadoop运行搭建Linux镜像：CentOS7
+系统安装：CentOS安装参考教程
+系统网卡设置：
+
+参考教程：CentOS配置静态IP
+
+NAT参数：
+
+
+系统配置信息：
+
+hadoop100：
+
+用户名：user
+
+密码：**...`;
             let _URL;
             switch (dest) {
                 case "qq"       : _URL = qqBase+"url="+hostUrl+"&title="+title+"&desc=&summary="+excerpt+"&site=cxpy";     break;
@@ -245,7 +450,7 @@
                     
                 </div>
                 <div class="pull-date">
-                    <time datetime="2024-03-05T09:04:03.979Z" itemprop="dateModified">最后编辑：2024-03-05</time>
+                    <time datetime="2024-03-06T10:22:59.338Z" itemprop="dateModified">最后编辑：2024-03-06</time>
                 </div>
             </div>
         </footer>
@@ -308,13 +513,25 @@
                 标签
             </span>
             <span class="count">
-                2
+                1
             </span>
         </a>
     </div>
 </aside>
             
                     <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix toc-div-class" >
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar" role="progressbar" aria-label="阅读进度："></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Hadoop%E8%BF%90%E8%A1%8C%E6%90%AD%E5%BB%BA"><span class="toc-text">Hadoop运行搭建</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="toc-text">一、虚拟机环境准备</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%A3%80%E6%9F%A5%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%BD%91%E7%BB%9C"><span class="toc-text">1.检查虚拟机网络</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%B7%BB%E5%8A%A0%E8%BD%AF%E4%BB%B6%E6%BA%90"><span class="toc-text">2.添加软件源</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%85%B3%E9%97%AD%E9%98%B2%E7%81%AB%E5%A2%99"><span class="toc-text">3.关闭防火墙</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E8%AE%BE%E7%BD%AE%E7%94%A8%E6%88%B7%E8%B4%A6%E5%8F%B7-%E6%8C%89%E9%9C%80%E8%AE%BE%E7%BD%AE"><span class="toc-text">4.设置用户账号(按需设置)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E7%BB%99%E7%94%A8%E6%88%B7%E6%B7%BB%E5%8A%A0%E7%AE%A1%E7%90%86%E5%91%98%E6%9D%83%E9%99%90-%E6%8C%89%E9%9C%80%E8%AE%BE%E7%BD%AE"><span class="toc-text">5.给用户添加管理员权限(按需设置)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E5%88%9B%E5%BB%BA%E5%B7%A5%E4%BD%9C%E6%96%87%E4%BB%B6%E5%A4%B9"><span class="toc-text">6.创建工作文件夹</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E5%8D%B8%E8%BD%BD%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%87%AA%E5%B8%A6JDK"><span class="toc-text">7.卸载虚拟机自带JDK</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%85%8B%E9%9A%86%E8%99%9A%E6%8B%9F%E6%9C%BA"><span class="toc-text">二、克隆虚拟机</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%85%8B%E9%9A%86%E5%88%9B%E5%BB%BA%E8%99%9A%E6%8B%9F%E6%9C%BA"><span class="toc-text">1.克隆创建虚拟机</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E4%BF%AE%E6%94%B9%E5%85%8B%E9%9A%86%E8%99%9A%E6%8B%9F%E6%9C%BAIP"><span class="toc-text">2.修改克隆虚拟机IP</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E9%85%8D%E7%BD%AE%E5%85%8B%E9%9A%86%E6%9C%BA%E4%B8%BB%E6%9C%BA%E5%90%8D%E6%98%A0%E5%B0%84"><span class="toc-text">3.配置克隆机主机名映射</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E5%AE%89%E8%A3%85JDK"><span class="toc-text">三、安装JDK</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%A3%80%E6%9F%A5JDK"><span class="toc-text">1.检查JDK</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%AE%89%E8%A3%85JDK"><span class="toc-text">2.安装JDK</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E9%85%8D%E7%BD%AEJDK%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="toc-text">3.配置JDK环境变量</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%AE%89%E8%A3%85Hadoop"><span class="toc-text">四、安装Hadoop</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%AE%89%E8%A3%85Hadoop"><span class="toc-text">1.安装Hadoop</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E9%85%8D%E7%BD%AEHadoop%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="toc-text">2.配置Hadoop环境变量</span></a></li></ol></li></ol></li></ol>
+    </div>
+</aside>
                 
                 
   <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
@@ -328,7 +545,7 @@
   <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
     <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
       <div class="tag-clouds">
-        <a href="/tags/algorithm/" style="font-size: 0.6em;">-algorithm</a> <a href="/tags/algorithm/" style="font-size: 0.6em;">algorithm</a>
+        <a href="/tags/algorithm/" style="font-size: 0.6em;">algorithm</a>
       </div>
   </aside>
 
