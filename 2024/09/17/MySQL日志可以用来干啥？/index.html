@@ -7,8 +7,8 @@
     <link rel="icon" href="/images/earthstars.png">
   
   
-  <title>文章归档 | XIAOYAN</title>
-  <link rel="canonical" href="http://example.com/archives/index.html">
+  <title>MySQL日志可以用来干啥？ | XIAOYAN</title>
+  <link rel="canonical" href="http://example.com/2024/09/17/MySQL%E6%97%A5%E5%BF%97%E5%8F%AF%E4%BB%A5%E7%94%A8%E6%9D%A5%E5%B9%B2%E5%95%A5%EF%BC%9F/">
   <meta name="author" content="xiaoyan" />
   <meta http-equiv="Cache-Control" content="no-transform" />
   <meta http-equiv="Cache-Control" content="no-siteapp" />
@@ -19,13 +19,15 @@
   
     <meta name="keywords" content="" />
   
-  <meta name="description" content="是一只时时翻垃圾吃的宅子。">
-<meta property="og:type" content="website">
-<meta property="og:title" content="文章归档">
-<meta property="og:url" content="http://example.com/archives/index.html">
+  <meta name="description" content="了解MySQL的童靴们都知道，MySQL有好几种日志——undo log、redo log还有binlog，为啥需要这么多日志？这些日志分别都有什么用？在进一步探讨这么些问题之前，我们需要先了解一下一条SQL语句的执行过程。 【待更新。。。】">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL日志可以用来干啥？">
+<meta property="og:url" content="http://example.com/2024/09/17/MySQL%E6%97%A5%E5%BF%97%E5%8F%AF%E4%BB%A5%E7%94%A8%E6%9D%A5%E5%B9%B2%E5%95%A5%EF%BC%9F/index.html">
 <meta property="og:site_name" content="XIAOYAN">
-<meta property="og:description" content="是一只时时翻垃圾吃的宅子。">
+<meta property="og:description" content="了解MySQL的童靴们都知道，MySQL有好几种日志——undo log、redo log还有binlog，为啥需要这么多日志？这些日志分别都有什么用？在进一步探讨这么些问题之前，我们需要先了解一下一条SQL语句的执行过程。 【待更新。。。】">
 <meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-09-17T06:21:45.000Z">
+<meta property="article:modified_time" content="2024-09-17T07:12:37.759Z">
 <meta property="article:author" content="xiaoyan">
 <meta name="twitter:card" content="summary">
   
@@ -145,79 +147,69 @@
 
         
 
+            <article itemscope itemtype="https://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/17/MySQL%E6%97%A5%E5%BF%97%E5%8F%AF%E4%BB%A5%E7%94%A8%E6%9D%A5%E5%B9%B2%E5%95%A5%EF%BC%9F/">
+    <div class="kratos-hentry kratos-page-inner clearfix">
+        <header class="kratos-page-header">
             
-<style>
-  .post-meta time{color:#00a7e0}
-  @media (max-width:767px){.posts-collapse{margin:0 20px}
-  .posts-collapse .post-meta,
-  .posts-collapse .post-title{display:block;width:auto;text-align:left}}
-  .posts-collapse{position:relative}
-  .posts-collapse::after{content:" ";position:absolute;top:20px;left:0;margin-left:-2px;width:4px;height:calc(100% - 35px);background:#f5f5f5;z-index:-1}
-  @media (max-width:991px){.posts-collapse{margin:0 20px}}
-  .posts-collapse .collection-title{position:relative}
-  .posts-collapse .collection-title h1,
-  .posts-collapse .collection-title h2{margin-left:20px}
-  .posts-collapse .collection-title small{color:#bbb;margin-left:5px}
-  .posts-collapse .collection-title::before{content:" ";position:absolute;left:0;top:50%;margin-left:-4px;margin-top:-4px;width:8px;height:8px;background:#bbb;border-radius:50%}
-  .posts-collapse .post-header{position:relative;transition-duration:.2s;transition-timing-function:ease-in-out;transition-delay:0s;transition-property:border}
-  .posts-collapse .post-header::before{content:" ";position:absolute;left:0;top:12px;width:6px;height:6px;margin-left:-4px;background:#bbb;border-radius:50%;border:1px solid #fff;transition: all .3s ease-in-out}
-  .posts-collapse .post-header:hover{border-bottom-color:#666}
-  .posts-collapse .post-header:hover::before{background:#222}
-  .posts-collapse .post-meta{position:absolute;font-size:12px;left:20px;top:5px}
-  .posts-collapse .kr-comments-count{display:none}
-  .posts-collapse .post-title{margin-left:70px;font-size:16px;font-weight:400;line-height:inherit}
-  .posts-collapse .post-title::after{margin-left:3px;opacity:.6}
-  .posts-collapse .post-title a{color:#666;border-bottom:none}
-</style>
-
-  <article>
-      <div class="kratos-hentry kratos-page-inner clearfix">
-          <header class="kratos-page-header">
-            <h1 class="kratos-page-title text-center" itemprop="name headline">文章归档</h1>
-          </header>
-          <div class="kratos-page-content kr-archive">
-            <div id="archives">
-              <div class="post-block archive post" style="margin-left: 2em;">
-                <h3 class="archive-page-counter">当前共有 1 篇文章 (゜-゜)つロ 干杯~</h3>
-                <div class="posts-collapse">
-                  
-                  
-                    
-                    
-                      <!-- 没遇到Title的会被自动忽略年份，即使并不一致 -->
-                      
-                      <div class="collection-title">
-                        <a href="/archives/2024/"><h2 class="archive-year">2024</h2></a>
-                      </div>
-                    
-                    
-                      <article class="post" itemscope itemtype="https://schema.org/Article">
-                        <header class="post-header">
-                          <h3 class="post-title">
-                            
-                                <a class="post-title-link" href="/2024/09/17/MySQL%E6%97%A5%E5%BF%97%E5%8F%AF%E4%BB%A5%E7%94%A8%E6%9D%A5%E5%B9%B2%E5%95%A5%EF%BC%9F/" itemprop="mainEntityOfPage">
-                                  <span itemprop="name headline">MySQL日志可以用来干啥？</span>
-                                </a>
-                            
-                          </h3>
-                          <div class="post-meta">
-                            <time class="post-time" itemprop="datePublished"
-                                  datetime="2024-09-17T06:21:45.000Z">
-                              09-17
-                            </time>
-                          </div>
-                        </header>
-                      </article>
-                    
-                  
-                </div>
-              </div>
-            </div>
+                <h1 class="kratos-page-title text-center" itemprop="name headline">MySQL日志可以用来干啥？</h1>
+            
+            <ul class="kratos-page-meta text-center">
+                <li><time datetime="2024-09-17T06:21:45.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2024-09-17</time></li>
+                <li itemprop="author" itemscope itemtype="https://schema.org/Person">
+                    <i class="fa fa-user"></i> 作者 <span itemprop="name">xiaoyan</span>
+                </li>
+                
+                    <li>
+                        <i class="fa fa-edit"></i> 
+                        
+                        
+                            122
+                        
+                        字
+                    </li>
+                
+                
+                
+            </ul>
+        </header>
+        <div class="kratos-page-content kr-post">
+            
+            
+            
+            <hr />
+            <div itemprop="articleBody"><p>了解MySQL的童靴们都知道，MySQL有好几种日志——<code>undo log</code>、<code>redo log</code>还有<code>binlog</code>，为啥需要这么多日志？这些日志分别都有什么用？在进一步探讨这么些问题之前，我们需要先了解一下<a target="_blank" rel="noopener" href="https://xiaoyanfufu.top/">一条SQL语句的执行过程</a>。</p>
+<p>【待更新。。。】</p>
+</div>
         </div>
-      </div>
-      
-  </article>
-
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+            
+            
+                <div class="post-actions text-center clearfix" id="post-actions">
+                
+                    <a class="donate" href="javascript:;" onclick="krOpenDonateModal()"><i class="fa fa-bitcoin"></i> 打赏</a>
+                
+                
+                    <a class="share" href="javascript:;" onclick="krOpenShareModal()"><i class="fa fa-share-alt"></i> 分享</a>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    
+                </div>
+                <div class="pull-date">
+                    <time datetime="2024-09-17T07:12:37.759Z" itemprop="dateModified">最后编辑：2024-09-17</time>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+    
+</article>
 
         
 
@@ -228,8 +220,6 @@
 
 <section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
     <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
-    
-        <div class="sticky-area">
     
     
                 <aside id="krw-about" class="widget widget-kratos-about clearfix">
@@ -270,6 +260,8 @@
     </div>
 </aside>
             
+                    <div class="sticky-area">
+                
                 
   <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
     <h4 class="widget-title"><i class="fa fa-folder"></i>分类列表</h4>
