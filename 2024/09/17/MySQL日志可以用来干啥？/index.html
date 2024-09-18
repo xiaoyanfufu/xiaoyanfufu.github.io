@@ -19,17 +19,21 @@
   
     <meta name="keywords" content="" />
   
-  <meta name="description" content="了解MySQL的童靴们都知道，MySQL有好几种日志——undo log、redo log还有binlog，为啥需要这么多日志？这些日志分别都有什么用？在进一步探讨这么些问题之前，我们需要先了解一下一条SQL语句的执行过程。 【待更新。。。】">
+  <meta name="description" content="了解MySQL的童靴们都知道，MySQL有好几种日志——undo log（回滚日志）、redo log（重做日志）还有binlog（归档日志），为啥需要这么多日志？这些日志分别都是干啥用的？在进一步探讨这么些问题之前，我们需要先了解一下一条SQL语句的执行过程。  笔者作为一名初学小白，时常感到好奇：当执行了 SQL 语句对数据记录进行修改时，如果突然遭遇系统关机、服务器卡死等故障，这段记录修改该">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MySQL日志可以用来干啥？">
 <meta property="og:url" content="http://example.com/2024/09/17/MySQL%E6%97%A5%E5%BF%97%E5%8F%AF%E4%BB%A5%E7%94%A8%E6%9D%A5%E5%B9%B2%E5%95%A5%EF%BC%9F/index.html">
 <meta property="og:site_name" content="XIAOYAN">
-<meta property="og:description" content="了解MySQL的童靴们都知道，MySQL有好几种日志——undo log、redo log还有binlog，为啥需要这么多日志？这些日志分别都有什么用？在进一步探讨这么些问题之前，我们需要先了解一下一条SQL语句的执行过程。 【待更新。。。】">
+<meta property="og:description" content="了解MySQL的童靴们都知道，MySQL有好几种日志——undo log（回滚日志）、redo log（重做日志）还有binlog（归档日志），为啥需要这么多日志？这些日志分别都是干啥用的？在进一步探讨这么些问题之前，我们需要先了解一下一条SQL语句的执行过程。  笔者作为一名初学小白，时常感到好奇：当执行了 SQL 语句对数据记录进行修改时，如果突然遭遇系统关机、服务器卡死等故障，这段记录修改该">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://cdn.xiaolincoding.com/gh/xiaolincoder/mysql/sql%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B/mysql%E6%9F%A5%E8%AF%A2%E6%B5%81%E7%A8%8B.png">
+<meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/image-20240917225450255.png">
+<meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/image-20240917232010721.png">
 <meta property="article:published_time" content="2024-09-17T06:21:45.000Z">
-<meta property="article:modified_time" content="2024-09-17T07:12:37.759Z">
+<meta property="article:modified_time" content="2024-09-18T03:05:35.700Z">
 <meta property="article:author" content="xiaoyan">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.xiaolincoding.com/gh/xiaolincoder/mysql/sql%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B/mysql%E6%9F%A5%E8%AF%A2%E6%B5%81%E7%A8%8B.png">
   
   <!-- 样式表文件 -->
   <link rel="stylesheet" id="kratos-css" href="/css/kr-core.min.css" media="all"></link>
@@ -57,7 +61,7 @@
         background-image: url('/images/wallpaper_light.png');
       }
       html[data-theme="dark"] .kratos-cover.kratos-cover-2 {
-        background-image: url('/images/wallpaper_dark.jpg');
+        background-image: url('/images/wallpaper_dark.png');
       }
     
     
@@ -164,7 +168,7 @@
                         <i class="fa fa-edit"></i> 
                         
                         
-                            122
+                            ~2.20K
                         
                         字
                     </li>
@@ -177,9 +181,57 @@
             
             
             
+                <div class="kratos-post-inner-toc toc-div-class" >
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Undo-Log-%E6%98%AF%E5%B9%B2%E5%95%A5%E7%9A%84"><span class="toc-number">1.</span> <span class="toc-text">Undo Log 是干啥的</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Buffer-Poll%E6%98%AF%E5%B9%B2%E5%95%A5%E7%9A%84"><span class="toc-number">2.</span> <span class="toc-text">Buffer Poll是干啥的</span></a></li></ol>
+                </div>
+            
             <hr />
-            <div itemprop="articleBody"><p>了解MySQL的童靴们都知道，MySQL有好几种日志——<code>undo log</code>、<code>redo log</code>还有<code>binlog</code>，为啥需要这么多日志？这些日志分别都有什么用？在进一步探讨这么些问题之前，我们需要先了解一下<a target="_blank" rel="noopener" href="https://xiaoyanfufu.top/">一条SQL语句的执行过程</a>。</p>
-<p>【待更新。。。】</p>
+            <div itemprop="articleBody"><p>了解MySQL的童靴们都知道，MySQL有好几种日志——<code>undo log（回滚日志）</code>、<code>redo log（重做日志）</code>还有<code>binlog（归档日志）</code>，为啥需要这么多日志？这些日志分别都是干啥用的？在进一步探讨这么些问题之前，我们需要先了解一下<a target="_blank" rel="noopener" href="https://xiaoyanfufu.top/">一条SQL语句的执行过程</a>。</p>
+<p><img src="https://cdn.xiaolincoding.com/gh/xiaolincoder/mysql/sql%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B/mysql%E6%9F%A5%E8%AF%A2%E6%B5%81%E7%A8%8B.png" alt="查询语句执行流程(来源小林coding)"></p>
+<p>笔者作为一名初学小白，时常感到好奇：当执行了 SQL 语句对数据记录进行修改时，如果突然遭遇系统关机、服务器卡死等故障，这段记录修改该如何是好？</p>
+<p>小伙伴们可能会不假思索地回答：“通过事务回滚恢复到执行增删改之前的状态！” 没错，这确实是 MySQL 保障数据安全的重要机制之一。即使我们没有显式地开启事务和提交事务，MySQL 也会<strong>隐式地启动事务</strong>执行“增删改”语句，并在执行完后<strong>自动提交事务</strong>（MySQL 默认开启了 <code>autocommit</code> 参数）。</p>
+<p>但你是否想过，MySQL 是如何实现这种“时光倒流”般的神奇操作的呢？这就要归功于 MySQL 的“时光机”—— undolog、redolog 和 binlog。它们就像数据库的“守护天使”，默默地记录着数据的每一次变化，在关键时刻挺身而出，保障数据的安全性和一致性。</p>
+<p>undolog、redolog 和 binlog 是 MySQL 保障数据安全的三大利器，它们各司其职，共同构建了 MySQL 强大的数据保护机制：</p>
+<ul>
+<li><strong>undolog</strong> ：负责事务的<strong>原子性</strong>和 MVCC，确保数据的一致性。</li>
+<li><strong>redolog</strong> ：负责事务的<strong>持久性</strong>，确保数据不会因故障而丢失。</li>
+<li><strong>binlog</strong> ：负责数据的<strong>备份和主从复制</strong>，确保数据的可靠性和高可用性。</li>
+</ul>
+<p>接下来，我们来进一步探讨这三种日志如何实现数据库神操作。</p>
+<h2 id="Undo-Log-是干啥的"><a href="#Undo-Log-是干啥的" class="headerlink" title="Undo Log 是干啥的"></a>Undo Log 是干啥的</h2><p>在前言我们提到，MySQL 会隐式开启事务执行“增删改”语句，当操作过程中发生崩溃时，事务会进行回滚。那么，回滚操作中旧的数据要从哪里来呢？</p>
+<p>想象一下，如果在执行“增删改”操作之前，我们将要操作的数据记录做一个备份，那么当我们想恢复到执行操作之前的状态时，只要对照备份的信息就可以了。</p>
+<p>当然，每次执行操作都要进行备份会很麻烦，但我们可以根据需求进行相应的操作记录。例如：</p>
+<ul>
+<li><strong>执行删除操作之前</strong>，记录要删除的记录信息，若想恢复，我们再把记录插回去；</li>
+<li><strong>执行新增操作之前</strong>，记下新增记录的ID，撤销新增只需要把对应ID记录删除即可；</li>
+<li><strong>执行修改操作之前</strong>，记录修改前的数据，撤销修改时只需将数据恢复到修改前的状态。</li>
+</ul>
+<p>这种<strong>记录操作前数据</strong>的方式，正是 MySQL 中 <strong>Undo Log （回滚日志）</strong>的核心思想。Undo Log 记录了事务执行过程中对数据的修改操作，用于在事务回滚时撤销这些修改，将数据恢复到事务开始前的状态，它保证了事务的<strong>ACID特性</strong>中的<strong>原子性</strong>。</p>
+<p>undo log 是一种用于撤销回退的日志。在事务没提交之前，MySQL 会先记录更新前的数据到 undo log 日<br>志文件里面，当事务回滚时，可以利用 undo log 来进行回滚。如下图:</p>
+<img src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/image-20240917225450255.png" alt="image-20240917225450255" style="zoom:67%;">
+
+<p>每当 InnoD8 引擎对一条记录进行操作(修改、删除、新增)时，要把回滚时需要的信息都记录到 undo log 里，发生回滚时，就读取undo log日志记录的数据，执行相反的操作来完成数据恢复。</p>
+<p>需要注意的是，不同的操作，因需求不同，其undo log格式也不同，此处仅以更新操作的日志为例。每条记录的每一次更新操作产生的 Undo Log 格式中，都包含一个 <code>roll_pointer</code> 指针和一个 <code>trx_id</code> 事务 ID：</p>
+<ul>
+<li><strong><code>trx_id</code> 事务 ID</strong>：用于标识该记录是被哪个事务修改的，帮助系统追踪事务的执行顺序。</li>
+<li><strong><code>roll_pointer</code> 指针</strong>：将这些 Undo Log 串成一个链表，这个链表就被称为<strong>版本链</strong>。版本链记录了该记录的所有历史版本，使得系统可以在需要时回滚到任意一个历史状态。</li>
+</ul>
+<p>版本链的结构如下图所示：</p>
+<img src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/image-20240917232010721.png" alt="image-20240917232010721" style="zoom:67%;">
+
+<p>另外，Undo Log 通过 <strong>ReadView + Undo Log</strong> 实现 <strong>MVCC（多版本并发控制）</strong>。</p>
+<p>对于「读提交」和「可重复读」隔离级别的事务：</p>
+<ul>
+<li><strong>「读提交」</strong>：每次 <code>SELECT</code> 生成新的 Read View，可能导致同一事务中多次读取同一条数据时结果不一致。</li>
+<li><strong>「可重复读」</strong>：事务启动时生成 Read View，并在整个事务期间使用，确保读取的数据一致。</li>
+</ul>
+<p>这两个隔离级别通过「事务的 Read View 里的字段」和「记录中的隐藏列（<code>trx_id</code> 和 <code>roll_pointer</code>）」进行比对，如果不满足可见性条件，就会顺着 Undo Log 版本链找到满足其可见性的记录，实现 MVCC。</p>
+<p>因此，Undo Log 的两大作用是：</p>
+<ol>
+<li><strong>实现事务回滚，保障事务的原子性</strong>：在事务处理过程中，如果出现错误或用户执行 <code>ROLLBACK</code> 语句，MySQL 可以利用 Undo Log 中的历史数据将数据恢复到事务开始之前的状态。</li>
+<li><strong>实现 MVCC（多版本并发控制）的关键因素之一</strong>：MVCC 通过 ReadView + Undo Log 实现。Undo Log 为每条记录保存多份历史数据，MySQL 在执行快照读（普通 <code>SELECT</code> 语句）时，会根据事务的 Read View 里的信息，顺着 Undo Log 的版本链找到满足其可见性的记录。</li>
+</ol>
+<h2 id="Buffer-Poll是干啥的"><a href="#Buffer-Poll是干啥的" class="headerlink" title="Buffer Poll是干啥的"></a>Buffer Poll是干啥的</h2><p>【更新中。。。】</p>
 </div>
         </div>
         
@@ -202,7 +254,7 @@
                     
                 </div>
                 <div class="pull-date">
-                    <time datetime="2024-09-17T07:12:37.759Z" itemprop="dateModified">最后编辑：2024-09-17</time>
+                    <time datetime="2024-09-18T03:05:35.700Z" itemprop="dateModified">最后编辑：2024-09-18</time>
                 </div>
             </div>
         </footer>
@@ -261,6 +313,18 @@
 </aside>
             
                     <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix toc-div-class" >
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar" role="progressbar" aria-label="阅读进度："></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Undo-Log-%E6%98%AF%E5%B9%B2%E5%95%A5%E7%9A%84"><span class="toc-text">Undo Log 是干啥的</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Buffer-Poll%E6%98%AF%E5%B9%B2%E5%95%A5%E7%9A%84"><span class="toc-text">Buffer Poll是干啥的</span></a></li></ol>
+    </div>
+</aside>
                 
                 
   <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
