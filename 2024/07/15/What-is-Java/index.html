@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  
+    <link rel="icon" href="/images/earthstars.png">
+  
+  
+  <title>What is Java ? | XIAOYAN</title>
+  <link rel="canonical" href="http://example.com/2024/07/15/What-is-Java/">
+  <meta name="author" content="xiaoyan" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="" />
+  
+  <meta name="description" content="一、概念本篇博客是笔者作为初学者记录自己对Java一些基本概念的理解。内容参考了大量网络资源，旨在作为个人学习笔记，供自己日后回顾和复习。 Java的特点Java语言以其三大核心特点著称：  跨平台性：Java的口号“一次编译，处处运行”体现了其强大的跨平台能力。Java源代码经过编译后生成字节码文件（.class文件），这些字节码文件可以在任何安装了Java虚拟机（JVM）的平台上运行。需要注意">
+<meta property="og:type" content="article">
+<meta property="og:title" content="What is Java ?">
+<meta property="og:url" content="http://example.com/2024/07/15/What-is-Java/index.html">
+<meta property="og:site_name" content="XIAOYAN">
+<meta property="og:description" content="一、概念本篇博客是笔者作为初学者记录自己对Java一些基本概念的理解。内容参考了大量网络资源，旨在作为个人学习笔记，供自己日后回顾和复习。 Java的特点Java语言以其三大核心特点著称：  跨平台性：Java的口号“一次编译，处处运行”体现了其强大的跨平台能力。Java源代码经过编译后生成字节码文件（.class文件），这些字节码文件可以在任何安装了Java虚拟机（JVM）的平台上运行。需要注意">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409191702690.png">
+<meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409191722246.png">
+<meta property="article:published_time" content="2024-07-15T07:40:06.000Z">
+<meta property="article:modified_time" content="2024-09-19T10:45:11.098Z">
+<meta property="article:author" content="xiaoyan">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409191702690.png">
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kr-core.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/highlight.js/night-eighties.min.css" media="all"></link>
+  
+  <link rel="stylesheet" id="theme-light-css" href="/css/kr-theme/light.min.css" media="all"></link>
+  <link rel="stylesheet" id="theme-dark-css" href="/css/kr-theme/dark.min.css" media="(prefers-color-scheme: dark)"></link>
+  <script src="/js/kr-theme.min.js"></script>
+  <link rel="stylesheet" id="fontawe-css" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="nprogress-css" href="/vendors/nprogress@0.2.0/nprogress.css" media="all"></link>
+  
+  
+    <link rel="stylesheet" href="/vendors/viewerjs@1.11.6/dist/viewer.min.css"></link>
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  
+    <script src="/vendors/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+  
+  <!-- 自定义站点横幅和背景 -->
+  <style>
+    
+      .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_light.png');
+      }
+      html[data-theme="dark"] .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_dark.png');
+      }
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+        html[data-theme="dark"] body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+      }
+    
+    
+      .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+      html[data-theme="dark"] .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+    
+  </style>
+
+  <!-- 额外的追加注入项 -->
+  
+    <link rel="stylesheet" href="/css/custom.css">
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    <li>
+                                        
+                                            <a target="_blank" rel="noopener" href="https://xiaoyanfufu.top/">
+                                        
+                                            
+                                                <i class="fa fa-home"></i>
+                                            
+                                            首页
+                                        </a>
+                                        
+                                    </li>
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">XIAOYAN</a></div>
+                    <div id="kratos-nav-toggle-wrapper" class="nav-toggle">
+                        <a id="kratos-nav-toggle" class="kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>XIAOYAN</h2> <br />
+                        <span>山重水复疑无路，柳暗花明又一村。</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+
+
+        
+
+            
+
+            <section class="kr-main-col col-md-8">
+
+        
+
+            <article itemscope itemtype="https://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/07/15/What-is-Java/">
+    <div class="kratos-hentry kratos-page-inner clearfix">
+        <header class="kratos-page-header">
+            
+                <h1 class="kratos-page-title text-center" itemprop="name headline">What is Java ?</h1>
+            
+            <ul class="kratos-page-meta text-center">
+                <li><time datetime="2024-07-15T07:40:06.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2024-07-15</time></li>
+                <li itemprop="author" itemscope itemtype="https://schema.org/Person">
+                    <i class="fa fa-user"></i> 作者 <span itemprop="name">xiaoyan</span>
+                </li>
+                
+                    <li>
+                        <i class="fa fa-edit"></i> 
+                        
+                        
+                            ~7.14K
+                        
+                        字
+                    </li>
+                
+                
+                
+            </ul>
+        </header>
+        <div class="kratos-page-content kr-post">
+            
+            
+            
+                <div class="kratos-post-inner-toc toc-div-class" >
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%A6%82%E5%BF%B5"><span class="toc-number">1.</span> <span class="toc-text">一、概念</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Java%E7%9A%84%E7%89%B9%E7%82%B9"><span class="toc-number">1.1.</span> <span class="toc-text">Java的特点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E8%B7%A8%E5%B9%B3%E5%8F%B0"><span class="toc-number">1.2.</span> <span class="toc-text">Java如何实现跨平台</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java%E4%B8%8E%E5%85%B6%E4%BB%96%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">1.3.</span> <span class="toc-text">Java与其他编程语言的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JDK%E3%80%81JRE%E3%80%81JVM"><span class="toc-number">1.4.</span> <span class="toc-text">JDK、JRE、JVM</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-number">2.</span> <span class="toc-text">二、数据类型</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-number">2.1.</span> <span class="toc-text">基本数据类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2"><span class="toc-number">2.2.</span> <span class="toc-text">数据类型转换</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2%E6%96%B9%E5%BC%8F"><span class="toc-number">2.2.1.</span> <span class="toc-text">数据类型转换方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B1%BB%E5%9E%8B%E4%BA%92%E8%BD%AC%E5%8F%AF%E8%83%BD%E5%87%BA%E7%8E%B0%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">2.2.2.</span> <span class="toc-text">类型互转可能出现的问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%B8%8E%E5%8C%85%E8%A3%85%E7%B1%BB"><span class="toc-number">2.3.</span> <span class="toc-text">基本数据类型与包装类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BD%95%E9%9C%80%E8%A6%81%E5%8C%85%E8%A3%85%E7%B1%BB%EF%BC%9F"><span class="toc-number">2.3.1.</span> <span class="toc-text">为何需要包装类？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%B8%8E%E5%8C%85%E8%A3%85%E7%B1%BB%E7%9A%84%E8%BD%AC%E6%8D%A2%EF%BC%9A%E8%A3%85%E7%AE%B1%E5%92%8C%E6%8B%86%E7%AE%B1"><span class="toc-number">2.3.2.</span> <span class="toc-text">基本数据类型与包装类的转换：装箱和拆箱</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A3%85%E7%AE%B1%EF%BC%88Boxing%EF%BC%89"><span class="toc-number">2.3.2.1.</span> <span class="toc-text">装箱（Boxing）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8B%86%E7%AE%B1%EF%BC%88Unboxing%EF%BC%89"><span class="toc-number">2.3.2.2.</span> <span class="toc-text">拆箱（Unboxing）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A3%85%E7%AE%B1%E5%92%8C%E6%8B%86%E7%AE%B1%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">2.3.2.3.</span> <span class="toc-text">装箱和拆箱的应用场景</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%87%AA%E5%8A%A8%E8%A3%85%E6%8B%86%E7%AE%B1%E7%9A%84%E5%BC%8A%E7%AB%AF"><span class="toc-number">2.3.2.4.</span> <span class="toc-text">自动装拆箱的弊端</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%89%E4%BA%86%E5%8C%85%E8%A3%85%E7%B1%BB%EF%BC%8C%E8%BF%98%E7%95%99%E7%9D%80%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%B9%B2%E5%95%A5%EF%BC%9F"><span class="toc-number">2.3.3.</span> <span class="toc-text">有了包装类，还留着基本数据类型干啥？</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1"><span class="toc-number">3.</span> <span class="toc-text">面向对象</span></a></li></ol>
+                </div>
+            
+            <hr />
+            <div itemprop="articleBody"><h1 id="一、概念"><a href="#一、概念" class="headerlink" title="一、概念"></a>一、概念</h1><p>本篇博客是笔者作为初学者记录自己对Java一些基本概念的理解。内容参考了大量网络资源，旨在作为个人学习笔记，供自己日后回顾和复习。</p>
+<h2 id="Java的特点"><a href="#Java的特点" class="headerlink" title="Java的特点"></a>Java的特点</h2><p>Java语言以其三大核心特点著称：</p>
+<ol>
+<li><strong>跨平台性</strong>：Java的口号“一次编译，处处运行”体现了其强大的跨平台能力。Java源代码经过编译后生成字节码文件（.class文件），这些字节码文件可以在任何安装了Java虚拟机<strong>（JVM）</strong>的平台上运行。需要注意的是，<strong>虽然Java语言本身是跨平台的，但JVM并非跨平台</strong>，因此在不同的操作系统上需要安装相应的JDK（Java Development Kit）。</li>
+<li><strong>面向对象</strong>：Java是一门严格遵循面向对象编程范式的语言。它将现实世界中的业务逻辑抽象为对象，并通过对象的属性和行为来描述这些逻辑，从而使得代码更贴近现实世界的模型，便于理解和维护。</li>
+<li><strong>自动内存管理</strong>：Java内置了垃圾回收机制，能够自动回收不再使用的内存资源，避免了开发者手动管理内存的繁琐工作。这一特性大大减少了内存泄漏和内存溢出等常见问题，提升了程序的稳定性和开发效率。</li>
+</ol>
+<h2 id="Java如何实现跨平台"><a href="#Java如何实现跨平台" class="headerlink" title="Java如何实现跨平台"></a>Java如何实现跨平台</h2><p>Java之所以能够实现跨平台运行，关键在于其核心组件——<strong>Java虚拟机（Java Virtual Machine，简称JVM）</strong>。JVM是Java Development Kit（JDK）中的一个重要组成部分，它负责将编译后的字节码文件解释并执行。</p>
+<p>具体来说，Java源代码首先被编译成与平台无关的字节码文件（.class文件）。这些字节码文件随后被JVM解释执行。由于JVM在不同的操作系统上都有相应的实现版本，因此相同的字节码文件可以在安装了相应JVM的任何操作系统上运行。</p>
+<p>这种机制使得Java具备了“一次编译，处处运行”的特性，极大地提高了代码的可移植性。开发者只需编写一次代码，并将其编译成字节码，就可以在多种平台上运行，而无需针对不同平台进行额外的编译工作。</p>
+<h2 id="Java与其他编程语言的区别"><a href="#Java与其他编程语言的区别" class="headerlink" title="Java与其他编程语言的区别"></a>Java与其他编程语言的区别</h2><p>与人类能够理解的自然语言不同，计算机只能理解由“0”和“1”组成的机器指令集。常见的编程语言如C&#x2F;C++、Java、Python、TypeScript等属于高级语言，这些语言编写的代码机器本身无法直接理解，需要经过特定的处理才能转化为机器指令。根据处理方式的不同，编程语言可以分为两大类：</p>
+<ol>
+<li><strong>编译型语言</strong>：<ul>
+<li>代表语言：C&#x2F;C++</li>
+<li>特点：源代码在运行前需要通过编译器编译成机器码，生成可执行文件。这种方式的优点是执行速度快，但缺点是可移植性较差，因为生成的机器码通常是针对特定平台的。</li>
+</ul>
+</li>
+<li><strong>解释型语言</strong>：<ul>
+<li>代表语言：Python</li>
+<li>特点：源代码在运行时由解释器逐行解释并执行。这种方式的优点是跨平台性好，但缺点是执行速度相对较慢。</li>
+</ul>
+</li>
+</ol>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Java结合了编译型和解释型语言的特点，采用了<strong>编译+解释+即时编译（Just-In-Time Compilation，JIT）</strong>的执行方式，JVM解释执行流程图如下：</p>
+<img src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409191702690.png" alt="JVM解释执行流程" style="zoom:67%;">
+
+<ol>
+<li><strong>编译阶段</strong>：<ul>
+<li>Java源代码首先被编译成字节码文件（.class文件），这些字节码文件是与平台无关的中间代码。</li>
+</ul>
+</li>
+<li><strong>解释阶段</strong>：<ul>
+<li>字节码文件在运行时由Java虚拟机（JVM）解释执行，JVM将字节码翻译成特定平台的机器指令。</li>
+<li>需要注意的是，字节码文件在JVM中并不仅仅被解释执行，同时也会使用即时编译技术进行优化。</li>
+</ul>
+</li>
+<li><strong>即时编译（JIT）</strong>：<ul>
+<li>即时编译技术允许JVM在运行时将频繁执行的字节码直接编译成机器码，从而提高执行效率。</li>
+<li>在JVM中，使用<strong>程序计数器（Program Counter，PC）</strong>来跟踪当前执行的字节码指令。当某个字节码指令被执行到一定次数时，JVM会启用即时编译技术。</li>
+<li>JIT编译器会监控字节码的执行频率，当发现某些代码块频繁执行时，会将这些代码块编译成机器码，并缓存起来，以便后续执行时直接使用机器码，从而提高执行速度。</li>
+</ul>
+</li>
+</ol>
+<p>这种混合执行方式使得Java既具备了编译型语言的高效性，又具备了解释型语言的跨平台性。开发者只需编写一次代码，并将其编译成字节码，就可以在安装了JVM的任何平台上运行，从而实现了“一次编译，处处运行”的特性。</p>
+<p>总结来说，Java通过其独特的编译+解释执行方式，在保持高效性的同时，实现了高度的跨平台性，这是它与其他编程语言的主要区别之一。</p>
+<h2 id="JDK、JRE、JVM"><a href="#JDK、JRE、JVM" class="headerlink" title="JDK、JRE、JVM"></a>JDK、JRE、JVM</h2><p>JDK、JRE和JVM是Java开发和运行环境中的三个核心组件，它们之间的关系如下：</p>
+<ul>
+<li><strong>JDK（Java Development Kit）</strong>：JDK是Java开发工具包，包含了开发Java应用程序所需的所有工具和库。主要组件包括编译器（javac）、调试工具（jdb）、Java标准库和其他开发工具所需的库。JDK中包含了JRE，因此开发者可以在本地运行和测试他们编写的Java程序。</li>
+<li><strong>JRE（Java Runtime Environment）</strong>：JRE是Java程序运行时所需的最小环境，包括一组Java库和JVM。主要组件包括Java标准库和JVM，确保Java程序能够在任何安装了JRE的系统上运行。</li>
+<li><strong>JVM（Java Virtual Machine）</strong>：JVM是Java虚拟机，是Java程序运行的核心环境。主要功能包括字节码解释执行、内存管理（包括垃圾回收）、安全性和跨平台性。JVM使得Java程序能够在不同的操作系统上运行，实现了“一次编译，处处运行”的特性。</li>
+</ul>
+<p><strong>三者的关系</strong></p>
+<ul>
+<li><strong>JDK包含JRE</strong>：JDK是开发工具包，包含了开发Java应用程序所需的所有工具和库，其中就包括JRE。</li>
+<li><strong>JRE包含JVM</strong>：JRE是运行Java程序所需的最小环境，包含了Java库和JVM。</li>
+</ul>
+<img src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409191722246.png" alt="JDK、JRE、JVM关系图" style="zoom:50%;">
+
+<p>简而言之，JDK是开发工具包，JRE是运行环境，JVM是执行引擎。JDK包含JRE，JRE包含JVM。</p>
+<h1 id="二、数据类型"><a href="#二、数据类型" class="headerlink" title="二、数据类型"></a>二、数据类型</h1><h2 id="基本数据类型"><a href="#基本数据类型" class="headerlink" title="基本数据类型"></a>基本数据类型</h2><p>Java中有8种基本数据类型，主要分为3类：</p>
+<ol>
+<li><strong>数值型</strong>：<ul>
+<li><strong>整型</strong>：<code>byte</code>、<code>short</code>、<code>int</code>、<code>long</code></li>
+<li><strong>浮点型</strong>：<code>float</code>、<code>double</code></li>
+</ul>
+</li>
+<li><strong>字符型</strong>：<code>char</code></li>
+<li><strong>布尔型</strong>：<code>boolean</code></li>
+</ol>
+<p>各个数据类型所占字节数和取值范围表示如下（一个字节占8个bit位）：</p>
+<table>
+<thead>
+<tr>
+<th align="left">数据类型</th>
+<th align="center">字节数</th>
+<th align="center">默认值</th>
+<th align="left">取值范围</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>byte</code></td>
+<td align="center">1</td>
+<td align="center">0</td>
+<td align="left">-128 到 127（-2^7~2^7-1）</td>
+</tr>
+<tr>
+<td align="left"><code>short</code></td>
+<td align="center">2</td>
+<td align="center">0</td>
+<td align="left">-32,768 到 32,767（-2^15~2^15-1）</td>
+</tr>
+<tr>
+<td align="left"><code>int</code></td>
+<td align="center">4</td>
+<td align="center">0</td>
+<td align="left">-2,147,483,648 到 2,147,483,647（-2^31~2^31-1）</td>
+</tr>
+<tr>
+<td align="left"><code>long</code></td>
+<td align="center">8</td>
+<td align="center">0L</td>
+<td align="left">-9,223,372,036,854,775,808 到 9,223,372,036,854,775,807（-2^63~2^63-1）</td>
+</tr>
+<tr>
+<td align="left"><code>float</code></td>
+<td align="center">4</td>
+<td align="center">0.0f</td>
+<td align="left">大约 ±3.4E+38（有效位数为6-7位）</td>
+</tr>
+<tr>
+<td align="left"><code>double</code></td>
+<td align="center">8</td>
+<td align="center">0.0d</td>
+<td align="left">大约 ±1.7E+308（有效位数为15位）</td>
+</tr>
+<tr>
+<td align="left"><code>char</code></td>
+<td align="center">2</td>
+<td align="center">‘\u0000’</td>
+<td align="left">0 到 65,535（Unicode字符）</td>
+</tr>
+<tr>
+<td align="left"><code>boolean</code></td>
+<td align="center">1</td>
+<td align="center">false</td>
+<td align="left">true 或 false</td>
+</tr>
+</tbody></table>
+<h2 id="数据类型转换"><a href="#数据类型转换" class="headerlink" title="数据类型转换"></a>数据类型转换</h2><h3 id="数据类型转换方式"><a href="#数据类型转换方式" class="headerlink" title="数据类型转换方式"></a>数据类型转换方式</h3><p>在Java中，数据类型转换主要有以下几种方式：</p>
+<ol>
+<li><strong>自动类型转换（隐式转换）</strong></li>
+</ol>
+<p>当目标类型的范围大于源类型时，Java会自动将源类型转换为目标类型，无需显式的类型转换。例如：</p>
+<ul>
+<li>将 <code>int</code> 转换为 <code>long</code></li>
+<li>将 <code>float</code> 转换为 <code>double</code></li>
+</ul>
+<ol start="2">
+<li><strong>强制类型转换（显式转换）</strong></li>
+</ol>
+<p>当目标类型的范围小于源类型时，需要使用强制类型转换将源类型转换为目标类型。这可能导致数据丢失或溢出。语法为：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">目标类型 变量名 = (目标类型) 源类型;</span><br></pre></td></tr></table></figure>
+
+<p>例如：</p>
+<ul>
+<li>将 <code>long</code> 转换为 <code>int</code></li>
+<li>将 <code>double</code> 转换为 <code>int</code></li>
+</ul>
+<ol start="3">
+<li><strong>字符串转换</strong></li>
+</ol>
+<p>Java提供了将字符串表示的数据转换为其他类型数据的方法。例如：</p>
+<ul>
+<li>将字符串转换为整型 <code>int</code>，可以使用 <code>Integer.parseInt()</code> 方法。</li>
+<li>将字符串转换为浮点型 <code>double</code>，可以使用 <code>Double.parseDouble()</code> 方法。</li>
+</ul>
+<ol start="4">
+<li><strong>数值之间的转换</strong></li>
+</ol>
+<p>Java提供了一些数值类型之间的转换方法，如将整型转换为字符型、将字符型转换为整型等。这些转换方式可以通过类型的包装类来实现，例如 <code>Character</code> 类、<code>Integer</code> 类等提供了相应的转换方法。</p>
+<h3 id="类型互转可能出现的问题"><a href="#类型互转可能出现的问题" class="headerlink" title="类型互转可能出现的问题"></a>类型互转可能出现的问题</h3><ul>
+<li><strong>数据丢失</strong></li>
+</ul>
+<p>当将一个范围较大的数据类型转换为一个范围较小的数据类型时，可能会发生数据丢失。例如：将一个 <code>long</code> 类型的值转换为 <code>int</code> 类型时，如果 <code>long</code> 值超出了 <code>int</code> 类型的范围，转换结果将是截断后的低位部分，高位部分的数据将丢失。</p>
+<ul>
+<li><strong>数据溢出</strong></li>
+</ul>
+<p>与数据丢失相反，当将一个范围较小的数据类型转换为一个范围较大的数据类型时，可能会发生数据溢出。例如：将一个 <code>int</code> 类型的值转换为 <code>long</code> 类型时，转换结果会填充额外的高位空间，但原始数据仍然保持不变。</p>
+<ul>
+<li><strong>精度损失</strong></li>
+</ul>
+<p>在进行浮点数类型的转换时，可能会发生精度损失。例如：将一个单精度浮点数（<code>float</code>）转换为双精度浮点数（<code>double</code>）时，精度可能会损失。</p>
+<ul>
+<li><strong>类型不匹配导致的错误</strong></li>
+</ul>
+<p>在进行类型转换时，需要确保源类型和目标类型是兼容的。如果两者不兼容，可能会导致编译错误或运行时错误。</p>
+<h2 id="基本数据类型与包装类"><a href="#基本数据类型与包装类" class="headerlink" title="基本数据类型与包装类"></a>基本数据类型与包装类</h2><h3 id="为何需要包装类？"><a href="#为何需要包装类？" class="headerlink" title="为何需要包装类？"></a>为何需要包装类？</h3><p>在Java中，包装类（Wrapper Classes）的存在有以下几个重要原因：</p>
+<ol>
+<li><p><strong>对象封装</strong>：</p>
+<p>包装类将基本数据类型（如 <code>int</code>、<code>char</code>、<code>boolean</code> 等）封装成对象，使得这些基本数据类型可以像对象一样进行操作。例如，<code>Integer</code> 类不仅封装了 <code>int</code> 类型的数据，还提供了许多处理 <code>int</code> 数据的方法，如 <code>parseInt()</code>、<code>valueOf()</code> 等。</p>
+</li>
+<li><p><strong>集合类的支持</strong>：</p>
+<p>Java中的集合类（如 <code>ArrayList</code>、<code>HashMap</code> 等）只能存储对象，不能直接存储基本数据类型。因此，如果需要将基本数据类型存储在集合中，必须将其包装成对应的包装类对象。例如，将 <code>int</code> 类型的数据存储在 <code>ArrayList</code> 中时，需要将其转换为 <code>Integer</code> 对象。</p>
+</li>
+<li><p><strong>方法参数和返回值</strong>：</p>
+<p>许多Java方法和API要求使用对象作为参数或返回值，而不是基本数据类型。例如，<code>java.util.Collections</code> 类中的许多方法都要求使用 <code>List&lt;Integer&gt;</code> 而不是 <code>List&lt;int&gt;</code>。</p>
+</li>
+<li><p><strong>提供额外功能</strong>：</p>
+<p>包装类提供了许多有用的方法来处理基本数据类型，如类型转换、字符串解析、比较等。例如，<code>Integer</code> 类提供了<code>parseInt()</code> 方法将字符串转换为 <code>int</code>，<code>Double</code> 类提供了 <code>parseDouble()</code> 方法将字符串转换为 <code>double</code>。</p>
+</li>
+</ol>
+<p>以下是包装类应用的示例代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 基本数据类型</span></span><br><span class="line"><span class="type">int</span> <span class="variable">num</span> <span class="operator">=</span> <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 包装成对象</span></span><br><span class="line"><span class="type">Integer</span> <span class="variable">wrappedNum</span> <span class="operator">=</span> Integer.valueOf(num);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 存储在集合中</span></span><br><span class="line">ArrayList&lt;Integer&gt; list = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">list.add(wrappedNum);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用包装类的方法</span></span><br><span class="line"><span class="type">int</span> <span class="variable">parsedNum</span> <span class="operator">=</span> Integer.parseInt(<span class="string">&quot;20&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>包装类及其对应的基本数据类型：</p>
+<table>
+<thead>
+<tr>
+<th align="center">包装类</th>
+<th align="center">对应的基本数据类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><code>Byte</code></td>
+<td align="center"><code>byte</code></td>
+</tr>
+<tr>
+<td align="center"><code>Short</code></td>
+<td align="center"><code>short</code></td>
+</tr>
+<tr>
+<td align="center"><code>Integer</code></td>
+<td align="center"><code>int</code></td>
+</tr>
+<tr>
+<td align="center"><code>Long</code></td>
+<td align="center"><code>long</code></td>
+</tr>
+<tr>
+<td align="center"><code>Float</code></td>
+<td align="center"><code>float</code></td>
+</tr>
+<tr>
+<td align="center"><code>Double</code></td>
+<td align="center"><code>double</code></td>
+</tr>
+<tr>
+<td align="center"><code>Character</code></td>
+<td align="center"><code>char</code></td>
+</tr>
+<tr>
+<td align="center"><code>Boolean</code></td>
+<td align="center"><code>boolean</code></td>
+</tr>
+</tbody></table>
+<p>通过使用包装类，Java开发者可以更方便地处理基本数据类型，并充分利用面向对象编程的优势。</p>
+<h3 id="基本数据类型与包装类的转换：装箱和拆箱"><a href="#基本数据类型与包装类的转换：装箱和拆箱" class="headerlink" title="基本数据类型与包装类的转换：装箱和拆箱"></a>基本数据类型与包装类的转换：装箱和拆箱</h3><p>在Java中，装箱（Boxing）和拆箱（Unboxing）是基本数据类型与其对应的包装类之间的自动转换过程。</p>
+<h4 id="装箱（Boxing）"><a href="#装箱（Boxing）" class="headerlink" title="装箱（Boxing）"></a>装箱（Boxing）</h4><p><strong>装箱</strong>是指将基本数据类型转换为其对应的包装类对象。Java编译器会自动完成这个过程，称为自动装箱。例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="variable">num</span> <span class="operator">=</span> <span class="number">10</span>;</span><br><span class="line"><span class="type">Integer</span> <span class="variable">wrappedNum</span> <span class="operator">=</span> num;  <span class="comment">// 自动装箱</span></span><br></pre></td></tr></table></figure>
+
+<p>在这个例子中，<code>int</code> 类型的 <code>num</code> 被自动转换为 <code>Integer</code> 对象 <code>wrappedNum</code>。</p>
+<h4 id="拆箱（Unboxing）"><a href="#拆箱（Unboxing）" class="headerlink" title="拆箱（Unboxing）"></a>拆箱（Unboxing）</h4><p><strong>拆箱</strong>是指将包装类对象转换为其对应的基本数据类型。Java编译器也会自动完成这个过程，称为自动拆箱。例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Integer</span> <span class="variable">wrappedNum</span> <span class="operator">=</span> <span class="number">10</span>;</span><br><span class="line"><span class="type">int</span> <span class="variable">num</span> <span class="operator">=</span> wrappedNum;  <span class="comment">// 自动拆箱</span></span><br></pre></td></tr></table></figure>
+
+<p>在这个例子中，<code>Integer</code> 对象 <code>wrappedNum</code> 被自动转换为 <code>int</code> 类型的 <code>num</code>。</p>
+<h4 id="装箱和拆箱的应用场景"><a href="#装箱和拆箱的应用场景" class="headerlink" title="装箱和拆箱的应用场景"></a>装箱和拆箱的应用场景</h4><ol>
+<li><p><strong>集合类</strong>：集合类（如 <code>ArrayList</code>、<code>HashMap</code> 等）只能存储对象，因此需要将基本数据类型装箱后才能存储在集合中。例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ArrayList&lt;Integer&gt; list = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">list.add(<span class="number">10</span>);  <span class="comment">// 自动装箱</span></span><br><span class="line"><span class="type">int</span> <span class="variable">num</span> <span class="operator">=</span> list.get(<span class="number">0</span>);  <span class="comment">// 自动拆箱</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>方法参数和返回值</strong>：许多方法要求使用对象作为参数或返回值，因此需要将基本数据类型装箱后传递给这些方法。例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">printInteger</span><span class="params">(Integer num)</span> &#123;</span><br><span class="line">    System.out.println(num);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="variable">primitiveNum</span> <span class="operator">=</span> <span class="number">42</span>;</span><br><span class="line">printInteger(primitiveNum);  <span class="comment">// 自动装箱</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>通过装箱和拆箱，Java开发者可以更方便地在基本数据类型和包装类之间进行转换，从而充分利用面向对象编程的优势。</p>
+<h4 id="自动装拆箱的弊端"><a href="#自动装拆箱的弊端" class="headerlink" title="自动装拆箱的弊端"></a>自动装拆箱的弊端</h4><p>虽然自动装箱（Autoboxing）和自动拆箱（Auto-unboxing）为Java开发者提供了便利，但它们也存在一些潜在的弊端和需要注意的问题：</p>
+<ol>
+<li><p><strong>性能开销</strong>：自动装箱和拆箱涉及到对象的创建和销毁，这会带来一定的性能开销。频繁的装箱和拆箱操作可能会导致性能下降，尤其是在循环或大量数据处理的情况下。</p>
+</li>
+<li><p><strong>空指针异常</strong>：自动拆箱时，如果包装类对象为 <code>null</code>，会抛出 <code>NullPointerException</code>。例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Integer</span> <span class="variable">boxedInt</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line"><span class="type">int</span> <span class="variable">primitiveInt</span> <span class="operator">=</span> boxedInt;  <span class="comment">// 抛出 NullPointerException</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>代码可读性</strong>：过多的自动装箱和拆箱可能会降低代码的可读性，尤其是在复杂的表达式中。例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">boolean</span> <span class="variable">result</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Integer</span>(<span class="number">10</span>) == <span class="keyword">new</span> <span class="title class_">Integer</span>(<span class="number">10</span>);  <span class="comment">// false，因为比较的是对象引用</span></span><br><span class="line"><span class="type">boolean</span> <span class="variable">result2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Integer</span>(<span class="number">10</span>).equals(<span class="keyword">new</span> <span class="title class_">Integer</span>(<span class="number">10</span>));  <span class="comment">// true，因为比较的是对象内容</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>类型转换错误</strong>：自动装箱和拆箱可能会导致类型转换错误，尤其是在混合使用不同类型的包装类时。例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Long</span> <span class="variable">boxedLong</span> <span class="operator">=</span> <span class="number">10L</span>;</span><br><span class="line"><span class="type">int</span> <span class="variable">primitiveInt</span> <span class="operator">=</span> boxedLong;  <span class="comment">// 编译错误，Long不能直接转换为int</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>虽然自动装箱和拆箱为Java开发者提供了便利，但在使用时需要注意其潜在的性能开销、空指针异常、代码可读性和类型转换错误等问题。合理使用自动装箱和拆箱，可以提高代码的简洁性和可读性，但过度依赖可能会带来不必要的麻烦。</p>
+<h3 id="有了包装类，还留着基本数据类型干啥？"><a href="#有了包装类，还留着基本数据类型干啥？" class="headerlink" title="有了包装类，还留着基本数据类型干啥？"></a>有了包装类，还留着基本数据类型干啥？</h3><p>在Java中，保留基本数据类型（Primitive Types）而不全部使用包装类（Wrapper Classes）有以下几个重要原因：</p>
+<ol>
+<li><p><strong>性能优势</strong>：</p>
+<ul>
+<li><strong>内存占用</strong>：基本数据类型直接存储在栈内存中，占用空间小，访问速度快。而包装类对象存储在堆内存中，占用空间较大，访问速度相对较慢。</li>
+<li><strong>操作效率</strong>：基本数据类型的操作（如算术运算、逻辑运算）直接在硬件层面上进行，效率更高。而包装类对象的操作需要通过方法调用，效率较低。</li>
+</ul>
+</li>
+<li><p><strong>简化编程</strong>：</p>
+<ul>
+<li><strong>代码简洁性</strong>：基本数据类型的使用使得代码更加简洁明了，减少了不必要的对象创建和销毁。</li>
+<li><strong>避免空指针异常</strong>：基本数据类型没有 <code>null</code> 值，因此不会出现空指针异常。而包装类对象可能为 <code>null</code>，需要额外的空值检查。</li>
+</ul>
+</li>
+<li><p><strong>语言设计的一致性</strong>：</p>
+<ul>
+<li><strong>历史兼容性</strong>：Java从一开始就设计了基本数据类型，许多现有的代码库和框架都依赖于基本数据类型。完全移除基本数据类型会破坏大量的现有代码。</li>
+<li><strong>语言特性</strong>：基本数据类型是Java语言的一部分，提供了语言设计的一致性和完整性。</li>
+</ul>
+</li>
+</ol>
+<p>基本数据类型在内存占用、操作效率和代码简洁性方面具有显著优势，因此在性能敏感的场景中，使用基本数据类型是更好的选择。而包装类则提供了对象封装、集合类支持和额外功能等优势，适用于需要对象操作和面向对象编程的场景。</p>
+<p>Java通过保留基本数据类型和提供包装类，兼顾了性能和功能需求，使得开发者可以根据具体场景选择合适的数据类型，从而实现高效、灵活的编程。</p>
+<h1 id="面向对象"><a href="#面向对象" class="headerlink" title="面向对象"></a>面向对象</h1><p>【努力编写中。。。】</p>
+</div>
+        </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+            
+            
+                <div class="post-actions text-center clearfix" id="post-actions">
+                
+                    <a class="donate" href="javascript:;" onclick="krOpenDonateModal()"><i class="fa fa-bitcoin"></i> 打赏</a>
+                
+                
+                    <a class="share" href="javascript:;" onclick="krOpenShareModal()"><i class="fa fa-share-alt"></i> 分享</a>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    
+                </div>
+                <div class="pull-date">
+                    <time datetime="2024-09-19T10:45:11.098Z" itemprop="dateModified">最后编辑：2024-09-19</time>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" MySQL日志可以用来干啥？" href="/2024/09/17/MySQL日志可以用来干啥？/">下一篇 <i class="fa fa-angle-right"></i></a>
+            </div>
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+            
+                
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/user.jpg" alt="xiaoyan" loading="lazy" decoding="auto" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">是一只时时翻垃圾吃的宅子。</p>
+    </div>
+    <div class="site-meta">
+        <a class="meta-item" href="/archives/">
+            <span class="title">
+                文章
+            </span>
+            <span class="count">
+                2
+            </span>
+        </a>
+        <a class="meta-item" href="/categories/">
+            <span class="title">
+                分类
+            </span>
+            <span class="count">
+                4
+            </span>
+        </a>
+        <a class="meta-item" href="/tags/">
+            <span class="title">
+                标签
+            </span>
+            <span class="count">
+                0
+            </span>
+        </a>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix toc-div-class" >
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar" role="progressbar" aria-label="阅读进度："></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%A6%82%E5%BF%B5"><span class="toc-text">一、概念</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Java%E7%9A%84%E7%89%B9%E7%82%B9"><span class="toc-text">Java的特点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E8%B7%A8%E5%B9%B3%E5%8F%B0"><span class="toc-text">Java如何实现跨平台</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java%E4%B8%8E%E5%85%B6%E4%BB%96%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-text">Java与其他编程语言的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JDK%E3%80%81JRE%E3%80%81JVM"><span class="toc-text">JDK、JRE、JVM</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-text">二、数据类型</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-text">基本数据类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2"><span class="toc-text">数据类型转换</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2%E6%96%B9%E5%BC%8F"><span class="toc-text">数据类型转换方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B1%BB%E5%9E%8B%E4%BA%92%E8%BD%AC%E5%8F%AF%E8%83%BD%E5%87%BA%E7%8E%B0%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-text">类型互转可能出现的问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%B8%8E%E5%8C%85%E8%A3%85%E7%B1%BB"><span class="toc-text">基本数据类型与包装类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BD%95%E9%9C%80%E8%A6%81%E5%8C%85%E8%A3%85%E7%B1%BB%EF%BC%9F"><span class="toc-text">为何需要包装类？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%B8%8E%E5%8C%85%E8%A3%85%E7%B1%BB%E7%9A%84%E8%BD%AC%E6%8D%A2%EF%BC%9A%E8%A3%85%E7%AE%B1%E5%92%8C%E6%8B%86%E7%AE%B1"><span class="toc-text">基本数据类型与包装类的转换：装箱和拆箱</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A3%85%E7%AE%B1%EF%BC%88Boxing%EF%BC%89"><span class="toc-text">装箱（Boxing）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8B%86%E7%AE%B1%EF%BC%88Unboxing%EF%BC%89"><span class="toc-text">拆箱（Unboxing）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A3%85%E7%AE%B1%E5%92%8C%E6%8B%86%E7%AE%B1%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-text">装箱和拆箱的应用场景</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%87%AA%E5%8A%A8%E8%A3%85%E6%8B%86%E7%AE%B1%E7%9A%84%E5%BC%8A%E7%AB%AF"><span class="toc-text">自动装拆箱的弊端</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%89%E4%BA%86%E5%8C%85%E8%A3%85%E7%B1%BB%EF%BC%8C%E8%BF%98%E7%95%99%E7%9D%80%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%B9%B2%E5%95%A5%EF%BC%9F"><span class="toc-text">有了包装类，还留着基本数据类型干啥？</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1"><span class="toc-text">面向对象</span></a></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类列表</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%9F%BA%E7%A1%80/">基础</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/%E6%97%A5%E5%BF%97/">日志</a><span class="category-list-count">1</span></li></ul></li></ul>
+  </aside>
+
+
+            
+                
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/17/MySQL%E6%97%A5%E5%BF%97%E5%8F%AF%E4%BB%A5%E7%94%A8%E6%9D%A5%E5%B9%B2%E5%95%A5%EF%BC%9F/"><i class="fa fa-book"></i> MySQL日志可以用来干啥？</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/07/15/What-is-Java/"><i class="fa fa-book"></i> What is Java ?</a>
+            
+          
+        
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+            
+
+        
+
+                </div>
+    </div>
+</div>
+
+<footer>
+    <div id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2024 XIAOYAN 版权所有.</li>
+                            <li>本站已运行<span id="kr-since">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>自豪地使用 <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a> 主题</li>
+                            <li>站点由 xiaoyan 用 <i class="fa fa-heart" style="color:#d43f57"></i> 搭建</li>
+                        </div>
+                        <!-- 额外的追加注入项 -->
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                <div class="box theme-box" id="theme-toggle">
+                    <span class="fa fa-adjust"></span>
+                </div>
+            </div>
+            <div id="gotop-box" class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+
+    <div id="kr-donate-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseDonateModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-bitcoin"></i>
+            </div>
+            <div class="kr-modal-title">打赏</div>
+            <button class="kr-modal-close" onclick="krCloseDonateModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-donate-message">请我喝一杯冰阔咯~</div>
+            <div class="kr-donate-qr" id="kr-donate-qr">
+                
+            </div>
+            <div class="kr-donate-platforms">
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #1677ff;" title="支付宝" onclick="krDonateModalShowPlatformQR('https://qr.alipay.com/fkx15009k7u0fqrj8auepdf', '#1677ff')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-alipay">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M19 3h-14a2 2 0 0 0 -2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2 -2v-14a2 2 0 0 0 -2 -2z" />
+  <path d="M7 7h10" />
+  <path d="M12 3v7" />
+  <path d="M21 17.314c-2.971 -1.923 -15 -8.779 -15 -1.864c0 1.716 1.52 2.55 2.985 2.55c3.512 0 6.814 -5.425 6.814 -8h-6.604" />
+</svg>
+
+                        </button>
+                    
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #38ad5a;" title="微信支付" onclick="krDonateModalShowPlatformQR('wxp://f2f0hR4eF9Ypa3tpzjWme9fQDyWW3PIGe3WG5oiIakWLmDs', '#38ad5a')">
+                            <i class="fa fa-wechat"></i>
+                        </button>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/donate.min.js"></script>
+
+
+
+
+    <div id="kr-share-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseShareModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-share-alt"></i>
+            </div>
+            <div class="kr-modal-title">分享</div>
+            <button class="kr-modal-close" onclick="krCloseShareModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-share-message">让兄弟萌也来瞅一瞅！</div>
+            <div class="kr-share-qr" id="kr-share-qr"></div>
+            <div class="kr-share-platforms">
+                
+                    <button class="kr-share-platform-button" style="color: #e6162d;" title="QQ" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-qq"></i>
+                    </button>
+                
+                    <button class="kr-share-platform-button" style="color: #25d366;" title="微信" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-weixin"></i>
+                    </button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/share.min.js"></script>
+
+
+
+<!-- 额外的追加注入项 -->
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
+<meting-js
+  server="netease"
+  type="playlist"
+  fixed="true"
+  order="random"
+  id="12613265870">
+</meting-js>
+
+
+
+        <script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
+</script>
+
+
+  <script defer src="/vendors/nprogress@0.2.0/nprogress.js"></script>
+
+
+
+  <script defer src="/vendors/viewerjs@1.11.6/dist/viewer.min.js"></script>
+
+
+<script defer src="/js/kr-core.min.js"></script>
+
+
+  <script defer src="/js/kr-pjax.min.js"></script>
+
+
+<!-- 额外的追加注入项 -->
+
+  <script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+
+
+
+    </body>
+</html>
