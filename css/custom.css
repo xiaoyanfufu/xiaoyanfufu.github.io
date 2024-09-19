@@ -1,3 +1,4 @@
-p {
-    text-indent: 2em; /* 2em 表示两个字符的宽度 */
+/* 对所有段落应用缩进，但不包括列表项 */
+p:not(li p) {
+    text-indent: 2em;
 }
