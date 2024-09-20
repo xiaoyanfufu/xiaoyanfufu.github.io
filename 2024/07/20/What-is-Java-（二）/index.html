@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  
+    <link rel="icon" href="/images/earthstars.png">
+  
+  
+  <title>What is Java ?（二） | XIAOYAN</title>
+  <link rel="canonical" href="http://example.com/2024/07/20/What-is-Java-%EF%BC%88%E4%BA%8C%EF%BC%89/">
+  <meta name="author" content="xiaoyan" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="" />
+  
+  <meta name="description" content="内容：拷贝、泛型、对象、反射、注解、异常 本篇博客是笔者作为初学者记录自己对Java一些基本概念的理解。内容参考了大量网络资源，篇幅很长，旨在作为个人学习笔记，供自己日后回顾和复习。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="What is Java ?（二）">
+<meta property="og:url" content="http://example.com/2024/07/20/What-is-Java-%EF%BC%88%E4%BA%8C%EF%BC%89/index.html">
+<meta property="og:site_name" content="XIAOYAN">
+<meta property="og:description" content="内容：拷贝、泛型、对象、反射、注解、异常 本篇博客是笔者作为初学者记录自己对Java一些基本概念的理解。内容参考了大量网络资源，篇幅很长，旨在作为个人学习笔记，供自己日后回顾和复习。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409201806971.png">
+<meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409201926696.png">
+<meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409202017874.png">
+<meta property="article:published_time" content="2024-07-20T05:14:00.000Z">
+<meta property="article:modified_time" content="2024-09-20T15:15:27.602Z">
+<meta property="article:author" content="xiaoyan">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409201806971.png">
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kr-core.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/highlight.js/night-eighties.min.css" media="all"></link>
+  
+  <link rel="stylesheet" id="theme-light-css" href="/css/kr-theme/light.min.css" media="all"></link>
+  <link rel="stylesheet" id="theme-dark-css" href="/css/kr-theme/dark.min.css" media="(prefers-color-scheme: dark)"></link>
+  <script src="/js/kr-theme.min.js"></script>
+  <link rel="stylesheet" id="fontawe-css" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="nprogress-css" href="/vendors/nprogress@0.2.0/nprogress.css" media="all"></link>
+  
+  
+    <link rel="stylesheet" href="/vendors/viewerjs@1.11.6/dist/viewer.min.css"></link>
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  
+    <script src="/vendors/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+  
+  <!-- 自定义站点横幅和背景 -->
+  <style>
+    
+      .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_light.png');
+      }
+      html[data-theme="dark"] .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_dark.png');
+      }
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+        html[data-theme="dark"] body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+      }
+    
+    
+      .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+      html[data-theme="dark"] .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+    
+  </style>
+
+  <!-- 额外的追加注入项 -->
+  
+    <link rel="stylesheet" href="/css/custom.css">
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    <li>
+                                        
+                                            <a target="_blank" rel="noopener" href="https://xiaoyanfufu.top/">
+                                        
+                                            
+                                                <i class="fa fa-home"></i>
+                                            
+                                            首页
+                                        </a>
+                                        
+                                    </li>
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">XIAOYAN</a></div>
+                    <div id="kratos-nav-toggle-wrapper" class="nav-toggle">
+                        <a id="kratos-nav-toggle" class="kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>XIAOYAN</h2> <br />
+                        <span>山重水复疑无路，柳暗花明又一村。</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+
+
+        
+
+            
+
+            <section class="kr-main-col col-md-8">
+
+        
+
+            <article itemscope itemtype="https://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/07/20/What-is-Java-%EF%BC%88%E4%BA%8C%EF%BC%89/">
+    <div class="kratos-hentry kratos-page-inner clearfix">
+        <header class="kratos-page-header">
+            
+                <h1 class="kratos-page-title text-center" itemprop="name headline">What is Java ?（二）</h1>
+            
+            <ul class="kratos-page-meta text-center">
+                <li><time datetime="2024-07-20T05:14:00.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2024-07-20</time></li>
+                <li itemprop="author" itemscope itemtype="https://schema.org/Person">
+                    <i class="fa fa-user"></i> 作者 <span itemprop="name">xiaoyan</span>
+                </li>
+                
+                    <li>
+                        <i class="fa fa-edit"></i> 
+                        
+                        
+                            ~15.87K
+                        
+                        字
+                    </li>
+                
+                
+                
+            </ul>
+        </header>
+        <div class="kratos-page-content kr-post">
+            
+            
+            
+                <div class="kratos-post-inner-toc toc-div-class" >
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%8B%B7%E8%B4%9D"><span class="toc-number">1.</span> <span class="toc-text">拷贝</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%85%E6%8B%B7%E8%B4%9D%E5%92%8C%E6%B7%B1%E6%8B%B7%E8%B4%9D%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">1.1.</span> <span class="toc-text">浅拷贝和深拷贝的区别</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%85%E6%8B%B7%E8%B4%9D%EF%BC%88Shallow-Copy%EF%BC%89"><span class="toc-number">1.1.1.</span> <span class="toc-text">浅拷贝（Shallow Copy）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%B1%E6%8B%B7%E8%B4%9D%EF%BC%88Deep-Copy%EF%BC%89"><span class="toc-number">1.1.2.</span> <span class="toc-text">深拷贝（Deep Copy）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%BE%E7%A4%BA"><span class="toc-number">1.1.3.</span> <span class="toc-text">图示</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E6%B7%B1%E6%8B%B7%E8%B4%9D%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-number">1.2.</span> <span class="toc-text">实现深拷贝的方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%AE%9E%E7%8E%B0-Cloneable-%E6%8E%A5%E5%8F%A3%E7%9A%84-clone-%E6%96%B9%E6%B3%95"><span class="toc-number">1.2.1.</span> <span class="toc-text">1. 实现 Cloneable 接口的 clone 方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E4%BD%BF%E7%94%A8%E5%BA%8F%E5%88%97%E5%8C%96%E5%92%8C%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96"><span class="toc-number">1.2.2.</span> <span class="toc-text">2. 使用序列化和反序列化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%89%8B%E5%86%99%E9%80%92%E5%BD%92%E5%A4%8D%E5%88%B6"><span class="toc-number">1.2.3.</span> <span class="toc-text">3. 手写递归复制</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B3%9B%E5%9E%8B"><span class="toc-number">2.</span> <span class="toc-text">泛型</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E6%B3%9B%E5%9E%8B%EF%BC%9F"><span class="toc-number">2.1.</span> <span class="toc-text">什么是泛型？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E6%B3%9B%E5%9E%8B%EF%BC%9F"><span class="toc-number">2.2.</span> <span class="toc-text">为什么需要泛型？</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AF%B9%E8%B1%A1"><span class="toc-number">3.</span> <span class="toc-text">对象</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E5%AF%B9%E8%B1%A1%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="toc-number">3.1.</span> <span class="toc-text">创建对象的方式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#new%E7%9A%84%E5%AF%B9%E8%B1%A1%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E5%9B%9E%E6%94%B6%EF%BC%9F"><span class="toc-number">3.2.</span> <span class="toc-text">new的对象什么时候回收？</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%8D%E5%B0%84"><span class="toc-number">4.</span> <span class="toc-text">反射</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%8F%8D%E5%B0%84%EF%BC%9F"><span class="toc-number">4.1.</span> <span class="toc-text">什么是反射？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%8D%E5%B0%84%E5%B8%B8%E8%A7%81%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">4.2.</span> <span class="toc-text">反射常见应用场景</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%8D%E5%B0%84%E7%9A%84%E4%BC%98%E7%BC%BA%E7%82%B9"><span class="toc-number">4.2.1.</span> <span class="toc-text">反射的优缺点</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%98%E7%82%B9"><span class="toc-number">4.2.1.1.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%BA%E7%82%B9"><span class="toc-number">4.2.1.2.</span> <span class="toc-text">缺点</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B3%A8%E8%A7%A3"><span class="toc-number">5.</span> <span class="toc-text">注解</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E8%A7%A3%E7%9A%84%E5%8E%9F%E7%90%86"><span class="toc-number">5.1.</span> <span class="toc-text">注解的原理</span></a></li></ol></li></ol>
+                </div>
+            
+            <hr />
+            <div itemprop="articleBody"><p>内容：<code>拷贝</code>、<code>泛型</code>、<code>对象</code>、<code>反射</code>、<code>注解</code>、<code>异常</code></p>
+<p>本篇博客是笔者作为初学者记录自己对Java一些基本概念的理解。内容参考了大量网络资源，篇幅很长，旨在作为个人学习笔记，供自己日后回顾和复习。</p>
+<span id="more"></span>
+
+<h1 id="拷贝"><a href="#拷贝" class="headerlink" title="拷贝"></a>拷贝</h1><h2 id="浅拷贝和深拷贝的区别"><a href="#浅拷贝和深拷贝的区别" class="headerlink" title="浅拷贝和深拷贝的区别"></a>浅拷贝和深拷贝的区别</h2><h3 id="浅拷贝（Shallow-Copy）"><a href="#浅拷贝（Shallow-Copy）" class="headerlink" title="浅拷贝（Shallow Copy）"></a>浅拷贝（Shallow Copy）</h3><p>浅拷贝复制了一个对实例对象的引用，因此在内存中这两个对象指向的是同一个对象。换句话说，浅拷贝只复制了对象的引用，而不是对象本身。</p>
+<p><strong>示例代码</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">ShallowCopyExample</span> &#123;</span><br><span class="line">    <span class="type">int</span> value;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">ShallowCopyExample</span><span class="params">(<span class="type">int</span> value)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.value = value;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">ShallowCopyExample</span> <span class="variable">original</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ShallowCopyExample</span>(<span class="number">10</span>);</span><br><span class="line">        <span class="type">ShallowCopyExample</span> <span class="variable">copy</span> <span class="operator">=</span> original;  <span class="comment">// 浅拷贝</span></span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;Original: &quot;</span> + original.value);  <span class="comment">// 输出: Original: 10</span></span><br><span class="line">        System.out.println(<span class="string">&quot;Copy: &quot;</span> + copy.value);          <span class="comment">// 输出: Copy: 10</span></span><br><span class="line"></span><br><span class="line">        copy.value = <span class="number">20</span>;</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;Original after modification: &quot;</span> + original.value);  <span class="comment">// 输出: Original after modification: 20</span></span><br><span class="line">        System.out.println(<span class="string">&quot;Copy after modification: &quot;</span> + copy.value);          <span class="comment">// 输出: Copy after modification: 20</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>解释：</strong><code>original</code> 和 <code>copy</code> 指向同一个对象，因此修改 <code>copy</code> 的值也会影响 <code>original</code>。</p>
+<h3 id="深拷贝（Deep-Copy）"><a href="#深拷贝（Deep-Copy）" class="headerlink" title="深拷贝（Deep Copy）"></a>深拷贝（Deep Copy）</h3><p>深拷贝新建一个一模一样的实例对象，两个对象的引用指向的是不同的地址。换句话说，深拷贝复制了对象本身，而不是对象的引用。</p>
+<p><strong>示例代码</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">DeepCopyExample</span> <span class="keyword">implements</span> <span class="title class_">Cloneable</span> &#123;</span><br><span class="line">    <span class="type">int</span> value;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">DeepCopyExample</span><span class="params">(<span class="type">int</span> value)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.value = value;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> Object <span class="title function_">clone</span><span class="params">()</span> <span class="keyword">throws</span> CloneNotSupportedException &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">super</span>.clone();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> CloneNotSupportedException &#123;</span><br><span class="line">        <span class="type">DeepCopyExample</span> <span class="variable">original</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">DeepCopyExample</span>(<span class="number">10</span>);</span><br><span class="line">        <span class="type">DeepCopyExample</span> <span class="variable">copy</span> <span class="operator">=</span> (DeepCopyExample) original.clone();  <span class="comment">// 深拷贝</span></span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;Original: &quot;</span> + original.value);  <span class="comment">// 输出: Original: 10</span></span><br><span class="line">        System.out.println(<span class="string">&quot;Copy: &quot;</span> + copy.value);          <span class="comment">// 输出: Copy: 10</span></span><br><span class="line"></span><br><span class="line">        copy.value = <span class="number">20</span>;</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;Original after modification: &quot;</span> + original.value);  <span class="comment">// 输出: Original after modification: 10</span></span><br><span class="line">        System.out.println(<span class="string">&quot;Copy after modification: &quot;</span> + copy.value);          <span class="comment">// 输出: Copy after modification: 20</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>解释：</strong><code>original</code> 和 <code>copy</code> 指向不同的对象，因此修改 <code>copy</code> 的值不会影响 <code>original</code>。</p>
+<h3 id="图示"><a href="#图示" class="headerlink" title="图示"></a>图示</h3><img src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409201806971.png" alt="浅拷贝和深拷贝" style="zoom:80%;">
+
+
+
+<h2 id="实现深拷贝的方法"><a href="#实现深拷贝的方法" class="headerlink" title="实现深拷贝的方法"></a>实现深拷贝的方法</h2><p>常用的深拷贝方法有三种：</p>
+<ol>
+<li><strong>实现 <code>Cloneable</code> 接口的 <code>clone</code> 方法</strong></li>
+<li><strong>使用序列化和反序列化</strong></li>
+<li><strong>手写递归复制</strong></li>
+</ol>
+<h3 id="1-实现-Cloneable-接口的-clone-方法"><a href="#1-实现-Cloneable-接口的-clone-方法" class="headerlink" title="1. 实现 Cloneable 接口的 clone 方法"></a>1. 实现 <code>Cloneable</code> 接口的 <code>clone</code> 方法</h3><p>通过实现 <code>Cloneable</code> 接口并重写 <code>clone</code> 方法，可以实现深拷贝。需要注意的是，<code>clone</code> 方法默认是浅拷贝，因此需要手动处理对象的深拷贝。</p>
+<p><strong>示例代码</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">DeepCopyExample</span> <span class="keyword">implements</span> <span class="title class_">Cloneable</span> &#123;</span><br><span class="line">    <span class="type">int</span> value;</span><br><span class="line">    List&lt;String&gt; list;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">DeepCopyExample</span><span class="params">(<span class="type">int</span> value, List&lt;String&gt; list)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.value = value;</span><br><span class="line">        <span class="built_in">this</span>.list = list;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> Object <span class="title function_">clone</span><span class="params">()</span> <span class="keyword">throws</span> CloneNotSupportedException &#123;</span><br><span class="line">        <span class="type">DeepCopyExample</span> <span class="variable">cloned</span> <span class="operator">=</span> (DeepCopyExample) <span class="built_in">super</span>.clone();</span><br><span class="line">        cloned.list = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;(<span class="built_in">this</span>.list);  <span class="comment">// 深拷贝列表</span></span><br><span class="line">        <span class="keyword">return</span> cloned;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> CloneNotSupportedException &#123;</span><br><span class="line">        List&lt;String&gt; list = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">        list.add(<span class="string">&quot;A&quot;</span>);</span><br><span class="line">        list.add(<span class="string">&quot;B&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="type">DeepCopyExample</span> <span class="variable">original</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">DeepCopyExample</span>(<span class="number">10</span>, list);</span><br><span class="line">        <span class="type">DeepCopyExample</span> <span class="variable">copy</span> <span class="operator">=</span> (DeepCopyExample) original.clone();</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;Original: &quot;</span> + original.value + <span class="string">&quot;, &quot;</span> + original.list);  <span class="comment">// 输出: Original: 10, [A, B]</span></span><br><span class="line">        System.out.println(<span class="string">&quot;Copy: &quot;</span> + copy.value + <span class="string">&quot;, &quot;</span> + copy.list);              <span class="comment">// 输出: Copy: 10, [A, B]</span></span><br><span class="line"></span><br><span class="line">        copy.value = <span class="number">20</span>;</span><br><span class="line">        copy.list.add(<span class="string">&quot;C&quot;</span>);</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;Original after modification: &quot;</span> + original.value + <span class="string">&quot;, &quot;</span> + original.list);  <span class="comment">// 输出: Original after modification: 10, [A, B]</span></span><br><span class="line">        System.out.println(<span class="string">&quot;Copy after modification: &quot;</span> + copy.value + <span class="string">&quot;, &quot;</span> + copy.list);              <span class="comment">// 输出: Copy after modification: 20, [A, B, C]</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-使用序列化和反序列化"><a href="#2-使用序列化和反序列化" class="headerlink" title="2. 使用序列化和反序列化"></a>2. 使用序列化和反序列化</h3><p>通过将对象序列化为字节流，然后再反序列化为新的对象，可以实现深拷贝。这种方法适用于实现了 <code>Serializable</code> 接口的对象。</p>
+<p><strong>示例代码</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.*;</span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">DeepCopyExample</span> <span class="keyword">implements</span> <span class="title class_">Serializable</span> &#123;</span><br><span class="line">    <span class="type">int</span> value;</span><br><span class="line">    List&lt;String&gt; list;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">DeepCopyExample</span><span class="params">(<span class="type">int</span> value, List&lt;String&gt; list)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.value = value;</span><br><span class="line">        <span class="built_in">this</span>.list = list;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> Object <span class="title function_">deepCopy</span><span class="params">()</span> <span class="keyword">throws</span> IOException, ClassNotFoundException &#123;</span><br><span class="line">        <span class="type">ByteArrayOutputStream</span> <span class="variable">bos</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ByteArrayOutputStream</span>();</span><br><span class="line">        <span class="type">ObjectOutputStream</span> <span class="variable">oos</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectOutputStream</span>(bos);</span><br><span class="line">        oos.writeObject(<span class="built_in">this</span>);</span><br><span class="line"></span><br><span class="line">        <span class="type">ByteArrayInputStream</span> <span class="variable">bis</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ByteArrayInputStream</span>(bos.toByteArray());</span><br><span class="line">        <span class="type">ObjectInputStream</span> <span class="variable">ois</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectInputStream</span>(bis);</span><br><span class="line">        <span class="keyword">return</span> ois.readObject();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, ClassNotFoundException &#123;</span><br><span class="line">        List&lt;String&gt; list = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">        list.add(<span class="string">&quot;A&quot;</span>);</span><br><span class="line">        list.add(<span class="string">&quot;B&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="type">DeepCopyExample</span> <span class="variable">original</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">DeepCopyExample</span>(<span class="number">10</span>, list);</span><br><span class="line">        <span class="type">DeepCopyExample</span> <span class="variable">copy</span> <span class="operator">=</span> (DeepCopyExample) original.deepCopy();</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;Original: &quot;</span> + original.value + <span class="string">&quot;, &quot;</span> + original.list);  <span class="comment">// 输出: Original: 10, [A, B]</span></span><br><span class="line">        System.out.println(<span class="string">&quot;Copy: &quot;</span> + copy.value + <span class="string">&quot;, &quot;</span> + copy.list);              <span class="comment">// 输出: Copy: 10, [A, B]</span></span><br><span class="line"></span><br><span class="line">        copy.value = <span class="number">20</span>;</span><br><span class="line">        copy.list.add(<span class="string">&quot;C&quot;</span>);</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;Original after modification: &quot;</span> + original.value + <span class="string">&quot;, &quot;</span> + original.list);  <span class="comment">// 输出: Original after modification: 10, [A, B]</span></span><br><span class="line">        System.out.println(<span class="string">&quot;Copy after modification: &quot;</span> + copy.value + <span class="string">&quot;, &quot;</span> + copy.list);              <span class="comment">// 输出: Copy after modification: 20, [A, B, C]</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-手写递归复制"><a href="#3-手写递归复制" class="headerlink" title="3. 手写递归复制"></a>3. 手写递归复制</h3><p>通过手写递归方法，逐层复制对象的每个字段，可以实现深拷贝。这种方法适用于任何对象，但需要手动处理每个字段的复制。</p>
+<p><strong>示例代码</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">DeepCopyExample</span> &#123;</span><br><span class="line">    <span class="type">int</span> value;</span><br><span class="line">    List&lt;String&gt; list;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">DeepCopyExample</span><span class="params">(<span class="type">int</span> value, List&lt;String&gt; list)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.value = value;</span><br><span class="line">        <span class="built_in">this</span>.list = list;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> DeepCopyExample <span class="title function_">deepCopy</span><span class="params">()</span> &#123;</span><br><span class="line">        List&lt;String&gt; newList = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;(<span class="built_in">this</span>.list);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">DeepCopyExample</span>(<span class="built_in">this</span>.value, newList);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        List&lt;String&gt; list = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">        list.add(<span class="string">&quot;A&quot;</span>);</span><br><span class="line">        list.add(<span class="string">&quot;B&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="type">DeepCopyExample</span> <span class="variable">original</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">DeepCopyExample</span>(<span class="number">10</span>, list);</span><br><span class="line">        <span class="type">DeepCopyExample</span> <span class="variable">copy</span> <span class="operator">=</span> original.deepCopy();</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;Original: &quot;</span> + original.value + <span class="string">&quot;, &quot;</span> + original.list);  <span class="comment">// 输出: Original: 10, [A, B]</span></span><br><span class="line">        System.out.println(<span class="string">&quot;Copy: &quot;</span> + copy.value + <span class="string">&quot;, &quot;</span> + copy.list);              <span class="comment">// 输出: Copy: 10, [A, B]</span></span><br><span class="line"></span><br><span class="line">        copy.value = <span class="number">20</span>;</span><br><span class="line">        copy.list.add(<span class="string">&quot;C&quot;</span>);</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;Original after modification: &quot;</span> + original.value + <span class="string">&quot;, &quot;</span> + original.list);  <span class="comment">// 输出: Original after modification: 10, [A, B]</span></span><br><span class="line">        System.out.println(<span class="string">&quot;Copy after modification: &quot;</span> + copy.value + <span class="string">&quot;, &quot;</span> + copy.list);              <span class="comment">// 输出: Copy after modification: 20, [A, B, C]</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<div class="panel panel-info">
+    <div class="panel-title"><i class="fa fa-info"></i>总结</div>
+    <div class="panel-body">
+        <ul>
+<li><strong>实现 <code>Cloneable</code> 接口的 <code>clone</code> 方法</strong>：适用于简单的对象，需要手动处理深拷贝。</li>
+<li><strong>使用序列化和反序列化</strong>：适用于实现了 <code>Serializable</code> 接口的对象，可以自动处理深拷贝。</li>
+<li><strong>手写递归复制</strong>：适用于任何对象，需要手动处理每个字段的复制。</li>
+</ul>
+
+    </div>
+    </div>
+
+
+
+<h1 id="泛型"><a href="#泛型" class="headerlink" title="泛型"></a>泛型</h1><h2 id="什么是泛型？"><a href="#什么是泛型？" class="headerlink" title="什么是泛型？"></a>什么是泛型？</h2><p>泛型是 Java 语言中的一个重要特性，它允许类、接口和方法在定义时使用一个或多个类型参数，而这些参数在实际运行时才会指定具体的参数类型。泛型提供了一种在编译时进行类型检查的机制，从而提高代码的类型安全性和可读性。</p>
+<h2 id="为什么需要泛型？"><a href="#为什么需要泛型？" class="headerlink" title="为什么需要泛型？"></a>为什么需要泛型？</h2><p>泛型的主要目的是提高代码的类型安全性和可读性，具体体现在以下几个方面：</p>
+<ol>
+<li><p><strong>适用于多种类型执行相同的代码</strong>：</p>
+<ul>
+<li>泛型允许在定义类、接口和方法时使用类型参数，从而可以在不同的类型上执行相同的代码。</li>
+</ul>
+</li>
+<li><p><strong>类型安全</strong>：</p>
+<ul>
+<li>泛型在编译时进行类型检查，确保类型的一致性，避免运行时类型转换错误。</li>
+<li>使用泛型可以减少强制类型转换的需求，提高代码的可读性和安全性。</li>
+</ul>
+</li>
+</ol>
+<p><strong>示例代码</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">NonGenericExample</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="comment">// 不使用泛型，列表中可以存储任意类型的对象</span></span><br><span class="line">        <span class="type">List</span> <span class="variable">nonGenericList</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ArrayList</span>();</span><br><span class="line">        nonGenericList.add(<span class="string">&quot;Hello&quot;</span>);</span><br><span class="line">        nonGenericList.add(<span class="number">123</span>);  <span class="comment">// 可以添加不同类型的对象</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 需要强制类型转换，容易引发类型转换错误</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">firstElement</span> <span class="operator">=</span> (String) nonGenericList.get(<span class="number">0</span>);</span><br><span class="line">        System.out.println(firstElement);  <span class="comment">// 输出: Hello</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 运行时类型转换错误</span></span><br><span class="line">        <span class="type">Integer</span> <span class="variable">secondElement</span> <span class="operator">=</span> (Integer) nonGenericList.get(<span class="number">1</span>);</span><br><span class="line">        System.out.println(secondElement);  <span class="comment">// 输出: 123</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 运行时类型转换错误</span></span><br><span class="line">        <span class="comment">// String thirdElement = (String) nonGenericList.get(1);  // 运行时错误：ClassCastException</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<div class="panel panel-info">
+    <div class="panel-title"><i class="fa fa-info"></i>总结</div>
+    <div class="panel-body">
+        <ul>
+<li><strong>泛型</strong>：允许在定义类、接口和方法时使用类型参数，提高代码的类型安全性和可读性。</li>
+<li><strong>类型安全</strong>：泛型在编译时进行类型检查，避免运行时类型转换错误。</li>
+<li><strong>减少强制类型转换</strong>：使用泛型可以减少强制类型转换的需求，提高代码的可读性和安全性。</li>
+</ul>
+
+    </div>
+    </div>
+
+<p>通过这些特性，泛型在 Java 编程中提供了更强大的类型检查和代码复用能力，使得代码更加健壮和易于维护。</p>
+<h1 id="对象"><a href="#对象" class="headerlink" title="对象"></a>对象</h1><h2 id="创建对象的方式"><a href="#创建对象的方式" class="headerlink" title="创建对象的方式"></a>创建对象的方式</h2><ol>
+<li><p><strong>使用<code>new</code>关键字</strong>：</p>
+<p>这是最常见和最直接的对象创建方式。通过调用类的构造函数来实例化对象。</p>
+<p><strong>示例：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">MyClass</span> <span class="variable">obj</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MyClass</span>();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>使用<code>clone</code>方法</strong>：</p>
+<p>通过调用对象的<code>clone</code>方法来创建对象的副本。需要注意的是，类必须实现<code>Cloneable</code>接口。</p>
+<p><strong>示例：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">MyClass</span> <span class="variable">obj2</span> <span class="operator">=</span> (MyClass) obj.clone();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>使用反序列化</strong>：</p>
+<p>通过将对象序列化为字节流，然后再反序列化来创建对象。这通常用于对象的持久化存储和传输。</p>
+<p><strong>示例：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> (<span class="type">ObjectInputStream</span> <span class="variable">in</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectInputStream</span>(<span class="keyword">new</span> <span class="title class_">FileInputStream</span>(<span class="string">&quot;data.obj&quot;</span>))) &#123;</span><br><span class="line">    <span class="type">MyClass</span> <span class="variable">obj3</span> <span class="operator">=</span> (MyClass) in.readObject();</span><br><span class="line">&#125; <span class="keyword">catch</span> (IOException | ClassNotFoundException e) &#123;</span><br><span class="line">    e.printStackTrace();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>使用<code>Class</code>类的<code>newInstance</code>方法</strong>：</p>
+<p>通过调用<code>Class</code>类的<code>newInstance</code>方法来创建对象。需要注意的是，该方法要求类具有无参构造函数。</p>
+<p><strong>示例：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="type">MyClass</span> <span class="variable">obj4</span> <span class="operator">=</span> MyClass.class.newInstance();</span><br><span class="line">&#125; <span class="keyword">catch</span> (InstantiationException | IllegalAccessException e) &#123;</span><br><span class="line">    e.printStackTrace();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>使用<code>Constructor</code>的<code>newInstance</code>方法</strong>：</p>
+<p>通过调用<code>Constructor</code>类的<code>newInstance</code>方法来创建对象。这种方式允许使用带参数的构造函数。</p>
+<p><strong>示例：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    Constructor&lt;MyClass&gt; constructor = MyClass.class.getConstructor(String.class);</span><br><span class="line">    <span class="type">MyClass</span> <span class="variable">obj5</span> <span class="operator">=</span> constructor.newInstance(<span class="string">&quot;exampleParameter&quot;</span>);</span><br><span class="line">&#125; <span class="keyword">catch</span> (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) &#123;</span><br><span class="line">    e.printStackTrace();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="new的对象什么时候回收？"><a href="#new的对象什么时候回收？" class="headerlink" title="new的对象什么时候回收？"></a><code>new</code>的对象什么时候回收？</h2><p>通过关键字<code>new</code>创建的对象，由Java的垃圾回收器（Garbage Collector, GC）负责回收。垃圾回收器的工作是在程序运行过程中自动进行的，它会周期性地检测不再被引用的对象，并将其回收以释放内存。</p>
+<p><strong>回收时机</strong></p>
+<p>Java对象的回收时机是由垃圾回收器根据一些算法来决定的，主要有以下几种情况：</p>
+<ol>
+<li><strong>引用计数法</strong>：当某个对象的引用计数为0时，表示该对象不再被引用，可以被回收。然而，Java并不采用引用计数法，因为它无法解决循环引用的问题。</li>
+<li><strong>可达性分析算法</strong>：从根对象（如方法区中的类静态属性、方法中的局部变量等）出发，通过对象之间的引用链进行遍历。如果存在一条引用链到达某个对象，则说明该对象是可达的；反之，不可达的对象将被回收。可达性分析算法是Java垃圾回收器主要采用的方法。</li>
+<li><strong>终结器（Finalizer）</strong>：如果对象重写了<code>finalize()</code>方法，垃圾回收器会在回收该对象之前调用<code>finalize()</code>方法。对象可以在<code>finalize()</code>方法中进行一些清理操作。然而，终结器机制的使用不被推荐，因为它的执行时间是不确定的，可能会导致不可预测的性能问题。</li>
+</ol>
+<p>流程如下：</p>
+<img src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409201926696.png" alt="对象回收流程" style="zoom:80%;">
+
+
+
+
+
+<h1 id="反射"><a href="#反射" class="headerlink" title="反射"></a>反射</h1><h2 id="什么是反射？"><a href="#什么是反射？" class="headerlink" title="什么是反射？"></a>什么是反射？</h2><p>Java反射机制是指在运行状态中，任意一个类都能知道这个类中的所有方法和属性，并且任意对象都能调用这个类对象的属性和方法。这种动态获取的信息和调用对象方法的功能称为Java的反射机制。</p>
+<p>反射机制如图所示：</p>
+<p><img src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409202017874.png" alt="反射机制（图片来源小林codin）"></p>
+<ol>
+<li><p><strong>动态性</strong>：</p>
+<ul>
+<li>反射允许在运行时动态地获取类的完整结构信息，包括类名、父类、方法和属性等，并调用其方法（包括私有方法），而不需要在编译时确定。</li>
+<li>示例：通过<code>Class.forName()</code>方法动态加载类，并使用<code>getMethods()</code>、<code>getFields()</code>等方法获取类的结构信息。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.lang.reflect.Method;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Field;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DynamicReflectionExample</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 动态加载类</span></span><br><span class="line">            Class&lt;?&gt; clazz = Class.forName(<span class="string">&quot;com.example.MyClass&quot;</span>);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 获取类的所有方法</span></span><br><span class="line">            Method[] methods = clazz.getDeclaredMethods();</span><br><span class="line">            <span class="keyword">for</span> (Method method : methods) &#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;Method: &quot;</span> + method.getName());</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 获取类的所有字段</span></span><br><span class="line">            Field[] fields = clazz.getDeclaredFields();</span><br><span class="line">            <span class="keyword">for</span> (Field field : fields) &#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;Field: &quot;</span> + field.getName());</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>灵活性</strong>：</p>
+<ul>
+<li>反射提供了灵活的编程方式，可以在运行时根据需要创建对象、调用方法和访问属性。</li>
+<li>示例：使用反射API动态地创建对象实例，即使在编译时不知道具体的类名。这是通过<code>Class</code>类的<code>newInstance()</code>方法或<code>Constructor</code>对象的<code>newInstance()</code>方法实现的。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.lang.reflect.Constructor;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">FlexibleReflectionExample</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 动态加载类</span></span><br><span class="line">            Class&lt;?&gt; clazz = Class.forName(<span class="string">&quot;com.example.MyClass&quot;</span>);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 使用无参构造函数创建对象实例</span></span><br><span class="line">            <span class="type">Object</span> <span class="variable">obj</span> <span class="operator">=</span> clazz.getDeclaredConstructor().newInstance();</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 使用带参构造函数创建对象实例</span></span><br><span class="line">            Constructor&lt;?&gt; constructor = clazz.getDeclaredConstructor(String.class);</span><br><span class="line">            <span class="type">Object</span> <span class="variable">objWithParam</span> <span class="operator">=</span> constructor.newInstance(<span class="string">&quot;Parameter&quot;</span>);</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>访问私有成员</strong>：</p>
+<ul>
+<li>反射可以访问类的私有成员（如私有方法和私有属性），这在正常情况下是不允许的。</li>
+<li>示例：通过<code>Field</code>类的<code>setAccessible(true)</code>方法绕过访问控制，使用<code>get()</code>和<code>set()</code>方法访问和修改私有字段的值。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.lang.reflect.Field;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Method;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">PrivateAccessReflectionExample</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 动态加载类</span></span><br><span class="line">            Class&lt;?&gt; clazz = Class.forName(<span class="string">&quot;com.example.MyClass&quot;</span>);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 创建对象实例</span></span><br><span class="line">            <span class="type">Object</span> <span class="variable">obj</span> <span class="operator">=</span> clazz.getDeclaredConstructor().newInstance();</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 访问私有字段</span></span><br><span class="line">            <span class="type">Field</span> <span class="variable">privateField</span> <span class="operator">=</span> clazz.getDeclaredField(<span class="string">&quot;privateField&quot;</span>);</span><br><span class="line">            privateField.setAccessible(<span class="literal">true</span>);</span><br><span class="line">            privateField.set(obj, <span class="string">&quot;New Value&quot;</span>);</span><br><span class="line">            System.out.println(<span class="string">&quot;Private Field Value: &quot;</span> + privateField.get(obj));</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 调用私有方法</span></span><br><span class="line">            <span class="type">Method</span> <span class="variable">privateMethod</span> <span class="operator">=</span> clazz.getDeclaredMethod(<span class="string">&quot;privateMethod&quot;</span>);</span><br><span class="line">            privateMethod.setAccessible(<span class="literal">true</span>);</span><br><span class="line">            privateMethod.invoke(obj);</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="反射常见应用场景"><a href="#反射常见应用场景" class="headerlink" title="反射常见应用场景"></a>反射常见应用场景</h2><ol>
+<li><p><strong>框架开发</strong>：许多框架（如Spring、Hibernate）使用反射来动态加载和配置类，实现依赖注入和AOP（面向切面编程）等功能。</p>
+</li>
+<li><p><strong>序列化和反序列化</strong>：在对象的序列化和反序列化过程中，反射用于动态地访问和设置对象的属性。</p>
+</li>
+<li><p><strong>动态代理</strong>：反射与动态代理结合使用，可以在运行时创建代理对象，实现方法的拦截和增强。</p>
+</li>
+<li><p><strong>单元测试</strong>：单元测试框架（如JUnit）使用反射来动态地发现和执行测试方法。</p>
+</li>
+<li><p><strong>插件化系统</strong>：反射用于动态加载和执行插件，使得系统具有扩展性和灵活性。</p>
+</li>
+<li><p><strong>ORM框架</strong>：ORM（对象关系映射）框架使用反射来将数据库表映射到Java对象，并动态地生成SQL语句。</p>
+</li>
+</ol>
+<h3 id="反射的优缺点"><a href="#反射的优缺点" class="headerlink" title="反射的优缺点"></a>反射的优缺点</h3><h4 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h4><ul>
+<li><strong>灵活性</strong>：反射提供了极大的灵活性，允许在运行时动态地操作类和对象。</li>
+<li><strong>扩展性</strong>：反射使得系统具有更好的扩展性，可以通过插件或配置文件动态加载和执行代码。</li>
+</ul>
+<h4 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h4><ul>
+<li><strong>性能开销</strong>：反射操作通常比直接调用方法或访问属性要慢，因为它涉及到动态解析和安全检查。</li>
+<li><strong>安全风险</strong>：反射可以访问和修改类的私有成员，这可能会导致安全问题。</li>
+<li><strong>代码可读性</strong>：反射代码通常比直接调用方法或访问属性的代码更复杂，可读性较差。</li>
+</ul>
+<h1 id="注解"><a href="#注解" class="headerlink" title="注解"></a>注解</h1><p>在Java中，注解（Annotation）是一种元数据（metadata），它提供了关于程序代码的额外信息，但本身并不直接影响程序的执行。注解可以用于类、方法、字段、参数、局部变量等程序元素上，用于在编译时、运行时或部署时提供额外的信息。</p>
+<p>注解本质是一个继承了Annotation的特殊接口，其具体实现类是Java运行时生成的动态代理类。我们通过反射获取注解时，返回的是Java运行时生成的动态代理对象。通过代理对象调用自定义注解的方法，会最终调用AnnotationlnvocationHandler的invoke方法。该方法会从memberValues这个Map中索引出对应的值。而memberValues的来源是Java常量池。</p>
+<h2 id="注解的原理"><a href="#注解的原理" class="headerlink" title="注解的原理"></a>注解的原理</h2><ol>
+<li><p><strong>定义注解</strong>：<br>注解是通过<code>@interface</code>关键字定义的。例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> MyAnnotation &#123;</span><br><span class="line">    String <span class="title function_">value</span><span class="params">()</span>;</span><br><span class="line">    <span class="type">int</span> <span class="title function_">count</span><span class="params">()</span> <span class="keyword">default</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个注解<code>MyAnnotation</code>有两个元素：<code>value</code>和<code>count</code>。<code>value</code>是必需的，而<code>count</code>有一个默认值<code>1</code>。</p>
+</li>
+<li><p><strong>元注解</strong>：<br>元注解是用于注解其他注解的注解。Java提供了几个内置的元注解，用于控制注解的行为：</p>
+<ul>
+<li><p><code>@Retention</code>：指定注解的保留策略，即注解在什么阶段有效（源码、编译时、运行时）。</p>
+<ul>
+<li><code>RetentionPolicy.SOURCE</code>：注解仅在源码中保留，编译时丢弃。</li>
+<li><code>RetentionPolicy.CLASS</code>：注解在编译时保留，但运行时不可见。</li>
+<li><code>RetentionPolicy.RUNTIME</code>：注解在运行时保留，可以通过反射获取。</li>
+</ul>
+</li>
+<li><p><code>@Target</code>：指定注解可以应用的目标类型（类、方法、字段等）。</p>
+<ul>
+<li><code>ElementType.TYPE</code>：类、接口、枚举。</li>
+<li><code>ElementType.METHOD</code>：方法。</li>
+<li><code>ElementType.FIELD</code>：字段。</li>
+<li><code>ElementType.PARAMETER</code>：方法参数。</li>
+<li><code>ElementType.CONSTRUCTOR</code>：构造函数。</li>
+<li><code>ElementType.LOCAL_VARIABLE</code>：局部变量。</li>
+<li><code>ElementType.ANNOTATION_TYPE</code>：注解类型。</li>
+<li><code>ElementType.PACKAGE</code>：包。</li>
+</ul>
+</li>
+<li><p><code>@Documented</code>：指定注解是否包含在JavaDoc中。</p>
+</li>
+<li><p><code>@Inherited</code>：指定注解是否可以被子类继承。</p>
+</li>
+<li><p><code>@Repeatable</code>：指定注解是否可以重复应用在同一个元素上。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>使用注解</strong>：<br>注解可以应用在类、方法、字段等程序元素上。例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@MyAnnotation(value = &quot;Hello&quot;, count = 5)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyClass</span> &#123;</span><br><span class="line">    <span class="meta">@MyAnnotation(value = &quot;Field&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String myField;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@MyAnnotation(value = &quot;Method&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">myMethod</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>处理注解</strong>：<br>注解本身并不做任何事情，它们需要通过某种方式被处理才能发挥作用。处理注解的方式主要有两种：</p>
+<ul>
+<li><p><strong>编译时处理</strong>：使用注解处理器（Annotation Processor）在编译时处理注解。例如，Lombok库使用注解处理器在编译时生成代码。</p>
+</li>
+<li><p><strong>运行时处理</strong>：使用反射（Reflection）在运行时获取注解信息。例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">processAnnotation</span><span class="params">(Class&lt;?&gt; clazz)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (clazz.isAnnotationPresent(MyAnnotation.class)) &#123;</span><br><span class="line">        <span class="type">MyAnnotation</span> <span class="variable">annotation</span> <span class="operator">=</span> clazz.getAnnotation(MyAnnotation.class);</span><br><span class="line">        System.out.println(<span class="string">&quot;Value: &quot;</span> + annotation.value());</span><br><span class="line">        System.out.println(<span class="string">&quot;Count: &quot;</span> + annotation.count());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个方法通过反射检查类上是否存在<code>MyAnnotation</code>注解，并获取注解的值。</p>
+</li>
+</ul>
+</li>
+</ol>
+</div>
+        </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+            
+            
+                <div class="post-actions text-center clearfix" id="post-actions">
+                
+                    <a class="donate" href="javascript:;" onclick="krOpenDonateModal()"><i class="fa fa-bitcoin"></i> 打赏</a>
+                
+                
+                    <a class="share" href="javascript:;" onclick="krOpenShareModal()"><i class="fa fa-share-alt"></i> 分享</a>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    
+                </div>
+                <div class="pull-date">
+                    <time datetime="2024-09-20T15:15:27.602Z" itemprop="dateModified">最后编辑：2024-09-20</time>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" What is Java ?（一）" href="/2024/07/15/What-is-Java-（一）/"><i class="fa fa-angle-left"></i> 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" MySQL日志可以用来干啥？" href="/2024/09/17/MySQL日志可以用来干啥？/">下一篇 <i class="fa fa-angle-right"></i></a>
+            </div>
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+            
+                
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/user.jpg" alt="xiaoyan" loading="lazy" decoding="auto" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">是一只时时翻垃圾吃的宅子。</p>
+    </div>
+    <div class="site-meta">
+        <a class="meta-item" href="/archives/">
+            <span class="title">
+                文章
+            </span>
+            <span class="count">
+                3
+            </span>
+        </a>
+        <a class="meta-item" href="/categories/">
+            <span class="title">
+                分类
+            </span>
+            <span class="count">
+                4
+            </span>
+        </a>
+        <a class="meta-item" href="/tags/">
+            <span class="title">
+                标签
+            </span>
+            <span class="count">
+                0
+            </span>
+        </a>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix toc-div-class" >
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar" role="progressbar" aria-label="阅读进度："></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%8B%B7%E8%B4%9D"><span class="toc-number">1.</span> <span class="toc-text">拷贝</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%85%E6%8B%B7%E8%B4%9D%E5%92%8C%E6%B7%B1%E6%8B%B7%E8%B4%9D%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">1.1.</span> <span class="toc-text">浅拷贝和深拷贝的区别</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%85%E6%8B%B7%E8%B4%9D%EF%BC%88Shallow-Copy%EF%BC%89"><span class="toc-number">1.1.1.</span> <span class="toc-text">浅拷贝（Shallow Copy）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%B1%E6%8B%B7%E8%B4%9D%EF%BC%88Deep-Copy%EF%BC%89"><span class="toc-number">1.1.2.</span> <span class="toc-text">深拷贝（Deep Copy）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%BE%E7%A4%BA"><span class="toc-number">1.1.3.</span> <span class="toc-text">图示</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E6%B7%B1%E6%8B%B7%E8%B4%9D%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-number">1.2.</span> <span class="toc-text">实现深拷贝的方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%AE%9E%E7%8E%B0-Cloneable-%E6%8E%A5%E5%8F%A3%E7%9A%84-clone-%E6%96%B9%E6%B3%95"><span class="toc-number">1.2.1.</span> <span class="toc-text">1. 实现 Cloneable 接口的 clone 方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E4%BD%BF%E7%94%A8%E5%BA%8F%E5%88%97%E5%8C%96%E5%92%8C%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96"><span class="toc-number">1.2.2.</span> <span class="toc-text">2. 使用序列化和反序列化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%89%8B%E5%86%99%E9%80%92%E5%BD%92%E5%A4%8D%E5%88%B6"><span class="toc-number">1.2.3.</span> <span class="toc-text">3. 手写递归复制</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B3%9B%E5%9E%8B"><span class="toc-number">2.</span> <span class="toc-text">泛型</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E6%B3%9B%E5%9E%8B%EF%BC%9F"><span class="toc-number">2.1.</span> <span class="toc-text">什么是泛型？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E6%B3%9B%E5%9E%8B%EF%BC%9F"><span class="toc-number">2.2.</span> <span class="toc-text">为什么需要泛型？</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AF%B9%E8%B1%A1"><span class="toc-number">3.</span> <span class="toc-text">对象</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E5%AF%B9%E8%B1%A1%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="toc-number">3.1.</span> <span class="toc-text">创建对象的方式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#new%E7%9A%84%E5%AF%B9%E8%B1%A1%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E5%9B%9E%E6%94%B6%EF%BC%9F"><span class="toc-number">3.2.</span> <span class="toc-text">new的对象什么时候回收？</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%8D%E5%B0%84"><span class="toc-number">4.</span> <span class="toc-text">反射</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%8F%8D%E5%B0%84%EF%BC%9F"><span class="toc-number">4.1.</span> <span class="toc-text">什么是反射？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%8D%E5%B0%84%E5%B8%B8%E8%A7%81%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">4.2.</span> <span class="toc-text">反射常见应用场景</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%8D%E5%B0%84%E7%9A%84%E4%BC%98%E7%BC%BA%E7%82%B9"><span class="toc-number">4.2.1.</span> <span class="toc-text">反射的优缺点</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%98%E7%82%B9"><span class="toc-number">4.2.1.1.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%BA%E7%82%B9"><span class="toc-number">4.2.1.2.</span> <span class="toc-text">缺点</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B3%A8%E8%A7%A3"><span class="toc-number">5.</span> <span class="toc-text">注解</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E8%A7%A3%E7%9A%84%E5%8E%9F%E7%90%86"><span class="toc-number">5.1.</span> <span class="toc-text">注解的原理</span></a></li></ol></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类列表</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">2</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%9F%BA%E7%A1%80/">基础</a><span class="category-list-count">2</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/%E6%97%A5%E5%BF%97/">日志</a><span class="category-list-count">1</span></li></ul></li></ul>
+  </aside>
+
+
+            
+                
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/17/MySQL%E6%97%A5%E5%BF%97%E5%8F%AF%E4%BB%A5%E7%94%A8%E6%9D%A5%E5%B9%B2%E5%95%A5%EF%BC%9F/"><i class="fa fa-book"></i> MySQL日志可以用来干啥？</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/07/20/What-is-Java-%EF%BC%88%E4%BA%8C%EF%BC%89/"><i class="fa fa-book"></i> What is Java ?（二）</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/07/15/What-is-Java-%EF%BC%88%E4%B8%80%EF%BC%89/"><i class="fa fa-book"></i> What is Java ?（一）</a>
+            
+          
+        
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+            
+
+        
+
+                </div>
+    </div>
+</div>
+
+<footer>
+    <div id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2024 XIAOYAN 版权所有.</li>
+                            <li>本站已运行<span id="kr-since">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>自豪地使用 <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a> 主题</li>
+                            <li>站点由 xiaoyan 用 <i class="fa fa-heart" style="color:#d43f57"></i> 搭建</li>
+                        </div>
+                        <!-- 额外的追加注入项 -->
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                <div class="box theme-box" id="theme-toggle">
+                    <span class="fa fa-adjust"></span>
+                </div>
+            </div>
+            <div id="gotop-box" class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+
+    <div id="kr-donate-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseDonateModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-bitcoin"></i>
+            </div>
+            <div class="kr-modal-title">打赏</div>
+            <button class="kr-modal-close" onclick="krCloseDonateModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-donate-message">请我喝一杯冰阔咯~</div>
+            <div class="kr-donate-qr" id="kr-donate-qr">
+                
+            </div>
+            <div class="kr-donate-platforms">
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #1677ff;" title="支付宝" onclick="krDonateModalShowPlatformQR('https://qr.alipay.com/fkx15009k7u0fqrj8auepdf', '#1677ff')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-alipay">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M19 3h-14a2 2 0 0 0 -2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2 -2v-14a2 2 0 0 0 -2 -2z" />
+  <path d="M7 7h10" />
+  <path d="M12 3v7" />
+  <path d="M21 17.314c-2.971 -1.923 -15 -8.779 -15 -1.864c0 1.716 1.52 2.55 2.985 2.55c3.512 0 6.814 -5.425 6.814 -8h-6.604" />
+</svg>
+
+                        </button>
+                    
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #38ad5a;" title="微信支付" onclick="krDonateModalShowPlatformQR('wxp://f2f0hR4eF9Ypa3tpzjWme9fQDyWW3PIGe3WG5oiIakWLmDs', '#38ad5a')">
+                            <i class="fa fa-wechat"></i>
+                        </button>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/donate.min.js"></script>
+
+
+
+
+    <div id="kr-share-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseShareModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-share-alt"></i>
+            </div>
+            <div class="kr-modal-title">分享</div>
+            <button class="kr-modal-close" onclick="krCloseShareModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-share-message">让兄弟萌也来瞅一瞅！</div>
+            <div class="kr-share-qr" id="kr-share-qr"></div>
+            <div class="kr-share-platforms">
+                
+                    <button class="kr-share-platform-button" style="color: #e6162d;" title="QQ" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-qq"></i>
+                    </button>
+                
+                    <button class="kr-share-platform-button" style="color: #25d366;" title="微信" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-weixin"></i>
+                    </button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/share.min.js"></script>
+
+
+
+<!-- 额外的追加注入项 -->
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
+<meting-js
+  server="netease"
+  type="playlist"
+  fixed="true"
+  order="random"
+  id="12613265870">
+</meting-js>
+
+
+
+        <script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
+</script>
+
+
+  <script defer src="/vendors/nprogress@0.2.0/nprogress.js"></script>
+
+
+
+  <script defer src="/vendors/viewerjs@1.11.6/dist/viewer.min.js"></script>
+
+
+<script defer src="/js/kr-core.min.js"></script>
+
+
+  <script defer src="/js/kr-pjax.min.js"></script>
+
+
+<!-- 额外的追加注入项 -->
+
+  <script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+
+
+
+    </body>
+</html>
