@@ -17,18 +17,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <meta name="format-detection" content="telphone=no, email=no" />
   
-    <meta name="keywords" content="" />
+    <meta name="keywords" content="Java8新特性, Object, 异常, 注解" />
   
-  <meta name="description" content="内容：注解、异常 本篇博客是笔者作为初学者记录自己对Java一些基本概念的理解。内容参考了大量网络资源，篇幅很长，旨在作为个人学习笔记，供自己日后回顾和复习。">
+  <meta name="description" content="内容：注解、异常、Object、Java8新特性 本篇博客是笔者作为初学者记录自己对Java一些基本概念的理解。内容参考了大量网络资源，篇幅很长，旨在作为个人学习笔记，供自己日后回顾和复习。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="What is Java ?（三）">
 <meta property="og:url" content="http://example.com/2024/07/23/Java-is-What-%EF%BC%88%E4%B8%89%EF%BC%89/index.html">
 <meta property="og:site_name" content="XIAOYAN">
-<meta property="og:description" content="内容：注解、异常 本篇博客是笔者作为初学者记录自己对Java一些基本概念的理解。内容参考了大量网络资源，篇幅很长，旨在作为个人学习笔记，供自己日后回顾和复习。">
+<meta property="og:description" content="内容：注解、异常、Object、Java8新特性 本篇博客是笔者作为初学者记录自己对Java一些基本概念的理解。内容参考了大量网络资源，篇幅很长，旨在作为个人学习笔记，供自己日后回顾和复习。">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2024-07-23T05:14:00.000Z">
-<meta property="article:modified_time" content="2024-09-20T15:25:45.885Z">
+<meta property="article:modified_time" content="2024-09-21T07:14:38.689Z">
 <meta property="article:author" content="xiaoyan">
+<meta property="article:tag" content="注解">
+<meta property="article:tag" content="异常">
+<meta property="article:tag" content="Object">
+<meta property="article:tag" content="Java8新特性">
 <meta name="twitter:card" content="summary">
   
   <!-- 样式表文件 -->
@@ -167,7 +171,7 @@
                         <i class="fa fa-edit"></i> 
                         
                         
-                            ~9.16K
+                            ~16.69K
                         
                         字
                     </li>
@@ -181,11 +185,11 @@
             
             
                 <div class="kratos-post-inner-toc toc-div-class" >
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B3%A8%E8%A7%A3"><span class="toc-number">1.</span> <span class="toc-text">注解</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E8%A7%A3%E7%9A%84%E5%8E%9F%E7%90%86"><span class="toc-number">1.1.</span> <span class="toc-text">注解的原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E4%BD%9C%E7%94%A8%E5%9F%9F"><span class="toc-number">1.2.</span> <span class="toc-text">应用作用域</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E7%B1%BB"><span class="toc-number">1.2.1.</span> <span class="toc-text">1. 类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%96%B9%E6%B3%95"><span class="toc-number">1.2.2.</span> <span class="toc-text">2. 方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%B1%9E%E6%80%A7%EF%BC%88%E5%AD%97%E6%AE%B5%EF%BC%89"><span class="toc-number">1.2.3.</span> <span class="toc-text">3. 属性（字段）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E4%BD%9C%E7%94%A8%E5%9F%9F"><span class="toc-number">1.2.4.</span> <span class="toc-text">其他作用域</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BC%82%E5%B8%B8"><span class="toc-number">2.</span> <span class="toc-text">异常</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%95%A5%E6%98%AF%E5%BC%82%E5%B8%B8%EF%BC%9F"><span class="toc-number">2.1.</span> <span class="toc-text">啥是异常？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Error"><span class="toc-number">2.1.1.</span> <span class="toc-text">Error</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Exception"><span class="toc-number">2.1.2.</span> <span class="toc-text">Exception</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E6%97%B6%E5%BC%82%E5%B8%B8%EF%BC%88Checked-Exception%EF%BC%89"><span class="toc-number">2.1.2.1.</span> <span class="toc-text">编译时异常（Checked Exception）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%90%E8%A1%8C%E6%97%B6%E5%BC%82%E5%B8%B8%EF%BC%88Unchecked-Exception%EF%BC%89"><span class="toc-number">2.1.2.2.</span> <span class="toc-text">运行时异常（Unchecked Exception）</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%9C%BA%E5%88%B6"><span class="toc-number">2.2.</span> <span class="toc-text">异常处理机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8A%9B%E5%87%BA%E5%BC%82%E5%B8%B8%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E7%94%A8throws%EF%BC%9F"><span class="toc-number">2.3.</span> <span class="toc-text">抛出异常为什么不用throws？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#try-catch%E7%9A%84%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F"><span class="toc-number">2.4.</span> <span class="toc-text">try-catch的执行顺序</span></a></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B3%A8%E8%A7%A3"><span class="toc-number">1.</span> <span class="toc-text">注解</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E8%A7%A3%E7%9A%84%E5%8E%9F%E7%90%86"><span class="toc-number">1.1.</span> <span class="toc-text">注解的原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E4%BD%9C%E7%94%A8%E5%9F%9F"><span class="toc-number">1.2.</span> <span class="toc-text">应用作用域</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E7%B1%BB"><span class="toc-number">1.2.1.</span> <span class="toc-text">1. 类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%96%B9%E6%B3%95"><span class="toc-number">1.2.2.</span> <span class="toc-text">2. 方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%B1%9E%E6%80%A7%EF%BC%88%E5%AD%97%E6%AE%B5%EF%BC%89"><span class="toc-number">1.2.3.</span> <span class="toc-text">3. 属性（字段）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E4%BD%9C%E7%94%A8%E5%9F%9F"><span class="toc-number">1.2.4.</span> <span class="toc-text">其他作用域</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BC%82%E5%B8%B8"><span class="toc-number">2.</span> <span class="toc-text">异常</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%95%A5%E6%98%AF%E5%BC%82%E5%B8%B8%EF%BC%9F"><span class="toc-number">2.1.</span> <span class="toc-text">啥是异常？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Error"><span class="toc-number">2.1.1.</span> <span class="toc-text">Error</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Exception"><span class="toc-number">2.1.2.</span> <span class="toc-text">Exception</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E6%97%B6%E5%BC%82%E5%B8%B8%EF%BC%88Checked-Exception%EF%BC%89"><span class="toc-number">2.1.2.1.</span> <span class="toc-text">编译时异常（Checked Exception）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%90%E8%A1%8C%E6%97%B6%E5%BC%82%E5%B8%B8%EF%BC%88Unchecked-Exception%EF%BC%89"><span class="toc-number">2.1.2.2.</span> <span class="toc-text">运行时异常（Unchecked Exception）</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%9C%BA%E5%88%B6"><span class="toc-number">2.2.</span> <span class="toc-text">异常处理机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8A%9B%E5%87%BA%E5%BC%82%E5%B8%B8%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E7%94%A8throws%EF%BC%9F"><span class="toc-number">2.3.</span> <span class="toc-text">抛出异常为什么不用throws？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#try-catch%E7%9A%84%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F"><span class="toc-number">2.4.</span> <span class="toc-text">try-catch的执行顺序</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Object"><span class="toc-number">3.</span> <span class="toc-text">Object</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%80%9C-%E2%80%9D%E4%B8%8E%E2%80%9Cequals%E2%80%9D%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB%EF%BC%9F"><span class="toc-number">3.1.</span> <span class="toc-text">“&#x3D;&#x3D;”与“equals”有什么区别？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%80%9Cequals%E2%80%9D%E4%B8%8E%E2%80%9ChashCode%E2%80%9D"><span class="toc-number">3.2.</span> <span class="toc-text">“equals”与“hashCode”</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#StringBuilder%E5%92%8CStringBuffer"><span class="toc-number">3.3.</span> <span class="toc-text">StringBuilder和StringBuffer</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Java-1-8-%E6%96%B0%E7%89%B9%E6%80%A7"><span class="toc-number">4.</span> <span class="toc-text">Java 1.8 新特性</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Stream-API"><span class="toc-number">4.1.</span> <span class="toc-text">Stream API</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Stream%E6%B5%81%E7%9A%84%E5%B9%B6%E8%A1%8CAPI"><span class="toc-number">4.2.</span> <span class="toc-text">Stream流的并行API</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CompletableFuture"><span class="toc-number">4.3.</span> <span class="toc-text">CompletableFuture</span></a></li></ol></li></ol>
                 </div>
             
             <hr />
-            <div itemprop="articleBody"><p>内容：<code>注解</code>、<code>异常</code></p>
+            <div itemprop="articleBody"><p>内容：<code>注解</code>、<code>异常</code>、<code>Object</code>、<code>Java8新特性</code></p>
 <p>本篇博客是笔者作为初学者记录自己对Java一些基本概念的理解。内容参考了大量网络资源，篇幅很长，旨在作为个人学习笔记，供自己日后回顾和复习。</p>
 <span id="more"></span>
 
@@ -361,6 +365,115 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Executing try block</span><br><span class="line">Executing finally block</span><br><span class="line">Return value: b</span><br></pre></td></tr></table></figure>
 
 <p>在这个示例中，<code>try</code>块中的<code>return &#39;a&#39;</code>语句先执行，但被<code>finally</code>块中的<code>return &#39;b&#39;</code>语句覆盖，因此最终返回值为<code>&#39;b&#39;</code>。</p>
+<h1 id="Object"><a href="#Object" class="headerlink" title="Object"></a>Object</h1><h2 id="“-”与“equals”有什么区别？"><a href="#“-”与“equals”有什么区别？" class="headerlink" title="“&#x3D;&#x3D;”与“equals”有什么区别？"></a>“&#x3D;&#x3D;”与“equals”有什么区别？</h2><p>对于字符串变量，<code>==</code>与<code>equals</code>方法是不同的。<code>==</code>判断的是两个对象的引用是否相同，即比较两个对象的内存首地址是否指向同一个对象，而<code>equals</code>则判断的是两个对象的值是否相同。</p>
+<p>示例代码片段，对于字符串来说：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">StringComparisonExample</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">str1</span> <span class="operator">=</span> <span class="string">&quot;hello&quot;</span>;</span><br><span class="line">        <span class="type">String</span> <span class="variable">str2</span> <span class="operator">=</span> <span class="string">&quot;hello&quot;</span>;</span><br><span class="line">        <span class="type">String</span> <span class="variable">str3</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">String</span>(<span class="string">&quot;hello&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 使用 == 比较</span></span><br><span class="line">        System.out.println(str1 == str2); <span class="comment">// true，因为str1和str2指向同一个字符串常量池中的对象</span></span><br><span class="line">        System.out.println(str1 == str3); <span class="comment">// false，因为str3是新创建的对象，内存地址不同</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 使用 equals 比较</span></span><br><span class="line">        System.out.println(str1.equals(str2)); <span class="comment">// true，值相同</span></span><br><span class="line">        System.out.println(str1.equals(str3)); <span class="comment">// true，值相同</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对于非字符串来说，若没有对<code>equals</code>方法重写，则<code>==</code>和<code>equals</code>是相同的，都是比较两个对象的内存首地址是否相同，即比较两个对象的引用是否指向同一个变量。</p>
+<p>示例代码片段，对于非字符串对象：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ObjectComparisonExample</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">Object</span> <span class="variable">obj1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Object</span>();</span><br><span class="line">        <span class="type">Object</span> <span class="variable">obj2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Object</span>();</span><br><span class="line">        <span class="type">Object</span> <span class="variable">obj3</span> <span class="operator">=</span> obj1;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 使用 == 比较</span></span><br><span class="line">        System.out.println(obj1 == obj2); <span class="comment">// false，内存地址不同</span></span><br><span class="line">        System.out.println(obj1 == obj3); <span class="comment">// true，内存地址相同</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 使用 equals 比较</span></span><br><span class="line">        System.out.println(obj1.equals(obj2)); <span class="comment">// false，默认比较内存地址</span></span><br><span class="line">        System.out.println(obj1.equals(obj3)); <span class="comment">// true，默认比较内存地址</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="“equals”与“hashCode”"><a href="#“equals”与“hashCode”" class="headerlink" title="“equals”与“hashCode”"></a>“equals”与“hashCode”</h2><p><code>equals</code>方法用于比较两个对象是否相等，而<code>hashCode</code>方法返回对象的哈希码值。在Java中，如果两个对象通过<code>equals</code>方法比较相等，那么它们的<code>hashCode</code>值必须相同。反之，如果两个对象的<code>hashCode</code>值相同，它们不一定相等。</p>
+<p><strong>示例代码片段</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">EqualsHashCodeExample</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">str1</span> <span class="operator">=</span> <span class="string">&quot;hello&quot;</span>;</span><br><span class="line">        <span class="type">String</span> <span class="variable">str2</span> <span class="operator">=</span> <span class="string">&quot;hello&quot;</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 比较 equals</span></span><br><span class="line">        System.out.println(str1.equals(str2)); <span class="comment">// true</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 比较 hashCode</span></span><br><span class="line">        System.out.println(str1.hashCode()); <span class="comment">// 输出哈希码值</span></span><br><span class="line">        System.out.println(str2.hashCode()); <span class="comment">// 输出相同的哈希码值</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="StringBuilder和StringBuffer"><a href="#StringBuilder和StringBuffer" class="headerlink" title="StringBuilder和StringBuffer"></a>StringBuilder和StringBuffer</h2><p>由于<code>String</code>类型是不可变的（immutable），每次对<code>String</code>进行修改操作时，都会创建一个新的<code>String</code>对象，这可能会导致性能问题。为了解决这个问题，Java提供了<code>StringBuilder</code>和<code>StringBuffer</code>类，它们是可变的（mutable），允许在原有对象上进行修改操作。</p>
+<p><strong>区别</strong></p>
+<ul>
+<li><p><strong>线程安全</strong>：</p>
+<ul>
+<li><code>StringBuffer</code>是线程安全的，适用于多线程环境。</li>
+<li><code>StringBuilder</code>不是线程安全的，适用于单线程环境，性能更高。</li>
+</ul>
+</li>
+<li><p><strong>性能</strong>：</p>
+<ul>
+<li>通常情况下，<code>StringBuilder</code>的性能优于<code>StringBuffer</code>，因为<code>StringBuffer</code>需要维护线程安全，会带来额外的开销。</li>
+<li><code>String</code>的性能通常是最差的，因为每次修改都会创建新的对象。</li>
+</ul>
+</li>
+<li><p><strong>使用场景</strong>：</p>
+<ul>
+<li>在单线程环境中，推荐使用<code>StringBuilder</code>以获得最佳性能。</li>
+<li>在多线程环境中，如果需要线程安全，使用<code>StringBuffer</code>。</li>
+</ul>
+</li>
+</ul>
+<p><strong>示例代码片段</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">StringBuilderStringBufferExample</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="comment">// 使用 StringBuilder</span></span><br><span class="line">        <span class="type">StringBuilder</span> <span class="variable">sb</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">StringBuilder</span>(<span class="string">&quot;Hello&quot;</span>);</span><br><span class="line">        sb.append(<span class="string">&quot; World&quot;</span>);</span><br><span class="line">        System.out.println(sb.toString()); <span class="comment">// 输出 &quot;Hello World&quot;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 使用 StringBuffer</span></span><br><span class="line">        <span class="type">StringBuffer</span> <span class="variable">sbuf</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">StringBuffer</span>(<span class="string">&quot;Hello&quot;</span>);</span><br><span class="line">        sbuf.append(<span class="string">&quot; World&quot;</span>);</span><br><span class="line">        System.out.println(sbuf.toString()); <span class="comment">// 输出 &quot;Hello World&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="Java-1-8-新特性"><a href="#Java-1-8-新特性" class="headerlink" title="Java 1.8 新特性"></a>Java 1.8 新特性</h1><h2 id="Stream-API"><a href="#Stream-API" class="headerlink" title="Stream API"></a>Stream API</h2><p>Java 8 引入了 Stream API，提供了一种更加高效的数据处理方式，特别是对于集合的操作如过滤、排序、映射等。使用 Stream 能够充分利用多核处理器的优势进行并行处理。</p>
+<p><strong>示例</strong></p>
+<p>以下是一个简单的示例，展示了如何使用 Stream API 对集合进行操作：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Arrays;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"><span class="keyword">import</span> java.util.stream.Collectors;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">StreamExample</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="comment">// 创建一个包含整数的列表</span></span><br><span class="line">        List&lt;Integer&gt; numbers = Arrays.asList(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">10</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 使用 Stream API 过滤偶数并计算平方</span></span><br><span class="line">        List&lt;Integer&gt; evenSquares = numbers.stream()</span><br><span class="line">                .filter(n -&gt; n % <span class="number">2</span> == <span class="number">0</span>) <span class="comment">// 过滤偶数</span></span><br><span class="line">                .map(n -&gt; n * n) <span class="comment">// 计算平方</span></span><br><span class="line">                .collect(Collectors.toList()); <span class="comment">// 收集结果到列表</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 输出结果</span></span><br><span class="line">        System.out.println(<span class="string">&quot;Even squares: &quot;</span> + evenSquares);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 使用并行流进行相同的操作</span></span><br><span class="line">        List&lt;Integer&gt; evenSquaresParallel = numbers.parallelStream()</span><br><span class="line">                .filter(n -&gt; n % <span class="number">2</span> == <span class="number">0</span>) <span class="comment">// 过滤偶数</span></span><br><span class="line">                .map(n -&gt; n * n) <span class="comment">// 计算平方</span></span><br><span class="line">                .collect(Collectors.toList()); <span class="comment">// 收集结果到列表</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 输出结果</span></span><br><span class="line">        System.out.println(<span class="string">&quot;Even squares (parallel): &quot;</span> + evenSquaresParallel);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>解释</strong></p>
+<ol>
+<li><p><strong>创建列表</strong>：</p>
+<ul>
+<li>使用 <code>Arrays.asList</code> 创建一个包含整数的列表。</li>
+</ul>
+</li>
+<li><p><strong>使用 Stream API</strong>：</p>
+<ul>
+<li><code>numbers.stream()</code>：创建一个顺序流。</li>
+<li><code>filter(n -&gt; n % 2 == 0)</code>：过滤出偶数。</li>
+<li><code>map(n -&gt; n * n)</code>：将每个偶数计算平方。</li>
+<li><code>collect(Collectors.toList())</code>：将结果收集到一个列表中。</li>
+</ul>
+</li>
+<li><p><strong>使用并行流</strong>：</p>
+<ul>
+<li><code>numbers.parallelStream()</code>：创建一个并行流，充分利用多核处理器的优势。</li>
+</ul>
+</li>
+</ol>
+<p><strong>输出</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Even squares: [4, 16, 36, 64, 100]</span><br><span class="line">Even squares (parallel): [4, 16, 36, 64, 100]</span><br></pre></td></tr></table></figure>
+
+<div class="panel panel-info">
+    <div class="panel-title"><i class="fa fa-info"></i>总结</div>
+    <div class="panel-body">
+        <p>Stream API 提供了一种简洁、高效的方式来处理集合数据，支持顺序和并行处理，能够显著提高数据处理的性能。通过合理使用 Stream API，可以简化代码并提高程序的可读性和可维护性。</p>
+
+    </div>
+    </div>
+
+<h2 id="Stream流的并行API"><a href="#Stream流的并行API" class="headerlink" title="Stream流的并行API"></a>Stream流的并行API</h2><p>即 <code>ParallelStream</code>。并行流其实带着“分而治之”的思想，在处理源数据时，将数据分成多个子流，然后将处理结果汇总为一个流对象。底层逻辑是使用 Fork&#x2F;Join 框架来实现并行处理。</p>
+<p>对CPU密集型的任务来说，并行流使用ForkJoinPool线程池，为每个CPU分配一个任务，这是非常有效率的，但是如果任务不是CPU密集的，而是I&#x2F;O密集的，并且任务数相对线程数比较大，那么直接用Parallelstream并不是很好的选择。</p>
+<h2 id="CompletableFuture"><a href="#CompletableFuture" class="headerlink" title="CompletableFuture"></a>CompletableFuture</h2><p><code>CompletableFuture</code> 是 Java 8 引入的一个类，用于支持异步编程和非阻塞操作。它实现了 <code>Future</code> 接口，并提供了更强大的功能，如组合多个异步任务、处理异常、以及在任务完成时执行回调等。</p>
+<p><strong>主要功能</strong></p>
+<ol>
+<li><p><strong>异步执行任务</strong>：使用 <code>CompletableFuture.supplyAsync</code> 或 <code>CompletableFuture.runAsync</code> 方法来异步执行任务。</p>
+</li>
+<li><p><strong>任务组合</strong>：使用 <code>thenApply</code>、<code>thenAccept</code>、<code>thenRun</code> 等方法来组合多个异步任务。</p>
+</li>
+<li><p><strong>异常处理</strong>：使用 <code>exceptionally</code> 方法来处理异常。</p>
+</li>
+<li><p><strong>任务完成时的回调</strong>：使用 <code>whenComplete</code> 方法在任务完成时执行回调。</p>
+</li>
+</ol>
+<p><strong>示例</strong></p>
+<p>以下是一个简单的示例，展示了如何使用 <code>CompletableFuture</code> 进行异步编程：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.concurrent.CompletableFuture;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.ExecutionException;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">CompletableFutureExample</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="comment">// 异步执行任务</span></span><br><span class="line">        CompletableFuture&lt;String&gt; future = CompletableFuture.supplyAsync(() -&gt; &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                Thread.sleep(<span class="number">1000</span>); <span class="comment">// 模拟耗时操作</span></span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;Hello, CompletableFuture!&quot;</span>;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 任务完成时的回调</span></span><br><span class="line">        future.thenAccept(result -&gt; &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;Result: &quot;</span> + result);</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 异常处理</span></span><br><span class="line">        future.exceptionally(ex -&gt; &#123;</span><br><span class="line">            System.err.println(<span class="string">&quot;Exception: &quot;</span> + ex.getMessage());</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 等待任务完成</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            future.get();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException | ExecutionException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>解释</strong></p>
+<ol>
+<li><p><strong>异步执行任务</strong>：<code>CompletableFuture.supplyAsync(() -&gt; &#123; ... &#125;)</code>：异步执行一个返回值为 <code>String</code> 的任务。</p>
+</li>
+<li><p><strong>任务完成时的回调</strong>：<code>future.thenAccept(result -&gt; &#123; ... &#125;)</code>：在任务完成时执行回调，输出结果。</p>
+</li>
+<li><p><strong>异常处理</strong>：<code>future.exceptionally(ex -&gt; &#123; ... &#125;)</code>：处理任务执行过程中可能抛出的异常。</p>
+</li>
+<li><p><strong>等待任务完成</strong>：<code>future.get()</code>：等待任务完成并获取结果。</p>
+</li>
+</ol>
+<p><strong>输出</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Result: Hello, CompletableFuture!</span><br></pre></td></tr></table></figure>
+
+<p><strong>再来一个简单的组合示例：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Example</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">ExecutorService</span> <span class="variable">executor</span> <span class="operator">=</span> Executors.newFixedThreadPool(<span class="number">5</span>);</span><br><span class="line"></span><br><span class="line">        CompletableFuture&lt;String&gt; cf1 = CompletableFuture.supplyAsync(() -&gt; &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;执行step 1&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;step1 result&quot;</span>;</span><br><span class="line">        &#125;, executor);</span><br><span class="line"></span><br><span class="line">        CompletableFuture&lt;String&gt; cf2 = CompletableFuture.supplyAsync(() -&gt; &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;执行step 2&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;step2 result&quot;</span>;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        cf1.thenCombine(cf2, (result1, result2) -&gt; &#123;</span><br><span class="line">            System.out.println(result1 + <span class="string">&quot; + &quot;</span> + result2);</span><br><span class="line">            System.out.println(<span class="string">&quot;执行step 3&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;step3 result&quot;</span>;</span><br><span class="line">        &#125;).thenAccept(result3 -&gt; System.out.println(result3));</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 关闭线程池</span></span><br><span class="line">        executor.shutdown();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 </div>
         </div>
         
@@ -380,10 +493,10 @@
             <div class="footer-tag clearfix">
                 <div class="pull-left">
                 <i class="fa fa-tags"></i>
-                    
+                    <a class="tag-none-link" href="/tags/Java8%E6%96%B0%E7%89%B9%E6%80%A7/" rel="tag">Java8新特性</a>, <a class="tag-none-link" href="/tags/Object/" rel="tag">Object</a>, <a class="tag-none-link" href="/tags/%E5%BC%82%E5%B8%B8/" rel="tag">异常</a>, <a class="tag-none-link" href="/tags/%E6%B3%A8%E8%A7%A3/" rel="tag">注解</a>
                 </div>
                 <div class="pull-date">
-                    <time datetime="2024-09-20T15:25:45.885Z" itemprop="dateModified">最后编辑：2024-09-20</time>
+                    <time datetime="2024-09-21T07:14:38.689Z" itemprop="dateModified">最后编辑：2024-09-21</time>
                 </div>
             </div>
         </footer>
@@ -397,7 +510,7 @@
             
             
             <div class="nav-next clearfix">
-                <a title=" MySQL日志可以用来干啥？" href="/2024/09/17/MySQL日志可以用来干啥？/">下一篇 <i class="fa fa-angle-right"></i></a>
+                <a title=" What is Java ?（四）" href="/2024/07/24/What-is-Java-（四）/">下一篇 <i class="fa fa-angle-right"></i></a>
             </div>
             
         </nav>
@@ -432,7 +545,7 @@
                 文章
             </span>
             <span class="count">
-                4
+                10
             </span>
         </a>
         <a class="meta-item" href="/categories/">
@@ -440,7 +553,7 @@
                 分类
             </span>
             <span class="count">
-                4
+                5
             </span>
         </a>
         <a class="meta-item" href="/tags/">
@@ -448,7 +561,7 @@
                 标签
             </span>
             <span class="count">
-                0
+                17
             </span>
         </a>
     </div>
@@ -464,19 +577,26 @@
         <span class="toc-progress-bar" role="progressbar" aria-label="阅读进度："></span>
     </h4>
     <div class="textwidget">
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B3%A8%E8%A7%A3"><span class="toc-number">1.</span> <span class="toc-text">注解</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E8%A7%A3%E7%9A%84%E5%8E%9F%E7%90%86"><span class="toc-number">1.1.</span> <span class="toc-text">注解的原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E4%BD%9C%E7%94%A8%E5%9F%9F"><span class="toc-number">1.2.</span> <span class="toc-text">应用作用域</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E7%B1%BB"><span class="toc-number">1.2.1.</span> <span class="toc-text">1. 类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%96%B9%E6%B3%95"><span class="toc-number">1.2.2.</span> <span class="toc-text">2. 方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%B1%9E%E6%80%A7%EF%BC%88%E5%AD%97%E6%AE%B5%EF%BC%89"><span class="toc-number">1.2.3.</span> <span class="toc-text">3. 属性（字段）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E4%BD%9C%E7%94%A8%E5%9F%9F"><span class="toc-number">1.2.4.</span> <span class="toc-text">其他作用域</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BC%82%E5%B8%B8"><span class="toc-number">2.</span> <span class="toc-text">异常</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%95%A5%E6%98%AF%E5%BC%82%E5%B8%B8%EF%BC%9F"><span class="toc-number">2.1.</span> <span class="toc-text">啥是异常？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Error"><span class="toc-number">2.1.1.</span> <span class="toc-text">Error</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Exception"><span class="toc-number">2.1.2.</span> <span class="toc-text">Exception</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E6%97%B6%E5%BC%82%E5%B8%B8%EF%BC%88Checked-Exception%EF%BC%89"><span class="toc-number">2.1.2.1.</span> <span class="toc-text">编译时异常（Checked Exception）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%90%E8%A1%8C%E6%97%B6%E5%BC%82%E5%B8%B8%EF%BC%88Unchecked-Exception%EF%BC%89"><span class="toc-number">2.1.2.2.</span> <span class="toc-text">运行时异常（Unchecked Exception）</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%9C%BA%E5%88%B6"><span class="toc-number">2.2.</span> <span class="toc-text">异常处理机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8A%9B%E5%87%BA%E5%BC%82%E5%B8%B8%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E7%94%A8throws%EF%BC%9F"><span class="toc-number">2.3.</span> <span class="toc-text">抛出异常为什么不用throws？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#try-catch%E7%9A%84%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F"><span class="toc-number">2.4.</span> <span class="toc-text">try-catch的执行顺序</span></a></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B3%A8%E8%A7%A3"><span class="toc-number">1.</span> <span class="toc-text">注解</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E8%A7%A3%E7%9A%84%E5%8E%9F%E7%90%86"><span class="toc-number">1.1.</span> <span class="toc-text">注解的原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E4%BD%9C%E7%94%A8%E5%9F%9F"><span class="toc-number">1.2.</span> <span class="toc-text">应用作用域</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E7%B1%BB"><span class="toc-number">1.2.1.</span> <span class="toc-text">1. 类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%96%B9%E6%B3%95"><span class="toc-number">1.2.2.</span> <span class="toc-text">2. 方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%B1%9E%E6%80%A7%EF%BC%88%E5%AD%97%E6%AE%B5%EF%BC%89"><span class="toc-number">1.2.3.</span> <span class="toc-text">3. 属性（字段）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E4%BD%9C%E7%94%A8%E5%9F%9F"><span class="toc-number">1.2.4.</span> <span class="toc-text">其他作用域</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BC%82%E5%B8%B8"><span class="toc-number">2.</span> <span class="toc-text">异常</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%95%A5%E6%98%AF%E5%BC%82%E5%B8%B8%EF%BC%9F"><span class="toc-number">2.1.</span> <span class="toc-text">啥是异常？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Error"><span class="toc-number">2.1.1.</span> <span class="toc-text">Error</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Exception"><span class="toc-number">2.1.2.</span> <span class="toc-text">Exception</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E6%97%B6%E5%BC%82%E5%B8%B8%EF%BC%88Checked-Exception%EF%BC%89"><span class="toc-number">2.1.2.1.</span> <span class="toc-text">编译时异常（Checked Exception）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%90%E8%A1%8C%E6%97%B6%E5%BC%82%E5%B8%B8%EF%BC%88Unchecked-Exception%EF%BC%89"><span class="toc-number">2.1.2.2.</span> <span class="toc-text">运行时异常（Unchecked Exception）</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%9C%BA%E5%88%B6"><span class="toc-number">2.2.</span> <span class="toc-text">异常处理机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8A%9B%E5%87%BA%E5%BC%82%E5%B8%B8%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E7%94%A8throws%EF%BC%9F"><span class="toc-number">2.3.</span> <span class="toc-text">抛出异常为什么不用throws？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#try-catch%E7%9A%84%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F"><span class="toc-number">2.4.</span> <span class="toc-text">try-catch的执行顺序</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Object"><span class="toc-number">3.</span> <span class="toc-text">Object</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%80%9C-%E2%80%9D%E4%B8%8E%E2%80%9Cequals%E2%80%9D%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB%EF%BC%9F"><span class="toc-number">3.1.</span> <span class="toc-text">“&#x3D;&#x3D;”与“equals”有什么区别？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%80%9Cequals%E2%80%9D%E4%B8%8E%E2%80%9ChashCode%E2%80%9D"><span class="toc-number">3.2.</span> <span class="toc-text">“equals”与“hashCode”</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#StringBuilder%E5%92%8CStringBuffer"><span class="toc-number">3.3.</span> <span class="toc-text">StringBuilder和StringBuffer</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Java-1-8-%E6%96%B0%E7%89%B9%E6%80%A7"><span class="toc-number">4.</span> <span class="toc-text">Java 1.8 新特性</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Stream-API"><span class="toc-number">4.1.</span> <span class="toc-text">Stream API</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Stream%E6%B5%81%E7%9A%84%E5%B9%B6%E8%A1%8CAPI"><span class="toc-number">4.2.</span> <span class="toc-text">Stream流的并行API</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CompletableFuture"><span class="toc-number">4.3.</span> <span class="toc-text">CompletableFuture</span></a></li></ol></li></ol>
     </div>
 </aside>
                 
                 
   <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
     <h4 class="widget-title"><i class="fa fa-folder"></i>分类列表</h4>
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">3</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%9F%BA%E7%A1%80/">基础</a><span class="category-list-count">3</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/%E6%97%A5%E5%BF%97/">日志</a><span class="category-list-count">1</span></li></ul></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">9</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%9F%BA%E7%A1%80/">基础</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E9%9B%86%E5%90%88/">集合</a><span class="category-list-count">5</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/%E6%97%A5%E5%BF%97/">日志</a><span class="category-list-count">1</span></li></ul></li></ul>
   </aside>
 
 
             
                 
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/I-O/" style="font-size: 0.6em;">I/O</a> <a href="/tags/Java8%E6%96%B0%E7%89%B9%E6%80%A7/" style="font-size: 0.6em;">Java8新特性</a> <a href="/tags/Java%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" style="font-size: 0.6em;">Java基本概念</a> <a href="/tags/List/" style="font-size: 0.6em;">List</a> <a href="/tags/Map/" style="font-size: 0.8em;">Map</a> <a href="/tags/Object/" style="font-size: 0.6em;">Object</a> <a href="/tags/Set/" style="font-size: 0.6em;">Set</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 0.6em;">其他</a> <a href="/tags/%E5%8F%8D%E5%B0%84/" style="font-size: 0.6em;">反射</a> <a href="/tags/%E5%AF%B9%E8%B1%A1/" style="font-size: 0.6em;">对象</a> <a href="/tags/%E5%BA%8F%E5%88%97%E5%8C%96/" style="font-size: 0.6em;">序列化</a> <a href="/tags/%E5%BC%82%E5%B8%B8/" style="font-size: 0.6em;">异常</a> <a href="/tags/%E6%8B%B7%E8%B4%9D/" style="font-size: 0.6em;">拷贝</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" style="font-size: 0.6em;">数据类型</a> <a href="/tags/%E6%B3%9B%E5%9E%8B/" style="font-size: 0.6em;">泛型</a> <a href="/tags/%E6%B3%A8%E8%A7%A3/" style="font-size: 0.6em;">注解</a> <a href="/tags/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/" style="font-size: 0.6em;">面向对象</a>
+      </div>
+  </aside>
+
             
                 
   <aside id="krw-posts" class="widget widget-kratos-posts">
@@ -493,22 +613,38 @@
         
           
           
-            <a class="list-group-item" href="/2024/07/23/Java-is-What-%EF%BC%88%E4%B8%89%EF%BC%89/"><i class="fa fa-book"></i> What is Java ?（三）</a>
+            <a class="list-group-item" href="/2024/09/09/Java%E9%9B%86%E5%90%88%EF%BC%88Set%E7%AF%87%EF%BC%89/"><i class="fa fa-book"></i> Java集合（Set篇）</a>
             
           
         
           
           
-            <a class="list-group-item" href="/2024/07/20/What-is-Java-%EF%BC%88%E4%BA%8C%EF%BC%89/"><i class="fa fa-book"></i> What is Java ?（二）</a>
+            <a class="list-group-item" href="/2024/09/09/Java%E9%9B%86%E5%90%88%EF%BC%88Map%E7%AF%87-%E4%B8%8A%EF%BC%89/"><i class="fa fa-book"></i> Java集合（Map篇-上）</a>
             
           
         
           
           
-            <a class="list-group-item" href="/2024/07/15/What-is-Java-%EF%BC%88%E4%B8%80%EF%BC%89/"><i class="fa fa-book"></i> What is Java ?（一）</a>
+            <a class="list-group-item" href="/2024/09/09/Java%E9%9B%86%E5%90%88%EF%BC%88Map%E7%AF%87-%E4%B8%8B%EF%BC%89/"><i class="fa fa-book"></i> Java集合（Map篇-下）</a>
             
           
         
+          
+          
+            <a class="list-group-item" href="/2024/09/09/Java%E9%9B%86%E5%90%88%EF%BC%88List%E7%AF%87%EF%BC%89/"><i class="fa fa-book"></i> Java集合（List篇）</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
       </ul>
   </div>
   </aside>

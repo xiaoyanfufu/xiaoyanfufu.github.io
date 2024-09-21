@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  
+    <link rel="icon" href="/images/earthstars.png">
+  
+  
+  <title>Java集合（Map篇-下） | XIAOYAN</title>
+  <link rel="canonical" href="http://example.com/2024/09/09/Java%E9%9B%86%E5%90%88%EF%BC%88Map%E7%AF%87-%E4%B8%8B%EF%BC%89/">
+  <meta name="author" content="xiaoyan" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="Map" />
+  
+  <meta name="description" content="主要收集了集合的一些Map知识。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java集合（Map篇-下）">
+<meta property="og:url" content="http://example.com/2024/09/09/Java%E9%9B%86%E5%90%88%EF%BC%88Map%E7%AF%87-%E4%B8%8B%EF%BC%89/index.html">
+<meta property="og:site_name" content="XIAOYAN">
+<meta property="og:description" content="主要收集了集合的一些Map知识。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409212200339.png">
+<meta property="article:published_time" content="2024-09-09T05:14:02.000Z">
+<meta property="article:modified_time" content="2024-09-21T16:18:14.117Z">
+<meta property="article:author" content="xiaoyan">
+<meta property="article:tag" content="Map">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409212200339.png">
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kr-core.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/highlight.js/night-eighties.min.css" media="all"></link>
+  
+  <link rel="stylesheet" id="theme-light-css" href="/css/kr-theme/light.min.css" media="all"></link>
+  <link rel="stylesheet" id="theme-dark-css" href="/css/kr-theme/dark.min.css" media="(prefers-color-scheme: dark)"></link>
+  <script src="/js/kr-theme.min.js"></script>
+  <link rel="stylesheet" id="fontawe-css" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="nprogress-css" href="/vendors/nprogress@0.2.0/nprogress.css" media="all"></link>
+  
+  
+    <link rel="stylesheet" href="/vendors/viewerjs@1.11.6/dist/viewer.min.css"></link>
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  
+    <script src="/vendors/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+  
+  <!-- 自定义站点横幅和背景 -->
+  <style>
+    
+      .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_light.png');
+      }
+      html[data-theme="dark"] .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_dark.png');
+      }
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+        html[data-theme="dark"] body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+      }
+    
+    
+      .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+      html[data-theme="dark"] .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+    
+  </style>
+
+  <!-- 额外的追加注入项 -->
+  
+    <link rel="stylesheet" href="/css/custom.css">
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    <li>
+                                        
+                                            <a target="_blank" rel="noopener" href="https://xiaoyanfufu.top/">
+                                        
+                                            
+                                                <i class="fa fa-home"></i>
+                                            
+                                            首页
+                                        </a>
+                                        
+                                    </li>
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">XIAOYAN</a></div>
+                    <div id="kratos-nav-toggle-wrapper" class="nav-toggle">
+                        <a id="kratos-nav-toggle" class="kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>XIAOYAN</h2> <br />
+                        <span>山重水复疑无路，柳暗花明又一村。</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+
+
+        
+
+            
+
+            <section class="kr-main-col col-md-8">
+
+        
+
+            <article itemscope itemtype="https://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/09/Java%E9%9B%86%E5%90%88%EF%BC%88Map%E7%AF%87-%E4%B8%8B%EF%BC%89/">
+    <div class="kratos-hentry kratos-page-inner clearfix">
+        <header class="kratos-page-header">
+            
+                <h1 class="kratos-page-title text-center" itemprop="name headline">Java集合（Map篇-下）</h1>
+            
+            <ul class="kratos-page-meta text-center">
+                <li><time datetime="2024-09-09T05:14:02.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2024-09-09</time></li>
+                <li itemprop="author" itemscope itemtype="https://schema.org/Person">
+                    <i class="fa fa-user"></i> 作者 <span itemprop="name">xiaoyan</span>
+                </li>
+                
+                    <li>
+                        <i class="fa fa-edit"></i> 
+                        
+                        
+                            ~6.32K
+                        
+                        字
+                    </li>
+                
+                
+                
+            </ul>
+        </header>
+        <div class="kratos-page-content kr-post">
+            
+            
+            
+                <div class="kratos-post-inner-toc toc-div-class" >
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#HashMap%E7%9A%84%E6%89%A9%E5%AE%B9%E6%9C%BA%E5%88%B6"><span class="toc-number">1.</span> <span class="toc-text">HashMap的扩容机制</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80%E8%BF%B0"><span class="toc-number">1.1.</span> <span class="toc-text">简述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B4%9F%E8%BD%BD%E5%9B%A0%E5%AD%90%E4%B8%BA%E4%BD%95%E9%80%89%E6%8B%A90-75%EF%BC%9F"><span class="toc-number">1.2.</span> <span class="toc-text">负载因子为何选择0.75？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AF%E6%89%A9%E5%AE%B92%E5%80%8D%EF%BC%9F"><span class="toc-number">1.3.</span> <span class="toc-text">为什么是扩容2倍？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%A9%E5%B1%95%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88Hash%E8%AE%A1%E7%AE%97%E6%97%B6%E6%9C%89%E4%B8%80%E4%B8%AA%E5%8F%B3%E7%A7%BB16%E4%BD%8D%E6%93%8D%E4%BD%9C%EF%BC%9F"><span class="toc-number">1.4.</span> <span class="toc-text">扩展：为什么Hash计算时有一个右移16位操作？</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#HashTable%E5%8E%9F%E7%90%86"><span class="toc-number">2.</span> <span class="toc-text">HashTable原理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#HashMap%E5%92%8CHashTable%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">3.</span> <span class="toc-text">HashMap和HashTable的区别</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#ConcurrentHashMap%E5%8E%9F%E7%90%86"><span class="toc-number">4.</span> <span class="toc-text">ConcurrentHashMap原理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Java-1-7%E5%8F%8A%E4%B9%8B%E5%89%8D%E7%89%88%E6%9C%AC%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-number">4.1.</span> <span class="toc-text">Java 1.7及之前版本的实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java-1-8%E5%8F%8A%E4%B9%8B%E5%90%8E%E7%89%88%E6%9C%AC%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-number">4.2.</span> <span class="toc-text">Java 1.8及之后版本的实现</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%88%86%E6%AE%B5%E9%94%81%E6%80%8E%E4%B9%88%E5%8A%A0%E9%94%81%E7%9A%84%EF%BC%9F"><span class="toc-number">5.</span> <span class="toc-text">分段锁怎么加锁的？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%8F%AF%E9%87%8D%E5%85%A5%E9%94%81%EF%BC%9F"><span class="toc-number">6.</span> <span class="toc-text">什么是可重入锁？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8%E4%BA%86synchronized%E8%BF%98%E8%A6%81%E4%BD%BF%E7%94%A8CAS%EF%BC%9F"><span class="toc-number">7.</span> <span class="toc-text">为什么使用了synchronized还要使用CAS？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#ConcurrentHashMap%E4%BD%BF%E7%94%A8%E4%BA%86%E4%B9%90%E8%A7%82%E9%94%81%E8%BF%98%E6%98%AF%E6%82%B2%E8%A7%82%E9%94%81%EF%BC%9F"><span class="toc-number">8.</span> <span class="toc-text">ConcurrentHashMap使用了乐观锁还是悲观锁？</span></a></li></ol>
+                </div>
+            
+            <hr />
+            <div itemprop="articleBody"><p>主要收集了集合的一些Map知识。</p>
+<span id="more"></span>
+
+<h1 id="HashMap的扩容机制"><a href="#HashMap的扩容机制" class="headerlink" title="HashMap的扩容机制"></a>HashMap的扩容机制</h1><h2 id="简述"><a href="#简述" class="headerlink" title="简述"></a>简述</h2><p><code>HashMap</code>默认的负载因子（load factor）是0.75。负载因子定义了<code>HashMap</code>在触发扩容之前，允许的元素数量与容量的比例。具体来说，当<code>HashMap</code>中的元素个数超过当前容量的75%时，就会触发扩容操作。</p>
+<p>扩容操作分为两个主要步骤：</p>
+<ol>
+<li><strong>扩展哈希表的长度</strong>：<code>HashMap</code>会将当前的容量扩展为原来的两倍。例如，如果当前容量是16，扩容后容量将变为32。</li>
+<li><strong>重新分配数据</strong>：扩容后，<code>HashMap</code>需要将旧哈希表中的数据重新分配到新的哈希表中。由于新的容量是原来的两倍，元素在新哈希表中的位置可能会发生变化。</li>
+</ol>
+<h2 id="负载因子为何选择0-75？"><a href="#负载因子为何选择0-75？" class="headerlink" title="负载因子为何选择0.75？"></a>负载因子为何选择0.75？</h2><p>负载因子的选择是一个权衡性能和空间利用率的过程。负载因子为0.75是一个经验值，它在以下两个方面取得了平衡：</p>
+<ul>
+<li><strong>减少哈希冲突</strong>：当负载因子较大时（例如0.8或0.9），数组中的元素密度增加，导致哈希冲突的概率上升，从而降低查询和插入操作的效率。</li>
+<li><strong>避免频繁扩容</strong>：当负载因子较小时（例如0.5或0.6），虽然哈希冲突减少，但扩容的频率增加，导致空间利用率降低，且频繁的扩容操作也会带来额外的性能开销。</li>
+</ul>
+<h2 id="为什么是扩容2倍？"><a href="#为什么是扩容2倍？" class="headerlink" title="为什么是扩容2倍？"></a>为什么是扩容2倍？</h2><p>扩容2倍，其实是一个非常巧妙的设计。在扩容过程中，<code>HashMap</code>并不需要重新计算每个元素的哈希值。这是因为<code>HashMap</code>的容量总是2的幂次（例如16、32、64等），这使得扩容后的新索引可以通过简单的位运算来确定。</p>
+<p>具体来说，当容量从<code>n</code>扩展到<code>2n</code>时，新的索引位置可以通过以下方式计算：</p>
+<ul>
+<li>如果元素的哈希值在高位新增的bit为0，则元素在新哈希表中的位置与原位置相同。</li>
+<li>如果元素的哈希值在高位新增的bit为1，则元素在新哈希表中的位置为原位置加上旧容量（即<code>原索引 + oldCap</code>）。</li>
+</ul>
+<p>如下图示，元素在重新计算hash之后，因为n变为2倍，那么n-1的mask范围在高位多1bit(红色)，因此新的index遵循上述规则计算：</p>
+<p><img src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409212200339.png" alt="扩容索引计算"></p>
+<h2 id="扩展：为什么Hash计算时有一个右移16位操作？"><a href="#扩展：为什么Hash计算时有一个右移16位操作？" class="headerlink" title="扩展：为什么Hash计算时有一个右移16位操作？"></a>扩展：为什么Hash计算时有一个右移16位操作？</h2><p>在Java的<code>HashMap</code>中，哈希值的计算并不仅仅依赖于对象的<code>hashCode()</code>方法，而是通过一个额外的位运算来进一步优化哈希值的分布。具体来说，<code>HashMap</code>在计算哈希值时，会进行一个右移16位的操作，然后将结果与原哈希值进行异或运算。这个操作的目的是为了减少哈希碰撞，提高<code>HashMap</code>的性能。</p>
+<p><strong>源码分析</strong></p>
+<p>我们来看一下<code>HashMap</code>中计算哈希值的源码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="title function_">hash</span><span class="params">(Object key)</span> &#123;</span><br><span class="line">    <span class="type">int</span> h;</span><br><span class="line">    <span class="keyword">return</span> (key == <span class="literal">null</span>) ? <span class="number">0</span> : (h = key.hashCode()) ^ (h &gt;&gt;&gt; <span class="number">16</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在这段代码中，<code>h</code>是对象的原始哈希值，<code>h &gt;&gt;&gt; 16</code>表示将<code>h</code>右移16位。然后，将右移后的结果与原哈希值进行异或运算（<code>^</code>），得到最终的哈希值。</p>
+<p><strong>为什么需要右移16位？</strong></p>
+<p>哈希值<code>h</code>是一个32位的整数。如果不进行任何处理，直接使用<code>h</code>作为哈希值，可能会导致哈希碰撞的概率增加。这是因为<code>hashCode()</code>方法返回的哈希值在低位可能会有较多的重复，尤其是在处理较小的数据集时。</p>
+<p>通过将<code>h</code>右移16位，相当于将哈希值的高16位与低16位进行混合。这种混合操作可以有效地将高位信息引入到低位，从而减少哈希碰撞的可能性。具体来说：</p>
+<ul>
+<li><strong>右移16位</strong>：将哈希值的高16位移到低16位，这样低16位就包含了高16位的信息。</li>
+<li><strong>异或运算</strong>：通过异或运算，将高16位和低16位的信息进行混合，使得最终的哈希值在低位也包含了高位的信息。</li>
+</ul>
+<p>通过右移16位并进行异或运算，<code>HashMap</code>能够更有效地利用哈希值的高位信息，减少哈希碰撞的概率。这种设计使得<code>HashMap</code>在处理大量数据时仍能保持较高的性能，确保键值对的快速查找和插入。</p>
+<h1 id="HashTable原理"><a href="#HashTable原理" class="headerlink" title="HashTable原理"></a>HashTable原理</h1><p>HashTable是一种基于哈希表的数据结构，用于存储键值对。其内部实现主要依赖于数组和链表的结合，以解决哈希冲突问题。</p>
+<p><strong>数据结构</strong></p>
+<ol>
+<li><p><strong>数组</strong>：HashTable的主体是一个数组，数组的每个元素称为“桶”（bucket）。数组的大小通常是固定的，或者可以根据需要进行动态调整。</p>
+</li>
+<li><p><strong>链表</strong>：当不同的键值对通过哈希函数计算得到的哈希值相同，即发生哈希冲突时，HashTable使用链表来存储这些键值对。每个桶中可以存储一个链表，链表中的每个节点包含一个键值对。</p>
+</li>
+</ol>
+<p><strong>线程安全</strong></p>
+<p>HashTable的所有公共方法都使用了<code>synchronized</code>关键字进行修饰，这意味着每个方法在执行时都会获取对象级别的锁。这种设计确保了HashTable在多线程环境下的线程安全性，但同时也带来了性能上的开销，因为每次方法调用都会导致线程阻塞。</p>
+<h1 id="HashMap和HashTable的区别"><a href="#HashMap和HashTable的区别" class="headerlink" title="HashMap和HashTable的区别"></a>HashMap和HashTable的区别</h1><p><code>HashMap</code>和<code>HashTable</code>都是Java中用于存储键值对的数据结构，但它们在实现和使用上有一些关键的区别。以下是它们的主要区别：</p>
+<p><strong>1. 线程安全性</strong></p>
+<ul>
+<li><p><strong>HashMap</strong>：<code>HashMap</code>是线程不安全的。这意味着在多线程环境下，如果多个线程同时对同一个<code>HashMap</code>进行操作，可能会导致数据不一致或其他并发问题。</p>
+</li>
+<li><p><strong>HashTable</strong>：<code>HashTable</code>是线程安全的。<code>HashTable</code>的所有公共方法都使用了<code>synchronized</code>关键字进行修饰，确保在多线程环境下操作的安全性。例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="type">int</span> <span class="title function_">size</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> count;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这意味着在同一时刻，只有一个线程可以执行<code>HashTable</code>的某个方法，从而避免了并发问题。</p>
+</li>
+</ul>
+<p><strong>2. 性能</strong></p>
+<ul>
+<li><p><strong>HashMap</strong>：由于<code>HashMap</code>不是线程安全的，因此在单线程环境下，<code>HashMap</code>的性能通常优于<code>HashTable</code>。<code>HashMap</code>不需要额外的同步开销，因此在读写操作上更快。</p>
+</li>
+<li><p><strong>HashTable</strong>：由于<code>HashTable</code>的方法都使用了<code>synchronized</code>关键字，因此在多线程环境下，<code>HashTable</code>的性能可能会受到影响。每次方法调用都需要获取锁，这会增加额外的开销。</p>
+</li>
+</ul>
+<p><strong>3. 允许null值</strong></p>
+<ul>
+<li><p><strong>HashMap</strong>：<code>HashMap</code>允许键和值为<code>null</code>。也就是说，你可以将<code>null</code>作为键或值存储在<code>HashMap</code>中。</p>
+</li>
+<li><p><strong>HashTable</strong>：<code>HashTable</code>不允许键或值为<code>null</code>。如果尝试将<code>null</code>作为键或值存储在<code>HashTable</code>中，会抛出<code>NullPointerException</code>。</p>
+</li>
+</ul>
+<p><strong>4. 迭代器</strong></p>
+<ul>
+<li><p><strong>HashMap</strong>：<code>HashMap</code>的迭代器是快速失败的（fail-fast）。如果在迭代过程中，<code>HashMap</code>的结构发生了变化（例如添加或删除元素），迭代器会抛出<code>ConcurrentModificationException</code>。</p>
+</li>
+<li><p><strong>HashTable</strong>：<code>HashTable</code>的迭代器也是快速失败的，但它的迭代器实现方式与<code>HashMap</code>略有不同。</p>
+</li>
+</ul>
+<div class="panel panel-info">
+    <div class="panel-title"><i class="fa fa-info"></i>总结</div>
+    <div class="panel-body">
+        <p><code>HashMap</code>和<code>HashTable</code>在实现和使用上有显著的区别。<code>HashMap</code>适用于单线程环境，性能更好，允许<code>null</code>键和值；而<code>HashTable</code>适用于多线程环境，线程安全，但不允许<code>null</code>键和值，性能相对较差。在现代Java编程中，推荐使用<code>ConcurrentHashMap</code>来替代<code>HashTable</code>，以获得更好的性能和扩展性。</p>
+
+    </div>
+    </div>
+
+<h1 id="ConcurrentHashMap原理"><a href="#ConcurrentHashMap原理" class="headerlink" title="ConcurrentHashMap原理"></a>ConcurrentHashMap原理</h1><p><code>ConcurrentHashMap</code>是Java中用于并发环境下的高效键值对存储数据结构。它在Java 1.7及之前版本和Java 1.8及之后版本有不同的实现方式。以下是<code>ConcurrentHashMap</code>在不同版本中的实现原理及其优化的详细介绍。</p>
+<h2 id="Java-1-7及之前版本的实现"><a href="#Java-1-7及之前版本的实现" class="headerlink" title="Java 1.7及之前版本的实现"></a>Java 1.7及之前版本的实现</h2><p>在Java 1.7及之前版本中，<code>ConcurrentHashMap</code>采用了<strong>分段锁（Segment）</strong>技术来实现线程安全。其核心结构是<strong>数组+链表</strong>，具体分为以下几个部分：</p>
+<ul>
+<li><strong>Segment数组</strong>：<code>ConcurrentHashMap</code>内部包含一个<code>Segment</code>数组，每个<code>Segment</code>相当于一个小的<code>HashMap</code>，并且是一个可重入锁（ReentrantLock）。</li>
+<li><strong>HashEntry数组</strong>：每个<code>Segment</code>内部包含一个<code>HashEntry</code>数组，<code>HashEntry</code>用于存储键值对数据。每个<code>HashEntry</code>是一个链表结构的元素。</li>
+</ul>
+<p><strong>分段锁技术</strong>：</p>
+<ul>
+<li><code>ConcurrentHashMap</code>将数据分成多个段（Segment），每个段相当于一个小的<code>HashMap</code>，并且有自己的锁。</li>
+<li>当一个线程访问某个段的数据时，只需要锁住该段，而不影响其他段的数据访问。这样就实现了并发访问，提高了并发性能。</li>
+</ul>
+<p><strong>缺点</strong>：</p>
+<ul>
+<li>虽然分段锁技术提高了并发性能，但由于使用了链表结构，当链表过长时，访问速度会变慢，因为需要遍历链表。</li>
+</ul>
+<h2 id="Java-1-8及之后版本的实现"><a href="#Java-1-8及之后版本的实现" class="headerlink" title="Java 1.8及之后版本的实现"></a>Java 1.8及之后版本的实现</h2><p>在Java 1.8及之后版本中，<code>ConcurrentHashMap</code>进行了优化，采用了<strong>数组+链表&#x2F;红黑树</strong>的数据结构，并使用<strong>volatile+CAS</strong>或<strong>synchronized</strong>来实现线程安全。具体实现如下：</p>
+<ul>
+<li><strong>数组+链表&#x2F;红黑树</strong>：<code>ConcurrentHashMap</code>内部使用一个数组来存储数据，每个数组元素（桶）可以是一个链表或红黑树。当链表长度超过一定阈值时，链表会转换为红黑树，以提高查找效率。</li>
+<li><strong>volatile+CAS</strong>：用于实现无锁的并发操作，例如初始化容器或设置节点。</li>
+<li><strong>synchronized</strong>：用于在发生冲突时对桶的头节点加锁，确保线程安全。</li>
+</ul>
+<p><strong>添加元素的过程</strong>：</p>
+<ol>
+<li><strong>初始化容器</strong>：如果容器为空，使用<code>volatile+CAS</code>来初始化容器。</li>
+<li><strong>计算桶位置</strong>：根据存储的元素计算桶的位置。</li>
+<li><strong>CAS设置节点</strong>：如果计算结果为空，则利用<code>CAS</code>设置该节点。</li>
+<li><strong>synchronized加锁</strong>：如果桶不为空，则使用<code>synchronized</code>对桶的头节点加锁，然后遍历桶中的元素，并替换或新增节点到桶中。</li>
+<li><strong>转换为红黑树</strong>：最后判断是否需要将链表转换为红黑树，以提高查找效率。</li>
+</ol>
+<p><strong>优点</strong>：</p>
+<ul>
+<li><strong>锁粒度更小</strong>：通过只对桶的头节点加锁，锁的粒度相比分段锁更小，减少了锁的竞争，提高了并发性能。</li>
+<li><strong>红黑树优化</strong>：当链表过长时，转换为红黑树，提高了查找效率。</li>
+</ul>
+<p><strong>总结</strong></p>
+<p><code>ConcurrentHashMap</code>在Java 1.8及之后版本中通过<strong>数组+链表&#x2F;红黑树</strong>的数据结构和<strong>volatile+CAS</strong>或<strong>synchronized</strong>的并发控制机制，实现了高效的并发访问。相比Java 1.7及之前版本的分段锁技术，Java 1.8及之后版本的<code>ConcurrentHashMap</code>在锁粒度和查找效率上都有显著提升，更适合高并发的场景。</p>
+<p><strong>一句话归纳</strong>：Java 1.8及之后版本的<code>ConcurrentHashMap</code>通过对桶的头节点加锁，锁的粒度更小，减少了锁的竞争，同时通过红黑树优化提高了查找效率，从而实现了更高的并发性能。</p>
+<h1 id="分段锁怎么加锁的？"><a href="#分段锁怎么加锁的？" class="headerlink" title="分段锁怎么加锁的？"></a>分段锁怎么加锁的？</h1><p>在 ConcurrentHashMap 中，将整个数据结构分为多个 Segment，每个 Segment 都类似于小的 HashMap，每个 Segment 都有自己的锁，不同 Segment 之间的操作互不影响，从而提高并发性能。</p>
+<p>在 ConcurrentHashMap 中，对于插入、更新、删除等操作，需要先定位到具体的 Segment,然后再在该 Segment 上加锁，而不是像传统的 HashMap 一样对整个数据结构加锁。这样可以使得不同 Segment 之间的操作并行进行，提高了并发性能。</p>
+<h1 id="什么是可重入锁？"><a href="#什么是可重入锁？" class="headerlink" title="什么是可重入锁？"></a>什么是可重入锁？</h1><p>可重入锁（Reentrant Lock）是一种同步机制，允许同一个线程多次获取同一个锁，而不会导致死锁。它是 Java 中 <code>java.util.concurrent.locks.ReentrantLock</code> 类的实现。</p>
+<p>同一个线程可以多次获取同一个锁，而不会被自己阻塞。每次获取锁时，锁的计数器会递增；每次释放锁时，计数器会递减。只有当计数器归零时，锁才会完全释放。</p>
+<p>JDK 1.7 ConcurrentHashMap中的分段锁是用了 ReentrantLock，是一个可重入的锁。</p>
+<h1 id="为什么使用了synchronized还要使用CAS？"><a href="#为什么使用了synchronized还要使用CAS？" class="headerlink" title="为什么使用了synchronized还要使用CAS？"></a>为什么使用了<code>synchronized</code>还要使用<code>CAS</code>？</h1><p><code>CAS</code>是一种无锁的并发控制机制，它通过硬件级别的原子操作来实现线程安全。<code>CAS</code>操作包括三个参数：内存位置、预期值和更新值。<code>CAS</code>操作会先比较内存位置的当前值是否等于预期值，如果相等，则将内存位置的值更新为新值，并返回成功；否则，返回失败。<code>CAS</code>的主要作用是：</p>
+<ul>
+<li><strong>无锁操作</strong>：<code>CAS</code>操作不需要加锁，因此不会阻塞线程，减少了线程切换的开销。</li>
+<li><strong>原子性</strong>：<code>CAS</code>操作是原子的，可以确保在多线程环境下对共享变量的修改是安全的。</li>
+</ul>
+<p>在<code>ConcurrentHashMap</code>中，<code>CAS</code>主要用于一些不需要加锁的简单操作，例如初始化容器、设置节点等。</p>
+<p><strong>综合原因</strong></p>
+<p>在<code>ConcurrentHashMap</code>中，<code>synchronized</code>和<code>CAS</code>结合使用的原因如下：</p>
+<ol>
+<li><strong>减少锁竞争</strong>：<code>CAS</code>操作是无锁的，可以在不加锁的情况下完成一些简单的操作，减少了锁的竞争，提高了并发性能。</li>
+<li><strong>优化初始化</strong>：在初始化<code>ConcurrentHashMap</code>时，使用<code>CAS</code>操作可以确保只有一个线程能够成功初始化容器，避免了多个线程同时初始化容器的问题。</li>
+<li><strong>提高并发性能</strong>：对于一些不需要遍历链表或红黑树的操作，使用<code>CAS</code>可以避免加锁，从而提高并发性能。例如，在添加元素时，如果桶为空，可以直接使用<code>CAS</code>操作设置节点，而不需要加锁。</li>
+<li><strong>细粒度锁控制</strong>：<code>synchronized</code>用于在发生哈希冲突时对桶的头节点加锁，确保线程安全地操作链表或红黑树。通过只对头节点加锁，锁的粒度更小，减少了锁的竞争，提高了并发性能。</li>
+</ol>
+<h1 id="ConcurrentHashMap使用了乐观锁还是悲观锁？"><a href="#ConcurrentHashMap使用了乐观锁还是悲观锁？" class="headerlink" title="ConcurrentHashMap使用了乐观锁还是悲观锁？"></a>ConcurrentHashMap使用了<code>乐观锁</code>还是<code>悲观锁</code>？</h1><p>ConcurrentHashMap在实现并发控制时，综合运用了乐观锁和悲观锁的机制。</p>
+<ol>
+<li><p><strong>容器初始化</strong>：</p>
+<p>​	当容器为空时，ConcurrentHashMap使用<code>volatile</code>关键字和<code>CAS</code>（Compare-And-Swap）操作进行初始化。<code>volatile</code>确保了变量的可见性，而<code>CAS</code>则是一种乐观锁机制，通过原子操作来确保初始化的线程安全性。</p>
+</li>
+<li><p><strong>元素添加</strong>：</p>
+<ul>
+<li>如果容器不为空，ConcurrentHashMap会根据元素的哈希值计算其在桶中的位置。</li>
+<li>如果计算出的位置为空，则再次使用<code>CAS</code>操作来设置该节点，这是一种乐观锁的实现方式，通过原子操作来避免锁的开销。</li>
+<li>如果计算出的位置不为空，ConcurrentHashMap会使用<code>synchronized</code>关键字对桶进行锁定，这是一种悲观锁的实现方式。锁定后，线程会遍历桶中的数据，并根据需要替换或新增节点。如果桶中的元素数量达到一定阈值，还会将链表结构转换为红黑树，以优化查找性能。</li>
+</ul>
+</li>
+</ol>
+<div class="panel panel-info">
+    <div class="panel-title"><i class="fa fa-info"></i>总结</div>
+    <div class="panel-body">
+        <p>ConcurrentHashMap在并发控制中灵活运用了乐观锁和悲观锁：</p>
+<ul>
+<li><strong>乐观锁</strong>：主要用于初始化和空桶位置的设置，通过<code>CAS</code>操作实现，减少了锁的开销。</li>
+<li><strong>悲观锁</strong>：用于非空桶的访问和修改，通过<code>synchronized</code>关键字实现，确保了操作的原子性和线程安全。</li>
+</ul>
+
+    </div>
+    </div>
+</div>
+        </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+            
+            
+                <div class="post-actions text-center clearfix" id="post-actions">
+                
+                    <a class="donate" href="javascript:;" onclick="krOpenDonateModal()"><i class="fa fa-bitcoin"></i> 打赏</a>
+                
+                
+                    <a class="share" href="javascript:;" onclick="krOpenShareModal()"><i class="fa fa-share-alt"></i> 分享</a>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    <a class="tag-none-link" href="/tags/Map/" rel="tag">Map</a>
+                </div>
+                <div class="pull-date">
+                    <time datetime="2024-09-21T16:18:14.117Z" itemprop="dateModified">最后编辑：2024-09-22</time>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" Java集合（List篇）" href="/2024/09/09/Java集合（List篇）/"><i class="fa fa-angle-left"></i> 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" Java集合（Map篇-上）" href="/2024/09/09/Java集合（Map篇-上）/">下一篇 <i class="fa fa-angle-right"></i></a>
+            </div>
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+            
+                
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/user.jpg" alt="xiaoyan" loading="lazy" decoding="auto" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">是一只时时翻垃圾吃的宅子。</p>
+    </div>
+    <div class="site-meta">
+        <a class="meta-item" href="/archives/">
+            <span class="title">
+                文章
+            </span>
+            <span class="count">
+                10
+            </span>
+        </a>
+        <a class="meta-item" href="/categories/">
+            <span class="title">
+                分类
+            </span>
+            <span class="count">
+                5
+            </span>
+        </a>
+        <a class="meta-item" href="/tags/">
+            <span class="title">
+                标签
+            </span>
+            <span class="count">
+                17
+            </span>
+        </a>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix toc-div-class" >
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar" role="progressbar" aria-label="阅读进度："></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#HashMap%E7%9A%84%E6%89%A9%E5%AE%B9%E6%9C%BA%E5%88%B6"><span class="toc-number">1.</span> <span class="toc-text">HashMap的扩容机制</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80%E8%BF%B0"><span class="toc-number">1.1.</span> <span class="toc-text">简述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B4%9F%E8%BD%BD%E5%9B%A0%E5%AD%90%E4%B8%BA%E4%BD%95%E9%80%89%E6%8B%A90-75%EF%BC%9F"><span class="toc-number">1.2.</span> <span class="toc-text">负载因子为何选择0.75？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AF%E6%89%A9%E5%AE%B92%E5%80%8D%EF%BC%9F"><span class="toc-number">1.3.</span> <span class="toc-text">为什么是扩容2倍？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%A9%E5%B1%95%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88Hash%E8%AE%A1%E7%AE%97%E6%97%B6%E6%9C%89%E4%B8%80%E4%B8%AA%E5%8F%B3%E7%A7%BB16%E4%BD%8D%E6%93%8D%E4%BD%9C%EF%BC%9F"><span class="toc-number">1.4.</span> <span class="toc-text">扩展：为什么Hash计算时有一个右移16位操作？</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#HashTable%E5%8E%9F%E7%90%86"><span class="toc-number">2.</span> <span class="toc-text">HashTable原理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#HashMap%E5%92%8CHashTable%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">3.</span> <span class="toc-text">HashMap和HashTable的区别</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#ConcurrentHashMap%E5%8E%9F%E7%90%86"><span class="toc-number">4.</span> <span class="toc-text">ConcurrentHashMap原理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Java-1-7%E5%8F%8A%E4%B9%8B%E5%89%8D%E7%89%88%E6%9C%AC%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-number">4.1.</span> <span class="toc-text">Java 1.7及之前版本的实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java-1-8%E5%8F%8A%E4%B9%8B%E5%90%8E%E7%89%88%E6%9C%AC%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-number">4.2.</span> <span class="toc-text">Java 1.8及之后版本的实现</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%88%86%E6%AE%B5%E9%94%81%E6%80%8E%E4%B9%88%E5%8A%A0%E9%94%81%E7%9A%84%EF%BC%9F"><span class="toc-number">5.</span> <span class="toc-text">分段锁怎么加锁的？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%8F%AF%E9%87%8D%E5%85%A5%E9%94%81%EF%BC%9F"><span class="toc-number">6.</span> <span class="toc-text">什么是可重入锁？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8%E4%BA%86synchronized%E8%BF%98%E8%A6%81%E4%BD%BF%E7%94%A8CAS%EF%BC%9F"><span class="toc-number">7.</span> <span class="toc-text">为什么使用了synchronized还要使用CAS？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#ConcurrentHashMap%E4%BD%BF%E7%94%A8%E4%BA%86%E4%B9%90%E8%A7%82%E9%94%81%E8%BF%98%E6%98%AF%E6%82%B2%E8%A7%82%E9%94%81%EF%BC%9F"><span class="toc-number">8.</span> <span class="toc-text">ConcurrentHashMap使用了乐观锁还是悲观锁？</span></a></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类列表</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">9</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%9F%BA%E7%A1%80/">基础</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E9%9B%86%E5%90%88/">集合</a><span class="category-list-count">5</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/%E6%97%A5%E5%BF%97/">日志</a><span class="category-list-count">1</span></li></ul></li></ul>
+  </aside>
+
+
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/I-O/" style="font-size: 0.6em;">I/O</a> <a href="/tags/Java8%E6%96%B0%E7%89%B9%E6%80%A7/" style="font-size: 0.6em;">Java8新特性</a> <a href="/tags/Java%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" style="font-size: 0.6em;">Java基本概念</a> <a href="/tags/List/" style="font-size: 0.6em;">List</a> <a href="/tags/Map/" style="font-size: 0.8em;">Map</a> <a href="/tags/Object/" style="font-size: 0.6em;">Object</a> <a href="/tags/Set/" style="font-size: 0.6em;">Set</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 0.6em;">其他</a> <a href="/tags/%E5%8F%8D%E5%B0%84/" style="font-size: 0.6em;">反射</a> <a href="/tags/%E5%AF%B9%E8%B1%A1/" style="font-size: 0.6em;">对象</a> <a href="/tags/%E5%BA%8F%E5%88%97%E5%8C%96/" style="font-size: 0.6em;">序列化</a> <a href="/tags/%E5%BC%82%E5%B8%B8/" style="font-size: 0.6em;">异常</a> <a href="/tags/%E6%8B%B7%E8%B4%9D/" style="font-size: 0.6em;">拷贝</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" style="font-size: 0.6em;">数据类型</a> <a href="/tags/%E6%B3%9B%E5%9E%8B/" style="font-size: 0.6em;">泛型</a> <a href="/tags/%E6%B3%A8%E8%A7%A3/" style="font-size: 0.6em;">注解</a> <a href="/tags/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/" style="font-size: 0.6em;">面向对象</a>
+      </div>
+  </aside>
+
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/17/MySQL%E6%97%A5%E5%BF%97%E5%8F%AF%E4%BB%A5%E7%94%A8%E6%9D%A5%E5%B9%B2%E5%95%A5%EF%BC%9F/"><i class="fa fa-book"></i> MySQL日志可以用来干啥？</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/09/Java%E9%9B%86%E5%90%88%EF%BC%88Set%E7%AF%87%EF%BC%89/"><i class="fa fa-book"></i> Java集合（Set篇）</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/09/Java%E9%9B%86%E5%90%88%EF%BC%88Map%E7%AF%87-%E4%B8%8A%EF%BC%89/"><i class="fa fa-book"></i> Java集合（Map篇-上）</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/09/Java%E9%9B%86%E5%90%88%EF%BC%88Map%E7%AF%87-%E4%B8%8B%EF%BC%89/"><i class="fa fa-book"></i> Java集合（Map篇-下）</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/09/Java%E9%9B%86%E5%90%88%EF%BC%88List%E7%AF%87%EF%BC%89/"><i class="fa fa-book"></i> Java集合（List篇）</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+            
+
+        
+
+                </div>
+    </div>
+</div>
+
+<footer>
+    <div id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2024 XIAOYAN 版权所有.</li>
+                            <li>本站已运行<span id="kr-since">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>自豪地使用 <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a> 主题</li>
+                            <li>站点由 xiaoyan 用 <i class="fa fa-heart" style="color:#d43f57"></i> 搭建</li>
+                        </div>
+                        <!-- 额外的追加注入项 -->
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                <div class="box theme-box" id="theme-toggle">
+                    <span class="fa fa-adjust"></span>
+                </div>
+            </div>
+            <div id="gotop-box" class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+
+    <div id="kr-donate-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseDonateModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-bitcoin"></i>
+            </div>
+            <div class="kr-modal-title">打赏</div>
+            <button class="kr-modal-close" onclick="krCloseDonateModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-donate-message">请我喝一杯冰阔咯~</div>
+            <div class="kr-donate-qr" id="kr-donate-qr">
+                
+            </div>
+            <div class="kr-donate-platforms">
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #1677ff;" title="支付宝" onclick="krDonateModalShowPlatformQR('https://qr.alipay.com/fkx15009k7u0fqrj8auepdf', '#1677ff')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-alipay">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M19 3h-14a2 2 0 0 0 -2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2 -2v-14a2 2 0 0 0 -2 -2z" />
+  <path d="M7 7h10" />
+  <path d="M12 3v7" />
+  <path d="M21 17.314c-2.971 -1.923 -15 -8.779 -15 -1.864c0 1.716 1.52 2.55 2.985 2.55c3.512 0 6.814 -5.425 6.814 -8h-6.604" />
+</svg>
+
+                        </button>
+                    
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #38ad5a;" title="微信支付" onclick="krDonateModalShowPlatformQR('wxp://f2f0hR4eF9Ypa3tpzjWme9fQDyWW3PIGe3WG5oiIakWLmDs', '#38ad5a')">
+                            <i class="fa fa-wechat"></i>
+                        </button>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/donate.min.js"></script>
+
+
+
+
+    <div id="kr-share-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseShareModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-share-alt"></i>
+            </div>
+            <div class="kr-modal-title">分享</div>
+            <button class="kr-modal-close" onclick="krCloseShareModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-share-message">让兄弟萌也来瞅一瞅！</div>
+            <div class="kr-share-qr" id="kr-share-qr"></div>
+            <div class="kr-share-platforms">
+                
+                    <button class="kr-share-platform-button" style="color: #e6162d;" title="QQ" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-qq"></i>
+                    </button>
+                
+                    <button class="kr-share-platform-button" style="color: #25d366;" title="微信" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-weixin"></i>
+                    </button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/share.min.js"></script>
+
+
+
+<!-- 额外的追加注入项 -->
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
+<meting-js
+  server="netease"
+  type="playlist"
+  fixed="true"
+  order="random"
+  id="12613265870">
+</meting-js>
+
+
+
+        <script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
+</script>
+
+
+  <script defer src="/vendors/nprogress@0.2.0/nprogress.js"></script>
+
+
+
+  <script defer src="/vendors/viewerjs@1.11.6/dist/viewer.min.js"></script>
+
+
+<script defer src="/js/kr-core.min.js"></script>
+
+
+  <script defer src="/js/kr-pjax.min.js"></script>
+
+
+<!-- 额外的追加注入项 -->
+
+  <script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+
+
+
+    </body>
+</html>

@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  
+    <link rel="icon" href="/images/earthstars.png">
+  
+  
+  <title>Java集合（Set篇） | XIAOYAN</title>
+  <link rel="canonical" href="http://example.com/2024/09/09/Java%E9%9B%86%E5%90%88%EF%BC%88Set%E7%AF%87%EF%BC%89/">
+  <meta name="author" content="xiaoyan" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="Set" />
+  
+  <meta name="description" content="主要收集了集合的一些Set知识。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java集合（Set篇）">
+<meta property="og:url" content="http://example.com/2024/09/09/Java%E9%9B%86%E5%90%88%EF%BC%88Set%E7%AF%87%EF%BC%89/index.html">
+<meta property="og:site_name" content="XIAOYAN">
+<meta property="og:description" content="主要收集了集合的一些Set知识。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-09-09T05:14:03.000Z">
+<meta property="article:modified_time" content="2024-09-21T16:18:23.975Z">
+<meta property="article:author" content="xiaoyan">
+<meta property="article:tag" content="Set">
+<meta name="twitter:card" content="summary">
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kr-core.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/highlight.js/night-eighties.min.css" media="all"></link>
+  
+  <link rel="stylesheet" id="theme-light-css" href="/css/kr-theme/light.min.css" media="all"></link>
+  <link rel="stylesheet" id="theme-dark-css" href="/css/kr-theme/dark.min.css" media="(prefers-color-scheme: dark)"></link>
+  <script src="/js/kr-theme.min.js"></script>
+  <link rel="stylesheet" id="fontawe-css" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="nprogress-css" href="/vendors/nprogress@0.2.0/nprogress.css" media="all"></link>
+  
+  
+    <link rel="stylesheet" href="/vendors/viewerjs@1.11.6/dist/viewer.min.css"></link>
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  
+    <script src="/vendors/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+  
+  <!-- 自定义站点横幅和背景 -->
+  <style>
+    
+      .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_light.png');
+      }
+      html[data-theme="dark"] .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_dark.png');
+      }
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+        html[data-theme="dark"] body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+      }
+    
+    
+      .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+      html[data-theme="dark"] .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+    
+  </style>
+
+  <!-- 额外的追加注入项 -->
+  
+    <link rel="stylesheet" href="/css/custom.css">
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    <li>
+                                        
+                                            <a target="_blank" rel="noopener" href="https://xiaoyanfufu.top/">
+                                        
+                                            
+                                                <i class="fa fa-home"></i>
+                                            
+                                            首页
+                                        </a>
+                                        
+                                    </li>
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">XIAOYAN</a></div>
+                    <div id="kratos-nav-toggle-wrapper" class="nav-toggle">
+                        <a id="kratos-nav-toggle" class="kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>XIAOYAN</h2> <br />
+                        <span>山重水复疑无路，柳暗花明又一村。</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+
+
+        
+
+            
+
+            <section class="kr-main-col col-md-8">
+
+        
+
+            <article itemscope itemtype="https://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/09/Java%E9%9B%86%E5%90%88%EF%BC%88Set%E7%AF%87%EF%BC%89/">
+    <div class="kratos-hentry kratos-page-inner clearfix">
+        <header class="kratos-page-header">
+            
+                <h1 class="kratos-page-title text-center" itemprop="name headline">Java集合（Set篇）</h1>
+            
+            <ul class="kratos-page-meta text-center">
+                <li><time datetime="2024-09-09T05:14:03.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2024-09-09</time></li>
+                <li itemprop="author" itemscope itemtype="https://schema.org/Person">
+                    <i class="fa fa-user"></i> 作者 <span itemprop="name">xiaoyan</span>
+                </li>
+                
+                    <li>
+                        <i class="fa fa-edit"></i> 
+                        
+                        
+                            ~3.58K
+                        
+                        字
+                    </li>
+                
+                
+                
+            </ul>
+        </header>
+        <div class="kratos-page-content kr-post">
+            
+            
+            
+                <div class="kratos-post-inner-toc toc-div-class" >
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Set%E9%9B%86%E5%90%88%E7%89%B9%E7%82%B9"><span class="toc-number">1.</span> <span class="toc-text">Set集合特点</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Set%E9%9B%86%E5%90%88key%E6%97%A0%E9%87%8D%E5%A4%8D%E5%8E%9F%E7%90%86"><span class="toc-number">2.</span> <span class="toc-text">Set集合key无重复原理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%93%88%E5%B8%8C%E8%A1%A8%EF%BC%88HashMap%EF%BC%89%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.1.</span> <span class="toc-text">哈希表（HashMap）实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BA%A2%E9%BB%91%E6%A0%91%EF%BC%88TreeMap%EF%BC%89%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.2.</span> <span class="toc-text">红黑树（TreeMap）实现</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9C%89%E5%BA%8F%E7%9A%84Set%E9%9B%86%E5%90%88"><span class="toc-number">3.</span> <span class="toc-text">有序的Set集合</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#TreeSet"><span class="toc-number">3.1.</span> <span class="toc-text">TreeSet</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LinkedHashSet"><span class="toc-number">3.2.</span> <span class="toc-text">LinkedHashSet</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%AE%B0%E5%BD%95%E6%8F%92%E5%85%A5%E9%A1%BA%E5%BA%8F%E7%9A%84%E9%9B%86%E5%90%88"><span class="toc-number">4.</span> <span class="toc-text">记录插入顺序的集合</span></a></li></ol>
+                </div>
+            
+            <hr />
+            <div itemprop="articleBody"><p>主要收集了集合的一些Set知识。</p>
+<span id="more"></span>
+
+<h1 id="Set集合特点"><a href="#Set集合特点" class="headerlink" title="Set集合特点"></a>Set集合特点</h1><p>Set集合是一种不包含重复元素的集合，它具有以下特点：</p>
+<ol>
+<li><strong>唯一性</strong>：Set集合中的元素是唯一的，不允许有重复的元素。</li>
+<li><strong>无序性</strong>：Set集合中的元素没有特定的顺序，即元素的存储顺序与插入顺序无关。</li>
+<li><strong>不可变性</strong>：Set集合中的元素一旦插入，通常不能被修改（除非删除后重新插入）。</li>
+</ol>
+<h1 id="Set集合key无重复原理"><a href="#Set集合key无重复原理" class="headerlink" title="Set集合key无重复原理"></a>Set集合key无重复原理</h1><p>Set集合通过内部的数据结构来实现元素的唯一性。常见的实现方式包括使用哈希表（HashMap）或红黑树（TreeMap）等数据结构。以下是Set集合实现key无重复的基本原理：</p>
+<h2 id="哈希表（HashMap）实现"><a href="#哈希表（HashMap）实现" class="headerlink" title="哈希表（HashMap）实现"></a>哈希表（HashMap）实现</h2><p>在Java中，<code>HashSet</code>是基于<code>HashMap</code>实现的。<code>HashSet</code>内部维护了一个<code>HashMap</code>，其中元素作为<code>HashMap</code>的key，而<code>HashMap</code>的value是一个固定的虚拟对象（通常是一个常量对象）。</p>
+<p><strong>插入元素的过程：</strong></p>
+<ul>
+<li><strong>计算哈希值</strong>：当向<code>HashSet</code>中插入一个元素时，首先会计算该元素的哈希值（通过<code>hashCode()</code>方法）。</li>
+<li><strong>确定存储位置</strong>：根据哈希值确定元素在哈希表中的存储位置。</li>
+<li><strong>检查重复</strong>：在存储位置上，通过<code>equals()</code>方法检查是否已经存在相同的元素。如果存在相同的元素，则不插入；否则，将元素插入到哈希表中。</li>
+</ul>
+<h2 id="红黑树（TreeMap）实现"><a href="#红黑树（TreeMap）实现" class="headerlink" title="红黑树（TreeMap）实现"></a>红黑树（TreeMap）实现</h2><p>在Java中，<code>TreeSet</code>是基于<code>TreeMap</code>实现的。<code>TreeSet</code>内部维护了一个<code>TreeMap</code>，其中元素作为<code>TreeMap</code>的key，而<code>TreeMap</code>的value是一个固定的虚拟对象。</p>
+<p><strong>插入元素的过程：</strong></p>
+<ul>
+<li><strong>比较元素</strong>：当向<code>TreeSet</code>中插入一个元素时，首先会通过元素的<code>compareTo()</code>方法（或<code>Comparator</code>）进行比较。</li>
+<li><strong>检查重复</strong>：如果比较结果表明元素已经存在（即<code>compareTo()</code>返回0），则不插入；否则，将元素插入到红黑树中。</li>
+</ul>
+<div class="panel panel-info">
+    <div class="panel-title"><i class="fa fa-info"></i>总结</div>
+    <div class="panel-body">
+        <p>无论是基于哈希表还是红黑树，Set集合实现key无重复的核心原理都是通过比较元素的哈希值或直接比较元素本身来确保集合中的元素唯一。具体步骤如下：</p>
+<ol>
+<li><strong>计算哈希值或比较元素</strong>：根据元素的哈希值或直接比较元素。</li>
+<li><strong>检查重复</strong>：通过<code>equals()</code>方法或<code>compareTo()</code>方法检查是否已经存在相同的元素。</li>
+<li><strong>插入或拒绝</strong>：如果元素不存在，则插入；否则，拒绝插入。</li>
+</ol>
+
+    </div>
+    </div>
+
+
+
+<h1 id="有序的Set集合"><a href="#有序的Set集合" class="headerlink" title="有序的Set集合"></a>有序的Set集合</h1><p>在Java中，<code>TreeSet</code>和<code>LinkedHashSet</code>是两种常见的Set集合实现，它们分别提供了有序性和记录插入顺序的功能。</p>
+<h2 id="TreeSet"><a href="#TreeSet" class="headerlink" title="TreeSet"></a>TreeSet</h2><p><code>TreeSet</code>是基于红黑树（Red-Black Tree）实现的，它保证了元素的自然顺序。红黑树是一种自平衡的二叉查找树，能够在插入和删除操作后自动调整树的结构，以保持树的平衡。</p>
+<p><strong>特点：</strong></p>
+<ul>
+<li><strong>有序性</strong>：<code>TreeSet</code>中的元素按照自然顺序（或通过自定义的<code>Comparator</code>）进行排序。</li>
+<li><strong>唯一性</strong>：<code>TreeSet</code>中的元素是唯一的，不允许重复。</li>
+<li><strong>性能</strong>：插入、删除和查找操作的时间复杂度为O(log n)。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.TreeSet;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TreeSetExample</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        TreeSet&lt;Integer&gt; treeSet = <span class="keyword">new</span> <span class="title class_">TreeSet</span>&lt;&gt;();</span><br><span class="line">        treeSet.add(<span class="number">5</span>);</span><br><span class="line">        treeSet.add(<span class="number">3</span>);</span><br><span class="line">        treeSet.add(<span class="number">8</span>);</span><br><span class="line">        treeSet.add(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 输出: [1, 3, 5, 8]</span></span><br><span class="line">        System.out.println(treeSet);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="LinkedHashSet"><a href="#LinkedHashSet" class="headerlink" title="LinkedHashSet"></a>LinkedHashSet</h2><p><code>LinkedHashSet</code>是基于哈希表和双向链表实现的，它保证了元素的插入顺序。哈希表用于快速查找元素，而双向链表用于维护元素的插入顺序。</p>
+<p><strong>特点：</strong></p>
+<ul>
+<li><strong>插入顺序</strong>：<code>LinkedHashSet</code>中的元素按照插入顺序进行存储和遍历。</li>
+<li><strong>唯一性</strong>：<code>LinkedHashSet</code>中的元素是唯一的，不允许重复。</li>
+<li><strong>性能</strong>：插入、删除和查找操作的时间复杂度为O(1)。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.LinkedHashSet;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LinkedHashSetExample</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        LinkedHashSet&lt;Integer&gt; linkedHashSet = <span class="keyword">new</span> <span class="title class_">LinkedHashSet</span>&lt;&gt;();</span><br><span class="line">        linkedHashSet.add(<span class="number">5</span>);</span><br><span class="line">        linkedHashSet.add(<span class="number">3</span>);</span><br><span class="line">        linkedHashSet.add(<span class="number">8</span>);</span><br><span class="line">        linkedHashSet.add(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 输出: [5, 3, 8, 1]</span></span><br><span class="line">        System.out.println(linkedHashSet);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="记录插入顺序的集合"><a href="#记录插入顺序的集合" class="headerlink" title="记录插入顺序的集合"></a>记录插入顺序的集合</h1><p>通常指的是<code>LinkedHashSet</code>。<code>LinkedHashSet</code>通过维护一个双向链表来记录元素的插入顺序，因此它能够保证元素按照插入顺序进行存储和遍历。</p>
+<p>以下是一个使用<code>LinkedHashSet</code>来记录插入顺序的代码示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.LinkedHashSet;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LinkedHashSetExample</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="comment">// 创建一个LinkedHashSet实例</span></span><br><span class="line">        LinkedHashSet&lt;String&gt; linkedHashSet = <span class="keyword">new</span> <span class="title class_">LinkedHashSet</span>&lt;&gt;();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 向集合中添加元素</span></span><br><span class="line">        linkedHashSet.add(<span class="string">&quot;Apple&quot;</span>);</span><br><span class="line">        linkedHashSet.add(<span class="string">&quot;Banana&quot;</span>);</span><br><span class="line">        linkedHashSet.add(<span class="string">&quot;Cherry&quot;</span>);</span><br><span class="line">        linkedHashSet.add(<span class="string">&quot;Date&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 输出集合中的元素，按照插入顺序</span></span><br><span class="line">        System.out.println(<span class="string">&quot;Elements in LinkedHashSet (insertion order):&quot;</span>);</span><br><span class="line">        <span class="keyword">for</span> (String fruit : linkedHashSet) &#123;</span><br><span class="line">            System.out.println(fruit);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 尝试添加重复元素</span></span><br><span class="line">        linkedHashSet.add(<span class="string">&quot;Apple&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 再次输出集合中的元素，插入顺序不变</span></span><br><span class="line">        System.out.println(<span class="string">&quot;\nAfter adding duplicate element:&quot;</span>);</span><br><span class="line">        <span class="keyword">for</span> (String fruit : linkedHashSet) &#123;</span><br><span class="line">            System.out.println(fruit);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>由于<code>LinkedHashSet</code>不允许重复元素，因此插入重复元素不会改变集合的内容，插入顺序保持不变。</p>
+<p>运行上述代码后，输出结果如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Elements in LinkedHashSet (insertion order):</span><br><span class="line">Apple</span><br><span class="line">Banana</span><br><span class="line">Cherry</span><br><span class="line">Date</span><br><span class="line"></span><br><span class="line">After adding duplicate element:</span><br><span class="line">Apple</span><br><span class="line">Banana</span><br><span class="line">Cherry</span><br><span class="line">Date</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，<code>LinkedHashSet</code>成功地记录了元素的插入顺序，并且重复元素不会被插入。</p>
+</div>
+        </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+            
+            
+                <div class="post-actions text-center clearfix" id="post-actions">
+                
+                    <a class="donate" href="javascript:;" onclick="krOpenDonateModal()"><i class="fa fa-bitcoin"></i> 打赏</a>
+                
+                
+                    <a class="share" href="javascript:;" onclick="krOpenShareModal()"><i class="fa fa-share-alt"></i> 分享</a>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    <a class="tag-none-link" href="/tags/Set/" rel="tag">Set</a>
+                </div>
+                <div class="pull-date">
+                    <time datetime="2024-09-21T16:18:23.975Z" itemprop="dateModified">最后编辑：2024-09-22</time>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" Java集合（Map篇-上）" href="/2024/09/09/Java集合（Map篇-上）/"><i class="fa fa-angle-left"></i> 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" MySQL日志可以用来干啥？" href="/2024/09/17/MySQL日志可以用来干啥？/">下一篇 <i class="fa fa-angle-right"></i></a>
+            </div>
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+            
+                
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/user.jpg" alt="xiaoyan" loading="lazy" decoding="auto" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">是一只时时翻垃圾吃的宅子。</p>
+    </div>
+    <div class="site-meta">
+        <a class="meta-item" href="/archives/">
+            <span class="title">
+                文章
+            </span>
+            <span class="count">
+                10
+            </span>
+        </a>
+        <a class="meta-item" href="/categories/">
+            <span class="title">
+                分类
+            </span>
+            <span class="count">
+                5
+            </span>
+        </a>
+        <a class="meta-item" href="/tags/">
+            <span class="title">
+                标签
+            </span>
+            <span class="count">
+                17
+            </span>
+        </a>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix toc-div-class" >
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar" role="progressbar" aria-label="阅读进度："></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Set%E9%9B%86%E5%90%88%E7%89%B9%E7%82%B9"><span class="toc-number">1.</span> <span class="toc-text">Set集合特点</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Set%E9%9B%86%E5%90%88key%E6%97%A0%E9%87%8D%E5%A4%8D%E5%8E%9F%E7%90%86"><span class="toc-number">2.</span> <span class="toc-text">Set集合key无重复原理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%93%88%E5%B8%8C%E8%A1%A8%EF%BC%88HashMap%EF%BC%89%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.1.</span> <span class="toc-text">哈希表（HashMap）实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BA%A2%E9%BB%91%E6%A0%91%EF%BC%88TreeMap%EF%BC%89%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.2.</span> <span class="toc-text">红黑树（TreeMap）实现</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9C%89%E5%BA%8F%E7%9A%84Set%E9%9B%86%E5%90%88"><span class="toc-number">3.</span> <span class="toc-text">有序的Set集合</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#TreeSet"><span class="toc-number">3.1.</span> <span class="toc-text">TreeSet</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LinkedHashSet"><span class="toc-number">3.2.</span> <span class="toc-text">LinkedHashSet</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%AE%B0%E5%BD%95%E6%8F%92%E5%85%A5%E9%A1%BA%E5%BA%8F%E7%9A%84%E9%9B%86%E5%90%88"><span class="toc-number">4.</span> <span class="toc-text">记录插入顺序的集合</span></a></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类列表</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">9</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%9F%BA%E7%A1%80/">基础</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E9%9B%86%E5%90%88/">集合</a><span class="category-list-count">5</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/%E6%97%A5%E5%BF%97/">日志</a><span class="category-list-count">1</span></li></ul></li></ul>
+  </aside>
+
+
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/I-O/" style="font-size: 0.6em;">I/O</a> <a href="/tags/Java8%E6%96%B0%E7%89%B9%E6%80%A7/" style="font-size: 0.6em;">Java8新特性</a> <a href="/tags/Java%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" style="font-size: 0.6em;">Java基本概念</a> <a href="/tags/List/" style="font-size: 0.6em;">List</a> <a href="/tags/Map/" style="font-size: 0.8em;">Map</a> <a href="/tags/Object/" style="font-size: 0.6em;">Object</a> <a href="/tags/Set/" style="font-size: 0.6em;">Set</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 0.6em;">其他</a> <a href="/tags/%E5%8F%8D%E5%B0%84/" style="font-size: 0.6em;">反射</a> <a href="/tags/%E5%AF%B9%E8%B1%A1/" style="font-size: 0.6em;">对象</a> <a href="/tags/%E5%BA%8F%E5%88%97%E5%8C%96/" style="font-size: 0.6em;">序列化</a> <a href="/tags/%E5%BC%82%E5%B8%B8/" style="font-size: 0.6em;">异常</a> <a href="/tags/%E6%8B%B7%E8%B4%9D/" style="font-size: 0.6em;">拷贝</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" style="font-size: 0.6em;">数据类型</a> <a href="/tags/%E6%B3%9B%E5%9E%8B/" style="font-size: 0.6em;">泛型</a> <a href="/tags/%E6%B3%A8%E8%A7%A3/" style="font-size: 0.6em;">注解</a> <a href="/tags/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/" style="font-size: 0.6em;">面向对象</a>
+      </div>
+  </aside>
+
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/17/MySQL%E6%97%A5%E5%BF%97%E5%8F%AF%E4%BB%A5%E7%94%A8%E6%9D%A5%E5%B9%B2%E5%95%A5%EF%BC%9F/"><i class="fa fa-book"></i> MySQL日志可以用来干啥？</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/09/Java%E9%9B%86%E5%90%88%EF%BC%88Set%E7%AF%87%EF%BC%89/"><i class="fa fa-book"></i> Java集合（Set篇）</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/09/Java%E9%9B%86%E5%90%88%EF%BC%88Map%E7%AF%87-%E4%B8%8A%EF%BC%89/"><i class="fa fa-book"></i> Java集合（Map篇-上）</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/09/Java%E9%9B%86%E5%90%88%EF%BC%88Map%E7%AF%87-%E4%B8%8B%EF%BC%89/"><i class="fa fa-book"></i> Java集合（Map篇-下）</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/09/Java%E9%9B%86%E5%90%88%EF%BC%88List%E7%AF%87%EF%BC%89/"><i class="fa fa-book"></i> Java集合（List篇）</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+            
+
+        
+
+                </div>
+    </div>
+</div>
+
+<footer>
+    <div id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2024 XIAOYAN 版权所有.</li>
+                            <li>本站已运行<span id="kr-since">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>自豪地使用 <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a> 主题</li>
+                            <li>站点由 xiaoyan 用 <i class="fa fa-heart" style="color:#d43f57"></i> 搭建</li>
+                        </div>
+                        <!-- 额外的追加注入项 -->
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                <div class="box theme-box" id="theme-toggle">
+                    <span class="fa fa-adjust"></span>
+                </div>
+            </div>
+            <div id="gotop-box" class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+
+    <div id="kr-donate-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseDonateModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-bitcoin"></i>
+            </div>
+            <div class="kr-modal-title">打赏</div>
+            <button class="kr-modal-close" onclick="krCloseDonateModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-donate-message">请我喝一杯冰阔咯~</div>
+            <div class="kr-donate-qr" id="kr-donate-qr">
+                
+            </div>
+            <div class="kr-donate-platforms">
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #1677ff;" title="支付宝" onclick="krDonateModalShowPlatformQR('https://qr.alipay.com/fkx15009k7u0fqrj8auepdf', '#1677ff')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-alipay">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M19 3h-14a2 2 0 0 0 -2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2 -2v-14a2 2 0 0 0 -2 -2z" />
+  <path d="M7 7h10" />
+  <path d="M12 3v7" />
+  <path d="M21 17.314c-2.971 -1.923 -15 -8.779 -15 -1.864c0 1.716 1.52 2.55 2.985 2.55c3.512 0 6.814 -5.425 6.814 -8h-6.604" />
+</svg>
+
+                        </button>
+                    
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #38ad5a;" title="微信支付" onclick="krDonateModalShowPlatformQR('wxp://f2f0hR4eF9Ypa3tpzjWme9fQDyWW3PIGe3WG5oiIakWLmDs', '#38ad5a')">
+                            <i class="fa fa-wechat"></i>
+                        </button>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/donate.min.js"></script>
+
+
+
+
+    <div id="kr-share-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseShareModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-share-alt"></i>
+            </div>
+            <div class="kr-modal-title">分享</div>
+            <button class="kr-modal-close" onclick="krCloseShareModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-share-message">让兄弟萌也来瞅一瞅！</div>
+            <div class="kr-share-qr" id="kr-share-qr"></div>
+            <div class="kr-share-platforms">
+                
+                    <button class="kr-share-platform-button" style="color: #e6162d;" title="QQ" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-qq"></i>
+                    </button>
+                
+                    <button class="kr-share-platform-button" style="color: #25d366;" title="微信" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-weixin"></i>
+                    </button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/share.min.js"></script>
+
+
+
+<!-- 额外的追加注入项 -->
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
+<meting-js
+  server="netease"
+  type="playlist"
+  fixed="true"
+  order="random"
+  id="12613265870">
+</meting-js>
+
+
+
+        <script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
+</script>
+
+
+  <script defer src="/vendors/nprogress@0.2.0/nprogress.js"></script>
+
+
+
+  <script defer src="/vendors/viewerjs@1.11.6/dist/viewer.min.js"></script>
+
+
+<script defer src="/js/kr-core.min.js"></script>
+
+
+  <script defer src="/js/kr-pjax.min.js"></script>
+
+
+<!-- 额外的追加注入项 -->
+
+  <script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+
+
+
+    </body>
+</html>
