@@ -7,8 +7,8 @@
     <link rel="icon" href="/images/earthstars.png">
   
   
-  <title>Java集合（Map篇-上） | XIAOYAN</title>
-  <link rel="canonical" href="http://example.com/2024/09/09/Java%E9%9B%86%E5%90%88%EF%BC%88Map%E7%AF%87-%E4%B8%8A%EF%BC%89/">
+  <title>Java集合-Map篇(上) | XIAOYAN</title>
+  <link rel="canonical" href="http://example.com/2024/09/09/Java%E9%9B%86%E5%90%88-Map%E7%AF%87(%E4%B8%8A)/">
   <meta name="author" content="xiaoyan" />
   <meta http-equiv="Cache-Control" content="no-transform" />
   <meta http-equiv="Cache-Control" content="no-siteapp" />
@@ -19,17 +19,17 @@
   
     <meta name="keywords" content="Map" />
   
-  <meta name="description" content="主要收集了集合的一些Map知识。">
+  <meta name="description" content="在Java集合框架中，Map接口提供了多种实现类，其中HashMap是最常用的键值对存储结构。HashMap的底层实现经历了多次优化，从Java 1.7及之前的数组+链表结构，到Java 1.8引入的红黑树优化，显著提高了查询性能。HashMap通过哈希算法将键值映射到数组槽位，解决哈希冲突的方法包括链表法、开放寻址法、再哈希法和哈希桶扩容。HashMap在多线程环境下存在数据丢失和死循环问题，可">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Java集合（Map篇-上）">
-<meta property="og:url" content="http://example.com/2024/09/09/Java%E9%9B%86%E5%90%88%EF%BC%88Map%E7%AF%87-%E4%B8%8A%EF%BC%89/index.html">
+<meta property="og:title" content="Java集合-Map篇(上)">
+<meta property="og:url" content="http://example.com/2024/09/09/Java%E9%9B%86%E5%90%88-Map%E7%AF%87(%E4%B8%8A)/index.html">
 <meta property="og:site_name" content="XIAOYAN">
-<meta property="og:description" content="主要收集了集合的一些Map知识。">
+<meta property="og:description" content="在Java集合框架中，Map接口提供了多种实现类，其中HashMap是最常用的键值对存储结构。HashMap的底层实现经历了多次优化，从Java 1.7及之前的数组+链表结构，到Java 1.8引入的红黑树优化，显著提高了查询性能。HashMap通过哈希算法将键值映射到数组槽位，解决哈希冲突的方法包括链表法、开放寻址法、再哈希法和哈希桶扩容。HashMap在多线程环境下存在数据丢失和死循环问题，可">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409211602554.png">
 <meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409211729547.png">
 <meta property="article:published_time" content="2024-09-09T05:14:02.000Z">
-<meta property="article:modified_time" content="2024-09-21T16:18:07.214Z">
+<meta property="article:modified_time" content="2024-09-22T13:59:35.048Z">
 <meta property="article:author" content="xiaoyan">
 <meta property="article:tag" content="Map">
 <meta name="twitter:card" content="summary">
@@ -155,11 +155,11 @@
         
 
             <article itemscope itemtype="https://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/09/Java%E9%9B%86%E5%90%88%EF%BC%88Map%E7%AF%87-%E4%B8%8A%EF%BC%89/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/09/Java%E9%9B%86%E5%90%88-Map%E7%AF%87(%E4%B8%8A)/">
     <div class="kratos-hentry kratos-page-inner clearfix">
         <header class="kratos-page-header">
             
-                <h1 class="kratos-page-title text-center" itemprop="name headline">Java集合（Map篇-上）</h1>
+                <h1 class="kratos-page-title text-center" itemprop="name headline">Java集合-Map篇(上)</h1>
             
             <ul class="kratos-page-meta text-center">
                 <li><time datetime="2024-09-09T05:14:02.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2024-09-09</time></li>
@@ -171,7 +171,7 @@
                         <i class="fa fa-edit"></i> 
                         
                         
-                            ~10.04K
+                            ~10.44K
                         
                         字
                     </li>
@@ -189,7 +189,7 @@
                 </div>
             
             <hr />
-            <div itemprop="articleBody"><p>主要收集了集合的一些Map知识。</p>
+            <div itemprop="articleBody"><p>在Java集合框架中，<code>Map</code>接口提供了多种实现类，其中<code>HashMap</code>是最常用的键值对存储结构。<code>HashMap</code>的底层实现经历了多次优化，从Java 1.7及之前的数组+链表结构，到Java 1.8引入的红黑树优化，显著提高了查询性能。<code>HashMap</code>通过哈希算法将键值映射到数组槽位，解决哈希冲突的方法包括链表法、开放寻址法、再哈希法和哈希桶扩容。<code>HashMap</code>在多线程环境下存在数据丢失和死循环问题，可以通过<code>Collections.synchronizedMap</code>、<code>Hashtable</code>或<code>ConcurrentHashMap</code>实现线程安全。<code>HashMap</code>的核心操作包括<code>put</code>和<code>get</code>方法，依赖于哈希算法和数组结构。选择红黑树而非平衡二叉树是为了在保证查询性能的同时，减少插入和删除操作的开销。<code>HashMap</code>支持<code>null</code>作为键和值，但<code>null</code>作为键只能有一个。理解这些原理和实现细节，有助于在实际编程中选择合适的集合类型，提高代码的效率和可维护性。</p>
 <span id="more"></span>
 
 <h1 id="HashMap-原理"><a href="#HashMap-原理" class="headerlink" title="HashMap 原理"></a>HashMap 原理</h1><p>HashMap 是 Java 中常用的键值对存储结构，其底层实现经历了多次优化。在 Java 1.7 之前，HashMap 的存储结构为<strong>数组 + 链表</strong>，而在 Java 1.8 中引入了<strong>红黑树</strong>来优化链表过长导致的性能问题。</p>
@@ -463,7 +463,7 @@
                     <a class="tag-none-link" href="/tags/Map/" rel="tag">Map</a>
                 </div>
                 <div class="pull-date">
-                    <time datetime="2024-09-21T16:18:07.214Z" itemprop="dateModified">最后编辑：2024-09-22</time>
+                    <time datetime="2024-09-22T13:59:35.048Z" itemprop="dateModified">最后编辑：2024-09-22</time>
                 </div>
             </div>
         </footer>
@@ -472,12 +472,12 @@
         <nav class="navigation post-navigation clearfix" role="navigation">
             
             <div class="nav-previous clearfix">
-                <a title=" Java集合（Map篇-下）" href="/2024/09/09/Java集合（Map篇-下）/"><i class="fa fa-angle-left"></i> 上一篇</a>
+                <a title=" Java集合-Map篇(下)" href="/2024/09/09/Java集合-Map篇(下)/"><i class="fa fa-angle-left"></i> 上一篇</a>
             </div>
             
             
             <div class="nav-next clearfix">
-                <a title=" Java集合（Set篇）" href="/2024/09/09/Java集合（Set篇）/">下一篇 <i class="fa fa-angle-right"></i></a>
+                <a title=" Java集合-Set篇" href="/2024/09/09/Java集合-Set篇/">下一篇 <i class="fa fa-angle-right"></i></a>
             </div>
             
         </nav>
@@ -512,7 +512,7 @@
                 文章
             </span>
             <span class="count">
-                10
+                13
             </span>
         </a>
         <a class="meta-item" href="/categories/">
@@ -520,7 +520,7 @@
                 分类
             </span>
             <span class="count">
-                5
+                6
             </span>
         </a>
         <a class="meta-item" href="/tags/">
@@ -528,7 +528,7 @@
                 标签
             </span>
             <span class="count">
-                17
+                20
             </span>
         </a>
     </div>
@@ -551,7 +551,7 @@
                 
   <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
     <h4 class="widget-title"><i class="fa fa-folder"></i>分类列表</h4>
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">9</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%9F%BA%E7%A1%80/">基础</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E9%9B%86%E5%90%88/">集合</a><span class="category-list-count">5</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/%E6%97%A5%E5%BF%97/">日志</a><span class="category-list-count">1</span></li></ul></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%9F%BA%E7%A1%80/">基础</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">并发编程</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E9%9B%86%E5%90%88/">集合</a><span class="category-list-count">5</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/%E6%97%A5%E5%BF%97/">日志</a><span class="category-list-count">1</span></li></ul></li></ul>
   </aside>
 
 
@@ -560,7 +560,7 @@
   <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
     <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
       <div class="tag-clouds">
-        <a href="/tags/I-O/" style="font-size: 0.6em;">I/O</a> <a href="/tags/Java8%E6%96%B0%E7%89%B9%E6%80%A7/" style="font-size: 0.6em;">Java8新特性</a> <a href="/tags/Java%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" style="font-size: 0.6em;">Java基本概念</a> <a href="/tags/List/" style="font-size: 0.6em;">List</a> <a href="/tags/Map/" style="font-size: 0.8em;">Map</a> <a href="/tags/Object/" style="font-size: 0.6em;">Object</a> <a href="/tags/Set/" style="font-size: 0.6em;">Set</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 0.6em;">其他</a> <a href="/tags/%E5%8F%8D%E5%B0%84/" style="font-size: 0.6em;">反射</a> <a href="/tags/%E5%AF%B9%E8%B1%A1/" style="font-size: 0.6em;">对象</a> <a href="/tags/%E5%BA%8F%E5%88%97%E5%8C%96/" style="font-size: 0.6em;">序列化</a> <a href="/tags/%E5%BC%82%E5%B8%B8/" style="font-size: 0.6em;">异常</a> <a href="/tags/%E6%8B%B7%E8%B4%9D/" style="font-size: 0.6em;">拷贝</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" style="font-size: 0.6em;">数据类型</a> <a href="/tags/%E6%B3%9B%E5%9E%8B/" style="font-size: 0.6em;">泛型</a> <a href="/tags/%E6%B3%A8%E8%A7%A3/" style="font-size: 0.6em;">注解</a> <a href="/tags/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/" style="font-size: 0.6em;">面向对象</a>
+        <a href="/tags/I-O/" style="font-size: 0.6em;">I/O</a> <a href="/tags/Java8%E6%96%B0%E7%89%B9%E6%80%A7/" style="font-size: 0.6em;">Java8新特性</a> <a href="/tags/Java%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" style="font-size: 0.6em;">Java基本概念</a> <a href="/tags/List/" style="font-size: 0.6em;">List</a> <a href="/tags/Map/" style="font-size: 0.8em;">Map</a> <a href="/tags/Object/" style="font-size: 0.6em;">Object</a> <a href="/tags/Set/" style="font-size: 0.6em;">Set</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 0.6em;">其他</a> <a href="/tags/%E5%8F%8D%E5%B0%84/" style="font-size: 0.6em;">反射</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 0.6em;">多线程</a> <a href="/tags/%E5%AF%B9%E8%B1%A1/" style="font-size: 0.6em;">对象</a> <a href="/tags/%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8/" style="font-size: 0.6em;">并发安全</a> <a href="/tags/%E5%BA%8F%E5%88%97%E5%8C%96/" style="font-size: 0.6em;">序列化</a> <a href="/tags/%E5%BC%82%E5%B8%B8/" style="font-size: 0.6em;">异常</a> <a href="/tags/%E6%8B%B7%E8%B4%9D/" style="font-size: 0.6em;">拷贝</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" style="font-size: 0.6em;">数据类型</a> <a href="/tags/%E6%B3%9B%E5%9E%8B/" style="font-size: 0.6em;">泛型</a> <a href="/tags/%E6%B3%A8%E8%A7%A3/" style="font-size: 0.6em;">注解</a>
       </div>
   </aside>
 
@@ -580,28 +580,34 @@
         
           
           
-            <a class="list-group-item" href="/2024/09/09/Java%E9%9B%86%E5%90%88%EF%BC%88Set%E7%AF%87%EF%BC%89/"><i class="fa fa-book"></i> Java集合（Set篇）</a>
+            <a class="list-group-item" href="/2024/09/10/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%AF%87/"><i class="fa fa-book"></i> Java并发编程-线程池篇</a>
             
           
         
           
           
-            <a class="list-group-item" href="/2024/09/09/Java%E9%9B%86%E5%90%88%EF%BC%88Map%E7%AF%87-%E4%B8%8A%EF%BC%89/"><i class="fa fa-book"></i> Java集合（Map篇-上）</a>
+            <a class="list-group-item" href="/2024/09/10/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8%E7%AF%87/"><i class="fa fa-book"></i> Java并发编程-并发安全篇</a>
             
           
         
           
           
-            <a class="list-group-item" href="/2024/09/09/Java%E9%9B%86%E5%90%88%EF%BC%88Map%E7%AF%87-%E4%B8%8B%EF%BC%89/"><i class="fa fa-book"></i> Java集合（Map篇-下）</a>
+            <a class="list-group-item" href="/2024/09/10/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%AF%87/"><i class="fa fa-book"></i> Java并发编程-多线程篇</a>
             
           
         
           
           
-            <a class="list-group-item" href="/2024/09/09/Java%E9%9B%86%E5%90%88%EF%BC%88List%E7%AF%87%EF%BC%89/"><i class="fa fa-book"></i> Java集合（List篇）</a>
+            <a class="list-group-item" href="/2024/09/09/Java%E9%9B%86%E5%90%88-Set%E7%AF%87/"><i class="fa fa-book"></i> Java集合-Set篇</a>
             
           
         
+          
+            
+          
+            
+          
+            
           
             
           

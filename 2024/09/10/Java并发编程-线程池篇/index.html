@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  
+    <link rel="icon" href="/images/earthstars.png">
+  
+  
+  <title>Java并发编程-线程池篇 | XIAOYAN</title>
+  <link rel="canonical" href="http://example.com/2024/09/10/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%AF%87/">
+  <meta name="author" content="xiaoyan" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="线程池" />
+  
+  <meta name="description" content="Java 提供了强大的并发编程工具，其中线程池（ThreadPool）是管理和复用线程的核心机制。本文将深入探讨 Java 线程池的工作原理、核心组件、创建参数及其在实际应用中的使用场景。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java并发编程-线程池篇">
+<meta property="og:url" content="http://example.com/2024/09/10/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%AF%87/index.html">
+<meta property="og:site_name" content="XIAOYAN">
+<meta property="og:description" content="Java 提供了强大的并发编程工具，其中线程池（ThreadPool）是管理和复用线程的核心机制。本文将深入探讨 Java 线程池的工作原理、核心组件、创建参数及其在实际应用中的使用场景。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409221953537.png">
+<meta property="article:published_time" content="2024-09-10T00:08:10.000Z">
+<meta property="article:modified_time" content="2024-09-22T14:01:25.933Z">
+<meta property="article:author" content="xiaoyan">
+<meta property="article:tag" content="线程池">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409221953537.png">
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kr-core.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/highlight.js/night-eighties.min.css" media="all"></link>
+  
+  <link rel="stylesheet" id="theme-light-css" href="/css/kr-theme/light.min.css" media="all"></link>
+  <link rel="stylesheet" id="theme-dark-css" href="/css/kr-theme/dark.min.css" media="(prefers-color-scheme: dark)"></link>
+  <script src="/js/kr-theme.min.js"></script>
+  <link rel="stylesheet" id="fontawe-css" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="nprogress-css" href="/vendors/nprogress@0.2.0/nprogress.css" media="all"></link>
+  
+  
+    <link rel="stylesheet" href="/vendors/viewerjs@1.11.6/dist/viewer.min.css"></link>
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  
+    <script src="/vendors/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+  
+  <!-- 自定义站点横幅和背景 -->
+  <style>
+    
+      .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_light.png');
+      }
+      html[data-theme="dark"] .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_dark.png');
+      }
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+        html[data-theme="dark"] body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+      }
+    
+    
+      .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+      html[data-theme="dark"] .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+    
+  </style>
+
+  <!-- 额外的追加注入项 -->
+  
+    <link rel="stylesheet" href="/css/custom.css">
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    <li>
+                                        
+                                            <a target="_blank" rel="noopener" href="https://xiaoyanfufu.top/">
+                                        
+                                            
+                                                <i class="fa fa-home"></i>
+                                            
+                                            首页
+                                        </a>
+                                        
+                                    </li>
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">XIAOYAN</a></div>
+                    <div id="kratos-nav-toggle-wrapper" class="nav-toggle">
+                        <a id="kratos-nav-toggle" class="kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>XIAOYAN</h2> <br />
+                        <span>山重水复疑无路，柳暗花明又一村。</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+
+
+        
+
+            
+
+            <section class="kr-main-col col-md-8">
+
+        
+
+            <article itemscope itemtype="https://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/10/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%AF%87/">
+    <div class="kratos-hentry kratos-page-inner clearfix">
+        <header class="kratos-page-header">
+            
+                <h1 class="kratos-page-title text-center" itemprop="name headline">Java并发编程-线程池篇</h1>
+            
+            <ul class="kratos-page-meta text-center">
+                <li><time datetime="2024-09-10T00:08:10.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2024-09-10</time></li>
+                <li itemprop="author" itemscope itemtype="https://schema.org/Person">
+                    <i class="fa fa-user"></i> 作者 <span itemprop="name">xiaoyan</span>
+                </li>
+                
+                    <li>
+                        <i class="fa fa-edit"></i> 
+                        
+                        
+                            ~14.14K
+                        
+                        字
+                    </li>
+                
+                
+                
+            </ul>
+        </header>
+        <div class="kratos-page-content kr-post">
+            
+            
+            
+                <div class="kratos-post-inner-toc toc-div-class" >
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%8E%9F%E7%90%86"><span class="toc-number">1.</span> <span class="toc-text">线程池原理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E7%BB%84%E6%88%90%E9%83%A8%E5%88%86"><span class="toc-number">1.1.</span> <span class="toc-text">线程池的组成部分</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%88%9B%E5%BB%BA%E5%8F%82%E6%95%B0%E8%AF%A6%E8%A7%A3"><span class="toc-number">1.2.</span> <span class="toc-text">线程池的创建参数详解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-corePoolSize"><span class="toc-number">1.2.1.</span> <span class="toc-text">1. corePoolSize</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-maximumPoolSize"><span class="toc-number">1.2.2.</span> <span class="toc-text">2. maximumPoolSize</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-keepAliveTime"><span class="toc-number">1.2.3.</span> <span class="toc-text">3. keepAliveTime</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-unit"><span class="toc-number">1.2.4.</span> <span class="toc-text">4. unit</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-workQueue"><span class="toc-number">1.2.5.</span> <span class="toc-text">5. workQueue</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-threadFactory"><span class="toc-number">1.2.6.</span> <span class="toc-text">6. threadFactory</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-handler"><span class="toc-number">1.2.7.</span> <span class="toc-text">7. handler</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="toc-number">1.3.</span> <span class="toc-text">线程池的工作流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E6%8B%92%E7%BB%9D%E7%AD%96%E7%95%A5"><span class="toc-number">1.4.</span> <span class="toc-text">线程池的拒绝策略</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%B6%E4%BB%96"><span class="toc-number">2.</span> <span class="toc-text">其他</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%8F%82%E6%95%B0%E8%AE%BE%E7%BD%AE"><span class="toc-number">2.1.</span> <span class="toc-text">线程池参数设置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E7%BA%BF%E7%A8%8B%E6%95%B0%E5%8F%AF%E4%BB%A5%E8%AE%BE%E7%BD%AE%E4%B8%BA-0-%E5%90%97%EF%BC%9F"><span class="toc-number">2.2.</span> <span class="toc-text">核心线程数可以设置为 0 吗？</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E7%A7%8D%E7%B1%BB"><span class="toc-number">3.</span> <span class="toc-text">线程池的种类</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#shutdown-%E5%92%8C-shutdownNow-%E6%96%B9%E6%B3%95%E8%AF%A6%E8%A7%A3"><span class="toc-number">4.</span> <span class="toc-text">shutdown 和 shutdownNow 方法详解</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#shutdown-%E6%96%B9%E6%B3%95"><span class="toc-number">4.1.</span> <span class="toc-text">shutdown 方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#shutdownNow-%E6%96%B9%E6%B3%95"><span class="toc-number">4.2.</span> <span class="toc-text">shutdownNow 方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%8F%90%E4%BA%A4%E5%88%B0%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E4%BB%BB%E5%8A%A1%E5%8F%AF%E4%BB%A5%E6%92%A4%E5%9B%9E%EF%BC%9F"><span class="toc-number">5.</span> <span class="toc-text">提交到线程池的任务可以撤回？</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Future-%E6%8E%A5%E5%8F%A3"><span class="toc-number">5.1.</span> <span class="toc-text">Future 接口</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%9C%BA%E6%99%AF%E7%A4%BA%E4%BE%8B%EF%BC%9A%E6%8C%89%E7%85%A7%E9%A1%BA%E5%BA%8F%E6%89%93%E5%8D%B0%E5%A5%87%E5%81%B6%E6%95%B0"><span class="toc-number">6.</span> <span class="toc-text">多线程场景示例：按照顺序打印奇偶数</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95%E4%B8%80%EF%BC%9A%E4%BD%BF%E7%94%A8-synchronized-%E5%85%B3%E9%94%AE%E5%AD%97"><span class="toc-number">6.1.</span> <span class="toc-text">方法一：使用 synchronized 关键字</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95%E4%BA%8C%EF%BC%9A%E4%BD%BF%E7%94%A8-Lock-%E6%8E%A5%E5%8F%A3%E5%92%8C-Condition"><span class="toc-number">6.2.</span> <span class="toc-text">方法二：使用 Lock 接口和 Condition</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95%E4%B8%89%EF%BC%9A%E4%BD%BF%E7%94%A8-Semaphore"><span class="toc-number">6.3.</span> <span class="toc-text">方法三：使用 Semaphore</span></a></li></ol></li></ol>
+                </div>
+            
+            <hr />
+            <div itemprop="articleBody"><p>Java 提供了强大的并发编程工具，其中线程池（ThreadPool）是管理和复用线程的核心机制。本文将深入探讨 Java 线程池的工作原理、核心组件、创建参数及其在实际应用中的使用场景。</p>
+<span id="more"></span>
+
+<h1 id="线程池原理"><a href="#线程池原理" class="headerlink" title="线程池原理"></a>线程池原理</h1><p>线程池是为了减少频繁创建和销毁线程带来的损耗，通过复用线程来提高系统的性能和稳定性。线程池的工作原理如下：</p>
+<h2 id="线程池的组成部分"><a href="#线程池的组成部分" class="headerlink" title="线程池的组成部分"></a>线程池的组成部分</h2><p>线程池主要由以下几个部分组成：</p>
+<ol>
+<li><strong>核心线程池</strong>：线程池中保持活跃的线程数量，即使这些线程处于空闲状态也不会被销毁。</li>
+<li><strong>线程池容量</strong>：线程池中允许的最大线程数量。</li>
+<li><strong>等待任务队列</strong>：当线程池中的线程都在执行任务时，新提交的任务会被放入等待任务队列中。</li>
+</ol>
+<h2 id="线程池的创建参数详解"><a href="#线程池的创建参数详解" class="headerlink" title="线程池的创建参数详解"></a>线程池的创建参数详解</h2><p>在 Java 中，<code>ThreadPoolExecutor</code> 是创建线程池的主要类。它提供了多个构造函数，其中最常用的是包含七个可选参数的构造函数。这些参数用于配置线程池的行为和特性。</p>
+<p>以下是 <code>ThreadPoolExecutor</code> 构造函数的七个可选参数及其详细说明：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="title function_">ThreadPoolExecutor</span><span class="params">(<span class="type">int</span> corePoolSize,</span></span><br><span class="line"><span class="params">                          <span class="type">int</span> maximumPoolSize,</span></span><br><span class="line"><span class="params">                          <span class="type">long</span> keepAliveTime,</span></span><br><span class="line"><span class="params">                          TimeUnit unit,</span></span><br><span class="line"><span class="params">                          BlockingQueue&lt;Runnable&gt; workQueue,</span></span><br><span class="line"><span class="params">                          ThreadFactory threadFactory,</span></span><br><span class="line"><span class="params">                          RejectedExecutionHandler handler)</span> &#123;</span><br><span class="line">    <span class="comment">// 参数校验</span></span><br><span class="line">    <span class="keyword">if</span> (corePoolSize &lt; <span class="number">0</span> ||</span><br><span class="line">        maximumPoolSize &lt;= <span class="number">0</span> ||</span><br><span class="line">        maximumPoolSize &lt; corePoolSize ||</span><br><span class="line">        keepAliveTime &lt; <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalArgumentException</span>();</span><br><span class="line">    <span class="keyword">if</span> (workQueue == <span class="literal">null</span> || threadFactory == <span class="literal">null</span> || handler == <span class="literal">null</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">NullPointerException</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 初始化线程池参数</span></span><br><span class="line">    <span class="built_in">this</span>.acc = System.getSecurityManager() == <span class="literal">null</span> ?</span><br><span class="line">            <span class="literal">null</span> :</span><br><span class="line">            AccessController.getContext();</span><br><span class="line">    <span class="built_in">this</span>.corePoolSize = corePoolSize;</span><br><span class="line">    <span class="built_in">this</span>.maximumPoolSize = maximumPoolSize;</span><br><span class="line">    <span class="built_in">this</span>.workQueue = workQueue;</span><br><span class="line">    <span class="built_in">this</span>.keepAliveTime = unit.toNanos(keepAliveTime);</span><br><span class="line">    <span class="built_in">this</span>.threadFactory = threadFactory;</span><br><span class="line">    <span class="built_in">this</span>.handler = handler;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-corePoolSize"><a href="#1-corePoolSize" class="headerlink" title="1. corePoolSize"></a>1. <code>corePoolSize</code></h3><ul>
+<li><strong>类型</strong>：<code>int</code></li>
+<li><strong>描述</strong>：核心线程池大小，即线程池中保持活跃的线程数量。即使这些线程处于空闲状态也不会被销毁。</li>
+<li><strong>默认值</strong>：无默认值，必须指定。</li>
+</ul>
+<h3 id="2-maximumPoolSize"><a href="#2-maximumPoolSize" class="headerlink" title="2. maximumPoolSize"></a>2. <code>maximumPoolSize</code></h3><ul>
+<li><strong>类型</strong>：<code>int</code></li>
+<li><strong>描述</strong>：线程池中允许的最大线程数量。当等待任务队列已满且核心线程池已满时，线程池会创建新的线程，直到达到最大线程数量。</li>
+<li><strong>默认值</strong>：无默认值，必须指定。</li>
+</ul>
+<h3 id="3-keepAliveTime"><a href="#3-keepAliveTime" class="headerlink" title="3. keepAliveTime"></a>3. <code>keepAliveTime</code></h3><ul>
+<li><strong>类型</strong>：<code>long</code></li>
+<li><strong>描述</strong>：线程空闲时间，即当线程池中的线程数量超过核心线程池大小时，空闲线程在等待新任务的时间超过 <code>keepAliveTime</code> 后会被销毁。</li>
+<li><strong>默认值</strong>：无默认值，必须指定。</li>
+</ul>
+<h3 id="4-unit"><a href="#4-unit" class="headerlink" title="4. unit"></a>4. <code>unit</code></h3><ul>
+<li><strong>类型</strong>：<code>TimeUnit</code></li>
+<li><strong>描述</strong>：<code>keepAliveTime</code> 的时间单位，如秒、毫秒等。</li>
+<li><strong>默认值</strong>：无默认值，必须指定。</li>
+</ul>
+<h3 id="5-workQueue"><a href="#5-workQueue" class="headerlink" title="5. workQueue"></a>5. <code>workQueue</code></h3><ul>
+<li><strong>类型</strong>：<code>BlockingQueue&lt;Runnable&gt;</code></li>
+<li><strong>描述</strong>：等待任务队列，用于存放等待执行的任务。当线程池中的线程都在执行任务时，新提交的任务会被放入等待任务队列中。</li>
+<li><strong>默认值</strong>：无默认值，必须指定。</li>
+</ul>
+<h3 id="6-threadFactory"><a href="#6-threadFactory" class="headerlink" title="6. threadFactory"></a>6. <code>threadFactory</code></h3><ul>
+<li><strong>类型</strong>：<code>ThreadFactory</code></li>
+<li><strong>描述</strong>：线程工厂，用于创建新的线程。可以通过自定义线程工厂来设置线程的名称、优先级等属性。</li>
+<li><strong>默认值</strong>：<code>Executors.defaultThreadFactory()</code>，使用默认的线程工厂。</li>
+</ul>
+<h3 id="7-handler"><a href="#7-handler" class="headerlink" title="7. handler"></a>7. <code>handler</code></h3><ul>
+<li><strong>类型</strong>：<code>RejectedExecutionHandler</code></li>
+<li><strong>描述</strong>：拒绝策略，当线程池容量已满且等待任务队列已满时，线程池会拒绝新提交的任务，并根据拒绝策略处理该任务。</li>
+<li><strong>默认值</strong>：<code>AbortPolicy</code>，直接抛出 <code>RejectedExecutionException</code> 异常。</li>
+</ul>
+<p>以下是一个使用 <code>ThreadPoolExecutor</code> 创建线程池的示例代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.concurrent.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ThreadPoolExample</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="comment">// 创建线程池</span></span><br><span class="line">        <span class="type">ThreadPoolExecutor</span> <span class="variable">executor</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ThreadPoolExecutor</span>(</span><br><span class="line">                <span class="number">2</span>, <span class="comment">// 核心线程池大小</span></span><br><span class="line">                <span class="number">4</span>, <span class="comment">// 最大线程池大小</span></span><br><span class="line">                <span class="number">10</span>, <span class="comment">// 线程空闲时间</span></span><br><span class="line">                TimeUnit.SECONDS, <span class="comment">// 时间单位</span></span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">LinkedBlockingQueue</span>&lt;&gt;(<span class="number">2</span>), <span class="comment">// 等待任务队列</span></span><br><span class="line">                Executors.defaultThreadFactory(), <span class="comment">// 线程工厂</span></span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">ThreadPoolExecutor</span>.AbortPolicy() <span class="comment">// 拒绝策略</span></span><br><span class="line">        );</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 提交任务</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">7</span>; i++) &#123;</span><br><span class="line">            <span class="keyword">final</span> <span class="type">int</span> <span class="variable">taskId</span> <span class="operator">=</span> i;</span><br><span class="line">            executor.submit(() -&gt; &#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;Task &quot;</span> + taskId + <span class="string">&quot; is running on thread &quot;</span> + Thread.currentThread().getName());</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    Thread.sleep(<span class="number">2000</span>); <span class="comment">// 模拟任务执行时间</span></span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 关闭线程池</span></span><br><span class="line">        executor.shutdown();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="线程池的工作流程"><a href="#线程池的工作流程" class="headerlink" title="线程池的工作流程"></a>线程池的工作流程</h2><p>工作流程如下图所示：</p>
+<img src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409221953537.png" alt="线程池工作流程(图片来源网络)">
+
+<ol>
+<li><strong>提交任务</strong>：当一个任务被提交到线程池时，线程池会首先检查核心线程池是否已满。</li>
+<li><strong>核心线程池是否已满</strong>：<ul>
+<li>如果核心线程池未满，线程池会创建一个新的线程来执行任务。</li>
+<li>如果核心线程池已满，线程池会检查等待任务队列是否已满。</li>
+</ul>
+</li>
+<li><strong>等待任务队列是否已满</strong>：<ul>
+<li>如果等待任务队列未满，线程池会将任务放入等待任务队列中。</li>
+<li>如果等待任务队列已满，线程池会检查线程池容量是否已满。</li>
+</ul>
+</li>
+<li><strong>线程池容量是否已满</strong>：<ul>
+<li>如果线程池容量未满，线程池会创建一个新的线程来执行任务。</li>
+<li>如果线程池容量已满，线程池会拒绝任务，并根据拒绝策略处理该任务。</li>
+</ul>
+</li>
+</ol>
+<h2 id="线程池的拒绝策略"><a href="#线程池的拒绝策略" class="headerlink" title="线程池的拒绝策略"></a>线程池的拒绝策略</h2><p>当线程池容量已满且等待任务队列已满时，线程池会拒绝新提交的任务。Java 提供了以下几种预置拒绝策略：</p>
+<ol>
+<li><strong>AbortPolicy</strong>：默认策略，直接抛出 <code>RejectedExecutionException</code> 异常。</li>
+<li><strong>CallerRunsPolicy</strong>：由提交任务的线程执行该任务。</li>
+<li><strong>DiscardPolicy</strong>：直接丢弃任务，不抛出异常。</li>
+<li><strong>DiscardOldestPolicy</strong>：丢弃等待队列中最旧的任务，然后尝试重新提交当前任务。</li>
+</ol>
+<h1 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h1><h2 id="线程池参数设置"><a href="#线程池参数设置" class="headerlink" title="线程池参数设置"></a>线程池参数设置</h2><p>在设置线程池参数时，需要根据具体的应用场景和任务类型来调整线程池的核心线程数、最大线程数、等待任务队列和拒绝策略等参数。以下是一些常见的线程池参数设置建议。</p>
+<ul>
+<li><p><strong>CPU 密集型任务</strong>：对于 CPU 密集型任务，线程池的核心线程数可以设置为 <strong>CPU 核数加 1</strong>。这样可以确保线程池中的线程数量与 CPU 核心数量相匹配，避免过多的线程竞争 CPU 资源。</p>
+</li>
+<li><p><strong>IO 密集型任务</strong>：对于 IO 密集型任务，线程池的核心线程数可以设置为 <strong>CPU 核数的两倍</strong>。这样可以确保线程池中有足够的线程来处理 IO 操作，避免线程等待 IO 操作完成时阻塞。</p>
+</li>
+</ul>
+<h2 id="核心线程数可以设置为-0-吗？"><a href="#核心线程数可以设置为-0-吗？" class="headerlink" title="核心线程数可以设置为 0 吗？"></a>核心线程数可以设置为 0 吗？</h2><p>可以。将核心线程数设置为 0 时，线程池在初始状态下不会创建任何线程。当有任务提交时，任务会先进入等待任务队列。当等待任务队列已满时，线程池才会创建新的线程来执行任务。</p>
+<h1 id="线程池的种类"><a href="#线程池的种类" class="headerlink" title="线程池的种类"></a>线程池的种类</h1><p>在 Java 中，<code>java.util.concurrent</code> 包提供了多种线程池的实现，每种线程池都有其特定的用途和特点。以下是常见的几种线程池及其特点：</p>
+<ol>
+<li><code>ScheduledThreadPool</code></li>
+</ol>
+<p><code>ScheduledThreadPool</code> 是一种可以设置定期执行任务的线程池。它允许你安排任务在给定的延迟后执行，或者定期重复执行。</p>
+<p><strong>特点</strong></p>
+<ul>
+<li><strong>定期执行任务</strong>：可以设置任务在给定的延迟后执行，或者定期重复执行。</li>
+<li><strong>核心线程数固定</strong>：核心线程数和最大线程数相同。</li>
+</ul>
+<ol start="2">
+<li><code>FixedThreadPool</code></li>
+</ol>
+<p><code>FixedThreadPool</code> 是一种核心线程数和最大线程数相同的线程池。它适用于需要固定数量线程来处理任务的场景。</p>
+<p><strong>特点</strong></p>
+<ul>
+<li><strong>固定线程数</strong>：核心线程数和最大线程数相同。</li>
+<li><strong>等待任务队列</strong>：使用 <code>LinkedBlockingQueue</code>，容量为 <code>Integer.MAX_VALUE</code>。</li>
+</ul>
+<ol start="3">
+<li><code>CachedThreadPool</code></li>
+</ol>
+<p><code>CachedThreadPool</code> 是一种可以成为缓存线程池的线程池。它的任务等待队列为 <code>SynchronousQueue</code>，容量为 0，仅做任务流转，效率很高。它的特点在于线程数可以一直增加，甚至达到 <code>Integer.MAX_VALUE</code>（即 2^31-1）。</p>
+<p><strong>特点</strong></p>
+<ul>
+<li><strong>动态线程数</strong>：线程数可以一直增加，直到达到 <code>Integer.MAX_VALUE</code>。</li>
+<li><strong>等待任务队列</strong>：使用 <code>SynchronousQueue</code>，容量为 0，仅做任务流转。</li>
+</ul>
+<ol start="4">
+<li><code>SingleThreadExecutor</code></li>
+</ol>
+<p><code>SingleThreadExecutor</code> 是一种只有一个线程的线程池。它适用于需要顺序执行任务的场景。</p>
+<p><strong>特点</strong></p>
+<ul>
+<li><strong>单线程</strong>：只有一个线程，任务按顺序执行。</li>
+<li><strong>等待任务队列</strong>：使用 <code>LinkedBlockingQueue</code>，容量为 <code>Integer.MAX_VALUE</code>。</li>
+</ul>
+<ol start="5">
+<li><code>SingleThreadScheduledExecutor</code></li>
+</ol>
+<p><code>SingleThreadScheduledExecutor</code> 是一种只有一个线程的线程池，可以设置定期执行任务。</p>
+<p><strong>特点</strong></p>
+<ul>
+<li><strong>单线程</strong>：只有一个线程，任务按顺序执行。</li>
+<li><strong>定期执行任务</strong>：可以设置任务在给定的延迟后执行，或者定期重复执行。</li>
+</ul>
+<h1 id="shutdown-和-shutdownNow-方法详解"><a href="#shutdown-和-shutdownNow-方法详解" class="headerlink" title="shutdown 和 shutdownNow 方法详解"></a><code>shutdown</code> 和 <code>shutdownNow</code> 方法详解</h1><p>在 Java 中，<code>ThreadPoolExecutor</code> 提供了两种关闭线程池的方法：<code>shutdown</code> 和 <code>shutdownNow</code>。这两种方法用于优雅地关闭线程池，但它们的行为有所不同。</p>
+<h2 id="shutdown-方法"><a href="#shutdown-方法" class="headerlink" title="shutdown 方法"></a><code>shutdown</code> 方法</h2><p><code>shutdown</code> 方法用于优雅地关闭线程池。它会将状态置为<code>SHUTDOWN</code>，拒绝新提交的任务，但会等待当前正在执行的任务和已经在等待队列中的任务完成后再关闭线程池。</p>
+<p>以下是 <code>ThreadPoolExecutor</code> 类中 <code>shutdown</code> 方法的源码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">shutdown</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">final</span> <span class="type">ReentrantLock</span> <span class="variable">mainLock</span> <span class="operator">=</span> <span class="built_in">this</span>.mainLock;</span><br><span class="line">    mainLock.lock();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        checkShutdownAccess();</span><br><span class="line">        advanceRunState(SHUTDOWN);</span><br><span class="line">        interruptIdleWorkers();</span><br><span class="line">        onShutdown(); <span class="comment">// hook for ScheduledThreadPoolExecutor</span></span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        mainLock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">    tryTerminate();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>关键步骤</strong></p>
+<ol>
+<li><strong>获取锁</strong>：获取线程池的主锁 <code>mainLock</code>。</li>
+<li><strong>检查权限</strong>：调用 <code>checkShutdownAccess()</code> 方法检查是否有权限关闭线程池。</li>
+<li><strong>更新状态</strong>：调用 <code>advanceRunState(SHUTDOWN)</code> 方法将线程池的状态更新为 <code>SHUTDOWN</code>。</li>
+<li><strong>中断空闲线程</strong>：调用 <code>interruptIdleWorkers()</code> 方法中断所有空闲的线程。</li>
+<li><strong>调用钩子方法</strong>：调用 <code>onShutdown()</code> 方法，这是一个钩子方法，用于在关闭线程池时执行一些自定义操作。</li>
+<li><strong>释放锁</strong>：释放线程池的主锁 <code>mainLock</code>。</li>
+<li><strong>尝试终止</strong>：调用 <code>tryTerminate()</code> 方法尝试终止线程池。</li>
+</ol>
+<h2 id="shutdownNow-方法"><a href="#shutdownNow-方法" class="headerlink" title="shutdownNow 方法"></a><code>shutdownNow</code> 方法</h2><p><code>shutdownNow</code> 方法用于立即关闭线程池。它会立即将线程池的状态设置为 <code>STOP</code>，并尝试中断所有正在执行的任务，同时返回等待队列中尚未执行的任务列表。</p>
+<p><code>shutdownNow</code> 试图通过调用 <code>Thread.interrupt()</code> 方法来终止线程。然而，这种方法的效果有限，如果线程中没有使用 <code>sleep</code>、<code>wait</code>、<code>condition</code>、定时锁等阻塞操作，<code>interrupt()</code> 方法可能无法中断当前的线程。因此，<code>shutdownNow</code> 并不保证线程池能够立即退出，它可能需要等待所有正在执行的任务完成才能真正退出。</p>
+<p>以下是 <code>ThreadPoolExecutor</code> 类中 <code>shutdownNow</code> 方法的源码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> List&lt;Runnable&gt; <span class="title function_">shutdownNow</span><span class="params">()</span> &#123;</span><br><span class="line">    List&lt;Runnable&gt; tasks;</span><br><span class="line">    <span class="keyword">final</span> <span class="type">ReentrantLock</span> <span class="variable">mainLock</span> <span class="operator">=</span> <span class="built_in">this</span>.mainLock;</span><br><span class="line">    mainLock.lock();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        checkShutdownAccess();</span><br><span class="line">        advanceRunState(STOP);</span><br><span class="line">        interruptWorkers();</span><br><span class="line">        tasks = drainQueue();</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        mainLock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">    tryTerminate();</span><br><span class="line">    <span class="keyword">return</span> tasks;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>关键步骤</strong></p>
+<ol>
+<li><strong>获取锁</strong>：获取线程池的主锁 <code>mainLock</code>。</li>
+<li><strong>检查权限</strong>：调用 <code>checkShutdownAccess()</code> 方法检查是否有权限关闭线程池。</li>
+<li><strong>更新状态</strong>：调用 <code>advanceRunState(STOP)</code> 方法将线程池的状态更新为 <code>STOP</code>。</li>
+<li><strong>中断所有线程</strong>：调用 <code>interruptWorkers()</code> 方法中断所有线程，包括正在执行任务的线程。</li>
+<li><strong>清空等待队列</strong>：调用 <code>drainQueue()</code> 方法清空等待队列，并返回尚未执行的任务列表。</li>
+<li><strong>释放锁</strong>：释放线程池的主锁 <code>mainLock</code>。</li>
+<li><strong>尝试终止</strong>：调用 <code>tryTerminate()</code> 方法尝试终止线程池。</li>
+</ol>
+<h1 id="提交到线程池的任务可以撤回？"><a href="#提交到线程池的任务可以撤回？" class="headerlink" title="提交到线程池的任务可以撤回？"></a>提交到线程池的任务可以撤回？</h1><p>是的，当向线程池提交任务时，会得到一个 <code>Future</code> 对象。这个 <code>Future</code> 对象提供了几种方法来管理任务的执行，包括取消任务。取消任务的主要方法是 <code>Future</code> 接口中的 <code>cancel(boolean mayInterruptIfRunning)</code> 方法。这个方法尝试取消执行的任务。参数 <code>mayInterruptIfRunning</code> 指示是否允许中断正在执行的任务。</p>
+<h2 id="Future-接口"><a href="#Future-接口" class="headerlink" title="Future 接口"></a><code>Future</code> 接口</h2><p><code>Future</code> 接口表示一个异步计算的结果。它提供了以下几个主要方法：</p>
+<ul>
+<li>**<code>cancel(boolean mayInterruptIfRunning)</code>**：尝试取消任务的执行。</li>
+<li>**<code>isCancelled()</code>**：判断任务是否已被取消。</li>
+<li>**<code>isDone()</code>**：判断任务是否已完成（包括正常完成、异常完成或被取消）。</li>
+<li>**<code>get()</code>**：获取任务的执行结果，如果任务尚未完成，则阻塞等待。</li>
+<li>**<code>get(long timeout, TimeUnit unit)</code>**：在指定时间内获取任务的执行结果，如果任务尚未完成，则阻塞等待。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Future</span>&lt;V&gt; &#123;</span><br><span class="line">    <span class="type">boolean</span> <span class="title function_">cancel</span><span class="params">(<span class="type">boolean</span> mayInterruptIfRunning)</span>;</span><br><span class="line">    <span class="type">boolean</span> <span class="title function_">isCancelled</span><span class="params">()</span>;</span><br><span class="line">    <span class="type">boolean</span> <span class="title function_">isDone</span><span class="params">()</span>;</span><br><span class="line">    V <span class="title function_">get</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException, ExecutionException;</span><br><span class="line">    V <span class="title function_">get</span><span class="params">(<span class="type">long</span> timeout, TimeUnit unit)</span></span><br><span class="line">        <span class="keyword">throws</span> InterruptedException, ExecutionException, TimeoutException;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="多线程场景示例：按照顺序打印奇偶数"><a href="#多线程场景示例：按照顺序打印奇偶数" class="headerlink" title="多线程场景示例：按照顺序打印奇偶数"></a>多线程场景示例：按照顺序打印奇偶数</h1><p>在多线程编程中，实现按照顺序打印奇偶数是一个常见的场景。可以通过使用 <code>synchronized</code> 关键字、<code>Lock</code> 接口或 <code>Semaphore</code> 等同步机制来实现线程间的协作。</p>
+<h2 id="方法一：使用-synchronized-关键字"><a href="#方法一：使用-synchronized-关键字" class="headerlink" title="方法一：使用 synchronized 关键字"></a>方法一：使用 <code>synchronized</code> 关键字</h2><p><strong>实现思路</strong></p>
+<ol>
+<li>使用 <code>synchronized</code> 关键字同步两个线程的执行。</li>
+<li>通过一个共享的变量来控制打印奇数和偶数的顺序。</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Main</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Object</span> <span class="variable">lock</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Object</span>();</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="type">int</span> <span class="variable">count</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">MAX_COUNT</span> <span class="operator">=</span> <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">Thread</span> <span class="variable">oddP</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(<span class="keyword">new</span> <span class="title class_">PrintOdd</span>(), <span class="string">&quot;OddThread&quot;</span>);</span><br><span class="line">        <span class="type">Thread</span> <span class="variable">evenP</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(<span class="keyword">new</span> <span class="title class_">PrintEven</span>(), <span class="string">&quot;EvenThread&quot;</span>);</span><br><span class="line"></span><br><span class="line">        oddP.start();</span><br><span class="line">        evenP.start();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">PrintOdd</span> <span class="keyword">implements</span> <span class="title class_">Runnable</span> &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">            <span class="keyword">while</span> (count &lt; MAX_COUNT) &#123;</span><br><span class="line">                <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (count % <span class="number">2</span> != <span class="number">0</span>) &#123;</span><br><span class="line">                        System.out.println(<span class="string">&quot;Odd number: &quot;</span> + count + <span class="string">&quot; ThreadName: &quot;</span> + Thread.currentThread().getName());</span><br><span class="line">                        count++;</span><br><span class="line">                        lock.notify();</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        <span class="keyword">try</span> &#123;</span><br><span class="line">                            lock.wait();</span><br><span class="line">                        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                            e.printStackTrace();</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">PrintEven</span> <span class="keyword">implements</span> <span class="title class_">Runnable</span> &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">            <span class="keyword">while</span> (count &lt; MAX_COUNT) &#123;</span><br><span class="line">                <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (count % <span class="number">2</span> == <span class="number">0</span>) &#123;</span><br><span class="line">                        System.out.println(<span class="string">&quot;Even number: &quot;</span> + count + <span class="string">&quot; ThreadName: &quot;</span> + Thread.currentThread().getName());</span><br><span class="line">                        count++;</span><br><span class="line">                        lock.notify();</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        <span class="keyword">try</span> &#123;</span><br><span class="line">                            lock.wait();</span><br><span class="line">                        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                            e.printStackTrace();</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出结果</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Odd: 1</span><br><span class="line">Even: 2</span><br><span class="line">Odd: 3</span><br><span class="line">Even: 4</span><br><span class="line">Odd: 5</span><br><span class="line">Even: 6</span><br><span class="line">Odd: 7</span><br><span class="line">Even: 8</span><br><span class="line">Odd: 9</span><br><span class="line">Even: 10</span><br></pre></td></tr></table></figure>
+
+<h2 id="方法二：使用-Lock-接口和-Condition"><a href="#方法二：使用-Lock-接口和-Condition" class="headerlink" title="方法二：使用 Lock 接口和 Condition"></a>方法二：使用 <code>Lock</code> 接口和 <code>Condition</code></h2><p><strong>实现思路</strong></p>
+<ol>
+<li>使用 <code>ReentrantLock</code> 来实现线程间的同步。</li>
+<li>使用 <code>Condition</code> 来控制线程的等待和唤醒。</li>
+</ol>
+<p>示例代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.concurrent.locks.Condition;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.locks.Lock;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.locks.ReentrantLock;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">OddEvenPrintWithLock</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Lock</span> <span class="variable">lock</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ReentrantLock</span>();</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Condition</span> <span class="variable">oddCondition</span> <span class="operator">=</span> lock.newCondition();</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Condition</span> <span class="variable">evenCondition</span> <span class="operator">=</span> lock.newCondition();</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="type">int</span> <span class="variable">count</span> <span class="operator">=</span> <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">MAX</span> <span class="operator">=</span> <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">Thread</span> <span class="variable">oddThread</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">            <span class="keyword">while</span> (count &lt;= MAX) &#123;</span><br><span class="line">                lock.lock();</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> (count % <span class="number">2</span> != <span class="number">0</span>) &#123;</span><br><span class="line">                        System.out.println(<span class="string">&quot;Odd: &quot;</span> + count++);</span><br><span class="line">                        evenCondition.signal();</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        oddCondition.await();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                    lock.unlock();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="type">Thread</span> <span class="variable">evenThread</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">            <span class="keyword">while</span> (count &lt;= MAX) &#123;</span><br><span class="line">                lock.lock();</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> (count % <span class="number">2</span> == <span class="number">0</span>) &#123;</span><br><span class="line">                        System.out.println(<span class="string">&quot;Even: &quot;</span> + count++);</span><br><span class="line">                        oddCondition.signal();</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        evenCondition.await();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                    lock.unlock();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        oddThread.start();</span><br><span class="line">        evenThread.start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出结果</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Odd: 1</span><br><span class="line">Even: 2</span><br><span class="line">Odd: 3</span><br><span class="line">Even: 4</span><br><span class="line">Odd: 5</span><br><span class="line">Even: 6</span><br><span class="line">Odd: 7</span><br><span class="line">Even: 8</span><br><span class="line">Odd: 9</span><br><span class="line">Even: 10</span><br></pre></td></tr></table></figure>
+
+<h2 id="方法三：使用-Semaphore"><a href="#方法三：使用-Semaphore" class="headerlink" title="方法三：使用 Semaphore"></a>方法三：使用 <code>Semaphore</code></h2><p><strong>实现思路</strong></p>
+<ol>
+<li>使用两个 <code>Semaphore</code> 来控制线程的执行顺序。</li>
+<li>一个 <code>Semaphore</code> 用于控制奇数线程的执行，另一个 <code>Semaphore</code> 用于控制偶数线程的执行。</li>
+</ol>
+<p>示例代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.concurrent.Semaphore;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">OddEvenPrintWithSemaphore</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Semaphore</span> <span class="variable">oddSemaphore</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Semaphore</span>(<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Semaphore</span> <span class="variable">evenSemaphore</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Semaphore</span>(<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="type">int</span> <span class="variable">count</span> <span class="operator">=</span> <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">MAX</span> <span class="operator">=</span> <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">Thread</span> <span class="variable">oddThread</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">            <span class="keyword">while</span> (count &lt;= MAX) &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    oddSemaphore.acquire();</span><br><span class="line">                    <span class="keyword">if</span> (count % <span class="number">2</span> != <span class="number">0</span>) &#123;</span><br><span class="line">                        System.out.println(<span class="string">&quot;Odd: &quot;</span> + count++);</span><br><span class="line">                    &#125;</span><br><span class="line">                    evenSemaphore.release();</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="type">Thread</span> <span class="variable">evenThread</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">            <span class="keyword">while</span> (count &lt;= MAX) &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    evenSemaphore.acquire();</span><br><span class="line">                    <span class="keyword">if</span> (count % <span class="number">2</span> == <span class="number">0</span>) &#123;</span><br><span class="line">                        System.out.println(<span class="string">&quot;Even: &quot;</span> + count++);</span><br><span class="line">                    &#125;</span><br><span class="line">                    oddSemaphore.release();</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        oddThread.start();</span><br><span class="line">        evenThread.start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出结果</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Odd: 1</span><br><span class="line">Even: 2</span><br><span class="line">Odd: 3</span><br><span class="line">Even: 4</span><br><span class="line">Odd: 5</span><br><span class="line">Even: 6</span><br><span class="line">Odd: 7</span><br><span class="line">Even: 8</span><br><span class="line">Odd: 9</span><br><span class="line">Even: 10</span><br></pre></td></tr></table></figure>
+</div>
+        </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+            
+            
+                <div class="post-actions text-center clearfix" id="post-actions">
+                
+                    <a class="donate" href="javascript:;" onclick="krOpenDonateModal()"><i class="fa fa-bitcoin"></i> 打赏</a>
+                
+                
+                    <a class="share" href="javascript:;" onclick="krOpenShareModal()"><i class="fa fa-share-alt"></i> 分享</a>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    <a class="tag-none-link" href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" rel="tag">线程池</a>
+                </div>
+                <div class="pull-date">
+                    <time datetime="2024-09-22T14:01:25.933Z" itemprop="dateModified">最后编辑：2024-09-22</time>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" Java并发编程-并发安全篇" href="/2024/09/10/Java并发编程-并发安全篇/"><i class="fa fa-angle-left"></i> 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" MySQL日志可以用来干啥？" href="/2024/09/17/MySQL日志可以用来干啥？/">下一篇 <i class="fa fa-angle-right"></i></a>
+            </div>
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+            
+                
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/user.jpg" alt="xiaoyan" loading="lazy" decoding="auto" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">是一只时时翻垃圾吃的宅子。</p>
+    </div>
+    <div class="site-meta">
+        <a class="meta-item" href="/archives/">
+            <span class="title">
+                文章
+            </span>
+            <span class="count">
+                13
+            </span>
+        </a>
+        <a class="meta-item" href="/categories/">
+            <span class="title">
+                分类
+            </span>
+            <span class="count">
+                6
+            </span>
+        </a>
+        <a class="meta-item" href="/tags/">
+            <span class="title">
+                标签
+            </span>
+            <span class="count">
+                20
+            </span>
+        </a>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix toc-div-class" >
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar" role="progressbar" aria-label="阅读进度："></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%8E%9F%E7%90%86"><span class="toc-number">1.</span> <span class="toc-text">线程池原理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E7%BB%84%E6%88%90%E9%83%A8%E5%88%86"><span class="toc-number">1.1.</span> <span class="toc-text">线程池的组成部分</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%88%9B%E5%BB%BA%E5%8F%82%E6%95%B0%E8%AF%A6%E8%A7%A3"><span class="toc-number">1.2.</span> <span class="toc-text">线程池的创建参数详解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-corePoolSize"><span class="toc-number">1.2.1.</span> <span class="toc-text">1. corePoolSize</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-maximumPoolSize"><span class="toc-number">1.2.2.</span> <span class="toc-text">2. maximumPoolSize</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-keepAliveTime"><span class="toc-number">1.2.3.</span> <span class="toc-text">3. keepAliveTime</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-unit"><span class="toc-number">1.2.4.</span> <span class="toc-text">4. unit</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-workQueue"><span class="toc-number">1.2.5.</span> <span class="toc-text">5. workQueue</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-threadFactory"><span class="toc-number">1.2.6.</span> <span class="toc-text">6. threadFactory</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-handler"><span class="toc-number">1.2.7.</span> <span class="toc-text">7. handler</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="toc-number">1.3.</span> <span class="toc-text">线程池的工作流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E6%8B%92%E7%BB%9D%E7%AD%96%E7%95%A5"><span class="toc-number">1.4.</span> <span class="toc-text">线程池的拒绝策略</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%B6%E4%BB%96"><span class="toc-number">2.</span> <span class="toc-text">其他</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%8F%82%E6%95%B0%E8%AE%BE%E7%BD%AE"><span class="toc-number">2.1.</span> <span class="toc-text">线程池参数设置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E7%BA%BF%E7%A8%8B%E6%95%B0%E5%8F%AF%E4%BB%A5%E8%AE%BE%E7%BD%AE%E4%B8%BA-0-%E5%90%97%EF%BC%9F"><span class="toc-number">2.2.</span> <span class="toc-text">核心线程数可以设置为 0 吗？</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E7%A7%8D%E7%B1%BB"><span class="toc-number">3.</span> <span class="toc-text">线程池的种类</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#shutdown-%E5%92%8C-shutdownNow-%E6%96%B9%E6%B3%95%E8%AF%A6%E8%A7%A3"><span class="toc-number">4.</span> <span class="toc-text">shutdown 和 shutdownNow 方法详解</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#shutdown-%E6%96%B9%E6%B3%95"><span class="toc-number">4.1.</span> <span class="toc-text">shutdown 方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#shutdownNow-%E6%96%B9%E6%B3%95"><span class="toc-number">4.2.</span> <span class="toc-text">shutdownNow 方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%8F%90%E4%BA%A4%E5%88%B0%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E4%BB%BB%E5%8A%A1%E5%8F%AF%E4%BB%A5%E6%92%A4%E5%9B%9E%EF%BC%9F"><span class="toc-number">5.</span> <span class="toc-text">提交到线程池的任务可以撤回？</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Future-%E6%8E%A5%E5%8F%A3"><span class="toc-number">5.1.</span> <span class="toc-text">Future 接口</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%9C%BA%E6%99%AF%E7%A4%BA%E4%BE%8B%EF%BC%9A%E6%8C%89%E7%85%A7%E9%A1%BA%E5%BA%8F%E6%89%93%E5%8D%B0%E5%A5%87%E5%81%B6%E6%95%B0"><span class="toc-number">6.</span> <span class="toc-text">多线程场景示例：按照顺序打印奇偶数</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95%E4%B8%80%EF%BC%9A%E4%BD%BF%E7%94%A8-synchronized-%E5%85%B3%E9%94%AE%E5%AD%97"><span class="toc-number">6.1.</span> <span class="toc-text">方法一：使用 synchronized 关键字</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95%E4%BA%8C%EF%BC%9A%E4%BD%BF%E7%94%A8-Lock-%E6%8E%A5%E5%8F%A3%E5%92%8C-Condition"><span class="toc-number">6.2.</span> <span class="toc-text">方法二：使用 Lock 接口和 Condition</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E6%B3%95%E4%B8%89%EF%BC%9A%E4%BD%BF%E7%94%A8-Semaphore"><span class="toc-number">6.3.</span> <span class="toc-text">方法三：使用 Semaphore</span></a></li></ol></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类列表</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%9F%BA%E7%A1%80/">基础</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">并发编程</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E9%9B%86%E5%90%88/">集合</a><span class="category-list-count">5</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/%E6%97%A5%E5%BF%97/">日志</a><span class="category-list-count">1</span></li></ul></li></ul>
+  </aside>
+
+
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/I-O/" style="font-size: 0.6em;">I/O</a> <a href="/tags/Java8%E6%96%B0%E7%89%B9%E6%80%A7/" style="font-size: 0.6em;">Java8新特性</a> <a href="/tags/Java%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" style="font-size: 0.6em;">Java基本概念</a> <a href="/tags/List/" style="font-size: 0.6em;">List</a> <a href="/tags/Map/" style="font-size: 0.8em;">Map</a> <a href="/tags/Object/" style="font-size: 0.6em;">Object</a> <a href="/tags/Set/" style="font-size: 0.6em;">Set</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 0.6em;">其他</a> <a href="/tags/%E5%8F%8D%E5%B0%84/" style="font-size: 0.6em;">反射</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 0.6em;">多线程</a> <a href="/tags/%E5%AF%B9%E8%B1%A1/" style="font-size: 0.6em;">对象</a> <a href="/tags/%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8/" style="font-size: 0.6em;">并发安全</a> <a href="/tags/%E5%BA%8F%E5%88%97%E5%8C%96/" style="font-size: 0.6em;">序列化</a> <a href="/tags/%E5%BC%82%E5%B8%B8/" style="font-size: 0.6em;">异常</a> <a href="/tags/%E6%8B%B7%E8%B4%9D/" style="font-size: 0.6em;">拷贝</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" style="font-size: 0.6em;">数据类型</a> <a href="/tags/%E6%B3%9B%E5%9E%8B/" style="font-size: 0.6em;">泛型</a> <a href="/tags/%E6%B3%A8%E8%A7%A3/" style="font-size: 0.6em;">注解</a>
+      </div>
+  </aside>
+
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/17/MySQL%E6%97%A5%E5%BF%97%E5%8F%AF%E4%BB%A5%E7%94%A8%E6%9D%A5%E5%B9%B2%E5%95%A5%EF%BC%9F/"><i class="fa fa-book"></i> MySQL日志可以用来干啥？</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/10/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%AF%87/"><i class="fa fa-book"></i> Java并发编程-线程池篇</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/10/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8%E7%AF%87/"><i class="fa fa-book"></i> Java并发编程-并发安全篇</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/10/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%AF%87/"><i class="fa fa-book"></i> Java并发编程-多线程篇</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/09/Java%E9%9B%86%E5%90%88-Set%E7%AF%87/"><i class="fa fa-book"></i> Java集合-Set篇</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+            
+
+        
+
+                </div>
+    </div>
+</div>
+
+<footer>
+    <div id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2024 XIAOYAN 版权所有.</li>
+                            <li>本站已运行<span id="kr-since">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>自豪地使用 <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a> 主题</li>
+                            <li>站点由 xiaoyan 用 <i class="fa fa-heart" style="color:#d43f57"></i> 搭建</li>
+                        </div>
+                        <!-- 额外的追加注入项 -->
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                <div class="box theme-box" id="theme-toggle">
+                    <span class="fa fa-adjust"></span>
+                </div>
+            </div>
+            <div id="gotop-box" class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+
+    <div id="kr-donate-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseDonateModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-bitcoin"></i>
+            </div>
+            <div class="kr-modal-title">打赏</div>
+            <button class="kr-modal-close" onclick="krCloseDonateModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-donate-message">请我喝一杯冰阔咯~</div>
+            <div class="kr-donate-qr" id="kr-donate-qr">
+                
+            </div>
+            <div class="kr-donate-platforms">
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #1677ff;" title="支付宝" onclick="krDonateModalShowPlatformQR('https://qr.alipay.com/fkx15009k7u0fqrj8auepdf', '#1677ff')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-alipay">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M19 3h-14a2 2 0 0 0 -2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2 -2v-14a2 2 0 0 0 -2 -2z" />
+  <path d="M7 7h10" />
+  <path d="M12 3v7" />
+  <path d="M21 17.314c-2.971 -1.923 -15 -8.779 -15 -1.864c0 1.716 1.52 2.55 2.985 2.55c3.512 0 6.814 -5.425 6.814 -8h-6.604" />
+</svg>
+
+                        </button>
+                    
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #38ad5a;" title="微信支付" onclick="krDonateModalShowPlatformQR('wxp://f2f0hR4eF9Ypa3tpzjWme9fQDyWW3PIGe3WG5oiIakWLmDs', '#38ad5a')">
+                            <i class="fa fa-wechat"></i>
+                        </button>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/donate.min.js"></script>
+
+
+
+
+    <div id="kr-share-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseShareModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-share-alt"></i>
+            </div>
+            <div class="kr-modal-title">分享</div>
+            <button class="kr-modal-close" onclick="krCloseShareModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-share-message">让兄弟萌也来瞅一瞅！</div>
+            <div class="kr-share-qr" id="kr-share-qr"></div>
+            <div class="kr-share-platforms">
+                
+                    <button class="kr-share-platform-button" style="color: #e6162d;" title="QQ" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-qq"></i>
+                    </button>
+                
+                    <button class="kr-share-platform-button" style="color: #25d366;" title="微信" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-weixin"></i>
+                    </button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/share.min.js"></script>
+
+
+
+<!-- 额外的追加注入项 -->
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
+<meting-js
+  server="netease"
+  type="playlist"
+  fixed="true"
+  order="random"
+  id="12613265870">
+</meting-js>
+
+
+
+        <script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
+</script>
+
+
+  <script defer src="/vendors/nprogress@0.2.0/nprogress.js"></script>
+
+
+
+  <script defer src="/vendors/viewerjs@1.11.6/dist/viewer.min.js"></script>
+
+
+<script defer src="/js/kr-core.min.js"></script>
+
+
+  <script defer src="/js/kr-pjax.min.js"></script>
+
+
+<!-- 额外的追加注入项 -->
+
+  <script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+
+
+
+    </body>
+</html>
