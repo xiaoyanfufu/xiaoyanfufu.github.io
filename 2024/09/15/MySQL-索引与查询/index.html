@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  
+    <link rel="icon" href="/images/earthstars.png">
+  
+  
+  <title>MySQL-索引与查询 | XIAOYAN</title>
+  <link rel="canonical" href="http://example.com/2024/09/15/MySQL-%E7%B4%A2%E5%BC%95%E4%B8%8E%E6%9F%A5%E8%AF%A2/">
+  <meta name="author" content="xiaoyan" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="查询, 索引" />
+  
+  <meta name="description" content="在数据库管理中，索引是提升查询性能的关键工具。本文将深入探讨MySQL中的索引类型，从数据结构、物理存储、字段特性和字段个数等多个维度进行详细分类和解析。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL-索引与查询">
+<meta property="og:url" content="http://example.com/2024/09/15/MySQL-%E7%B4%A2%E5%BC%95%E4%B8%8E%E6%9F%A5%E8%AF%A2/index.html">
+<meta property="og:site_name" content="XIAOYAN">
+<meta property="og:description" content="在数据库管理中，索引是提升查询性能的关键工具。本文将深入探讨MySQL中的索引类型，从数据结构、物理存储、字段特性和字段个数等多个维度进行详细分类和解析。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-09-14T21:20:01.000Z">
+<meta property="article:modified_time" content="2024-09-23T13:35:32.188Z">
+<meta property="article:author" content="xiaoyan">
+<meta property="article:tag" content="索引">
+<meta property="article:tag" content="查询">
+<meta name="twitter:card" content="summary">
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kr-core.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/highlight.js/night-eighties.min.css" media="all"></link>
+  
+  <link rel="stylesheet" id="theme-light-css" href="/css/kr-theme/light.min.css" media="all"></link>
+  <link rel="stylesheet" id="theme-dark-css" href="/css/kr-theme/dark.min.css" media="(prefers-color-scheme: dark)"></link>
+  <script src="/js/kr-theme.min.js"></script>
+  <link rel="stylesheet" id="fontawe-css" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="nprogress-css" href="/vendors/nprogress@0.2.0/nprogress.css" media="all"></link>
+  
+  
+    <link rel="stylesheet" href="/vendors/viewerjs@1.11.6/dist/viewer.min.css"></link>
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  
+    <script src="/vendors/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+  
+  <!-- 自定义站点横幅和背景 -->
+  <style>
+    
+      .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_light.png');
+      }
+      html[data-theme="dark"] .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_dark.png');
+      }
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+        html[data-theme="dark"] body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+      }
+    
+    
+      .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+      html[data-theme="dark"] .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+    
+  </style>
+
+  <!-- 额外的追加注入项 -->
+  
+    <link rel="stylesheet" href="/css/custom.css">
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    <li>
+                                        
+                                            <a target="_blank" rel="noopener" href="https://xiaoyanfufu.top/">
+                                        
+                                            
+                                                <i class="fa fa-home"></i>
+                                            
+                                            首页
+                                        </a>
+                                        
+                                    </li>
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">XIAOYAN</a></div>
+                    <div id="kratos-nav-toggle-wrapper" class="nav-toggle">
+                        <a id="kratos-nav-toggle" class="kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>XIAOYAN</h2> <br />
+                        <span>山重水复疑无路，柳暗花明又一村。</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+
+
+        
+
+            
+
+            <section class="kr-main-col col-md-8">
+
+        
+
+            <article itemscope itemtype="https://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/15/MySQL-%E7%B4%A2%E5%BC%95%E4%B8%8E%E6%9F%A5%E8%AF%A2/">
+    <div class="kratos-hentry kratos-page-inner clearfix">
+        <header class="kratos-page-header">
+            
+                <h1 class="kratos-page-title text-center" itemprop="name headline">MySQL-索引与查询</h1>
+            
+            <ul class="kratos-page-meta text-center">
+                <li><time datetime="2024-09-14T21:20:01.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2024-09-15</time></li>
+                <li itemprop="author" itemscope itemtype="https://schema.org/Person">
+                    <i class="fa fa-user"></i> 作者 <span itemprop="name">xiaoyan</span>
+                </li>
+                
+                    <li>
+                        <i class="fa fa-edit"></i> 
+                        
+                        
+                            ~3.25K
+                        
+                        字
+                    </li>
+                
+                
+                
+            </ul>
+        </header>
+        <div class="kratos-page-content kr-post">
+            
+            
+            
+                <div class="kratos-post-inner-toc toc-div-class" >
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%B4%A2%E5%BC%95%E5%88%86%E7%B1%BB%E8%AF%A6%E8%A7%A3%E4%B8%8E%E6%B7%B1%E5%85%A5%E6%8E%A2%E8%AE%A8"><span class="toc-number">1.</span> <span class="toc-text">索引分类详解与深入探讨</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%88%86%E7%B1%BB"><span class="toc-number">1.1.</span> <span class="toc-text">数据结构分类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#B-Tree%E7%B4%A2%E5%BC%95"><span class="toc-number">1.1.1.</span> <span class="toc-text">B+Tree索引</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Hash%E7%B4%A2%E5%BC%95"><span class="toc-number">1.1.2.</span> <span class="toc-text">Hash索引</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Full-text%E7%B4%A2%E5%BC%95"><span class="toc-number">1.1.3.</span> <span class="toc-text">Full-text索引</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%A9%E7%90%86%E5%AD%98%E5%82%A8%E5%88%86%E7%B1%BB"><span class="toc-number">1.2.</span> <span class="toc-text">物理存储分类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%81%9A%E7%B0%87%E7%B4%A2%E5%BC%95%EF%BC%88%E4%B8%BB%E9%94%AE%E7%B4%A2%E5%BC%95%EF%BC%89"><span class="toc-number">1.2.1.</span> <span class="toc-text">聚簇索引（主键索引）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E7%BA%A7%E7%B4%A2%E5%BC%95%EF%BC%88%E8%BE%85%E5%8A%A9%E7%B4%A2%E5%BC%95%EF%BC%89"><span class="toc-number">1.2.2.</span> <span class="toc-text">二级索引（辅助索引）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%97%E6%AE%B5%E7%89%B9%E6%80%A7%E5%88%86%E7%B1%BB"><span class="toc-number">1.3.</span> <span class="toc-text">字段特性分类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E9%94%AE%E7%B4%A2%E5%BC%95"><span class="toc-number">1.3.1.</span> <span class="toc-text">主键索引</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%94%AF%E4%B8%80%E7%B4%A2%E5%BC%95"><span class="toc-number">1.3.2.</span> <span class="toc-text">唯一索引</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%99%AE%E9%80%9A%E7%B4%A2%E5%BC%95"><span class="toc-number">1.3.3.</span> <span class="toc-text">普通索引</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E7%BC%80%E7%B4%A2%E5%BC%95"><span class="toc-number">1.3.4.</span> <span class="toc-text">前缀索引</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%97%E6%AE%B5%E4%B8%AA%E6%95%B0%E5%88%86%E7%B1%BB"><span class="toc-number">1.4.</span> <span class="toc-text">字段个数分类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%95%E5%88%97%E7%B4%A2%E5%BC%95"><span class="toc-number">1.4.1.</span> <span class="toc-text">单列索引</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%81%94%E5%90%88%E7%B4%A2%E5%BC%95"><span class="toc-number">1.4.2.</span> <span class="toc-text">联合索引</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%81%9A%E7%B0%87%E7%B4%A2%E5%BC%95%E4%B8%8E%E9%9D%9E%E8%81%9A%E7%B0%87%E7%B4%A2%E5%BC%95"><span class="toc-number">2.</span> <span class="toc-text">聚簇索引与非聚簇索引</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%B4%A2%E5%BC%95%E9%80%89%E6%8B%A9%EF%BC%9A%E8%87%AA%E5%A2%9EID-vs-UUID"><span class="toc-number">3.</span> <span class="toc-text">索引选择：自增ID vs UUID</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%87%AA%E5%A2%9EID"><span class="toc-number">3.1.</span> <span class="toc-text">自增ID</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%98%E7%82%B9"><span class="toc-number">3.1.1.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%BA%E7%82%B9"><span class="toc-number">3.1.2.</span> <span class="toc-text">缺点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#UUID"><span class="toc-number">3.2.</span> <span class="toc-text">UUID</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%98%E7%82%B9-1"><span class="toc-number">3.2.1.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%BA%E7%82%B9-1"><span class="toc-number">3.2.2.</span> <span class="toc-text">缺点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%89%E6%8B%A9%E5%BB%BA%E8%AE%AE"><span class="toc-number">3.3.</span> <span class="toc-text">选择建议</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%87%AA%E5%A2%9EID-1"><span class="toc-number">3.3.1.</span> <span class="toc-text">自增ID</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#UUID-1"><span class="toc-number">3.3.2.</span> <span class="toc-text">UUID</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BC%98%E5%8C%96%E5%BB%BA%E8%AE%AE"><span class="toc-number">3.4.</span> <span class="toc-text">优化建议</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%87%AA%E5%A2%9EID%E4%BC%98%E5%8C%96"><span class="toc-number">3.4.1.</span> <span class="toc-text">自增ID优化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#UUID%E4%BC%98%E5%8C%96"><span class="toc-number">3.4.2.</span> <span class="toc-text">UUID优化</span></a></li></ol></li></ol></li></ol>
+                </div>
+            
+            <hr />
+            <div itemprop="articleBody"><p>在数据库管理中，索引是提升查询性能的关键工具。本文将深入探讨MySQL中的索引类型，从数据结构、物理存储、字段特性和字段个数等多个维度进行详细分类和解析。</p>
+<span id="more"></span>
+
+<h1 id="索引分类详解与深入探讨"><a href="#索引分类详解与深入探讨" class="headerlink" title="索引分类详解与深入探讨"></a>索引分类详解与深入探讨</h1><p>MySQL中索引的分类可以从多个维度进行划分，包括数据结构、物理存储、字段特性和字段个数等。以下是对这些分类的详细解释和示例代码。</p>
+<h2 id="数据结构分类"><a href="#数据结构分类" class="headerlink" title="数据结构分类"></a>数据结构分类</h2><h3 id="B-Tree索引"><a href="#B-Tree索引" class="headerlink" title="B+Tree索引"></a>B+Tree索引</h3><p><strong>结构特点与应用场景</strong>：B+Tree索引是一种平衡多路搜索树，所有数据存储在叶子节点，非叶子节点仅存储索引键值。这种结构保证了高效的查找、插入和删除操作，适用于范围查询、排序操作和频繁的插入、删除操作。B+Tree索引在大多数数据库系统中被广泛使用，因其平衡性和高效性。</p>
+<h3 id="Hash索引"><a href="#Hash索引" class="headerlink" title="Hash索引"></a>Hash索引</h3><p><strong>结构特点与应用场景</strong>：Hash索引通过哈希函数将索引键值映射到存储位置，实现快速查找。哈希索引的查找时间复杂度为O(1)，适用于等值查询，如用户登录验证、唯一性检查等场景。但由于不支持范围查询和排序，应用场景较为有限。</p>
+<h3 id="Full-text索引"><a href="#Full-text索引" class="headerlink" title="Full-text索引"></a>Full-text索引</h3><p><strong>结构特点与应用场景</strong>：Full-text索引专门用于全文搜索，支持对文本内容进行分词、词干提取和倒排索引等操作，实现高效的全文检索。适用于需要进行文本分析和搜索的应用场景，如搜索引擎、文档管理系统等。</p>
+<h2 id="物理存储分类"><a href="#物理存储分类" class="headerlink" title="物理存储分类"></a>物理存储分类</h2><h3 id="聚簇索引（主键索引）"><a href="#聚簇索引（主键索引）" class="headerlink" title="聚簇索引（主键索引）"></a>聚簇索引（主键索引）</h3><p><strong>结构特点与应用场景</strong>：聚簇索引将数据行与索引结构存储在一起，主键索引即为聚簇索引。聚簇索引决定了数据在磁盘上的物理存储顺序，数据行的物理顺序与索引顺序一致，适用于频繁访问的数据，如用户表的主键索引。聚簇索引能够提高数据访问的局部性，减少磁盘I&#x2F;O操作。</p>
+<h3 id="二级索引（辅助索引）"><a href="#二级索引（辅助索引）" class="headerlink" title="二级索引（辅助索引）"></a>二级索引（辅助索引）</h3><p><strong>结构特点与应用场景</strong>：二级索引存储索引键值和指向数据行的指针，不直接存储数据行。二级索引适用于非主键字段的查询，可以加速查询操作，如用户表中的邮箱字段索引。二级索引可以提高查询效率，但会增加额外的存储空间和维护成本。</p>
+<h2 id="字段特性分类"><a href="#字段特性分类" class="headerlink" title="字段特性分类"></a>字段特性分类</h2><h3 id="主键索引"><a href="#主键索引" class="headerlink" title="主键索引"></a>主键索引</h3><p><strong>结构特点与应用场景</strong>：主键索引是唯一标识表中每一行的索引，具有唯一性和非空性。主键索引通常是聚簇索引，适用于需要唯一标识每一行的场景，如用户ID、订单ID等。主键索引能够确保数据的唯一性和完整性。</p>
+<p>示例代码</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> users (</span><br><span class="line">    id <span class="type">INT</span> <span class="keyword">PRIMARY</span> KEY,</span><br><span class="line">    name <span class="type">VARCHAR</span>(<span class="number">50</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<h3 id="唯一索引"><a href="#唯一索引" class="headerlink" title="唯一索引"></a>唯一索引</h3><p><strong>结构特点与应用场景</strong>：唯一索引确保索引字段的值唯一，但不要求非空。唯一索引适用于需要确保数据唯一性的场景，如用户表中的邮箱字段。唯一索引可以防止重复数据的插入。</p>
+<p>示例代码</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> users (</span><br><span class="line">    id <span class="type">INT</span> <span class="keyword">PRIMARY</span> KEY,</span><br><span class="line">    email <span class="type">VARCHAR</span>(<span class="number">100</span>) <span class="keyword">UNIQUE</span>,</span><br><span class="line">    name <span class="type">VARCHAR</span>(<span class="number">50</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<h3 id="普通索引"><a href="#普通索引" class="headerlink" title="普通索引"></a>普通索引</h3><p><strong>结构特点与应用场景</strong>：普通索引是最基本的索引类型，不具有唯一性约束，适用于加速查询操作。普通索引可以提高查询效率，但不会影响数据的唯一性，如用户表中的姓名字段。</p>
+<p>示例代码</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> users (</span><br><span class="line">    id <span class="type">INT</span> <span class="keyword">PRIMARY</span> KEY,</span><br><span class="line">    name <span class="type">VARCHAR</span>(<span class="number">50</span>),</span><br><span class="line">    INDEX idx_name (name)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<h3 id="前缀索引"><a href="#前缀索引" class="headerlink" title="前缀索引"></a>前缀索引</h3><p><strong>结构特点与应用场景</strong>：前缀索引是对字段的前缀部分创建的索引，适用于长字段或文本字段的索引。前缀索引可以减少索引存储空间和提高查询效率，如用户表中的地址字段。</p>
+<p>示例代码</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> users (</span><br><span class="line">    id <span class="type">INT</span> <span class="keyword">PRIMARY</span> KEY,</span><br><span class="line">    address <span class="type">VARCHAR</span>(<span class="number">200</span>),</span><br><span class="line">    INDEX idx_address (address(<span class="number">10</span>))</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<h2 id="字段个数分类"><a href="#字段个数分类" class="headerlink" title="字段个数分类"></a>字段个数分类</h2><h3 id="单列索引"><a href="#单列索引" class="headerlink" title="单列索引"></a>单列索引</h3><p><strong>结构特点与应用场景</strong>：单列索引是基于单个字段创建的索引，适用于单字段查询场景。单列索引可以提高单字段查询的效率，如用户表中的姓名字段。</p>
+<h3 id="联合索引"><a href="#联合索引" class="headerlink" title="联合索引"></a>联合索引</h3><p><strong>结构特点与应用场景</strong>：联合索引是基于多个字段创建的索引，适用于多字段查询场景。联合索引可以提高多字段查询的效率，但需要注意索引字段的顺序和查询条件的匹配，如用户表中的姓名和年龄字段。</p>
+<h1 id="聚簇索引与非聚簇索引"><a href="#聚簇索引与非聚簇索引" class="headerlink" title="聚簇索引与非聚簇索引"></a>聚簇索引与非聚簇索引</h1><ul>
+<li><p><strong>数据存储</strong></p>
+<ul>
+<li>聚簇索引的数据行按照键值顺序存储，索引的叶子节点包含了实际的数据行。这意味着数据行的物理存储顺序与索引顺序一致，数据行的位置由聚簇索引决定。</li>
+<li>非聚簇索引的叶子节点存放的是索引键值和指向数据行的指针，而不是完整的数据行。这意味着非聚簇索引不直接影响数据行的物理存储顺序。</li>
+</ul>
+</li>
+<li><p><strong>索引与数据关系</strong></p>
+<ul>
+<li>通过聚簇索引查找数据时，直接返回叶子节点中的完整数据行，无需额外的查找操作。</li>
+<li>通过非聚簇索引查找数据时，首先查找到叶子节点，获取存放的聚簇索引数据，再通过聚簇索引查表获取完整数据行。这个通过非聚簇索引获取聚簇索引数据并回溯查表的过程称为回表。</li>
+</ul>
+</li>
+<li><p><strong>唯一性</strong></p>
+<ul>
+<li>聚簇索引通常由主键构成，因此一个表只能有一个聚簇索引。聚簇索引决定了数据行的物理存储顺序，具有唯一性。</li>
+<li>一个表可以有多个非聚簇索引，因为它们不直接影响数据行的物理存储顺序。非聚簇索引可以基于多个字段创建，具有较高的灵活性。</li>
+</ul>
+</li>
+<li><p><strong>效率</strong></p>
+<ul>
+<li>聚簇索引直接返回叶子节点中的完整数据行，无需额外的查找操作，因此在查找效率上通常优于非聚簇索引。</li>
+<li>非聚簇索引可能需要进行回表操作，即通过非聚簇索引获取聚簇索引数据，再通过聚簇索引查表获取完整数据行。回表操作会增加额外的I&#x2F;O开销，因此在查找效率上通常低于聚簇索引。</li>
+</ul>
+</li>
+</ul>
+<h1 id="索引选择：自增ID-vs-UUID"><a href="#索引选择：自增ID-vs-UUID" class="headerlink" title="索引选择：自增ID vs UUID"></a>索引选择：自增ID vs UUID</h1><p>在选择主键索引时，自增ID和UUID是两种常见的选项。以下是对这两种选择的详细分析，特别是从索引性能和存储效率的角度进行探讨。</p>
+<h2 id="自增ID"><a href="#自增ID" class="headerlink" title="自增ID"></a>自增ID</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
+<li><strong>顺序存储</strong>：自增ID是顺序生成的，因此数据行在磁盘上的存储顺序与索引顺序一致。这使得B+树的叶子节点更加紧凑，减少了内存碎片。</li>
+<li><strong>高效插入</strong>：由于自增ID的顺序性，新插入的数据行总是添加到B+树的末尾，减少了B+树的调整操作，提高了插入效率。</li>
+<li><strong>减少IO操作</strong>：顺序存储的数据行更容易被缓存，减少了磁盘I&#x2F;O操作，提高了查询效率。</li>
+</ol>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
+<li><strong>可预测性</strong>：自增ID的可预测性可能带来安全风险，尤其是在分布式系统中，容易暴露业务信息。</li>
+<li><strong>分布式系统中的问题</strong>：在分布式系统中，自增ID的生成和管理可能变得复杂，需要额外的机制来保证全局唯一性。</li>
+</ol>
+<h2 id="UUID"><a href="#UUID" class="headerlink" title="UUID"></a>UUID</h2><h3 id="优点-1"><a href="#优点-1" class="headerlink" title="优点"></a>优点</h3><ol>
+<li><strong>全局唯一性</strong>：UUID由系统算法生成，保证了全局唯一性，适用于分布式系统中的数据唯一标识。</li>
+<li><strong>安全性</strong>：UUID的随机性使得其难以预测，提高了数据的安全性。</li>
+</ol>
+<h3 id="缺点-1"><a href="#缺点-1" class="headerlink" title="缺点"></a>缺点</h3><ol>
+<li><strong>乱序存储</strong>：UUID的随机性导致数据行在磁盘上的存储顺序是乱序的，使得B+树的叶子节点变得稀疏，增加了内存碎片。</li>
+<li><strong>插入效率低</strong>：由于UUID的乱序性，新插入的数据行可能需要频繁调整B+树的结构，降低了插入效率。</li>
+<li><strong>增加IO操作</strong>：稀疏的数据分布导致查询时可能需要多次提取数据页，增加了磁盘I&#x2F;O操作，降低了查询效率。</li>
+</ol>
+<h2 id="选择建议"><a href="#选择建议" class="headerlink" title="选择建议"></a>选择建议</h2><h3 id="自增ID-1"><a href="#自增ID-1" class="headerlink" title="自增ID"></a>自增ID</h3><ul>
+<li><strong>适用场景</strong>：适用于单机或集中式数据库系统，特别是需要高效插入和查询的场景。</li>
+<li><strong>示例</strong>：用户表、订单表等。</li>
+</ul>
+<h3 id="UUID-1"><a href="#UUID-1" class="headerlink" title="UUID"></a>UUID</h3><ul>
+<li><strong>适用场景</strong>：适用于分布式系统，特别是需要全局唯一性和安全性的场景。</li>
+<li><strong>示例</strong>：分布式系统中的用户标识、订单标识等。</li>
+</ul>
+<h2 id="优化建议"><a href="#优化建议" class="headerlink" title="优化建议"></a>优化建议</h2><h3 id="自增ID优化"><a href="#自增ID优化" class="headerlink" title="自增ID优化"></a>自增ID优化</h3><ul>
+<li><strong>使用自增ID作为主键</strong>：在单机或集中式数据库系统中，使用自增ID作为主键，可以提高插入和查询效率。</li>
+<li><strong>分布式系统中的自增ID</strong>：在分布式系统中，可以使用分布式ID生成器（如Snowflake算法）来生成全局唯一的自增ID。</li>
+</ul>
+<h3 id="UUID优化"><a href="#UUID优化" class="headerlink" title="UUID优化"></a>UUID优化</h3><ul>
+<li><strong>使用UUID作为辅助索引</strong>：在需要全局唯一性的场景中，可以使用UUID作为辅助索引，而不是主键。</li>
+<li><strong>UUID的顺序化处理</strong>：在生成UUID时，可以考虑使用顺序UUID（如UUID v1），以减少B+树的稀疏性。</li>
+</ul>
+<p>【键盘都轮冒烟啦···】</p>
+</div>
+        </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+            
+            
+                <div class="post-actions text-center clearfix" id="post-actions">
+                
+                    <a class="donate" href="javascript:;" onclick="krOpenDonateModal()"><i class="fa fa-bitcoin"></i> 打赏</a>
+                
+                
+                    <a class="share" href="javascript:;" onclick="krOpenShareModal()"><i class="fa fa-share-alt"></i> 分享</a>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    <a class="tag-none-link" href="/tags/%E6%9F%A5%E8%AF%A2/" rel="tag">查询</a>, <a class="tag-none-link" href="/tags/%E7%B4%A2%E5%BC%95/" rel="tag">索引</a>
+                </div>
+                <div class="pull-date">
+                    <time datetime="2024-09-23T13:35:32.188Z" itemprop="dateModified">最后编辑：2024-09-23</time>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" MySQL-SQL基础" href="/2024/09/15/MySQL-SQL基础/"><i class="fa fa-angle-left"></i> 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" MySQL-事务与日志" href="/2024/09/15/MySQL-事务与日志/">下一篇 <i class="fa fa-angle-right"></i></a>
+            </div>
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+            
+                
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/user.jpg" alt="xiaoyan" loading="lazy" decoding="auto" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">是一只时时翻垃圾吃的宅子。</p>
+    </div>
+    <div class="site-meta">
+        <a class="meta-item" href="/archives/">
+            <span class="title">
+                文章
+            </span>
+            <span class="count">
+                16
+            </span>
+        </a>
+        <a class="meta-item" href="/categories/">
+            <span class="title">
+                分类
+            </span>
+            <span class="count">
+                6
+            </span>
+        </a>
+        <a class="meta-item" href="/tags/">
+            <span class="title">
+                标签
+            </span>
+            <span class="count">
+                26
+            </span>
+        </a>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix toc-div-class" >
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar" role="progressbar" aria-label="阅读进度："></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%B4%A2%E5%BC%95%E5%88%86%E7%B1%BB%E8%AF%A6%E8%A7%A3%E4%B8%8E%E6%B7%B1%E5%85%A5%E6%8E%A2%E8%AE%A8"><span class="toc-number">1.</span> <span class="toc-text">索引分类详解与深入探讨</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%88%86%E7%B1%BB"><span class="toc-number">1.1.</span> <span class="toc-text">数据结构分类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#B-Tree%E7%B4%A2%E5%BC%95"><span class="toc-number">1.1.1.</span> <span class="toc-text">B+Tree索引</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Hash%E7%B4%A2%E5%BC%95"><span class="toc-number">1.1.2.</span> <span class="toc-text">Hash索引</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Full-text%E7%B4%A2%E5%BC%95"><span class="toc-number">1.1.3.</span> <span class="toc-text">Full-text索引</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%A9%E7%90%86%E5%AD%98%E5%82%A8%E5%88%86%E7%B1%BB"><span class="toc-number">1.2.</span> <span class="toc-text">物理存储分类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%81%9A%E7%B0%87%E7%B4%A2%E5%BC%95%EF%BC%88%E4%B8%BB%E9%94%AE%E7%B4%A2%E5%BC%95%EF%BC%89"><span class="toc-number">1.2.1.</span> <span class="toc-text">聚簇索引（主键索引）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E7%BA%A7%E7%B4%A2%E5%BC%95%EF%BC%88%E8%BE%85%E5%8A%A9%E7%B4%A2%E5%BC%95%EF%BC%89"><span class="toc-number">1.2.2.</span> <span class="toc-text">二级索引（辅助索引）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%97%E6%AE%B5%E7%89%B9%E6%80%A7%E5%88%86%E7%B1%BB"><span class="toc-number">1.3.</span> <span class="toc-text">字段特性分类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E9%94%AE%E7%B4%A2%E5%BC%95"><span class="toc-number">1.3.1.</span> <span class="toc-text">主键索引</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%94%AF%E4%B8%80%E7%B4%A2%E5%BC%95"><span class="toc-number">1.3.2.</span> <span class="toc-text">唯一索引</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%99%AE%E9%80%9A%E7%B4%A2%E5%BC%95"><span class="toc-number">1.3.3.</span> <span class="toc-text">普通索引</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E7%BC%80%E7%B4%A2%E5%BC%95"><span class="toc-number">1.3.4.</span> <span class="toc-text">前缀索引</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%97%E6%AE%B5%E4%B8%AA%E6%95%B0%E5%88%86%E7%B1%BB"><span class="toc-number">1.4.</span> <span class="toc-text">字段个数分类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%95%E5%88%97%E7%B4%A2%E5%BC%95"><span class="toc-number">1.4.1.</span> <span class="toc-text">单列索引</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%81%94%E5%90%88%E7%B4%A2%E5%BC%95"><span class="toc-number">1.4.2.</span> <span class="toc-text">联合索引</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%81%9A%E7%B0%87%E7%B4%A2%E5%BC%95%E4%B8%8E%E9%9D%9E%E8%81%9A%E7%B0%87%E7%B4%A2%E5%BC%95"><span class="toc-number">2.</span> <span class="toc-text">聚簇索引与非聚簇索引</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%B4%A2%E5%BC%95%E9%80%89%E6%8B%A9%EF%BC%9A%E8%87%AA%E5%A2%9EID-vs-UUID"><span class="toc-number">3.</span> <span class="toc-text">索引选择：自增ID vs UUID</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%87%AA%E5%A2%9EID"><span class="toc-number">3.1.</span> <span class="toc-text">自增ID</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%98%E7%82%B9"><span class="toc-number">3.1.1.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%BA%E7%82%B9"><span class="toc-number">3.1.2.</span> <span class="toc-text">缺点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#UUID"><span class="toc-number">3.2.</span> <span class="toc-text">UUID</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%98%E7%82%B9-1"><span class="toc-number">3.2.1.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%BA%E7%82%B9-1"><span class="toc-number">3.2.2.</span> <span class="toc-text">缺点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%89%E6%8B%A9%E5%BB%BA%E8%AE%AE"><span class="toc-number">3.3.</span> <span class="toc-text">选择建议</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%87%AA%E5%A2%9EID-1"><span class="toc-number">3.3.1.</span> <span class="toc-text">自增ID</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#UUID-1"><span class="toc-number">3.3.2.</span> <span class="toc-text">UUID</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BC%98%E5%8C%96%E5%BB%BA%E8%AE%AE"><span class="toc-number">3.4.</span> <span class="toc-text">优化建议</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%87%AA%E5%A2%9EID%E4%BC%98%E5%8C%96"><span class="toc-number">3.4.1.</span> <span class="toc-text">自增ID优化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#UUID%E4%BC%98%E5%8C%96"><span class="toc-number">3.4.2.</span> <span class="toc-text">UUID优化</span></a></li></ol></li></ol></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类列表</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%9F%BA%E7%A1%80/">基础</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">并发编程</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E9%9B%86%E5%90%88/">集合</a><span class="category-list-count">5</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a><span class="category-list-count">4</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/%E6%97%A5%E5%BF%97/">日志</a><span class="category-list-count">1</span></li></ul></li></ul>
+  </aside>
+
+
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/I-O/" style="font-size: 0.6em;">I/O</a> <a href="/tags/Java8%E6%96%B0%E7%89%B9%E6%80%A7/" style="font-size: 0.6em;">Java8新特性</a> <a href="/tags/Java%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" style="font-size: 0.6em;">Java基本概念</a> <a href="/tags/List/" style="font-size: 0.6em;">List</a> <a href="/tags/Map/" style="font-size: 0.8em;">Map</a> <a href="/tags/MySQL%E5%9F%BA%E7%A1%80/" style="font-size: 0.6em;">MySQL基础</a> <a href="/tags/Object/" style="font-size: 0.6em;">Object</a> <a href="/tags/Set/" style="font-size: 0.6em;">Set</a> <a href="/tags/%E4%BA%8B%E5%8A%A1/" style="font-size: 0.6em;">事务</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 0.6em;">其他</a> <a href="/tags/%E5%8F%8D%E5%B0%84/" style="font-size: 0.6em;">反射</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 0.6em;">多线程</a> <a href="/tags/%E5%AF%B9%E8%B1%A1/" style="font-size: 0.6em;">对象</a> <a href="/tags/%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8/" style="font-size: 0.6em;">并发安全</a> <a href="/tags/%E5%BA%8F%E5%88%97%E5%8C%96/" style="font-size: 0.6em;">序列化</a> <a href="/tags/%E5%BC%82%E5%B8%B8/" style="font-size: 0.6em;">异常</a> <a href="/tags/%E6%8B%B7%E8%B4%9D/" style="font-size: 0.6em;">拷贝</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" style="font-size: 0.6em;">数据类型</a>
+      </div>
+  </aside>
+
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/17/MySQL%E6%97%A5%E5%BF%97%E5%8F%AF%E4%BB%A5%E7%94%A8%E6%9D%A5%E5%B9%B2%E5%95%A5%EF%BC%9F/"><i class="fa fa-book"></i> MySQL日志可以用来干啥？</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/15/MySQL-%E4%BA%8B%E5%8A%A1%E4%B8%8E%E6%97%A5%E5%BF%97/"><i class="fa fa-book"></i> MySQL-事务与日志</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/15/MySQL-%E7%B4%A2%E5%BC%95%E4%B8%8E%E6%9F%A5%E8%AF%A2/"><i class="fa fa-book"></i> MySQL-索引与查询</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/15/MySQL-SQL%E5%9F%BA%E7%A1%80/"><i class="fa fa-book"></i> MySQL-SQL基础</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/10/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%AF%87/"><i class="fa fa-book"></i> Java并发编程-线程池篇</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+            
+
+        
+
+                </div>
+    </div>
+</div>
+
+<footer>
+    <div id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2024 XIAOYAN 版权所有.</li>
+                            <li>本站已运行<span id="kr-since">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>自豪地使用 <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a> 主题</li>
+                            <li>站点由 xiaoyan 用 <i class="fa fa-heart" style="color:#d43f57"></i> 搭建</li>
+                        </div>
+                        <!-- 额外的追加注入项 -->
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                <div class="box theme-box" id="theme-toggle">
+                    <span class="fa fa-adjust"></span>
+                </div>
+            </div>
+            <div id="gotop-box" class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+
+    <div id="kr-donate-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseDonateModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-bitcoin"></i>
+            </div>
+            <div class="kr-modal-title">打赏</div>
+            <button class="kr-modal-close" onclick="krCloseDonateModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-donate-message">请我喝一杯冰阔咯~</div>
+            <div class="kr-donate-qr" id="kr-donate-qr">
+                
+            </div>
+            <div class="kr-donate-platforms">
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #1677ff;" title="支付宝" onclick="krDonateModalShowPlatformQR('https://qr.alipay.com/fkx15009k7u0fqrj8auepdf', '#1677ff')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-alipay">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M19 3h-14a2 2 0 0 0 -2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2 -2v-14a2 2 0 0 0 -2 -2z" />
+  <path d="M7 7h10" />
+  <path d="M12 3v7" />
+  <path d="M21 17.314c-2.971 -1.923 -15 -8.779 -15 -1.864c0 1.716 1.52 2.55 2.985 2.55c3.512 0 6.814 -5.425 6.814 -8h-6.604" />
+</svg>
+
+                        </button>
+                    
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #38ad5a;" title="微信支付" onclick="krDonateModalShowPlatformQR('wxp://f2f0hR4eF9Ypa3tpzjWme9fQDyWW3PIGe3WG5oiIakWLmDs', '#38ad5a')">
+                            <i class="fa fa-wechat"></i>
+                        </button>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/donate.min.js"></script>
+
+
+
+
+    <div id="kr-share-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseShareModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-share-alt"></i>
+            </div>
+            <div class="kr-modal-title">分享</div>
+            <button class="kr-modal-close" onclick="krCloseShareModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-share-message">让兄弟萌也来瞅一瞅！</div>
+            <div class="kr-share-qr" id="kr-share-qr"></div>
+            <div class="kr-share-platforms">
+                
+                    <button class="kr-share-platform-button" style="color: #e6162d;" title="QQ" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-qq"></i>
+                    </button>
+                
+                    <button class="kr-share-platform-button" style="color: #25d366;" title="微信" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-weixin"></i>
+                    </button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/share.min.js"></script>
+
+
+
+<!-- 额外的追加注入项 -->
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
+<meting-js
+  server="netease"
+  type="playlist"
+  fixed="true"
+  order="random"
+  id="12613265870">
+</meting-js>
+
+
+
+        <script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
+</script>
+
+
+  <script defer src="/vendors/nprogress@0.2.0/nprogress.js"></script>
+
+
+
+  <script defer src="/vendors/viewerjs@1.11.6/dist/viewer.min.js"></script>
+
+
+<script defer src="/js/kr-core.min.js"></script>
+
+
+  <script defer src="/js/kr-pjax.min.js"></script>
+
+
+<!-- 额外的追加注入项 -->
+
+  <script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+
+
+
+    </body>
+</html>

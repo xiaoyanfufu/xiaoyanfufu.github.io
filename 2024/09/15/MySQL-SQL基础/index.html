@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  
+    <link rel="icon" href="/images/earthstars.png">
+  
+  
+  <title>MySQL-SQL基础 | XIAOYAN</title>
+  <link rel="canonical" href="http://example.com/2024/09/15/MySQL-SQL%E5%9F%BA%E7%A1%80/">
+  <meta name="author" content="xiaoyan" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="MySQL基础" />
+  
+  <meta name="description" content="在数据库管理中，SQL（Structured Query Language）是操作关系型数据库的核心工具。本文将深入探讨MySQL中的SQL基础知识，从数据库类型选择、设计范式、连接查询、数据插入、字符串类型、外键约束、关键字使用、内置函数、查询执行顺序、请求执行过程到存储引擎等多个方面进行详细解析。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL-SQL基础">
+<meta property="og:url" content="http://example.com/2024/09/15/MySQL-SQL%E5%9F%BA%E7%A1%80/index.html">
+<meta property="og:site_name" content="XIAOYAN">
+<meta property="og:description" content="在数据库管理中，SQL（Structured Query Language）是操作关系型数据库的核心工具。本文将深入探讨MySQL中的SQL基础知识，从数据库类型选择、设计范式、连接查询、数据插入、字符串类型、外键约束、关键字使用、内置函数、查询执行顺序、请求执行过程到存储引擎等多个方面进行详细解析。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409231055933.png">
+<meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409231743173.png">
+<meta property="article:published_time" content="2024-09-14T21:20:00.000Z">
+<meta property="article:modified_time" content="2024-09-23T13:36:15.028Z">
+<meta property="article:author" content="xiaoyan">
+<meta property="article:tag" content="MySQL基础">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409231055933.png">
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kr-core.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/highlight.js/night-eighties.min.css" media="all"></link>
+  
+  <link rel="stylesheet" id="theme-light-css" href="/css/kr-theme/light.min.css" media="all"></link>
+  <link rel="stylesheet" id="theme-dark-css" href="/css/kr-theme/dark.min.css" media="(prefers-color-scheme: dark)"></link>
+  <script src="/js/kr-theme.min.js"></script>
+  <link rel="stylesheet" id="fontawe-css" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="nprogress-css" href="/vendors/nprogress@0.2.0/nprogress.css" media="all"></link>
+  
+  
+    <link rel="stylesheet" href="/vendors/viewerjs@1.11.6/dist/viewer.min.css"></link>
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  
+    <script src="/vendors/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+  
+  <!-- 自定义站点横幅和背景 -->
+  <style>
+    
+      .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_light.png');
+      }
+      html[data-theme="dark"] .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_dark.png');
+      }
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+        html[data-theme="dark"] body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+      }
+    
+    
+      .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+      html[data-theme="dark"] .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+    
+  </style>
+
+  <!-- 额外的追加注入项 -->
+  
+    <link rel="stylesheet" href="/css/custom.css">
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    <li>
+                                        
+                                            <a target="_blank" rel="noopener" href="https://xiaoyanfufu.top/">
+                                        
+                                            
+                                                <i class="fa fa-home"></i>
+                                            
+                                            首页
+                                        </a>
+                                        
+                                    </li>
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">XIAOYAN</a></div>
+                    <div id="kratos-nav-toggle-wrapper" class="nav-toggle">
+                        <a id="kratos-nav-toggle" class="kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>XIAOYAN</h2> <br />
+                        <span>山重水复疑无路，柳暗花明又一村。</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+
+
+        
+
+            
+
+            <section class="kr-main-col col-md-8">
+
+        
+
+            <article itemscope itemtype="https://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/15/MySQL-SQL%E5%9F%BA%E7%A1%80/">
+    <div class="kratos-hentry kratos-page-inner clearfix">
+        <header class="kratos-page-header">
+            
+                <h1 class="kratos-page-title text-center" itemprop="name headline">MySQL-SQL基础</h1>
+            
+            <ul class="kratos-page-meta text-center">
+                <li><time datetime="2024-09-14T21:20:00.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2024-09-15</time></li>
+                <li itemprop="author" itemscope itemtype="https://schema.org/Person">
+                    <i class="fa fa-user"></i> 作者 <span itemprop="name">xiaoyan</span>
+                </li>
+                
+                    <li>
+                        <i class="fa fa-edit"></i> 
+                        
+                        
+                            ~9.26K
+                        
+                        字
+                    </li>
+                
+                
+                
+            </ul>
+        </header>
+        <div class="kratos-page-content kr-post">
+            
+            
+            
+                <div class="kratos-post-inner-toc toc-div-class" >
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#SQL%E4%B8%8ENoSQL%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-number">1.</span> <span class="toc-text">SQL与NoSQL数据库</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-number">1.1.</span> <span class="toc-text">概述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#SQL%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-number">1.1.1.</span> <span class="toc-text">SQL数据库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#NoSQL%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-number">1.1.2.</span> <span class="toc-text">NoSQL数据库</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%89%E6%8B%A9%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E8%80%83%E9%87%8F%E5%9B%A0%E7%B4%A0"><span class="toc-number">1.2.</span> <span class="toc-text">选择数据库的考量因素</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ACID%E4%B8%8EBASE"><span class="toc-number">1.2.1.</span> <span class="toc-text">ACID与BASE</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%A9%E5%B1%95%E6%80%A7"><span class="toc-number">1.2.2.</span> <span class="toc-text">扩展性</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E8%AE%A1%E4%B8%89%E5%A4%A7%E8%8C%83%E5%BC%8F"><span class="toc-number">2.</span> <span class="toc-text">数据库设计三大范式</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E8%8C%83%E5%BC%8F%EF%BC%881NF%EF%BC%89"><span class="toc-number">2.1.</span> <span class="toc-text">第一范式（1NF）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BE%E4%BE%8B%E8%AF%B4%E6%98%8E"><span class="toc-number">2.1.1.</span> <span class="toc-text">举例说明</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%8D%E6%BB%A1%E8%B6%B31NF%E7%9A%84%E8%A1%A8%E7%BB%93%E6%9E%84"><span class="toc-number">2.1.1.1.</span> <span class="toc-text">不满足1NF的表结构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%BB%A1%E8%B6%B31NF%E7%9A%84%E8%A1%A8%E7%BB%93%E6%9E%84"><span class="toc-number">2.1.1.2.</span> <span class="toc-text">满足1NF的表结构</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E8%8C%83%E5%BC%8F%EF%BC%882NF%EF%BC%89"><span class="toc-number">2.2.</span> <span class="toc-text">第二范式（2NF）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BE%E4%BE%8B%E8%AF%B4%E6%98%8E-1"><span class="toc-number">2.2.1.</span> <span class="toc-text">举例说明</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%8D%E6%BB%A1%E8%B6%B32NF%E7%9A%84%E8%A1%A8%E7%BB%93%E6%9E%84"><span class="toc-number">2.2.1.1.</span> <span class="toc-text">不满足2NF的表结构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%BB%A1%E8%B6%B32NF%E7%9A%84%E8%A1%A8%E7%BB%93%E6%9E%84"><span class="toc-number">2.2.1.2.</span> <span class="toc-text">满足2NF的表结构</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E8%8C%83%E5%BC%8F%EF%BC%883NF%EF%BC%89"><span class="toc-number">2.3.</span> <span class="toc-text">第三范式（3NF）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BE%E4%BE%8B%E8%AF%B4%E6%98%8E-2"><span class="toc-number">2.3.1.</span> <span class="toc-text">举例说明</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%8D%E6%BB%A1%E8%B6%B33NF%E7%9A%84%E8%A1%A8%E7%BB%93%E6%9E%84"><span class="toc-number">2.3.1.1.</span> <span class="toc-text">不满足3NF的表结构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%BB%A1%E8%B6%B33NF%E7%9A%84%E8%A1%A8%E7%BB%93%E6%9E%84"><span class="toc-number">2.3.1.2.</span> <span class="toc-text">满足3NF的表结构</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A2"><span class="toc-number">3.</span> <span class="toc-text">数据库连接查询</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%86%85%E8%BF%9E%E6%8E%A5%EF%BC%88Inner-Join%EF%BC%89"><span class="toc-number">3.1.</span> <span class="toc-text">1. 内连接（Inner Join）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%B7%A6%E5%A4%96%E8%BF%9E%E6%8E%A5%EF%BC%88Left-Outer-Join%EF%BC%89"><span class="toc-number">3.2.</span> <span class="toc-text">2. 左外连接（Left Outer Join）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%8F%B3%E5%A4%96%E8%BF%9E%E6%8E%A5%EF%BC%88Right-Outer-Join%EF%BC%89"><span class="toc-number">3.3.</span> <span class="toc-text">3. 右外连接（Right Outer Join）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E5%85%A8%E5%A4%96%E8%BF%9E%E6%8E%A5%EF%BC%88Full-Outer-Join%EF%BC%89"><span class="toc-number">3.4.</span> <span class="toc-text">4. 全外连接（Full Outer Join）</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#MySQL%E5%A6%82%E4%BD%95%E9%81%BF%E5%85%8D%E6%8F%92%E5%85%A5%E9%87%8D%E5%A4%8D%E6%95%B0%E6%8D%AE"><span class="toc-number">4.</span> <span class="toc-text">MySQL如何避免插入重复数据</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E5%BC%8F%E4%B8%80%EF%BC%9A%E4%BD%BF%E7%94%A8UNIQUE%E7%BA%A6%E6%9D%9F"><span class="toc-number">4.1.</span> <span class="toc-text">方式一：使用UNIQUE约束</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E5%BC%8F%E4%BA%8C%EF%BC%9A%E4%BD%BF%E7%94%A8-INSERT-ON-DUPLICATE-KEY-UPDATE"><span class="toc-number">4.2.</span> <span class="toc-text">方式二：使用 INSERT ... ON DUPLICATE KEY UPDATE</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E5%BC%8F%E4%B8%89%EF%BC%9A%E4%BD%BF%E7%94%A8-INSERT-IGNORE"><span class="toc-number">4.3.</span> <span class="toc-text">方式三：使用 INSERT IGNORE</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#MySQL%E4%B8%AD%E7%9A%84%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%B1%BB%E5%9E%8B"><span class="toc-number">5.</span> <span class="toc-text">MySQL中的字符串类型</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#CHAR"><span class="toc-number">5.1.</span> <span class="toc-text">CHAR</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#VARCHAR"><span class="toc-number">5.2.</span> <span class="toc-text">VARCHAR</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TEXT"><span class="toc-number">5.3.</span> <span class="toc-text">TEXT</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A4%96%E9%94%AE%E7%BA%A6%E6%9D%9F"><span class="toc-number">6.</span> <span class="toc-text">外键约束</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#MySQL%E5%85%B3%E9%94%AE%E5%AD%97%EF%BC%9AIN-%E5%92%8C-EXISTS"><span class="toc-number">7.</span> <span class="toc-text">MySQL关键字：IN 和 EXISTS</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#IN-%E5%85%B3%E9%94%AE%E5%AD%97"><span class="toc-number">7.1.</span> <span class="toc-text">IN 关键字</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#EXISTS-%E5%85%B3%E9%94%AE%E5%AD%97"><span class="toc-number">7.2.</span> <span class="toc-text">EXISTS 关键字</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8C%BA%E5%88%AB%E4%B8%8E%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">7.3.</span> <span class="toc-text">区别与适用场景</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#IN-%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">7.3.1.</span> <span class="toc-text">IN 适用场景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#EXISTS-%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">7.3.2.</span> <span class="toc-text">EXISTS 适用场景</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#MySQL%E5%9F%BA%E6%9C%AC%E5%87%BD%E6%95%B0"><span class="toc-number">8.</span> <span class="toc-text">MySQL基本函数</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%87%BD%E6%95%B0"><span class="toc-number">8.1.</span> <span class="toc-text">字符串函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#CONCAT-str1-str2"><span class="toc-number">8.1.1.</span> <span class="toc-text">CONCAT(str1, str2, ...)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LENGTH-str"><span class="toc-number">8.1.2.</span> <span class="toc-text">LENGTH(str)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SUBSTRING-str-start-length"><span class="toc-number">8.1.3.</span> <span class="toc-text">SUBSTRING(str, start, length)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#REPLACE-str-from-str-to-str"><span class="toc-number">8.1.4.</span> <span class="toc-text">REPLACE(str, from_str, to_str)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E5%80%BC%E5%87%BD%E6%95%B0"><span class="toc-number">8.2.</span> <span class="toc-text">数值函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ABS-num"><span class="toc-number">8.2.1.</span> <span class="toc-text">ABS(num)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#POWER-num-n"><span class="toc-number">8.2.2.</span> <span class="toc-text">POWER(num, n)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%97%A5%E6%9C%9F%E5%87%BD%E6%95%B0"><span class="toc-number">8.3.</span> <span class="toc-text">日期函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#NOW"><span class="toc-number">8.3.1.</span> <span class="toc-text">NOW()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CURDATE"><span class="toc-number">8.3.2.</span> <span class="toc-text">CURDATE()</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%81%9A%E5%90%88%E5%87%BD%E6%95%B0"><span class="toc-number">8.4.</span> <span class="toc-text">聚合函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#COUNT-column"><span class="toc-number">8.4.1.</span> <span class="toc-text">COUNT(column)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SUM-column"><span class="toc-number">8.4.2.</span> <span class="toc-text">SUM(column)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AVG-column"><span class="toc-number">8.4.3.</span> <span class="toc-text">AVG(column)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MAX-column"><span class="toc-number">8.4.4.</span> <span class="toc-text">MAX(column)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MIN-column"><span class="toc-number">8.4.5.</span> <span class="toc-text">MIN(column)</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#SQL%E6%9F%A5%E8%AF%A2%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F"><span class="toc-number">9.</span> <span class="toc-text">SQL查询执行顺序</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#SQL%E8%AF%B7%E6%B1%82%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B%E8%AF%A6%E8%A7%A3"><span class="toc-number">10.</span> <span class="toc-text">SQL请求执行过程详解</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#MySQL%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E"><span class="toc-number">11.</span> <span class="toc-text">MySQL存储引擎</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#InnoDB"><span class="toc-number">11.1.</span> <span class="toc-text">InnoDB</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MyISAM"><span class="toc-number">11.2.</span> <span class="toc-text">MyISAM</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Memory"><span class="toc-number">11.3.</span> <span class="toc-text">Memory</span></a></li></ol></li></ol>
+                </div>
+            
+            <hr />
+            <div itemprop="articleBody"><p>在数据库管理中，SQL（Structured Query Language）是操作关系型数据库的核心工具。本文将深入探讨MySQL中的SQL基础知识，从数据库类型选择、设计范式、连接查询、数据插入、字符串类型、外键约束、关键字使用、内置函数、查询执行顺序、请求执行过程到存储引擎等多个方面进行详细解析。</p>
+<span id="more"></span>
+
+<h1 id="SQL与NoSQL数据库"><a href="#SQL与NoSQL数据库" class="headerlink" title="SQL与NoSQL数据库"></a>SQL与NoSQL数据库</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><h3 id="SQL数据库"><a href="#SQL数据库" class="headerlink" title="SQL数据库"></a>SQL数据库</h3><p>SQL（Structured Query Language）代表关系型数据库管理系统（RDBMS），常见的代表包括SQL Server、Oracle、MySQL和PostgreSQL。关系型数据库以结构化方式存储数据，数据逻辑通过二维表（即行和列）来表示。每一列代表数据的属性，每一行则代表一个数据实体。</p>
+<h3 id="NoSQL数据库"><a href="#NoSQL数据库" class="headerlink" title="NoSQL数据库"></a>NoSQL数据库</h3><p>NoSQL（Not Only SQL）代表非关系型数据库，主要代表有MongoDB和Redis。NoSQL数据库不使用传统的二维表结构，而是采用如JSON文档、键值对、列族、图等多种数据模型来存储数据。</p>
+<h2 id="选择数据库的考量因素"><a href="#选择数据库的考量因素" class="headerlink" title="选择数据库的考量因素"></a>选择数据库的考量因素</h2><h3 id="ACID与BASE"><a href="#ACID与BASE" class="headerlink" title="ACID与BASE"></a>ACID与BASE</h3><p>关系型数据库通常支持ACID特性（原子性、一致性、隔离性、持久性），确保数据的强一致性和事务的完整性。而NoSQL数据库通常采用BASE模型（基本可用性、软状态、最终一致性），提供更高的灵活性和可扩展性，但可能在一致性方面有所妥协。</p>
+<p>选择数据库时需根据具体应用场景来决定。例如，银行系统需要严格遵守ACID特性以防止资金重复使用，而社交软件则可以容忍一定程度的延迟和数据不一致。</p>
+<h3 id="扩展性"><a href="#扩展性" class="headerlink" title="扩展性"></a>扩展性</h3><p>NoSQL数据库由于其非关系型数据结构，数据之间通常不存在强关联，因此更容易实现水平扩展。例如，Redis提供了主从复制、哨兵模式和切片集群等扩展机制。</p>
+<p>相比之下，SQL数据库中的数据可能存在复杂的关联关系，扩展时需要解决分布式事务等复杂问题。</p>
+<h1 id="数据库设计三大范式"><a href="#数据库设计三大范式" class="headerlink" title="数据库设计三大范式"></a>数据库设计三大范式</h1><h2 id="第一范式（1NF）"><a href="#第一范式（1NF）" class="headerlink" title="第一范式（1NF）"></a>第一范式（1NF）</h2><p>第一范式要求数据库表中的每一列都必须是不可再分的原子项。这意味着每一列中的数据项必须是单一的、不可分割的值。</p>
+<h3 id="举例说明"><a href="#举例说明" class="headerlink" title="举例说明"></a>举例说明</h3><p>假设有一张表存储用户信息，其中包含“联系方式”列，该列包含电话和电子邮件。为了满足1NF，应将“联系方式”拆分为“电话”和“电子邮件”两列。</p>
+<h4 id="不满足1NF的表结构"><a href="#不满足1NF的表结构" class="headerlink" title="不满足1NF的表结构"></a>不满足1NF的表结构</h4><table>
+<thead>
+<tr>
+<th>用户ID</th>
+<th>用户名</th>
+<th>联系方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>张三</td>
+<td>123-4567,<a href="mailto:&#122;&#104;&#x61;&#x6e;&#103;&#x73;&#97;&#110;&#64;&#101;&#x78;&#97;&#x6d;&#x70;&#108;&#101;&#x2e;&#x63;&#111;&#109;">&#122;&#104;&#x61;&#x6e;&#103;&#x73;&#97;&#110;&#64;&#101;&#x78;&#97;&#x6d;&#x70;&#108;&#101;&#x2e;&#x63;&#111;&#109;</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td>李四</td>
+<td>890-1234,<a href="mailto:&#x6c;&#105;&#x73;&#x69;&#x40;&#101;&#120;&#x61;&#x6d;&#112;&#x6c;&#x65;&#46;&#99;&#111;&#109;">&#x6c;&#105;&#x73;&#x69;&#x40;&#101;&#120;&#x61;&#x6d;&#112;&#x6c;&#x65;&#46;&#99;&#111;&#109;</a></td>
+</tr>
+</tbody></table>
+<h4 id="满足1NF的表结构"><a href="#满足1NF的表结构" class="headerlink" title="满足1NF的表结构"></a>满足1NF的表结构</h4><table>
+<thead>
+<tr>
+<th>用户ID</th>
+<th>用户名</th>
+<th>电话</th>
+<th>电子邮件</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>张三</td>
+<td>123-4567</td>
+<td><a href="mailto:&#122;&#x68;&#x61;&#x6e;&#x67;&#x73;&#97;&#110;&#x40;&#101;&#120;&#97;&#109;&#112;&#x6c;&#101;&#46;&#x63;&#111;&#x6d;">&#122;&#x68;&#x61;&#x6e;&#x67;&#x73;&#97;&#110;&#x40;&#101;&#120;&#97;&#109;&#112;&#x6c;&#101;&#46;&#x63;&#111;&#x6d;</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td>李四</td>
+<td>890-1234</td>
+<td><a href="mailto:&#x6c;&#x69;&#x73;&#105;&#64;&#x65;&#x78;&#x61;&#109;&#x70;&#108;&#101;&#46;&#99;&#x6f;&#109;">&#x6c;&#x69;&#x73;&#105;&#64;&#x65;&#x78;&#x61;&#109;&#x70;&#108;&#101;&#46;&#99;&#x6f;&#109;</a></td>
+</tr>
+</tbody></table>
+<h2 id="第二范式（2NF）"><a href="#第二范式（2NF）" class="headerlink" title="第二范式（2NF）"></a>第二范式（2NF）</h2><p>第二范式在满足1NF的基础上，要求非主属性必须完全依赖于候选码（即主键）。换句话说，非主属性不能部分依赖于主键的一部分。</p>
+<h3 id="举例说明-1"><a href="#举例说明-1" class="headerlink" title="举例说明"></a>举例说明</h3><p>假设有一张订单表，主键为“订单ID”和“产品ID”。如果表中有一列“产品名称”，它只依赖于“产品ID”，而不依赖于“订单ID”，则该表不满足2NF。应将“产品名称”移到另一张产品表中。</p>
+<h4 id="不满足2NF的表结构"><a href="#不满足2NF的表结构" class="headerlink" title="不满足2NF的表结构"></a>不满足2NF的表结构</h4><table>
+<thead>
+<tr>
+<th>订单ID</th>
+<th>产品ID</th>
+<th>产品名称</th>
+<th>数量</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>101</td>
+<td>苹果</td>
+<td>5</td>
+</tr>
+<tr>
+<td>2</td>
+<td>102</td>
+<td>香蕉</td>
+<td>3</td>
+</tr>
+<tr>
+<td>3</td>
+<td>101</td>
+<td>苹果</td>
+<td>2</td>
+</tr>
+</tbody></table>
+<h4 id="满足2NF的表结构"><a href="#满足2NF的表结构" class="headerlink" title="满足2NF的表结构"></a>满足2NF的表结构</h4><p><strong>订单表</strong></p>
+<table>
+<thead>
+<tr>
+<th>订单ID</th>
+<th>产品ID</th>
+<th>数量</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>101</td>
+<td>5</td>
+</tr>
+<tr>
+<td>2</td>
+<td>102</td>
+<td>3</td>
+</tr>
+<tr>
+<td>3</td>
+<td>101</td>
+<td>2</td>
+</tr>
+</tbody></table>
+<p><strong>产品表</strong></p>
+<table>
+<thead>
+<tr>
+<th>产品ID</th>
+<th>产品名称</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>101</td>
+<td>苹果</td>
+</tr>
+<tr>
+<td>102</td>
+<td>香蕉</td>
+</tr>
+</tbody></table>
+<h2 id="第三范式（3NF）"><a href="#第三范式（3NF）" class="headerlink" title="第三范式（3NF）"></a>第三范式（3NF）</h2><p>第三范式在满足2NF的基础上，要求非主属性不依赖于其他的非主属性（即消除传递依赖）。</p>
+<h3 id="举例说明-2"><a href="#举例说明-2" class="headerlink" title="举例说明"></a>举例说明</h3><p>假设有一张员工表，包含“员工ID”、“员工姓名”、“部门ID”和“部门名称”。如果“部门名称”依赖于“部门ID”，而“部门ID”依赖于“员工ID”，则存在传递依赖，不满足3NF。应将“部门名称”移到另一张部门表中。</p>
+<h4 id="不满足3NF的表结构"><a href="#不满足3NF的表结构" class="headerlink" title="不满足3NF的表结构"></a>不满足3NF的表结构</h4><table>
+<thead>
+<tr>
+<th>员工ID</th>
+<th>员工姓名</th>
+<th>部门ID</th>
+<th>部门名称</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>张三</td>
+<td>D01</td>
+<td>研发部</td>
+</tr>
+<tr>
+<td>2</td>
+<td>李四</td>
+<td>D02</td>
+<td>销售部</td>
+</tr>
+<tr>
+<td>3</td>
+<td>王五</td>
+<td>D01</td>
+<td>研发部</td>
+</tr>
+</tbody></table>
+<h4 id="满足3NF的表结构"><a href="#满足3NF的表结构" class="headerlink" title="满足3NF的表结构"></a>满足3NF的表结构</h4><p><strong>员工表</strong></p>
+<table>
+<thead>
+<tr>
+<th>员工ID</th>
+<th>员工姓名</th>
+<th>部门ID</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>张三</td>
+<td>D01</td>
+</tr>
+<tr>
+<td>2</td>
+<td>李四</td>
+<td>D02</td>
+</tr>
+<tr>
+<td>3</td>
+<td>王五</td>
+<td>D01</td>
+</tr>
+</tbody></table>
+<p><strong>部门表</strong></p>
+<table>
+<thead>
+<tr>
+<th>部门ID</th>
+<th>部门名称</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>D01</td>
+<td>研发部</td>
+</tr>
+<tr>
+<td>D02</td>
+<td>销售部</td>
+</tr>
+</tbody></table>
+<h1 id="数据库连接查询"><a href="#数据库连接查询" class="headerlink" title="数据库连接查询"></a>数据库连接查询</h1><p>在数据库查询中，连接（Join）操作用于将两个或多个表中的数据组合在一起。常见的连接类型包括内连接、左外连接、右外连接和全外连接。以下是每种连接类型的详细说明及其SQL语法示例。</p>
+<h2 id="1-内连接（Inner-Join）"><a href="#1-内连接（Inner-Join）" class="headerlink" title="1. 内连接（Inner Join）"></a>1. 内连接（Inner Join）</h2><p>内连接返回两个表中具有匹配关系的行。只有当两个表中的记录在连接条件上匹配时，才会返回结果。</p>
+<p><strong>示例解释</strong></p>
+<p>假设有两个表：<code>Orders</code>（订单表）和<code>Customers</code>（客户表），我们希望查询所有有订单的客户信息。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> Orders.OrderID, Customers.CustomerName</span><br><span class="line"><span class="keyword">FROM</span> Orders</span><br><span class="line"><span class="keyword">INNER</span> <span class="keyword">JOIN</span> Customers</span><br><span class="line"><span class="keyword">ON</span> Orders.CustomerID <span class="operator">=</span> Customers.CustomerID;</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-左外连接（Left-Outer-Join）"><a href="#2-左外连接（Left-Outer-Join）" class="headerlink" title="2. 左外连接（Left Outer Join）"></a>2. 左外连接（Left Outer Join）</h2><p>左外连接返回左表中的所有行，即使右表中没有匹配的行。对于右表中没有匹配的行，结果集中对应的数据为<code>NULL</code>。</p>
+<p><strong>示例解释</strong></p>
+<p>假设我们希望查询所有客户及其订单信息，包括那些没有订单的客户。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> Customers.CustomerName, Orders.OrderID</span><br><span class="line"><span class="keyword">FROM</span> Customers</span><br><span class="line"><span class="keyword">LEFT</span> <span class="keyword">JOIN</span> Orders</span><br><span class="line"><span class="keyword">ON</span> Customers.CustomerID <span class="operator">=</span> Orders.CustomerID;</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-右外连接（Right-Outer-Join）"><a href="#3-右外连接（Right-Outer-Join）" class="headerlink" title="3. 右外连接（Right Outer Join）"></a>3. 右外连接（Right Outer Join）</h2><p>右外连接与左外连接相似，返回右表中的所有行，即使左表中没有匹配的行。对于左表中没有匹配的行，结果集中对应的数据为<code>NULL</code>。</p>
+<p><strong>示例解释</strong></p>
+<p>假设我们希望查询所有订单及其对应的客户信息，包括那些没有客户的订单。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> Orders.OrderID, Customers.CustomerName</span><br><span class="line"><span class="keyword">FROM</span> Orders</span><br><span class="line"><span class="keyword">RIGHT</span> <span class="keyword">JOIN</span> Customers</span><br><span class="line"><span class="keyword">ON</span> Orders.CustomerID <span class="operator">=</span> Customers.CustomerID;</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-全外连接（Full-Outer-Join）"><a href="#4-全外连接（Full-Outer-Join）" class="headerlink" title="4. 全外连接（Full Outer Join）"></a>4. 全外连接（Full Outer Join）</h2><p>全外连接返回两个表中的所有行，包括那些在另一个表中没有匹配的行。对于没有匹配的行，结果集中对应的数据为<code>NULL</code>。</p>
+<p><strong>示例解释</strong></p>
+<p>假设我们希望查询所有客户和订单的信息，包括那些没有订单的客户和没有客户的订单。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> Customers.CustomerName, Orders.OrderID</span><br><span class="line"><span class="keyword">FROM</span> Customers</span><br><span class="line"><span class="keyword">FULL</span> <span class="keyword">OUTER</span> <span class="keyword">JOIN</span> Orders</span><br><span class="line"><span class="keyword">ON</span> Customers.CustomerID <span class="operator">=</span> Orders.CustomerID;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="MySQL如何避免插入重复数据"><a href="#MySQL如何避免插入重复数据" class="headerlink" title="MySQL如何避免插入重复数据"></a>MySQL如何避免插入重复数据</h1><p>在MySQL中，有多种方法可以避免插入重复数据。以下是三种常见的方法及其详细说明。</p>
+<h2 id="方式一：使用UNIQUE约束"><a href="#方式一：使用UNIQUE约束" class="headerlink" title="方式一：使用UNIQUE约束"></a>方式一：使用UNIQUE约束</h2><p>UNIQUE约束用于确保表中某一列或一组列的值是唯一的。如果在插入数据时违反了UNIQUE约束，MySQL将拒绝插入该数据。</p>
+<p><strong>创建表时添加UNIQUE约束</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> Users (</span><br><span class="line">    id <span class="type">INT</span> AUTO_INCREMENT <span class="keyword">PRIMARY</span> KEY,</span><br><span class="line">    email <span class="type">VARCHAR</span>(<span class="number">255</span>) <span class="keyword">UNIQUE</span>,</span><br><span class="line">    name <span class="type">VARCHAR</span>(<span class="number">255</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>如果尝试插入重复的<code>email</code>，MySQL将返回错误。</p>
+<h2 id="方式二：使用-INSERT-ON-DUPLICATE-KEY-UPDATE"><a href="#方式二：使用-INSERT-ON-DUPLICATE-KEY-UPDATE" class="headerlink" title="方式二：使用 INSERT ... ON DUPLICATE KEY UPDATE"></a>方式二：使用 <code>INSERT ... ON DUPLICATE KEY UPDATE</code></h2><p><code>INSERT ... ON DUPLICATE KEY UPDATE</code>语句在插入数据时，如果遇到重复键值（如UNIQUE约束或PRIMARY KEY），可以选择更新原有记录为新插入的记录。</p>
+<p><strong>插入或更新数据</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> Products (product_id, product_name, price)</span><br><span class="line"><span class="keyword">VALUES</span> (<span class="number">1</span>, <span class="string">&#x27;Product A&#x27;</span>, <span class="number">10.99</span>)</span><br><span class="line"><span class="keyword">ON</span> DUPLICATE KEY <span class="keyword">UPDATE</span> product_name <span class="operator">=</span> <span class="keyword">VALUES</span>(product_name), price <span class="operator">=</span> <span class="keyword">VALUES</span>(price);</span><br></pre></td></tr></table></figure>
+
+<p>如果<code>product_id</code>为1的记录已经存在，则更新其<code>product_name</code>和<code>price</code>字段。</p>
+<h2 id="方式三：使用-INSERT-IGNORE"><a href="#方式三：使用-INSERT-IGNORE" class="headerlink" title="方式三：使用 INSERT IGNORE"></a>方式三：使用 <code>INSERT IGNORE</code></h2><p><code>INSERT IGNORE</code>语句在插入数据时，如果遇到重复键值（如UNIQUE约束或PRIMARY KEY），将忽略该插入操作，不会抛出错误。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INSERT</span> IGNORE <span class="keyword">INTO</span> Customers (customer_id, customer_name)</span><br><span class="line"><span class="keyword">VALUES</span> (<span class="number">1</span>, <span class="string">&#x27;Customer A&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>如果<code>customer_id</code>为1的记录已经存在，则忽略该插入操作，不会抛出错误。</p>
+<h1 id="MySQL中的字符串类型"><a href="#MySQL中的字符串类型" class="headerlink" title="MySQL中的字符串类型"></a>MySQL中的字符串类型</h1><p>在MySQL中，字符串类型用于存储文本数据。常见的字符串类型包括<code>CHAR</code>、<code>VARCHAR</code>和<code>TEXT</code>。每种类型都有其特定的用途和存储特性。</p>
+<h2 id="CHAR"><a href="#CHAR" class="headerlink" title="CHAR"></a><code>CHAR</code></h2><p><code>CHAR</code>是一种固定长度的字符串类型。在定义时需要指定长度，存储时会在末尾填充空格以达到指定的长度。</p>
+<p><strong>特点</strong></p>
+<ul>
+<li><strong>固定长度</strong>：无论实际存储的字符串长度如何，都会占用指定长度的存储空间。</li>
+<li><strong>存储效率</strong>：对于长度固定的字符串（如国家代码、性别等），<code>CHAR</code>类型可以提高存储效率。</li>
+</ul>
+<h2 id="VARCHAR"><a href="#VARCHAR" class="headerlink" title="VARCHAR"></a><code>VARCHAR</code></h2><p><code>VARCHAR</code>是一种可变长度的字符串类型。在定义时需要指定最大长度，存储时根据实际长度占用存储空间。</p>
+<p><strong>特点</strong></p>
+<ul>
+<li><strong>可变长度</strong>：实际存储的字符串长度决定了占用的存储空间，节省存储空间。</li>
+<li><strong>灵活性</strong>：适用于长度不固定的字符串（如用户名、地址等）。</li>
+</ul>
+<h2 id="TEXT"><a href="#TEXT" class="headerlink" title="TEXT"></a><code>TEXT</code></h2><p><code>TEXT</code>用于存储超长文本数据。<code>TEXT</code>类型有多种子类型，包括<code>TEXT</code>、<code>MEDIUMTEXT</code>和<code>LONGTEXT</code>，分别用于存储不同大小的文本。</p>
+<p><strong>特点</strong></p>
+<ul>
+<li><p><strong>大容量存储</strong>：适用于存储大段文本（如文章内容、日志等）。</p>
+</li>
+<li><p><strong>存储限制</strong>：</p>
+<ul>
+<li><code>TEXT</code>：最大存储65,535字节（约64KB）。</li>
+<li><code>MEDIUMTEXT</code>：最大存储16,777,215字节（约16MB）。</li>
+<li><code>LONGTEXT</code>：最大存储4,294,967,295字节（约4GB）。</li>
+</ul>
+</li>
+<li><p>**<code>CHAR</code>**：适用于固定长度的字符串，存储效率高。</p>
+</li>
+<li><p>**<code>VARCHAR</code>**：适用于长度不固定的字符串，节省存储空间。</p>
+</li>
+<li><p>**<code>TEXT</code>**：适用于存储超长文本，有多种子类型满足不同存储需求。</p>
+</li>
+</ul>
+<p>根据具体需求选择合适的字符串类型，可以优化数据库的存储和查询性能。</p>
+<h1 id="外键约束"><a href="#外键约束" class="headerlink" title="外键约束"></a>外键约束</h1><p>外键约束（Foreign Key Constraint）是关系型数据库中用于维护表与表之间关系的一种机制。它确保数据的完整性和一致性，防止在关联表中插入无效数据。</p>
+<p><strong>作用</strong></p>
+<ol>
+<li><strong>维护数据完整性</strong>：外键约束确保在子表中插入或更新的记录在父表中存在对应的记录。如果父表中不存在对应的记录，数据库将拒绝插入或更新操作。</li>
+<li><strong>防止无效数据</strong>：外键约束防止在子表中插入或更新无效数据，从而保持数据的正确性和一致性。</li>
+<li><strong>级联操作</strong>：外键约束可以配置级联操作，如级联删除（CASCADE DELETE）或级联更新（CASCADE UPDATE），以确保在父表中的记录被删除或更新时，子表中的相关记录也相应地被删除或更新。</li>
+</ol>
+<p>假设有两个表：<code>Orders</code>（订单表）和<code>Customers</code>（客户表），我们希望在<code>Orders</code>表中定义一个外键约束，确保每个订单都关联到一个有效的客户。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> Customers (</span><br><span class="line">    CustomerID <span class="type">INT</span> AUTO_INCREMENT <span class="keyword">PRIMARY</span> KEY,</span><br><span class="line">    CustomerName <span class="type">VARCHAR</span>(<span class="number">255</span>)</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> Orders (</span><br><span class="line">    OrderID <span class="type">INT</span> AUTO_INCREMENT <span class="keyword">PRIMARY</span> KEY,</span><br><span class="line">    OrderDate <span class="type">DATE</span>,</span><br><span class="line">    CustomerID <span class="type">INT</span>,</span><br><span class="line">    <span class="keyword">FOREIGN</span> KEY (CustomerID) <span class="keyword">REFERENCES</span> Customers(CustomerID)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="MySQL关键字：IN-和-EXISTS"><a href="#MySQL关键字：IN-和-EXISTS" class="headerlink" title="MySQL关键字：IN 和 EXISTS"></a>MySQL关键字：<code>IN</code> 和 <code>EXISTS</code></h1><p>在MySQL中，<code>IN</code>和<code>EXISTS</code>是两个常用的关键字，用于在查询中进行条件判断。它们各自有不同的用途和特点。</p>
+<h2 id="IN-关键字"><a href="#IN-关键字" class="headerlink" title="IN 关键字"></a><code>IN</code> 关键字</h2><p><code>IN</code>关键字用于检查左边的表达式是否存在于右边的列表或子查询中。如果存在，则返回<code>true</code>，否则返回<code>false</code>。</p>
+<p>假设我们有一个<code>Orders</code>表，我们希望查询所有订单ID为1、2或3的订单。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span></span><br><span class="line"><span class="keyword">FROM</span> Orders</span><br><span class="line"><span class="keyword">WHERE</span> OrderID <span class="keyword">IN</span> (<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>);</span><br></pre></td></tr></table></figure>
+
+<p>或者使用子查询：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span></span><br><span class="line"><span class="keyword">FROM</span> Orders</span><br><span class="line"><span class="keyword">WHERE</span> OrderID <span class="keyword">IN</span> (<span class="keyword">SELECT</span> OrderID <span class="keyword">FROM</span> Orders <span class="keyword">WHERE</span> OrderDate <span class="operator">=</span> <span class="string">&#x27;2023-10-01&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<h2 id="EXISTS-关键字"><a href="#EXISTS-关键字" class="headerlink" title="EXISTS 关键字"></a><code>EXISTS</code> 关键字</h2><p><code>EXISTS</code>关键字用于检查子查询是否至少返回一行数据。它不关心子查询返回的具体数据，只关注是否有返回数据。如果有返回数据，则返回<code>true</code>，否则返回<code>false</code>。</p>
+<p>假设我们有一个<code>Customers</code>表和一个<code>Orders</code>表，我们希望查询所有有订单的客户。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span></span><br><span class="line"><span class="keyword">FROM</span> Customers c</span><br><span class="line"><span class="keyword">WHERE</span> <span class="keyword">EXISTS</span> (<span class="keyword">SELECT</span> <span class="number">1</span> <span class="keyword">FROM</span> Orders o <span class="keyword">WHERE</span> o.CustomerID <span class="operator">=</span> c.CustomerID);</span><br></pre></td></tr></table></figure>
+
+<h2 id="区别与适用场景"><a href="#区别与适用场景" class="headerlink" title="区别与适用场景"></a>区别与适用场景</h2><h3 id="IN-适用场景"><a href="#IN-适用场景" class="headerlink" title="IN 适用场景"></a><code>IN</code> 适用场景</h3><ul>
+<li><strong>简单列表匹配</strong>：当需要检查某个值是否存在于一个固定的列表中时，<code>IN</code>非常适用。</li>
+<li><strong>子查询结果匹配</strong>：当需要检查某个值是否存在于子查询的结果集中时，<code>IN</code>也很适用。</li>
+</ul>
+<h3 id="EXISTS-适用场景"><a href="#EXISTS-适用场景" class="headerlink" title="EXISTS 适用场景"></a><code>EXISTS</code> 适用场景</h3><ul>
+<li><strong>存在性检查</strong>：当只需要检查是否存在满足条件的记录，而不关心具体返回的数据时，<code>EXISTS</code>非常适用。</li>
+<li><strong>性能优化</strong>：在某些情况下，<code>EXISTS</code>的性能可能优于<code>IN</code>，特别是在子查询返回大量数据时。</li>
+</ul>
+<h1 id="MySQL基本函数"><a href="#MySQL基本函数" class="headerlink" title="MySQL基本函数"></a>MySQL基本函数</h1><p>MySQL提供了丰富的内置函数，用于处理字符串、数值、日期和聚合数据。以下是一些常用的MySQL函数及其说明。</p>
+<h2 id="字符串函数"><a href="#字符串函数" class="headerlink" title="字符串函数"></a>字符串函数</h2><h3 id="CONCAT-str1-str2"><a href="#CONCAT-str1-str2" class="headerlink" title="CONCAT(str1, str2, ...)"></a><code>CONCAT(str1, str2, ...)</code></h3><p>连接多个字符串，返回拼接结果。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> CONCAT(<span class="string">&#x27;Hello&#x27;</span>, <span class="string">&#x27; &#x27;</span>, <span class="string">&#x27;World&#x27;</span>);  <span class="comment">-- 返回 &#x27;Hello World&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="LENGTH-str"><a href="#LENGTH-str" class="headerlink" title="LENGTH(str)"></a><code>LENGTH(str)</code></h3><p>返回字符串的长度（字符数）。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> LENGTH(<span class="string">&#x27;Hello World&#x27;</span>);  <span class="comment">-- 返回 11</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="SUBSTRING-str-start-length"><a href="#SUBSTRING-str-start-length" class="headerlink" title="SUBSTRING(str, start, length)"></a><code>SUBSTRING(str, start, length)</code></h3><p>从指定位置开始，截取指定长度的字符串。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="built_in">SUBSTRING</span>(<span class="string">&#x27;Hello World&#x27;</span>, <span class="number">7</span>, <span class="number">5</span>);  <span class="comment">-- 返回 &#x27;World&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="REPLACE-str-from-str-to-str"><a href="#REPLACE-str-from-str-to-str" class="headerlink" title="REPLACE(str, from_str, to_str)"></a><code>REPLACE(str, from_str, to_str)</code></h3><p>将字符串中的指定字符替换为另一个字符。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> REPLACE(<span class="string">&#x27;Hello World&#x27;</span>, <span class="string">&#x27;o&#x27;</span>, <span class="string">&#x27;a&#x27;</span>);  <span class="comment">-- 返回 &#x27;Hella Warld&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="数值函数"><a href="#数值函数" class="headerlink" title="数值函数"></a>数值函数</h2><h3 id="ABS-num"><a href="#ABS-num" class="headerlink" title="ABS(num)"></a><code>ABS(num)</code></h3><p>返回数值的绝对值。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="built_in">ABS</span>(<span class="number">-10</span>);  <span class="comment">-- 返回 10</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="POWER-num-n"><a href="#POWER-num-n" class="headerlink" title="POWER(num, n)"></a><code>POWER(num, n)</code></h3><p>返回数值的n次幂。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="built_in">POWER</span>(<span class="number">2</span>, <span class="number">3</span>);  <span class="comment">-- 返回 8</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="日期函数"><a href="#日期函数" class="headerlink" title="日期函数"></a>日期函数</h2><h3 id="NOW"><a href="#NOW" class="headerlink" title="NOW()"></a><code>NOW()</code></h3><p>返回当前日期和时间。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> NOW();  <span class="comment">-- 返回当前日期和时间，例如 &#x27;2023-10-01 12:34:56&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="CURDATE"><a href="#CURDATE" class="headerlink" title="CURDATE()"></a><code>CURDATE()</code></h3><p>返回当前日期。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> CURDATE();  <span class="comment">-- 返回当前日期，例如 &#x27;2023-10-01&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="聚合函数"><a href="#聚合函数" class="headerlink" title="聚合函数"></a>聚合函数</h2><h3 id="COUNT-column"><a href="#COUNT-column" class="headerlink" title="COUNT(column)"></a><code>COUNT(column)</code></h3><p>计算指定列中的非NULL值的个数。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="built_in">COUNT</span>(OrderID) <span class="keyword">FROM</span> Orders;  <span class="comment">-- 返回订单表中OrderID列的非NULL值个数</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="SUM-column"><a href="#SUM-column" class="headerlink" title="SUM(column)"></a><code>SUM(column)</code></h3><p>计算指定列的总和。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="built_in">SUM</span>(Price) <span class="keyword">FROM</span> Products;  <span class="comment">-- 返回产品表中Price列的总和</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="AVG-column"><a href="#AVG-column" class="headerlink" title="AVG(column)"></a><code>AVG(column)</code></h3><p>计算指定列的平均值。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="built_in">AVG</span>(Price) <span class="keyword">FROM</span> Products;  <span class="comment">-- 返回产品表中Price列的平均值</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="MAX-column"><a href="#MAX-column" class="headerlink" title="MAX(column)"></a><code>MAX(column)</code></h3><p>返回指定列的最大值。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="built_in">MAX</span>(Price) <span class="keyword">FROM</span> Products;  <span class="comment">-- 返回产品表中Price列的最大值</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="MIN-column"><a href="#MIN-column" class="headerlink" title="MIN(column)"></a><code>MIN(column)</code></h3><p>返回指定列的最小值。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="built_in">MIN</span>(Price) <span class="keyword">FROM</span> Products;  <span class="comment">-- 返回产品表中Price列的最小值</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="SQL查询执行顺序"><a href="#SQL查询执行顺序" class="headerlink" title="SQL查询执行顺序"></a>SQL查询执行顺序</h1><p>所有的查询语句都是从FROM开始执行，在执行过程中，每个步骤都会生成一个虚拟表，这个虚拟表将作为下一个执行步骤的输入，最后一个步骤产生的虚拟表即为输出结果。执行顺序如下：</p>
+<img src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409231055933.png" alt="SQL查询语句执行顺序" style="zoom:80%;">
+
+<p>sql查询语句执行顺序注释：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- (9) 选择要查询的列</span></span><br><span class="line"><span class="keyword">SELECT</span></span><br><span class="line"><span class="comment">-- (10) 去重</span></span><br><span class="line"><span class="keyword">DISTINCT</span> <span class="operator">&lt;</span><span class="keyword">column</span><span class="operator">&gt;</span></span><br><span class="line"><span class="comment">-- (6) 聚合函数或表达式</span></span><br><span class="line">AGG FUNC <span class="operator">&lt;</span><span class="keyword">column</span><span class="operator">&gt;</span> <span class="keyword">or</span></span><br><span class="line"><span class="operator">&lt;</span>expression<span class="operator">&gt;</span></span><br><span class="line"><span class="comment">-- (1) 指定数据来源的左表</span></span><br><span class="line"><span class="keyword">FROM</span> <span class="operator">&lt;</span><span class="keyword">left</span> <span class="keyword">table</span><span class="operator">&gt;</span></span><br><span class="line"><span class="comment">-- (3) 指定连接类型并连接右表</span></span><br><span class="line"><span class="operator">&lt;</span>join_type<span class="operator">&gt;</span> <span class="keyword">JOIN</span> <span class="operator">&lt;</span><span class="keyword">right</span> <span class="keyword">table</span><span class="operator">&gt;</span></span><br><span class="line"><span class="comment">-- (2) 指定连接条件</span></span><br><span class="line"><span class="keyword">ON</span> <span class="operator">&lt;</span>join_condition<span class="operator">&gt;</span></span><br><span class="line"><span class="comment">-- (4) 指定筛选条件</span></span><br><span class="line"><span class="keyword">WHERE</span> <span class="operator">&lt;</span><span class="keyword">where</span> <span class="keyword">condition</span><span class="operator">&gt;</span></span><br><span class="line"><span class="comment">-- (5) 指定分组列</span></span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> <span class="operator">&lt;</span><span class="keyword">group</span> <span class="keyword">by</span> list<span class="operator">&gt;</span></span><br><span class="line"><span class="comment">-- (7) 可选：使用 CUBE 或 ROLLUP 进行多维分析</span></span><br><span class="line"><span class="keyword">WITH</span> &#123;<span class="keyword">CUBE</span> <span class="operator">|</span> <span class="keyword">ROLLUP</span>&#125;</span><br><span class="line"><span class="comment">-- (8) 指定分组后的筛选条件</span></span><br><span class="line"><span class="keyword">HAVING</span> <span class="operator">&lt;</span>having_condition<span class="operator">&gt;</span></span><br><span class="line"><span class="comment">-- (11) 指定排序方式</span></span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> <span class="operator">&lt;</span><span class="keyword">order</span> <span class="keyword">by</span> list<span class="operator">&gt;</span></span><br><span class="line"><span class="comment">-- (12) 指定返回结果的数量限制</span></span><br><span class="line">LIMIT <span class="operator">&lt;</span>limit number<span class="operator">&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="SQL请求执行过程详解"><a href="#SQL请求执行过程详解" class="headerlink" title="SQL请求执行过程详解"></a>SQL请求执行过程详解</h1><img src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409231743173.png" alt="SQL请求执行过程" style="zoom:80%;">
+
+<ol>
+<li><strong>连接管理</strong></li>
+</ol>
+<p><strong>连接器</strong>：客户端通过连接器与MySQL服务器建立连接。连接器负责验证客户端的身份和权限，并维护连接状态。</p>
+<ol start="2">
+<li><strong>查询缓存</strong></li>
+</ol>
+<p><strong>缓存查询</strong>：在MySQL 5.7及之前版本中，查询缓存功能默认关闭，而在MySQL 8.0中已被移除。如果查询缓存功能开启且命中缓存，服务器将直接返回缓存结果，从而提高查询效率。</p>
+<ol start="3">
+<li><strong>语法解析</strong></li>
+</ol>
+<p><strong>解析器</strong>：解析器负责对SQL语句进行词法和语法分析。词法分析确保SQL语句中的关键词和标识符正确无误，语法分析则验证SQL语句的结构是否符合语法规则。解析完成后，生成一棵语法树（AST）。</p>
+<ol start="4">
+<li><strong>预处理</strong></li>
+</ol>
+<p><strong>预处理阶段</strong>：预处理器对语法树进行进一步处理，检查表和字段是否存在，并验证SQL语句的语义正确性。此阶段还会处理SQL语句中的占位符，确保查询的完整性和一致性。</p>
+<ol start="5">
+<li><strong>查询优化</strong></li>
+</ol>
+<p><strong>优化器</strong>：优化器是SQL执行过程中的核心组件，负责选择最优的执行计划。优化器会评估多种可能的执行路径，并根据成本模型选择查询成本最小的执行计划。优化过程包括但不限于索引选择、表连接顺序优化、子查询优化等。</p>
+<ol start="6">
+<li><strong>执行引擎</strong></li>
+</ol>
+<p><strong>执行阶段</strong>：执行引擎根据优化器生成的执行计划，从存储引擎中读取数据。执行过程中，数据可能被缓存以提高后续查询的效率。最终，执行引擎将结果集返回给客户端。</p>
+<h1 id="MySQL存储引擎"><a href="#MySQL存储引擎" class="headerlink" title="MySQL存储引擎"></a>MySQL存储引擎</h1><h2 id="InnoDB"><a href="#InnoDB" class="headerlink" title="InnoDB"></a>InnoDB</h2><ul>
+<li><strong>默认引擎</strong>：InnoDB是MySQL的<strong>默认存储引擎</strong>，适用于高并发场景。</li>
+<li><strong>事务支持</strong>：提供<code>ACID</code>（原子性、一致性、隔离性、持久性）事务特性，确保数据的一致性和完整性。</li>
+<li><strong>锁机制</strong>：支持行级锁，减少锁冲突，提高并发性能。</li>
+<li><strong>外键约束</strong>：支持外键约束，确保表之间的数据完整性。</li>
+</ul>
+<h2 id="MyISAM"><a href="#MyISAM" class="headerlink" title="MyISAM"></a>MyISAM</h2><ul>
+<li><strong>存储优化</strong>：MyISAM具有较低的存储和内存消耗，适用于大量读操作的场景。</li>
+<li><strong>性能特点</strong>：不支持事务，没有行级锁和外键约束，因此在高并发写操作场景下性能较差。</li>
+<li><strong>适用场景</strong>：适合读密集型应用，如数据仓库、日志记录等。</li>
+</ul>
+<h2 id="Memory"><a href="#Memory" class="headerlink" title="Memory"></a>Memory</h2><ul>
+<li><strong>内存存储</strong>：Memory引擎将数据存储在内存中，适用于需要快速读取的场景。</li>
+<li><strong>性能优势</strong>：由于数据存储在内存中，读取速度极快，适合临时数据存储和高频读取操作。</li>
+<li><strong>数据持久性</strong>：不支持事务、行级锁和外键索引。数据在服务器重启或崩溃时会丢失，因此不适合需要持久化的数据存储。</li>
+</ul>
+<p>通过选择合适的存储引擎，可以根据应用的具体需求优化数据库性能和数据管理策略。InnoDB适用于需要高并发和事务支持的场景，MyISAM适合读密集型应用，而Memory引擎则适用于需要快速读取的临时数据存储。</p>
+</div>
+        </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+            
+            
+                <div class="post-actions text-center clearfix" id="post-actions">
+                
+                    <a class="donate" href="javascript:;" onclick="krOpenDonateModal()"><i class="fa fa-bitcoin"></i> 打赏</a>
+                
+                
+                    <a class="share" href="javascript:;" onclick="krOpenShareModal()"><i class="fa fa-share-alt"></i> 分享</a>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    <a class="tag-none-link" href="/tags/MySQL%E5%9F%BA%E7%A1%80/" rel="tag">MySQL基础</a>
+                </div>
+                <div class="pull-date">
+                    <time datetime="2024-09-23T13:36:15.028Z" itemprop="dateModified">最后编辑：2024-09-23</time>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" Java并发编程-线程池篇" href="/2024/09/10/Java并发编程-线程池篇/"><i class="fa fa-angle-left"></i> 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" MySQL-索引与查询" href="/2024/09/15/MySQL-索引与查询/">下一篇 <i class="fa fa-angle-right"></i></a>
+            </div>
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+            
+                
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/user.jpg" alt="xiaoyan" loading="lazy" decoding="auto" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">是一只时时翻垃圾吃的宅子。</p>
+    </div>
+    <div class="site-meta">
+        <a class="meta-item" href="/archives/">
+            <span class="title">
+                文章
+            </span>
+            <span class="count">
+                16
+            </span>
+        </a>
+        <a class="meta-item" href="/categories/">
+            <span class="title">
+                分类
+            </span>
+            <span class="count">
+                6
+            </span>
+        </a>
+        <a class="meta-item" href="/tags/">
+            <span class="title">
+                标签
+            </span>
+            <span class="count">
+                26
+            </span>
+        </a>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix toc-div-class" >
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar" role="progressbar" aria-label="阅读进度："></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#SQL%E4%B8%8ENoSQL%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-number">1.</span> <span class="toc-text">SQL与NoSQL数据库</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-number">1.1.</span> <span class="toc-text">概述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#SQL%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-number">1.1.1.</span> <span class="toc-text">SQL数据库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#NoSQL%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-number">1.1.2.</span> <span class="toc-text">NoSQL数据库</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%89%E6%8B%A9%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E8%80%83%E9%87%8F%E5%9B%A0%E7%B4%A0"><span class="toc-number">1.2.</span> <span class="toc-text">选择数据库的考量因素</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ACID%E4%B8%8EBASE"><span class="toc-number">1.2.1.</span> <span class="toc-text">ACID与BASE</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%A9%E5%B1%95%E6%80%A7"><span class="toc-number">1.2.2.</span> <span class="toc-text">扩展性</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E8%AE%A1%E4%B8%89%E5%A4%A7%E8%8C%83%E5%BC%8F"><span class="toc-number">2.</span> <span class="toc-text">数据库设计三大范式</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E8%8C%83%E5%BC%8F%EF%BC%881NF%EF%BC%89"><span class="toc-number">2.1.</span> <span class="toc-text">第一范式（1NF）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BE%E4%BE%8B%E8%AF%B4%E6%98%8E"><span class="toc-number">2.1.1.</span> <span class="toc-text">举例说明</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%8D%E6%BB%A1%E8%B6%B31NF%E7%9A%84%E8%A1%A8%E7%BB%93%E6%9E%84"><span class="toc-number">2.1.1.1.</span> <span class="toc-text">不满足1NF的表结构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%BB%A1%E8%B6%B31NF%E7%9A%84%E8%A1%A8%E7%BB%93%E6%9E%84"><span class="toc-number">2.1.1.2.</span> <span class="toc-text">满足1NF的表结构</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E8%8C%83%E5%BC%8F%EF%BC%882NF%EF%BC%89"><span class="toc-number">2.2.</span> <span class="toc-text">第二范式（2NF）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BE%E4%BE%8B%E8%AF%B4%E6%98%8E-1"><span class="toc-number">2.2.1.</span> <span class="toc-text">举例说明</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%8D%E6%BB%A1%E8%B6%B32NF%E7%9A%84%E8%A1%A8%E7%BB%93%E6%9E%84"><span class="toc-number">2.2.1.1.</span> <span class="toc-text">不满足2NF的表结构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%BB%A1%E8%B6%B32NF%E7%9A%84%E8%A1%A8%E7%BB%93%E6%9E%84"><span class="toc-number">2.2.1.2.</span> <span class="toc-text">满足2NF的表结构</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E8%8C%83%E5%BC%8F%EF%BC%883NF%EF%BC%89"><span class="toc-number">2.3.</span> <span class="toc-text">第三范式（3NF）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BE%E4%BE%8B%E8%AF%B4%E6%98%8E-2"><span class="toc-number">2.3.1.</span> <span class="toc-text">举例说明</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%8D%E6%BB%A1%E8%B6%B33NF%E7%9A%84%E8%A1%A8%E7%BB%93%E6%9E%84"><span class="toc-number">2.3.1.1.</span> <span class="toc-text">不满足3NF的表结构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%BB%A1%E8%B6%B33NF%E7%9A%84%E8%A1%A8%E7%BB%93%E6%9E%84"><span class="toc-number">2.3.1.2.</span> <span class="toc-text">满足3NF的表结构</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A2"><span class="toc-number">3.</span> <span class="toc-text">数据库连接查询</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%86%85%E8%BF%9E%E6%8E%A5%EF%BC%88Inner-Join%EF%BC%89"><span class="toc-number">3.1.</span> <span class="toc-text">1. 内连接（Inner Join）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%B7%A6%E5%A4%96%E8%BF%9E%E6%8E%A5%EF%BC%88Left-Outer-Join%EF%BC%89"><span class="toc-number">3.2.</span> <span class="toc-text">2. 左外连接（Left Outer Join）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%8F%B3%E5%A4%96%E8%BF%9E%E6%8E%A5%EF%BC%88Right-Outer-Join%EF%BC%89"><span class="toc-number">3.3.</span> <span class="toc-text">3. 右外连接（Right Outer Join）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E5%85%A8%E5%A4%96%E8%BF%9E%E6%8E%A5%EF%BC%88Full-Outer-Join%EF%BC%89"><span class="toc-number">3.4.</span> <span class="toc-text">4. 全外连接（Full Outer Join）</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#MySQL%E5%A6%82%E4%BD%95%E9%81%BF%E5%85%8D%E6%8F%92%E5%85%A5%E9%87%8D%E5%A4%8D%E6%95%B0%E6%8D%AE"><span class="toc-number">4.</span> <span class="toc-text">MySQL如何避免插入重复数据</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E5%BC%8F%E4%B8%80%EF%BC%9A%E4%BD%BF%E7%94%A8UNIQUE%E7%BA%A6%E6%9D%9F"><span class="toc-number">4.1.</span> <span class="toc-text">方式一：使用UNIQUE约束</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E5%BC%8F%E4%BA%8C%EF%BC%9A%E4%BD%BF%E7%94%A8-INSERT-ON-DUPLICATE-KEY-UPDATE"><span class="toc-number">4.2.</span> <span class="toc-text">方式二：使用 INSERT ... ON DUPLICATE KEY UPDATE</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E5%BC%8F%E4%B8%89%EF%BC%9A%E4%BD%BF%E7%94%A8-INSERT-IGNORE"><span class="toc-number">4.3.</span> <span class="toc-text">方式三：使用 INSERT IGNORE</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#MySQL%E4%B8%AD%E7%9A%84%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%B1%BB%E5%9E%8B"><span class="toc-number">5.</span> <span class="toc-text">MySQL中的字符串类型</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#CHAR"><span class="toc-number">5.1.</span> <span class="toc-text">CHAR</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#VARCHAR"><span class="toc-number">5.2.</span> <span class="toc-text">VARCHAR</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TEXT"><span class="toc-number">5.3.</span> <span class="toc-text">TEXT</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A4%96%E9%94%AE%E7%BA%A6%E6%9D%9F"><span class="toc-number">6.</span> <span class="toc-text">外键约束</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#MySQL%E5%85%B3%E9%94%AE%E5%AD%97%EF%BC%9AIN-%E5%92%8C-EXISTS"><span class="toc-number">7.</span> <span class="toc-text">MySQL关键字：IN 和 EXISTS</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#IN-%E5%85%B3%E9%94%AE%E5%AD%97"><span class="toc-number">7.1.</span> <span class="toc-text">IN 关键字</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#EXISTS-%E5%85%B3%E9%94%AE%E5%AD%97"><span class="toc-number">7.2.</span> <span class="toc-text">EXISTS 关键字</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8C%BA%E5%88%AB%E4%B8%8E%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">7.3.</span> <span class="toc-text">区别与适用场景</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#IN-%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">7.3.1.</span> <span class="toc-text">IN 适用场景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#EXISTS-%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">7.3.2.</span> <span class="toc-text">EXISTS 适用场景</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#MySQL%E5%9F%BA%E6%9C%AC%E5%87%BD%E6%95%B0"><span class="toc-number">8.</span> <span class="toc-text">MySQL基本函数</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%87%BD%E6%95%B0"><span class="toc-number">8.1.</span> <span class="toc-text">字符串函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#CONCAT-str1-str2"><span class="toc-number">8.1.1.</span> <span class="toc-text">CONCAT(str1, str2, ...)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LENGTH-str"><span class="toc-number">8.1.2.</span> <span class="toc-text">LENGTH(str)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SUBSTRING-str-start-length"><span class="toc-number">8.1.3.</span> <span class="toc-text">SUBSTRING(str, start, length)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#REPLACE-str-from-str-to-str"><span class="toc-number">8.1.4.</span> <span class="toc-text">REPLACE(str, from_str, to_str)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E5%80%BC%E5%87%BD%E6%95%B0"><span class="toc-number">8.2.</span> <span class="toc-text">数值函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ABS-num"><span class="toc-number">8.2.1.</span> <span class="toc-text">ABS(num)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#POWER-num-n"><span class="toc-number">8.2.2.</span> <span class="toc-text">POWER(num, n)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%97%A5%E6%9C%9F%E5%87%BD%E6%95%B0"><span class="toc-number">8.3.</span> <span class="toc-text">日期函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#NOW"><span class="toc-number">8.3.1.</span> <span class="toc-text">NOW()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CURDATE"><span class="toc-number">8.3.2.</span> <span class="toc-text">CURDATE()</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%81%9A%E5%90%88%E5%87%BD%E6%95%B0"><span class="toc-number">8.4.</span> <span class="toc-text">聚合函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#COUNT-column"><span class="toc-number">8.4.1.</span> <span class="toc-text">COUNT(column)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SUM-column"><span class="toc-number">8.4.2.</span> <span class="toc-text">SUM(column)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AVG-column"><span class="toc-number">8.4.3.</span> <span class="toc-text">AVG(column)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MAX-column"><span class="toc-number">8.4.4.</span> <span class="toc-text">MAX(column)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MIN-column"><span class="toc-number">8.4.5.</span> <span class="toc-text">MIN(column)</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#SQL%E6%9F%A5%E8%AF%A2%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F"><span class="toc-number">9.</span> <span class="toc-text">SQL查询执行顺序</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#SQL%E8%AF%B7%E6%B1%82%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B%E8%AF%A6%E8%A7%A3"><span class="toc-number">10.</span> <span class="toc-text">SQL请求执行过程详解</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#MySQL%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E"><span class="toc-number">11.</span> <span class="toc-text">MySQL存储引擎</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#InnoDB"><span class="toc-number">11.1.</span> <span class="toc-text">InnoDB</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MyISAM"><span class="toc-number">11.2.</span> <span class="toc-text">MyISAM</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Memory"><span class="toc-number">11.3.</span> <span class="toc-text">Memory</span></a></li></ol></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类列表</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%9F%BA%E7%A1%80/">基础</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">并发编程</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E9%9B%86%E5%90%88/">集合</a><span class="category-list-count">5</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a><span class="category-list-count">4</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/%E6%97%A5%E5%BF%97/">日志</a><span class="category-list-count">1</span></li></ul></li></ul>
+  </aside>
+
+
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/I-O/" style="font-size: 0.6em;">I/O</a> <a href="/tags/Java8%E6%96%B0%E7%89%B9%E6%80%A7/" style="font-size: 0.6em;">Java8新特性</a> <a href="/tags/Java%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" style="font-size: 0.6em;">Java基本概念</a> <a href="/tags/List/" style="font-size: 0.6em;">List</a> <a href="/tags/Map/" style="font-size: 0.8em;">Map</a> <a href="/tags/MySQL%E5%9F%BA%E7%A1%80/" style="font-size: 0.6em;">MySQL基础</a> <a href="/tags/Object/" style="font-size: 0.6em;">Object</a> <a href="/tags/Set/" style="font-size: 0.6em;">Set</a> <a href="/tags/%E4%BA%8B%E5%8A%A1/" style="font-size: 0.6em;">事务</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 0.6em;">其他</a> <a href="/tags/%E5%8F%8D%E5%B0%84/" style="font-size: 0.6em;">反射</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 0.6em;">多线程</a> <a href="/tags/%E5%AF%B9%E8%B1%A1/" style="font-size: 0.6em;">对象</a> <a href="/tags/%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8/" style="font-size: 0.6em;">并发安全</a> <a href="/tags/%E5%BA%8F%E5%88%97%E5%8C%96/" style="font-size: 0.6em;">序列化</a> <a href="/tags/%E5%BC%82%E5%B8%B8/" style="font-size: 0.6em;">异常</a> <a href="/tags/%E6%8B%B7%E8%B4%9D/" style="font-size: 0.6em;">拷贝</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" style="font-size: 0.6em;">数据类型</a>
+      </div>
+  </aside>
+
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/17/MySQL%E6%97%A5%E5%BF%97%E5%8F%AF%E4%BB%A5%E7%94%A8%E6%9D%A5%E5%B9%B2%E5%95%A5%EF%BC%9F/"><i class="fa fa-book"></i> MySQL日志可以用来干啥？</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/15/MySQL-%E4%BA%8B%E5%8A%A1%E4%B8%8E%E6%97%A5%E5%BF%97/"><i class="fa fa-book"></i> MySQL-事务与日志</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/15/MySQL-%E7%B4%A2%E5%BC%95%E4%B8%8E%E6%9F%A5%E8%AF%A2/"><i class="fa fa-book"></i> MySQL-索引与查询</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/15/MySQL-SQL%E5%9F%BA%E7%A1%80/"><i class="fa fa-book"></i> MySQL-SQL基础</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/10/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%AF%87/"><i class="fa fa-book"></i> Java并发编程-线程池篇</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+            
+
+        
+
+                </div>
+    </div>
+</div>
+
+<footer>
+    <div id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2024 XIAOYAN 版权所有.</li>
+                            <li>本站已运行<span id="kr-since">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>自豪地使用 <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a> 主题</li>
+                            <li>站点由 xiaoyan 用 <i class="fa fa-heart" style="color:#d43f57"></i> 搭建</li>
+                        </div>
+                        <!-- 额外的追加注入项 -->
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                <div class="box theme-box" id="theme-toggle">
+                    <span class="fa fa-adjust"></span>
+                </div>
+            </div>
+            <div id="gotop-box" class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+
+    <div id="kr-donate-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseDonateModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-bitcoin"></i>
+            </div>
+            <div class="kr-modal-title">打赏</div>
+            <button class="kr-modal-close" onclick="krCloseDonateModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-donate-message">请我喝一杯冰阔咯~</div>
+            <div class="kr-donate-qr" id="kr-donate-qr">
+                
+            </div>
+            <div class="kr-donate-platforms">
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #1677ff;" title="支付宝" onclick="krDonateModalShowPlatformQR('https://qr.alipay.com/fkx15009k7u0fqrj8auepdf', '#1677ff')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-alipay">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M19 3h-14a2 2 0 0 0 -2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2 -2v-14a2 2 0 0 0 -2 -2z" />
+  <path d="M7 7h10" />
+  <path d="M12 3v7" />
+  <path d="M21 17.314c-2.971 -1.923 -15 -8.779 -15 -1.864c0 1.716 1.52 2.55 2.985 2.55c3.512 0 6.814 -5.425 6.814 -8h-6.604" />
+</svg>
+
+                        </button>
+                    
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #38ad5a;" title="微信支付" onclick="krDonateModalShowPlatformQR('wxp://f2f0hR4eF9Ypa3tpzjWme9fQDyWW3PIGe3WG5oiIakWLmDs', '#38ad5a')">
+                            <i class="fa fa-wechat"></i>
+                        </button>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/donate.min.js"></script>
+
+
+
+
+    <div id="kr-share-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseShareModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-share-alt"></i>
+            </div>
+            <div class="kr-modal-title">分享</div>
+            <button class="kr-modal-close" onclick="krCloseShareModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-share-message">让兄弟萌也来瞅一瞅！</div>
+            <div class="kr-share-qr" id="kr-share-qr"></div>
+            <div class="kr-share-platforms">
+                
+                    <button class="kr-share-platform-button" style="color: #e6162d;" title="QQ" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-qq"></i>
+                    </button>
+                
+                    <button class="kr-share-platform-button" style="color: #25d366;" title="微信" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-weixin"></i>
+                    </button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/share.min.js"></script>
+
+
+
+<!-- 额外的追加注入项 -->
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
+<meting-js
+  server="netease"
+  type="playlist"
+  fixed="true"
+  order="random"
+  id="12613265870">
+</meting-js>
+
+
+
+        <script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
+</script>
+
+
+  <script defer src="/vendors/nprogress@0.2.0/nprogress.js"></script>
+
+
+
+  <script defer src="/vendors/viewerjs@1.11.6/dist/viewer.min.js"></script>
+
+
+<script defer src="/js/kr-core.min.js"></script>
+
+
+  <script defer src="/js/kr-pjax.min.js"></script>
+
+
+<!-- 额外的追加注入项 -->
+
+  <script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+
+
+
+    </body>
+</html>
