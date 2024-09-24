@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  
+    <link rel="icon" href="/images/earthstars.png">
+  
+  
+  <title>MySQL-性能调优 | XIAOYAN</title>
+  <link rel="canonical" href="http://example.com/2024/09/20/MySQL-%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98/">
+  <meta name="author" content="xiaoyan" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="SQL调优, 索引" />
+  
+  <meta name="description" content="在MySQL性能调优中，EXPLAIN命令是关键工具，用于分析查询执行计划。本文将介绍如何通过EXPLAIN识别性能瓶颈，并提供优化策略，包括索引创建、查询语句优化、避免文件排序和临时表的使用，以及缓存技术的应用。此外，还将探讨FORCE INDEX命令的使用，以强制使用指定索引。对于高并发场景，主从同步和分库分表策略同样重要，以确保系统稳定性和性能。通过这些方法，可以显著提升MySQL数据库的查">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL-性能调优">
+<meta property="og:url" content="http://example.com/2024/09/20/MySQL-%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98/index.html">
+<meta property="og:site_name" content="XIAOYAN">
+<meta property="og:description" content="在MySQL性能调优中，EXPLAIN命令是关键工具，用于分析查询执行计划。本文将介绍如何通过EXPLAIN识别性能瓶颈，并提供优化策略，包括索引创建、查询语句优化、避免文件排序和临时表的使用，以及缓存技术的应用。此外，还将探讨FORCE INDEX命令的使用，以强制使用指定索引。对于高并发场景，主从同步和分库分表策略同样重要，以确保系统稳定性和性能。通过这些方法，可以显著提升MySQL数据库的查">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409241517269.png">
+<meta property="article:published_time" content="2024-09-19T21:20:00.000Z">
+<meta property="article:modified_time" content="2024-09-24T08:17:38.287Z">
+<meta property="article:author" content="xiaoyan">
+<meta property="article:tag" content="索引">
+<meta property="article:tag" content="SQL调优">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409241517269.png">
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kr-core.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/highlight.js/night-eighties.min.css" media="all"></link>
+  
+  <link rel="stylesheet" id="theme-light-css" href="/css/kr-theme/light.min.css" media="all"></link>
+  <link rel="stylesheet" id="theme-dark-css" href="/css/kr-theme/dark.min.css" media="(prefers-color-scheme: dark)"></link>
+  <script src="/js/kr-theme.min.js"></script>
+  <link rel="stylesheet" id="fontawe-css" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="nprogress-css" href="/vendors/nprogress@0.2.0/nprogress.css" media="all"></link>
+  
+  
+    <link rel="stylesheet" href="/vendors/viewerjs@1.11.6/dist/viewer.min.css"></link>
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  
+    <script src="/vendors/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+  
+  <!-- 自定义站点横幅和背景 -->
+  <style>
+    
+      .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_light.png');
+      }
+      html[data-theme="dark"] .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_dark.png');
+      }
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+        html[data-theme="dark"] body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+      }
+    
+    
+      .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+      html[data-theme="dark"] .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+    
+  </style>
+
+  <!-- 额外的追加注入项 -->
+  
+    <link rel="stylesheet" href="/css/custom.css">
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    <li>
+                                        
+                                            <a target="_blank" rel="noopener" href="https://xiaoyanfufu.top/">
+                                        
+                                            
+                                                <i class="fa fa-home"></i>
+                                            
+                                            首页
+                                        </a>
+                                        
+                                    </li>
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">XIAOYAN</a></div>
+                    <div id="kratos-nav-toggle-wrapper" class="nav-toggle">
+                        <a id="kratos-nav-toggle" class="kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>XIAOYAN</h2> <br />
+                        <span>山重水复疑无路，柳暗花明又一村。</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+
+
+        
+
+            
+
+            <section class="kr-main-col col-md-8">
+
+        
+
+            <article itemscope itemtype="https://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/20/MySQL-%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98/">
+    <div class="kratos-hentry kratos-page-inner clearfix">
+        <header class="kratos-page-header">
+            
+                <h1 class="kratos-page-title text-center" itemprop="name headline">MySQL-性能调优</h1>
+            
+            <ul class="kratos-page-meta text-center">
+                <li><time datetime="2024-09-19T21:20:00.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2024-09-20</time></li>
+                <li itemprop="author" itemscope itemtype="https://schema.org/Person">
+                    <i class="fa fa-user"></i> 作者 <span itemprop="name">xiaoyan</span>
+                </li>
+                
+                    <li>
+                        <i class="fa fa-edit"></i> 
+                        
+                        
+                            ~4.17K
+                        
+                        字
+                    </li>
+                
+                
+                
+            </ul>
+        </header>
+        <div class="kratos-page-content kr-post">
+            
+            
+            
+                <div class="kratos-post-inner-toc toc-div-class" >
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98"><span class="toc-number">1.</span> <span class="toc-text">性能调优</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#EXPLAIN"><span class="toc-number">1.1.</span> <span class="toc-text">EXPLAIN</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92%E5%8F%82%E6%95%B0"><span class="toc-number">1.1.1.</span> <span class="toc-text">执行计划参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%AB%E6%8F%8F%E7%B1%BB%E5%9E%8B%EF%BC%88type%EF%BC%89"><span class="toc-number">1.1.2.</span> <span class="toc-text">扫描类型（type）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Extra%E6%98%BE%E7%A4%BA%E7%BB%93%E6%9E%9C"><span class="toc-number">1.1.3.</span> <span class="toc-text">Extra显示结果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%B1%E5%85%A5%E5%88%86%E6%9E%90"><span class="toc-number">1.1.4.</span> <span class="toc-text">深入分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%A8%E8%A1%A8%E6%89%AB%E6%8F%8F%EF%BC%88ALL%EF%BC%89"><span class="toc-number">1.1.4.1.</span> <span class="toc-text">全表扫描（ALL）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%B4%A2%E5%BC%95%E8%A6%86%E7%9B%96%EF%BC%88Using-index%EF%BC%89"><span class="toc-number">1.1.4.2.</span> <span class="toc-text">索引覆盖（Using index）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E6%8E%92%E5%BA%8F%EF%BC%88Using-filesort%EF%BC%89"><span class="toc-number">1.1.4.3.</span> <span class="toc-text">文件排序（Using filesort）</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96"><span class="toc-number">1.2.</span> <span class="toc-text">查询优化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%88%86%E6%9E%90%E6%9F%A5%E8%AF%A2%E8%AF%AD%E5%8F%A5"><span class="toc-number">1.2.1.</span> <span class="toc-text">1. 分析查询语句</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%88%9B%E5%BB%BA%E6%88%96%E4%BC%98%E5%8C%96%E7%B4%A2%E5%BC%95"><span class="toc-number">1.2.2.</span> <span class="toc-text">2. 创建或优化索引</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96"><span class="toc-number">1.2.3.</span> <span class="toc-text">3. 查询优化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E4%BC%98%E5%8C%96%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-number">1.2.4.</span> <span class="toc-text">4. 优化数据库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E4%BD%BF%E7%94%A8%E7%BC%93%E5%AD%98%E6%8A%80%E6%9C%AF"><span class="toc-number">1.2.5.</span> <span class="toc-text">5. 使用缓存技术</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B"><span class="toc-number">1.2.6.</span> <span class="toc-text">示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%A9%E5%B1%95"><span class="toc-number">1.3.</span> <span class="toc-text">扩展</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9E%B6%E6%9E%84%E4%BC%98%E5%8C%96"><span class="toc-number">2.</span> <span class="toc-text">架构优化</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E4%BB%8E%E5%90%8C%E6%AD%A5"><span class="toc-number">2.1.</span> <span class="toc-text">主从同步</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8"><span class="toc-number">2.2.</span> <span class="toc-text">分库分表</span></a></li></ol></li></ol>
+                </div>
+            
+            <hr />
+            <div itemprop="articleBody"><p>在MySQL性能调优中，<code>EXPLAIN</code>命令是关键工具，用于分析查询执行计划。本文将介绍如何通过<code>EXPLAIN</code>识别性能瓶颈，并提供优化策略，包括索引创建、查询语句优化、避免文件排序和临时表的使用，以及缓存技术的应用。此外，还将探讨<code>FORCE INDEX</code>命令的使用，以强制使用指定索引。对于高并发场景，主从同步和分库分表策略同样重要，以确保系统稳定性和性能。通过这些方法，可以显著提升MySQL数据库的查询效率和整体性能。</p>
+<span id="more"></span>
+
+<h1 id="性能调优"><a href="#性能调优" class="headerlink" title="性能调优"></a>性能调优</h1><h2 id="EXPLAIN"><a href="#EXPLAIN" class="headerlink" title="EXPLAIN"></a>EXPLAIN</h2><p><code>EXPLAIN</code>命令是MySQL中用于分析和优化查询性能的重要工具。通过<code>EXPLAIN</code>，我们可以查看一条<code>SELECT</code>语句的执行计划，了解查询的执行过程，例如是否使用了索引、是否实现了索引覆盖等。</p>
+<p>以下是一条全表扫描查询语句的<code>EXPLAIN</code>结果示例：</p>
+<p><img src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409241517269.png" alt="EXPLAIN示例"></p>
+<h3 id="执行计划参数"><a href="#执行计划参数" class="headerlink" title="执行计划参数"></a>执行计划参数</h3><ul>
+<li><strong>type</strong>：表示扫描数据的类型，下面会详细讲解。</li>
+<li><strong>possible_keys</strong>：表示可能用到的索引。</li>
+<li><strong>key</strong>：表示实际用到的索引，如果为<code>null</code>，则表示没有用到索引。</li>
+<li><strong>rows</strong>：表示扫描的记录行数。</li>
+</ul>
+<h3 id="扫描类型（type）"><a href="#扫描类型（type）" class="headerlink" title="扫描类型（type）"></a>扫描类型（type）</h3><p><code>type</code>表示扫描数据时采用的方式，从性能上由低到高排列如下：</p>
+<ol>
+<li><strong>ALL</strong>：全表扫描，性能最差，应尽量避免。全表扫描意味着数据库引擎需要读取表中的每一行数据，开销巨大，尤其是在大数据量的情况下。</li>
+<li><strong>INDEX</strong>：全索引表扫描，虽然扫描的是索引表，不需要对数据进行排序，但开销依旧很大。全索引扫描意味着数据库引擎需要读取索引中的每一行数据，尽管索引通常比数据表小，但仍然是一个昂贵的操作。</li>
+<li><strong>RANGE</strong>：采用了索引范围扫描，只需查找指定范围的索引。尽量让查询达到<code>RANGE</code>级别以上，越往上的级别索引作用越明显、效率越高。范围扫描通常用于<code>WHERE</code>子句中的范围条件（如<code>&gt;</code>、<code>&lt;</code>、<code>BETWEEN</code>等）。</li>
+<li><strong>REF</strong>（非唯一索引查询）：采用了非唯一索引或唯一索引的非唯一索引前缀，返回数据是多条的。虽然有的表会存在相同的索引，但一般这种索引重复记录条数不多，且在磁盘中已经按顺序排列，查询的范围会小很多。</li>
+<li><strong>EQ_REF</strong>（唯一索引查询）：使用主键索引或唯一索引产生的查询，通常用于多表连接查询。例如，使用学生ID查询学生信息和学科成绩信息，两表的<code>stu_id</code>是相同的。可以采用小表驱动大表进行多表查询。</li>
+<li><strong>CONST</strong>：表示使用了主键或唯一索引与常量进行比较查询，一般结果只有一条或采用了唯一索引扫描。与<code>EQ_REF</code>不同的地方是，<code>CONST</code>与常量进行比较，效率会快很多，<code>EQ_REF</code>通常用于多表级联查询。</li>
+</ol>
+<h3 id="Extra显示结果"><a href="#Extra显示结果" class="headerlink" title="Extra显示结果"></a>Extra显示结果</h3><p><code>Extra</code>显示的结果有几个重要的参考指标：</p>
+<ul>
+<li><strong>Using filesort</strong>：采用了<code>GROUP BY</code>操作，但无法利用索引进行排序。应尽量避免。文件排序意味着数据库引擎需要将数据加载到内存中进行排序，这是一个昂贵的操作，尤其是在大数据量的情况下。</li>
+<li><strong>Using temporary</strong>：使用了临时表保存中间查询数据，常见于排序<code>GROUP BY</code>查询和分组<code>GROUP BY</code>查询。使用临时表意味着数据库引擎需要额外的内存和磁盘空间来存储中间结果，这会增加查询的开销。</li>
+<li><strong>Using index</strong>：所需要的数据直接通过扫描索引即可获得，不需要查询表中的数据或进行<strong>回表</strong>操作，也就是<strong>索引覆盖</strong>。索引覆盖意味着查询所需的所有数据都包含在索引中，因此不需要回表，这可以显著提高查询性能。</li>
+</ul>
+<h3 id="深入分析"><a href="#深入分析" class="headerlink" title="深入分析"></a>深入分析</h3><h4 id="全表扫描（ALL）"><a href="#全表扫描（ALL）" class="headerlink" title="全表扫描（ALL）"></a>全表扫描（ALL）</h4><p>全表扫描是最低效的扫描方式，通常发生在没有索引或查询条件无法利用索引的情况下。为了避免全表扫描，可以考虑以下优化措施：</p>
+<ul>
+<li><strong>创建合适的索引</strong>：为查询条件中的字段创建索引，尤其是高频查询的字段。</li>
+<li><strong>优化查询条件</strong>：确保查询条件能够利用索引，避免使用函数操作或模糊查询（如<code>LIKE &#39;%keyword&#39;</code>）。</li>
+</ul>
+<h4 id="索引覆盖（Using-index）"><a href="#索引覆盖（Using-index）" class="headerlink" title="索引覆盖（Using index）"></a>索引覆盖（Using index）</h4><p>索引覆盖是一种高效的查询方式，通过合理设计索引，可以使查询所需的所有数据都包含在索引中，从而避免回表操作。实现索引覆盖的关键在于：</p>
+<ul>
+<li><strong>选择合适的索引字段</strong>：确保查询所需的所有字段都包含在索引中。</li>
+<li><strong>避免不必要的字段</strong>：如果查询只需要部分字段，可以考虑创建覆盖索引，只包含这些字段。</li>
+</ul>
+<h4 id="文件排序（Using-filesort）"><a href="#文件排序（Using-filesort）" class="headerlink" title="文件排序（Using filesort）"></a>文件排序（Using filesort）</h4><p>文件排序是一种昂贵的操作，通常发生在<code>ORDER BY</code>或<code>GROUP BY</code>操作无法利用索引的情况下。为了避免文件排序，可以考虑以下优化措施：</p>
+<ul>
+<li><strong>创建排序索引</strong>：为<code>ORDER BY</code>或<code>GROUP BY</code>的字段创建索引，确保排序操作可以利用索引。</li>
+<li><strong>优化查询语句</strong>：尽量减少排序操作，或者将排序操作放在应用程序层进行。</li>
+</ul>
+<p>通过合理使用<code>EXPLAIN</code>命令，可以深入了解查询的执行计划，从而进行针对性的性能调优，提高查询效率。</p>
+<h2 id="查询优化"><a href="#查询优化" class="headerlink" title="查询优化"></a>查询优化</h2><p>查询优化是提升数据库性能的关键步骤。通过分析查询语句、创建或优化索引、减少不必要的数据查询、优化数据库结构以及使用缓存技术，可以显著提高查询效率。</p>
+<h3 id="1-分析查询语句"><a href="#1-分析查询语句" class="headerlink" title="1. 分析查询语句"></a>1. 分析查询语句</h3><p>使用<code>EXPLAIN</code>命令分析查询语句的执行计划，了解查询的执行过程。通过查看扫描类型（<code>type</code>）、采用的索引（<code>key</code>）、扫描的记录行数（<code>rows</code>）等信息，判断查询是否走了索引，是否存在全表扫描等问题。</p>
+<h3 id="2-创建或优化索引"><a href="#2-创建或优化索引" class="headerlink" title="2. 创建或优化索引"></a>2. 创建或优化索引</h3><p>根据查询条件创建适用的索引，以提高查询效率。索引的选择应考虑以下因素：</p>
+<ul>
+<li><strong>高频查询字段</strong>：为经常出现在查询条件中的字段创建索引。</li>
+<li><strong>区分度高的字段</strong>：选择区分度高的字段作为索引的前缀，以提高索引的选择性。</li>
+<li><strong>联合索引</strong>：合理设计联合索引，遵循最左匹配原则，确保查询条件能够充分利用索引。</li>
+</ul>
+<h3 id="3-查询优化"><a href="#3-查询优化" class="headerlink" title="3. 查询优化"></a>3. 查询优化</h3><p>只查询需要的数据，避免使用<code>SELECT *</code>，尽量能够命中索引，避免索引失效情况。具体措施包括：</p>
+<ul>
+<li><strong>选择性查询</strong>：只查询必要的字段，避免查询不需要的数据。</li>
+<li><strong>避免函数操作</strong>：对索引字段进行函数操作（如<code>LOWER(column)</code>）会导致索引失效，应尽量避免。</li>
+<li><strong>避免模糊查询</strong>：使用通配符开头的模糊查询（如<code>LIKE &#39;%keyword&#39;</code>）通常会导致索引失效，应尽量避免。</li>
+</ul>
+<h3 id="4-优化数据库"><a href="#4-优化数据库" class="headerlink" title="4. 优化数据库"></a>4. 优化数据库</h3><p>避免单表数据量过大，可以使用数据库集群和分表机制来优化数据库结构。具体措施包括：</p>
+<ul>
+<li><strong>分表分库</strong>：将大表拆分为多个小表，或者将数据分布到多个数据库中，以减少单表数据量。</li>
+<li><strong>数据库集群</strong>：使用数据库集群技术，将数据分布到多个节点上，提高数据库的并发处理能力。</li>
+</ul>
+<h3 id="5-使用缓存技术"><a href="#5-使用缓存技术" class="headerlink" title="5. 使用缓存技术"></a>5. 使用缓存技术</h3><p>缓存读写要比磁盘I&#x2F;O速度快得多，可以将数据写入缓存层（如Redis），以减少数据库的读写压力。具体措施包括：</p>
+<ul>
+<li><strong>缓存热点数据</strong>：将高频访问的数据缓存到Redis等缓存系统中，减少数据库的读取次数。</li>
+<li><strong>缓存查询结果</strong>：将复杂的查询结果缓存起来，避免重复计算，提高查询效率。</li>
+</ul>
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><p>假设有一个订单表<code>orders</code>，包含字段<code>order_id</code>、<code>customer_id</code>、<code>order_date</code>等。以下是一些优化措施：</p>
+<ul>
+<li><strong>创建索引</strong>：为<code>order_id</code>和<code>customer_id</code>创建索引，提高查询效率。</li>
+<li><strong>查询优化</strong>：避免使用<code>SELECT *</code>，只查询必要的字段，如<code>SELECT order_id, customer_id FROM orders WHERE order_id = 123</code>。</li>
+<li><strong>分表分库</strong>：根据<code>order_date</code>字段将订单表拆分为多个小表，或者将数据分布到多个数据库中。</li>
+<li><strong>使用缓存</strong>：将高频查询的订单数据缓存到Redis中，减少数据库的读取次数。</li>
+</ul>
+<h2 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h2><p>如果在执行查询计划时发现并没有使用正确的索引，可以使用<code>FORCE INDEX</code>命令，强制使用指定索引来优化查询。<code>FORCE INDEX</code>命令可以显式地告诉MySQL使用特定的索引，而不依赖于MySQL的查询优化器选择。</p>
+<p><code>FORCE INDEX</code>命令的语法如下：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> table_name FORCE INDEX (index_name) <span class="keyword">WHERE</span> <span class="keyword">condition</span>;</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例</strong></p>
+<p>假设有一个订单表<code>orders</code>，包含字段<code>order_id</code>、<code>customer_id</code>、<code>order_date</code>等，并且有一个联合索引<code>idx_customer_order</code>基于<code>customer_id</code>和<code>order_date</code>。</p>
+<ul>
+<li><strong>未使用正确索引的查询</strong></li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> orders <span class="keyword">WHERE</span> customer_id <span class="operator">=</span> <span class="number">123</span> <span class="keyword">AND</span> order_date <span class="operator">=</span> <span class="string">&#x27;2023-10-01&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>如果MySQL的查询优化器没有选择使用<code>idx_customer_order</code>索引，而是选择了全表扫描，可以通过<code>FORCE INDEX</code>命令强制使用该索引：</p>
+<ul>
+<li><strong>使用<code>FORCE INDEX</code>的查询</strong></li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> orders FORCE INDEX (idx_customer_order) <span class="keyword">WHERE</span> customer_id <span class="operator">=</span> <span class="number">123</span> <span class="keyword">AND</span> order_date <span class="operator">=</span> <span class="string">&#x27;2023-10-01&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意事项</strong></p>
+<ol>
+<li><p><strong>索引选择</strong>：虽然<code>FORCE INDEX</code>可以强制使用指定索引，但并不总是最佳选择。在某些情况下，MySQL的查询优化器可能会选择更优的执行计划。因此，使用<code>FORCE INDEX</code>时应谨慎，最好结合<code>EXPLAIN</code>分析结果进行判断。</p>
+</li>
+<li><p><strong>性能影响</strong>：强制使用索引可能会带来性能提升，但也可能导致性能下降。例如，如果强制使用的索引不是最优的，可能会增加查询的开销。</p>
+</li>
+<li><p><strong>临时解决方案</strong>：<code>FORCE INDEX</code>通常作为临时解决方案，用于调试和优化查询。长期来看，应通过优化索引设计和查询语句来提高查询性能。</p>
+</li>
+</ol>
+<p><strong>进一步优化</strong></p>
+<p>除了使用<code>FORCE INDEX</code>，还可以通过以下方式进一步优化查询：</p>
+<ol>
+<li><strong>索引覆盖</strong>：确保查询所需的所有字段都包含在索引中，避免回表操作。</li>
+<li><strong>查询重写</strong>：重写查询语句，使其更符合索引的使用规则，例如避免函数操作和模糊查询。</li>
+<li><strong>数据库分区</strong>：根据查询条件对数据库进行分区，减少查询的数据量。</li>
+</ol>
+<p>通过合理使用<code>FORCE INDEX</code>命令，并结合其他优化措施，可以显著提高查询性能，减少数据库的I&#x2F;O操作，提升系统的整体性能。</p>
+<h1 id="架构优化"><a href="#架构优化" class="headerlink" title="架构优化"></a>架构优化</h1><h2 id="主从同步"><a href="#主从同步" class="headerlink" title="主从同步"></a>主从同步</h2><p>【键盘都敲冒烟啦！！！】</p>
+<h2 id="分库分表"><a href="#分库分表" class="headerlink" title="分库分表"></a>分库分表</h2><p>【键盘都敲冒烟啦！！！】</p>
+</div>
+        </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+            
+            
+                <div class="post-actions text-center clearfix" id="post-actions">
+                
+                    <a class="donate" href="javascript:;" onclick="krOpenDonateModal()"><i class="fa fa-bitcoin"></i> 打赏</a>
+                
+                
+                    <a class="share" href="javascript:;" onclick="krOpenShareModal()"><i class="fa fa-share-alt"></i> 分享</a>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    <a class="tag-none-link" href="/tags/SQL%E8%B0%83%E4%BC%98/" rel="tag">SQL调优</a>, <a class="tag-none-link" href="/tags/%E7%B4%A2%E5%BC%95/" rel="tag">索引</a>
+                </div>
+                <div class="pull-date">
+                    <time datetime="2024-09-24T08:17:38.287Z" itemprop="dateModified">最后编辑：2024-09-24</time>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" MySQL日志可以用来干啥？" href="/2024/09/17/MySQL日志可以用来干啥？/"><i class="fa fa-angle-left"></i> 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" Python算竞教程" href="/2024/09/20/如何使用Python参加算竞/">下一篇 <i class="fa fa-angle-right"></i></a>
+            </div>
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+            
+                
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/user.jpg" alt="xiaoyan" loading="lazy" decoding="auto" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">是一只时时翻垃圾吃的宅子。</p>
+    </div>
+    <div class="site-meta">
+        <a class="meta-item" href="/archives/">
+            <span class="title">
+                文章
+            </span>
+            <span class="count">
+                18
+            </span>
+        </a>
+        <a class="meta-item" href="/categories/">
+            <span class="title">
+                分类
+            </span>
+            <span class="count">
+                7
+            </span>
+        </a>
+        <a class="meta-item" href="/tags/">
+            <span class="title">
+                标签
+            </span>
+            <span class="count">
+                27
+            </span>
+        </a>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix toc-div-class" >
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar" role="progressbar" aria-label="阅读进度："></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98"><span class="toc-number">1.</span> <span class="toc-text">性能调优</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#EXPLAIN"><span class="toc-number">1.1.</span> <span class="toc-text">EXPLAIN</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92%E5%8F%82%E6%95%B0"><span class="toc-number">1.1.1.</span> <span class="toc-text">执行计划参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%AB%E6%8F%8F%E7%B1%BB%E5%9E%8B%EF%BC%88type%EF%BC%89"><span class="toc-number">1.1.2.</span> <span class="toc-text">扫描类型（type）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Extra%E6%98%BE%E7%A4%BA%E7%BB%93%E6%9E%9C"><span class="toc-number">1.1.3.</span> <span class="toc-text">Extra显示结果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%B1%E5%85%A5%E5%88%86%E6%9E%90"><span class="toc-number">1.1.4.</span> <span class="toc-text">深入分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%A8%E8%A1%A8%E6%89%AB%E6%8F%8F%EF%BC%88ALL%EF%BC%89"><span class="toc-number">1.1.4.1.</span> <span class="toc-text">全表扫描（ALL）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%B4%A2%E5%BC%95%E8%A6%86%E7%9B%96%EF%BC%88Using-index%EF%BC%89"><span class="toc-number">1.1.4.2.</span> <span class="toc-text">索引覆盖（Using index）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E6%8E%92%E5%BA%8F%EF%BC%88Using-filesort%EF%BC%89"><span class="toc-number">1.1.4.3.</span> <span class="toc-text">文件排序（Using filesort）</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96"><span class="toc-number">1.2.</span> <span class="toc-text">查询优化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%88%86%E6%9E%90%E6%9F%A5%E8%AF%A2%E8%AF%AD%E5%8F%A5"><span class="toc-number">1.2.1.</span> <span class="toc-text">1. 分析查询语句</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%88%9B%E5%BB%BA%E6%88%96%E4%BC%98%E5%8C%96%E7%B4%A2%E5%BC%95"><span class="toc-number">1.2.2.</span> <span class="toc-text">2. 创建或优化索引</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96"><span class="toc-number">1.2.3.</span> <span class="toc-text">3. 查询优化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E4%BC%98%E5%8C%96%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-number">1.2.4.</span> <span class="toc-text">4. 优化数据库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E4%BD%BF%E7%94%A8%E7%BC%93%E5%AD%98%E6%8A%80%E6%9C%AF"><span class="toc-number">1.2.5.</span> <span class="toc-text">5. 使用缓存技术</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B"><span class="toc-number">1.2.6.</span> <span class="toc-text">示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%A9%E5%B1%95"><span class="toc-number">1.3.</span> <span class="toc-text">扩展</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9E%B6%E6%9E%84%E4%BC%98%E5%8C%96"><span class="toc-number">2.</span> <span class="toc-text">架构优化</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E4%BB%8E%E5%90%8C%E6%AD%A5"><span class="toc-number">2.1.</span> <span class="toc-text">主从同步</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8"><span class="toc-number">2.2.</span> <span class="toc-text">分库分表</span></a></li></ol></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类列表</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%9F%BA%E7%A1%80/">基础</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">并发编程</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E9%9B%86%E5%90%88/">集合</a><span class="category-list-count">5</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a><span class="category-list-count">5</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/%E6%97%A5%E5%BF%97/">日志</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li></ul>
+  </aside>
+
+
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/I-O/" style="font-size: 0.6em;">I/O</a> <a href="/tags/Java8%E6%96%B0%E7%89%B9%E6%80%A7/" style="font-size: 0.6em;">Java8新特性</a> <a href="/tags/Java%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" style="font-size: 0.6em;">Java基本概念</a> <a href="/tags/List/" style="font-size: 0.6em;">List</a> <a href="/tags/Map/" style="font-size: 0.8em;">Map</a> <a href="/tags/MySQL%E5%9F%BA%E7%A1%80/" style="font-size: 0.6em;">MySQL基础</a> <a href="/tags/Object/" style="font-size: 0.6em;">Object</a> <a href="/tags/SQL%E8%B0%83%E4%BC%98/" style="font-size: 0.6em;">SQL调优</a> <a href="/tags/Set/" style="font-size: 0.6em;">Set</a> <a href="/tags/%E4%BA%8B%E5%8A%A1/" style="font-size: 0.6em;">事务</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 0.6em;">其他</a> <a href="/tags/%E5%8F%8D%E5%B0%84/" style="font-size: 0.6em;">反射</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 0.6em;">多线程</a> <a href="/tags/%E5%AF%B9%E8%B1%A1/" style="font-size: 0.6em;">对象</a> <a href="/tags/%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8/" style="font-size: 0.6em;">并发安全</a> <a href="/tags/%E5%BA%8F%E5%88%97%E5%8C%96/" style="font-size: 0.6em;">序列化</a> <a href="/tags/%E5%BC%82%E5%B8%B8/" style="font-size: 0.6em;">异常</a> <a href="/tags/%E6%8B%B7%E8%B4%9D/" style="font-size: 0.6em;">拷贝</a>
+      </div>
+  </aside>
+
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/20/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8Python%E5%8F%82%E5%8A%A0%E7%AE%97%E7%AB%9E/"><i class="fa fa-book"></i> Python算竞教程</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/20/MySQL-%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98/"><i class="fa fa-book"></i> MySQL-性能调优</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/17/MySQL%E6%97%A5%E5%BF%97%E5%8F%AF%E4%BB%A5%E7%94%A8%E6%9D%A5%E5%B9%B2%E5%95%A5%EF%BC%9F/"><i class="fa fa-book"></i> MySQL日志可以用来干啥？</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/15/MySQL-%E4%BA%8B%E5%8A%A1%E4%B8%8E%E6%97%A5%E5%BF%97/"><i class="fa fa-book"></i> MySQL-事务与日志</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/15/MySQL-%E7%B4%A2%E5%BC%95%E4%B8%8E%E6%9F%A5%E8%AF%A2/"><i class="fa fa-book"></i> MySQL-索引与查询</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+            
+
+        
+
+                </div>
+    </div>
+</div>
+
+<footer>
+    <div id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2024 XIAOYAN 版权所有.</li>
+                            <li>本站已运行<span id="kr-since">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>自豪地使用 <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a> 主题</li>
+                            <li>站点由 xiaoyan 用 <i class="fa fa-heart" style="color:#d43f57"></i> 搭建</li>
+                        </div>
+                        <!-- 额外的追加注入项 -->
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                <div class="box theme-box" id="theme-toggle">
+                    <span class="fa fa-adjust"></span>
+                </div>
+            </div>
+            <div id="gotop-box" class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+
+    <div id="kr-donate-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseDonateModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-bitcoin"></i>
+            </div>
+            <div class="kr-modal-title">打赏</div>
+            <button class="kr-modal-close" onclick="krCloseDonateModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-donate-message">请我喝一杯冰阔咯~</div>
+            <div class="kr-donate-qr" id="kr-donate-qr">
+                
+            </div>
+            <div class="kr-donate-platforms">
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #1677ff;" title="支付宝" onclick="krDonateModalShowPlatformQR('https://qr.alipay.com/fkx15009k7u0fqrj8auepdf', '#1677ff')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-alipay">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M19 3h-14a2 2 0 0 0 -2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2 -2v-14a2 2 0 0 0 -2 -2z" />
+  <path d="M7 7h10" />
+  <path d="M12 3v7" />
+  <path d="M21 17.314c-2.971 -1.923 -15 -8.779 -15 -1.864c0 1.716 1.52 2.55 2.985 2.55c3.512 0 6.814 -5.425 6.814 -8h-6.604" />
+</svg>
+
+                        </button>
+                    
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #38ad5a;" title="微信支付" onclick="krDonateModalShowPlatformQR('wxp://f2f0hR4eF9Ypa3tpzjWme9fQDyWW3PIGe3WG5oiIakWLmDs', '#38ad5a')">
+                            <i class="fa fa-wechat"></i>
+                        </button>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/donate.min.js"></script>
+
+
+
+
+    <div id="kr-share-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseShareModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-share-alt"></i>
+            </div>
+            <div class="kr-modal-title">分享</div>
+            <button class="kr-modal-close" onclick="krCloseShareModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-share-message">让兄弟萌也来瞅一瞅！</div>
+            <div class="kr-share-qr" id="kr-share-qr"></div>
+            <div class="kr-share-platforms">
+                
+                    <button class="kr-share-platform-button" style="color: #e6162d;" title="QQ" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-qq"></i>
+                    </button>
+                
+                    <button class="kr-share-platform-button" style="color: #25d366;" title="微信" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-weixin"></i>
+                    </button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/share.min.js"></script>
+
+
+
+<!-- 额外的追加注入项 -->
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
+<meting-js
+  server="netease"
+  type="playlist"
+  fixed="true"
+  order="random"
+  id="12613265870">
+</meting-js>
+
+
+
+        <script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
+</script>
+
+
+  <script defer src="/vendors/nprogress@0.2.0/nprogress.js"></script>
+
+
+
+  <script defer src="/vendors/viewerjs@1.11.6/dist/viewer.min.js"></script>
+
+
+<script defer src="/js/kr-core.min.js"></script>
+
+
+  <script defer src="/js/kr-pjax.min.js"></script>
+
+
+<!-- 额外的追加注入项 -->
+
+  <script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+
+
+
+    </body>
+</html>
