@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  
+    <link rel="icon" href="/images/earthstars.png">
+  
+  
+  <title>DDD架构设计 | XIAOYAN</title>
+  <link rel="canonical" href="http://example.com/2024/09/25/DDD%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/">
+  <meta name="author" content="xiaoyan" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="DDD" />
+  
+  <meta name="description" content="领域驱动设计（DDD）概述什么是领域驱动设计（DDD）？领域驱动设计（Domain-Driven Design，简称DDD）是一种软件设计方法论，旨在通过将业务领域模型与软件实现紧密结合，来指导复杂软件系统的开发。DDD的核心在于“领域”（Domain），即业务领域，并通过一系列关键概念如界限上下文、实体、值对象、聚合、仓储和领域服务来实现对复杂业务需求的有效管理。 DDD的两大设计阶段DDD将软">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DDD架构设计">
+<meta property="og:url" content="http://example.com/2024/09/25/DDD%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/index.html">
+<meta property="og:site_name" content="XIAOYAN">
+<meta property="og:description" content="领域驱动设计（DDD）概述什么是领域驱动设计（DDD）？领域驱动设计（Domain-Driven Design，简称DDD）是一种软件设计方法论，旨在通过将业务领域模型与软件实现紧密结合，来指导复杂软件系统的开发。DDD的核心在于“领域”（Domain），即业务领域，并通过一系列关键概念如界限上下文、实体、值对象、聚合、仓储和领域服务来实现对复杂业务需求的有效管理。 DDD的两大设计阶段DDD将软">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-09-25T00:19:37.000Z">
+<meta property="article:modified_time" content="2024-09-25T01:22:54.477Z">
+<meta property="article:author" content="xiaoyan">
+<meta property="article:tag" content="DDD">
+<meta name="twitter:card" content="summary">
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kr-core.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/highlight.js/night-eighties.min.css" media="all"></link>
+  
+  <link rel="stylesheet" id="theme-light-css" href="/css/kr-theme/light.min.css" media="all"></link>
+  <link rel="stylesheet" id="theme-dark-css" href="/css/kr-theme/dark.min.css" media="(prefers-color-scheme: dark)"></link>
+  <script src="/js/kr-theme.min.js"></script>
+  <link rel="stylesheet" id="fontawe-css" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="nprogress-css" href="/vendors/nprogress@0.2.0/nprogress.css" media="all"></link>
+  
+  
+    <link rel="stylesheet" href="/vendors/viewerjs@1.11.6/dist/viewer.min.css"></link>
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  
+    <script src="/vendors/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+  
+  <!-- 自定义站点横幅和背景 -->
+  <style>
+    
+      .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_light.png');
+      }
+      html[data-theme="dark"] .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_dark.png');
+      }
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+        html[data-theme="dark"] body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+      }
+    
+    
+      .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+      html[data-theme="dark"] .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+    
+  </style>
+
+  <!-- 额外的追加注入项 -->
+  
+    <link rel="stylesheet" href="/css/custom.css">
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    <li>
+                                        
+                                            <a target="_blank" rel="noopener" href="https://xiaoyanfufu.top/">
+                                        
+                                            
+                                                <i class="fa fa-home"></i>
+                                            
+                                            首页
+                                        </a>
+                                        
+                                    </li>
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">XIAOYAN</a></div>
+                    <div id="kratos-nav-toggle-wrapper" class="nav-toggle">
+                        <a id="kratos-nav-toggle" class="kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>XIAOYAN</h2> <br />
+                        <span>山重水复疑无路，柳暗花明又一村。</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+
+
+        
+
+            
+
+            <section class="kr-main-col col-md-8">
+
+        
+
+            <article itemscope itemtype="https://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/25/DDD%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/">
+    <div class="kratos-hentry kratos-page-inner clearfix">
+        <header class="kratos-page-header">
+            
+                <h1 class="kratos-page-title text-center" itemprop="name headline">DDD架构设计</h1>
+            
+            <ul class="kratos-page-meta text-center">
+                <li><time datetime="2024-09-25T00:19:37.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2024-09-25</time></li>
+                <li itemprop="author" itemscope itemtype="https://schema.org/Person">
+                    <i class="fa fa-user"></i> 作者 <span itemprop="name">xiaoyan</span>
+                </li>
+                
+                    <li>
+                        <i class="fa fa-edit"></i> 
+                        
+                        
+                            ~1.93K
+                        
+                        字
+                    </li>
+                
+                
+                
+            </ul>
+        </header>
+        <div class="kratos-page-content kr-post">
+            
+            
+            
+                <div class="kratos-post-inner-toc toc-div-class" >
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E8%AE%BE%E8%AE%A1%EF%BC%88DDD%EF%BC%89%E6%A6%82%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">领域驱动设计（DDD）概述</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E8%AE%BE%E8%AE%A1%EF%BC%88DDD%EF%BC%89%EF%BC%9F"><span class="toc-number">1.1.</span> <span class="toc-text">什么是领域驱动设计（DDD）？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#DDD%E7%9A%84%E4%B8%A4%E5%A4%A7%E8%AE%BE%E8%AE%A1%E9%98%B6%E6%AE%B5"><span class="toc-number">1.1.1.</span> <span class="toc-text">DDD的两大设计阶段</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%88%98%E7%95%A5%E8%AE%BE%E8%AE%A1"><span class="toc-number">1.1.1.1.</span> <span class="toc-text">战略设计</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%88%98%E6%9C%AF%E8%AE%BE%E8%AE%A1"><span class="toc-number">1.1.1.2.</span> <span class="toc-text">战术设计</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DDD%E7%9A%84%E6%A6%82%E5%BF%B5"><span class="toc-number">1.2.</span> <span class="toc-text">DDD的概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%85%E8%A1%80%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.2.1.</span> <span class="toc-text">充血模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%86%E5%9F%9F%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.2.2.</span> <span class="toc-text">领域模型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A2%86%E5%9F%9F%E6%A8%A1%E5%9E%8B%E4%B8%8E%E8%B4%AB%E8%A1%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%AF%B9%E6%AF%94"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">领域模型与贫血模型的对比</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A2%86%E5%9F%9F%E6%A8%A1%E5%9E%8B%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="toc-number">1.2.2.2.</span> <span class="toc-text">领域模型的优势</span></a></li></ol></li></ol></li></ol></li></ol>
+                </div>
+            
+            <hr />
+            <div itemprop="articleBody"><h1 id="领域驱动设计（DDD）概述"><a href="#领域驱动设计（DDD）概述" class="headerlink" title="领域驱动设计（DDD）概述"></a>领域驱动设计（DDD）概述</h1><h2 id="什么是领域驱动设计（DDD）？"><a href="#什么是领域驱动设计（DDD）？" class="headerlink" title="什么是领域驱动设计（DDD）？"></a>什么是领域驱动设计（DDD）？</h2><p>领域驱动设计（Domain-Driven Design，简称DDD）是一种软件设计方法论，旨在通过将业务领域模型与软件实现紧密结合，来指导复杂软件系统的开发。DDD的核心在于“领域”（Domain），即业务领域，并通过一系列关键概念如界限上下文、实体、值对象、聚合、仓储和领域服务来实现对复杂业务需求的有效管理。</p>
+<h3 id="DDD的两大设计阶段"><a href="#DDD的两大设计阶段" class="headerlink" title="DDD的两大设计阶段"></a>DDD的两大设计阶段</h3><p>DDD将软件设计过程分为两个主要阶段：战略设计和战术设计。</p>
+<h4 id="战略设计"><a href="#战略设计" class="headerlink" title="战略设计"></a>战略设计</h4><p>战略设计主要目标是应对复杂的业务需求，通过抽象和分治的设计过程，将业务领域拆分为多个独立的界限上下文（Bounded Context），每个界限上下文对应一个微服务或子系统。战略设计的成功在于能否确保每个界限上下文具有明确的职责，避免职责交叉和功能重叠。</p>
+<h4 id="战术设计"><a href="#战术设计" class="headerlink" title="战术设计"></a>战术设计</h4><p>战术设计主要目标是基于面向对象思想，运用领域模型来实现业务逻辑。通过设计一个能够准确表达业务领域的概念模型，并运用实体、聚合和领域服务来承载业务逻辑，战术设计旨在降低系统的复杂度，提升代码的可读性和可维护性。</p>
+<div class="panel panel-info">
+    <div class="panel-title"><i class="fa fa-info"></i>总结</div>
+    <div class="panel-body">
+        <p>领域驱动设计（DDD）通过战略设计和战术设计两个阶段，帮助开发团队在复杂业务需求的背景下，构建出清晰、可维护且能够准确表达业务需求的软件系统。战略设计通过抽象和分治策略，将复杂的业务领域拆分为多个独立的界限上下文，确保每个界限上下文具有明确的职责。战术设计则通过领域模型、实体、聚合和领域服务的合理运用，实现业务逻辑的清晰表达和高效维护。通过DDD，开发团队可以在开发前期投入更多精力进行设计，规划出更加合理且可持续更新迭代的工程设计。</p>
+
+    </div>
+    </div>
+
+<h2 id="DDD的概念"><a href="#DDD的概念" class="headerlink" title="DDD的概念"></a>DDD的概念</h2><p>什么是充血模型？实体、值对象、聚合对象都有什么区别？把他们搞懂”为什么需要“，才能更好地进行设计。</p>
+<h3 id="充血模型"><a href="#充血模型" class="headerlink" title="充血模型"></a>充血模型</h3><p><strong>充血模型</strong>是一种设计模式，它将对象的属性和行为逻辑聚合到一个类中。与传统的贫血模型（Anemic Model）不同，充血模型强调对象不仅包含数据（属性），还包含操作这些数据的行为（方法）。这种设计模式的优势在于：</p>
+<ul>
+<li><strong>内聚性</strong>：对象的属性和行为紧密结合，使得对象更加内聚，减少了重复代码的编写。</li>
+<li><strong>封装性</strong>：对象的行为被封装在类内部，外部调用者只需通过接口与对象交互，而不需要了解内部实现细节。</li>
+<li><strong>可维护性</strong>：由于行为和数据紧密结合，修改和扩展对象的行为变得更加容易，系统的可维护性得到提升。</li>
+</ul>
+<p>充血模型不仅适用于类的设计，还可以应用于包结构设计。例如，在设计一个模块时，可以将相关的类和接口组织在一起，形成一个内聚的包结构。</p>
+<h3 id="领域模型"><a href="#领域模型" class="headerlink" title="领域模型"></a>领域模型</h3><p><strong>领域模型</strong>是对特定业务领域内业务规则、策略以及业务流程的抽象和封装。通过领域模型，可以将复杂的业务逻辑分解为多个独立的界限上下文（Bounded Context），每个界限上下文都有其独立的领域模型。领域模型的设计手段包括：</p>
+<ul>
+<li><strong>领域对象</strong>：包括实体（Entity）、值对象（Value Object）和聚合（Aggregate）。实体具有唯一标识，值对象通过属性值来区分，聚合是一组相关实体和值对象的集合。</li>
+<li><strong>领域服务</strong>：用于封装那些不适合放在实体或值对象中的业务逻辑。</li>
+<li><strong>仓储（Repository）</strong>：用于管理聚合的持久化操作，提供了一种抽象，使得业务逻辑与数据访问层分离。</li>
+<li><strong>工厂（Factory）</strong>：用于创建复杂的领域对象。</li>
+<li><strong>端口适配器（Port Adapter）</strong>：用于定义与外部系统交互的接口标准，确保领域模型只关注业务实现，而不直接依赖外部系统。</li>
+</ul>
+<h4 id="领域模型与贫血模型的对比"><a href="#领域模型与贫血模型的对比" class="headerlink" title="领域模型与贫血模型的对比"></a>领域模型与贫血模型的对比</h4><p>在传统的贫血模型中，业务逻辑通常被平铺在Service层，导致Service层变得扁平化和复杂化。贫血模型的主要问题在于：</p>
+<ul>
+<li><strong>职责分离不明确</strong>：Service层承担了过多的业务逻辑，导致职责不明确，代码难以维护。</li>
+<li><strong>对象行为缺失</strong>：对象仅包含数据，缺乏行为，导致对象之间的交互复杂，系统难以扩展。</li>
+</ul>
+<p>在充血模型和领域模型的指导下，系统设计发生了显著变化：</p>
+<ul>
+<li><strong>职责分离</strong>：业务逻辑被分配到领域对象和领域服务中，Service层仅负责协调和调用领域对象。</li>
+<li><strong>对象行为丰富</strong>：对象不仅包含数据，还包含操作这些数据的行为，使得对象更加内聚和可维护。</li>
+<li><strong>防腐层</strong>：通过端口适配器，领域模型与外部系统解耦，确保领域模型只关注业务实现，而不直接依赖外部系统。</li>
+</ul>
+<h4 id="领域模型的优势"><a href="#领域模型的优势" class="headerlink" title="领域模型的优势"></a>领域模型的优势</h4><ul>
+<li><strong>业务逻辑清晰</strong>：通过领域模型，业务逻辑被清晰地表达和封装，使得系统更加易于理解和维护。</li>
+<li><strong>可扩展性</strong>：领域模型通过职责分离和对象行为的丰富化，使得系统更加易于扩展和修改。</li>
+<li><strong>防腐设计</strong>：通过端口适配器，领域模型与外部系统解耦，确保领域模型只关注业务实现，而不直接依赖外部系统。</li>
+</ul>
+</div>
+        </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+            
+            
+                <div class="post-actions text-center clearfix" id="post-actions">
+                
+                    <a class="donate" href="javascript:;" onclick="krOpenDonateModal()"><i class="fa fa-bitcoin"></i> 打赏</a>
+                
+                
+                    <a class="share" href="javascript:;" onclick="krOpenShareModal()"><i class="fa fa-share-alt"></i> 分享</a>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    <a class="tag-none-link" href="/tags/DDD/" rel="tag">DDD</a>
+                </div>
+                <div class="pull-date">
+                    <time datetime="2024-09-25T01:22:54.477Z" itemprop="dateModified">最后编辑：2024-09-25</time>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" Python算竞教程" href="/2024/09/20/如何使用Python参加算竞/"><i class="fa fa-angle-left"></i> 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" Redis-数据结构" href="/2024/09/27/Redis-数据结构与线程模型/">下一篇 <i class="fa fa-angle-right"></i></a>
+            </div>
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+            
+                
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/user.jpg" alt="xiaoyan" loading="lazy" decoding="auto" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">是一只时时翻垃圾吃的宅子。</p>
+    </div>
+    <div class="site-meta">
+        <a class="meta-item" href="/archives/">
+            <span class="title">
+                文章
+            </span>
+            <span class="count">
+                24
+            </span>
+        </a>
+        <a class="meta-item" href="/categories/">
+            <span class="title">
+                分类
+            </span>
+            <span class="count">
+                9
+            </span>
+        </a>
+        <a class="meta-item" href="/tags/">
+            <span class="title">
+                标签
+            </span>
+            <span class="count">
+                32
+            </span>
+        </a>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix toc-div-class" >
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar" role="progressbar" aria-label="阅读进度："></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E8%AE%BE%E8%AE%A1%EF%BC%88DDD%EF%BC%89%E6%A6%82%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">领域驱动设计（DDD）概述</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E9%A2%86%E5%9F%9F%E9%A9%B1%E5%8A%A8%E8%AE%BE%E8%AE%A1%EF%BC%88DDD%EF%BC%89%EF%BC%9F"><span class="toc-number">1.1.</span> <span class="toc-text">什么是领域驱动设计（DDD）？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#DDD%E7%9A%84%E4%B8%A4%E5%A4%A7%E8%AE%BE%E8%AE%A1%E9%98%B6%E6%AE%B5"><span class="toc-number">1.1.1.</span> <span class="toc-text">DDD的两大设计阶段</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%88%98%E7%95%A5%E8%AE%BE%E8%AE%A1"><span class="toc-number">1.1.1.1.</span> <span class="toc-text">战略设计</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%88%98%E6%9C%AF%E8%AE%BE%E8%AE%A1"><span class="toc-number">1.1.1.2.</span> <span class="toc-text">战术设计</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DDD%E7%9A%84%E6%A6%82%E5%BF%B5"><span class="toc-number">1.2.</span> <span class="toc-text">DDD的概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%85%E8%A1%80%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.2.1.</span> <span class="toc-text">充血模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%86%E5%9F%9F%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.2.2.</span> <span class="toc-text">领域模型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A2%86%E5%9F%9F%E6%A8%A1%E5%9E%8B%E4%B8%8E%E8%B4%AB%E8%A1%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%AF%B9%E6%AF%94"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">领域模型与贫血模型的对比</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A2%86%E5%9F%9F%E6%A8%A1%E5%9E%8B%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="toc-number">1.2.2.2.</span> <span class="toc-text">领域模型的优势</span></a></li></ol></li></ol></li></ol></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类列表</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%9F%BA%E7%A1%80/">基础</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">并发编程</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E9%9B%86%E5%90%88/">集合</a><span class="category-list-count">5</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a><span class="category-list-count">5</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/%E6%97%A5%E5%BF%97/">日志</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9E%B6%E6%9E%84/">架构</a><span class="category-list-count">1</span></li></ul>
+  </aside>
+
+
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/DDD/" style="font-size: 0.6em;">DDD</a> <a href="/tags/I-O/" style="font-size: 0.6em;">I/O</a> <a href="/tags/Java8%E6%96%B0%E7%89%B9%E6%80%A7/" style="font-size: 0.6em;">Java8新特性</a> <a href="/tags/Java%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" style="font-size: 0.6em;">Java基本概念</a> <a href="/tags/List/" style="font-size: 0.6em;">List</a> <a href="/tags/Map/" style="font-size: 0.8em;">Map</a> <a href="/tags/MySQL%E5%9F%BA%E7%A1%80/" style="font-size: 0.6em;">MySQL基础</a> <a href="/tags/Object/" style="font-size: 0.6em;">Object</a> <a href="/tags/SQL%E8%B0%83%E4%BC%98/" style="font-size: 0.6em;">SQL调优</a> <a href="/tags/Set/" style="font-size: 0.6em;">Set</a> <a href="/tags/%E4%BA%8B%E5%8A%A1/" style="font-size: 0.8em;">事务</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 0.6em;">其他</a> <a href="/tags/%E5%8F%8D%E5%B0%84/" style="font-size: 0.6em;">反射</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 0.6em;">多线程</a> <a href="/tags/%E5%AF%B9%E8%B1%A1/" style="font-size: 0.6em;">对象</a> <a href="/tags/%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8/" style="font-size: 0.6em;">并发安全</a> <a href="/tags/%E5%BA%8F%E5%88%97%E5%8C%96/" style="font-size: 0.6em;">序列化</a> <a href="/tags/%E5%BC%82%E5%B8%B8/" style="font-size: 0.6em;">异常</a>
+      </div>
+  </aside>
+
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/27/Redis-%E5%9C%BA%E6%99%AF%E7%90%86%E8%A7%A3/"><i class="fa fa-book"></i> Redis-场景理解</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/27/Redis-%E9%9B%86%E7%BE%A4/"><i class="fa fa-book"></i> Redis-集群</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/27/Redis-%E7%BC%93%E5%AD%98%E6%B7%98%E6%B1%B0%E4%B8%8E%E8%BF%87%E6%9C%9F%E5%88%A0%E9%99%A4/"><i class="fa fa-book"></i> Redis-缓存淘汰与过期删除</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/27/Redis-%E4%BA%8B%E5%8A%A1%E4%B8%8E%E6%97%A5%E5%BF%97/"><i class="fa fa-book"></i> Redis-事务与日志</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/27/Redis-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B/"><i class="fa fa-book"></i> Redis-数据结构</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+            
+
+        
+
+                </div>
+    </div>
+</div>
+
+<footer>
+    <div id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2024 XIAOYAN 版权所有.</li>
+                            <li>本站已运行<span id="kr-since">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>自豪地使用 <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a> 主题</li>
+                            <li>站点由 xiaoyan 用 <i class="fa fa-heart" style="color:#d43f57"></i> 搭建</li>
+                        </div>
+                        <!-- 额外的追加注入项 -->
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                <div class="box theme-box" id="theme-toggle">
+                    <span class="fa fa-adjust"></span>
+                </div>
+            </div>
+            <div id="gotop-box" class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+
+    <div id="kr-donate-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseDonateModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-bitcoin"></i>
+            </div>
+            <div class="kr-modal-title">打赏</div>
+            <button class="kr-modal-close" onclick="krCloseDonateModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-donate-message">请我喝一杯冰阔咯~</div>
+            <div class="kr-donate-qr" id="kr-donate-qr">
+                
+            </div>
+            <div class="kr-donate-platforms">
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #1677ff;" title="支付宝" onclick="krDonateModalShowPlatformQR('https://qr.alipay.com/fkx15009k7u0fqrj8auepdf', '#1677ff')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-alipay">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M19 3h-14a2 2 0 0 0 -2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2 -2v-14a2 2 0 0 0 -2 -2z" />
+  <path d="M7 7h10" />
+  <path d="M12 3v7" />
+  <path d="M21 17.314c-2.971 -1.923 -15 -8.779 -15 -1.864c0 1.716 1.52 2.55 2.985 2.55c3.512 0 6.814 -5.425 6.814 -8h-6.604" />
+</svg>
+
+                        </button>
+                    
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #38ad5a;" title="微信支付" onclick="krDonateModalShowPlatformQR('wxp://f2f0hR4eF9Ypa3tpzjWme9fQDyWW3PIGe3WG5oiIakWLmDs', '#38ad5a')">
+                            <i class="fa fa-wechat"></i>
+                        </button>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/donate.min.js"></script>
+
+
+
+
+    <div id="kr-share-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseShareModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-share-alt"></i>
+            </div>
+            <div class="kr-modal-title">分享</div>
+            <button class="kr-modal-close" onclick="krCloseShareModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-share-message">让兄弟萌也来瞅一瞅！</div>
+            <div class="kr-share-qr" id="kr-share-qr"></div>
+            <div class="kr-share-platforms">
+                
+                    <button class="kr-share-platform-button" style="color: #e6162d;" title="QQ" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-qq"></i>
+                    </button>
+                
+                    <button class="kr-share-platform-button" style="color: #25d366;" title="微信" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-weixin"></i>
+                    </button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/share.min.js"></script>
+
+
+
+<!-- 额外的追加注入项 -->
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
+<meting-js
+  server="netease"
+  type="playlist"
+  fixed="true"
+  order="random"
+  id="12613265870">
+</meting-js>
+
+
+
+        <script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
+</script>
+
+
+  <script defer src="/vendors/nprogress@0.2.0/nprogress.js"></script>
+
+
+
+  <script defer src="/vendors/viewerjs@1.11.6/dist/viewer.min.js"></script>
+
+
+<script defer src="/js/kr-core.min.js"></script>
+
+
+  <script defer src="/js/kr-pjax.min.js"></script>
+
+
+<!-- 额外的追加注入项 -->
+
+  <script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+
+
+
+    </body>
+</html>

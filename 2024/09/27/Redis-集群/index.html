@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  
+    <link rel="icon" href="/images/earthstars.png">
+  
+  
+  <title>Redis-集群 | XIAOYAN</title>
+  <link rel="canonical" href="http://example.com/2024/09/27/Redis-%E9%9B%86%E7%BE%A4/">
+  <meta name="author" content="xiaoyan" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="集群" />
+  
+  <meta name="description" content="Redis主从同步机制详解完全同步在Redis的主从复制（Replication）机制中，完全同步（Full Synchronization）是一个关键过程，它确保从节点（Replica）能够获取主节点（Master）的完整数据集。完全同步通常发生在以下几种情况：  初次同步：当一个从节点首次连接到主节点时，它需要获取主节点的完整数据集。这是因为在初次连接时，从节点没有任何数据，因此需要进行一次完">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis-集群">
+<meta property="og:url" content="http://example.com/2024/09/27/Redis-%E9%9B%86%E7%BE%A4/index.html">
+<meta property="og:site_name" content="XIAOYAN">
+<meta property="og:description" content="Redis主从同步机制详解完全同步在Redis的主从复制（Replication）机制中，完全同步（Full Synchronization）是一个关键过程，它确保从节点（Replica）能够获取主节点（Master）的完整数据集。完全同步通常发生在以下几种情况：  初次同步：当一个从节点首次连接到主节点时，它需要获取主节点的完整数据集。这是因为在初次连接时，从节点没有任何数据，因此需要进行一次完">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409281905173.png">
+<meta property="og:image" content="https://cdn.xiaolincoding.com//picgo/1720157758362-f61b89b5-5194-4d63-8cbd-f00ca524a417.png">
+<meta property="og:image" content="https://cdn.xiaolincoding.com//picgo/1720157935326-a9eb173d-e938-4144-8b9e-c5120ebc39fe.png">
+<meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409282241271.png">
+<meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409282253630.png">
+<meta property="article:published_time" content="2024-09-27T00:54:36.000Z">
+<meta property="article:modified_time" content="2024-09-29T15:43:53.210Z">
+<meta property="article:author" content="xiaoyan">
+<meta property="article:tag" content="集群">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409281905173.png">
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kr-core.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/highlight.js/night-eighties.min.css" media="all"></link>
+  
+  <link rel="stylesheet" id="theme-light-css" href="/css/kr-theme/light.min.css" media="all"></link>
+  <link rel="stylesheet" id="theme-dark-css" href="/css/kr-theme/dark.min.css" media="(prefers-color-scheme: dark)"></link>
+  <script src="/js/kr-theme.min.js"></script>
+  <link rel="stylesheet" id="fontawe-css" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="nprogress-css" href="/vendors/nprogress@0.2.0/nprogress.css" media="all"></link>
+  
+  
+    <link rel="stylesheet" href="/vendors/viewerjs@1.11.6/dist/viewer.min.css"></link>
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  
+    <script src="/vendors/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+  
+  <!-- 自定义站点横幅和背景 -->
+  <style>
+    
+      .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_light.png');
+      }
+      html[data-theme="dark"] .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_dark.png');
+      }
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+        html[data-theme="dark"] body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+      }
+    
+    
+      .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+      html[data-theme="dark"] .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+    
+  </style>
+
+  <!-- 额外的追加注入项 -->
+  
+    <link rel="stylesheet" href="/css/custom.css">
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    <li>
+                                        
+                                            <a target="_blank" rel="noopener" href="https://xiaoyanfufu.top/">
+                                        
+                                            
+                                                <i class="fa fa-home"></i>
+                                            
+                                            首页
+                                        </a>
+                                        
+                                    </li>
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">XIAOYAN</a></div>
+                    <div id="kratos-nav-toggle-wrapper" class="nav-toggle">
+                        <a id="kratos-nav-toggle" class="kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>XIAOYAN</h2> <br />
+                        <span>山重水复疑无路，柳暗花明又一村。</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+
+
+        
+
+            
+
+            <section class="kr-main-col col-md-8">
+
+        
+
+            <article itemscope itemtype="https://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/27/Redis-%E9%9B%86%E7%BE%A4/">
+    <div class="kratos-hentry kratos-page-inner clearfix">
+        <header class="kratos-page-header">
+            
+                <h1 class="kratos-page-title text-center" itemprop="name headline">Redis-集群</h1>
+            
+            <ul class="kratos-page-meta text-center">
+                <li><time datetime="2024-09-27T00:54:36.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2024-09-27</time></li>
+                <li itemprop="author" itemscope itemtype="https://schema.org/Person">
+                    <i class="fa fa-user"></i> 作者 <span itemprop="name">xiaoyan</span>
+                </li>
+                
+                    <li>
+                        <i class="fa fa-edit"></i> 
+                        
+                        
+                            ~6.32K
+                        
+                        字
+                    </li>
+                
+                
+                
+            </ul>
+        </header>
+        <div class="kratos-page-content kr-post">
+            
+            
+            
+                <div class="kratos-post-inner-toc toc-div-class" >
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Redis%E4%B8%BB%E4%BB%8E%E5%90%8C%E6%AD%A5%E6%9C%BA%E5%88%B6%E8%AF%A6%E8%A7%A3"><span class="toc-number">1.</span> <span class="toc-text">Redis主从同步机制详解</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E5%85%A8%E5%90%8C%E6%AD%A5"><span class="toc-number">1.1.</span> <span class="toc-text">完全同步</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%8C%E5%85%A8%E5%90%8C%E6%AD%A5%E7%9A%84%E4%B8%89%E9%98%B6%E6%AE%B5"><span class="toc-number">1.1.1.</span> <span class="toc-text">完全同步的三阶段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E8%BF%87%E7%A8%8B%E8%AF%A6%E8%A7%A3"><span class="toc-number">1.1.2.</span> <span class="toc-text">实现过程详解</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A2%9E%E9%87%8F%E5%90%8C%E6%AD%A5"><span class="toc-number">1.2.</span> <span class="toc-text">增量同步</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A2%9E%E9%87%8F%E5%90%8C%E6%AD%A5%E7%9A%84%E6%AD%A5%E9%AA%A4"><span class="toc-number">1.2.1.</span> <span class="toc-text">增量同步的步骤</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A2%9E%E9%87%8F%E6%95%B0%E6%8D%AE%E7%9A%84%E6%9D%A5%E6%BA%90"><span class="toc-number">1.2.2.</span> <span class="toc-text">增量数据的来源</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#repl-backlog-buffer%E7%BC%93%E5%86%B2%E5%8C%BA%E7%9A%84%E5%86%99%E5%85%A5%E6%97%B6%E6%9C%BA"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">repl_backlog_buffer缓冲区的写入时机</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A2%9E%E9%87%8F%E5%90%8C%E6%AD%A5%E7%9A%84%E5%88%A4%E6%96%AD%E6%9D%A1%E4%BB%B6"><span class="toc-number">1.2.2.2.</span> <span class="toc-text">增量同步的判断条件</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#repl-backlog-buffer%E7%BC%93%E5%86%B2%E5%8C%BA%E7%9A%84%E5%A4%A7%E5%B0%8F%E4%B8%8E%E8%B0%83%E6%95%B4"><span class="toc-number">1.2.3.</span> <span class="toc-text">repl_backlog_buffer缓冲区的大小与调整</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%A9%E5%B1%95%EF%BC%9ARedis%E9%9B%86%E7%BE%A4%E5%92%8C%E4%B8%BB%E4%BB%8E%E5%90%8C%E6%AD%A5%E8%83%BD%E4%BF%9D%E8%AF%81%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7%E5%90%97%EF%BC%9F"><span class="toc-number">1.3.</span> <span class="toc-text">扩展：Redis集群和主从同步能保证数据一致性吗？</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Redis-%E5%93%A8%E5%85%B5%E6%9C%BA%E5%88%B6%E5%8E%9F%E7%90%86"><span class="toc-number">2.</span> <span class="toc-text">Redis 哨兵机制原理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%93%A8%E5%85%B5%E6%9C%BA%E5%88%B6%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="toc-number">2.1.</span> <span class="toc-text">哨兵机制的作用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%93%A8%E5%85%B5%E8%8A%82%E7%82%B9%E7%9A%84%E8%A7%92%E8%89%B2"><span class="toc-number">2.1.1.</span> <span class="toc-text">哨兵节点的角色</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%93%A8%E5%85%B5%E6%9C%BA%E5%88%B6%E7%AE%97%E6%B3%95%E6%B5%81%E7%A8%8B"><span class="toc-number">2.2.</span> <span class="toc-text">哨兵机制算法流程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%85%E9%9A%9C%E8%8A%82%E7%82%B9%E4%B8%BB%E8%A7%82%E4%B8%8B%E7%BA%BF"><span class="toc-number">2.2.1.</span> <span class="toc-text">故障节点主观下线</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%85%E9%9A%9C%E8%8A%82%E7%82%B9%E5%AE%A2%E8%A7%82%E4%B8%8B%E7%BA%BF"><span class="toc-number">2.2.2.</span> <span class="toc-text">故障节点客观下线</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Sentinel%E9%9B%86%E7%BE%A4%E9%80%89%E4%B8%BELeader"><span class="toc-number">2.2.3.</span> <span class="toc-text">Sentinel集群选举Leader</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Sentinel-Leader%E5%86%B3%E5%AE%9A%E6%96%B0%E4%B8%BB%E8%8A%82%E7%82%B9"><span class="toc-number">2.2.4.</span> <span class="toc-text">Sentinel Leader决定新主节点</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Redis-%E5%88%87%E7%89%87%E9%9B%86%E7%BE%A4%E8%AF%A6%E8%A7%A3"><span class="toc-number">3.</span> <span class="toc-text">Redis 切片集群详解</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis-Cluster-%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="toc-number">3.1.</span> <span class="toc-text">Redis Cluster 的工作原理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%93%88%E5%B8%8C%E6%A7%BD%EF%BC%88Hash-Slots%EF%BC%89"><span class="toc-number">3.1.1.</span> <span class="toc-text">哈希槽（Hash Slots）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%93%88%E5%B8%8C%E6%A7%BD%E4%B8%8E%E8%8A%82%E7%82%B9%E7%9A%84%E6%98%A0%E5%B0%84"><span class="toc-number">3.1.2.</span> <span class="toc-text">哈希槽与节点的映射</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis-Cluster-%E7%9A%84%E4%BC%98%E7%BC%BA%E7%82%B9"><span class="toc-number">3.2.</span> <span class="toc-text">Redis Cluster 的优缺点</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%98%E7%82%B9"><span class="toc-number">3.2.1.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%BA%E7%82%B9"><span class="toc-number">3.2.2.</span> <span class="toc-text">缺点</span></a></li></ol></li></ol></li></ol>
+                </div>
+            
+            <hr />
+            <div itemprop="articleBody"><h1 id="Redis主从同步机制详解"><a href="#Redis主从同步机制详解" class="headerlink" title="Redis主从同步机制详解"></a>Redis主从同步机制详解</h1><h2 id="完全同步"><a href="#完全同步" class="headerlink" title="完全同步"></a>完全同步</h2><p>在Redis的主从复制（Replication）机制中，完全同步（Full Synchronization）是一个关键过程，它确保从节点（Replica）能够获取主节点（Master）的完整数据集。完全同步通常发生在以下几种情况：</p>
+<ol>
+<li><p><strong>初次同步</strong>：当一个从节点首次连接到主节点时，它需要获取主节点的完整数据集。这是因为在初次连接时，从节点没有任何数据，因此需要进行一次完全同步。</p>
+</li>
+<li><p><strong>从节点数据丢失</strong>：如果从节点由于系统崩溃、故障断电等原因导致数据丢失，它将无法继续提供服务。此时，从节点会向主节点发起完全同步请求，以恢复数据。</p>
+</li>
+<li><p><strong>数据差异过大</strong>：在某些情况下，从节点可能长时间未与主节点进行同步，导致两者之间的数据差异过大。当差异超出预设的阈值时，从节点会主动发起完全同步请求，以确保数据的一致性。</p>
+</li>
+</ol>
+<h3 id="完全同步的三阶段"><a href="#完全同步的三阶段" class="headerlink" title="完全同步的三阶段"></a>完全同步的三阶段</h3><p>主从服务器之间的完全同步过程可以分为三个主要阶段：</p>
+<ol>
+<li><p><strong>建立连接与协商同步</strong>：主节点和从节点之间首先建立网络连接。从节点发送<code>PSYNC</code>命令（在Redis 2.8及以上版本中使用），请求与主节点进行同步。主节点响应<code>FULLRESYNC</code>命令，表示将进行完全同步，并提供一个唯一的同步ID（Replication ID）和当前的偏移量（Offset）。</p>
+</li>
+<li><p><strong>主节点发送完全同步数据</strong>：主节点接收到从节点的同步请求后，会生成一个RDB快照文件。这个快照文件包含了主节点当前的所有数据。主节点将生成的RDB文件发送给从节点。</p>
+</li>
+<li><p><strong>主节点发送新写命令</strong>：在RDB文件生成和传输期间，主节点会将所有新的写操作命令记录到一个称为<code>replication backlog buffer</code>的缓冲区中。当RDB文件传输完成后，主节点会将<code>replication backlog buffer</code>中的所有写操作命令发送给从节点。从节点接收到这些命令后，会依次执行这些命令，从而与主节点的数据保持一致。</p>
+</li>
+</ol>
+<h3 id="实现过程详解"><a href="#实现过程详解" class="headerlink" title="实现过程详解"></a>实现过程详解</h3><p>这里参考一张小林哥的图：<img src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409281905173.png" alt="Redis主从同步(完全同步)"></p>
+<ol>
+<li><p><strong>主节点发送<code>SYNC</code>命令</strong>：在Redis 2.8之前的版本中，主节点会发送<code>SYNC</code>命令来启动同步过程。而在Redis 2.8及以上版本中，主节点会发送<code>PSYNC</code>命令，该命令支持部分重同步（Partial Resynchronization），但在初次同步时，仍然会执行完全同步。</p>
+</li>
+<li><p><strong>生成RDB文件</strong>：主节点接收到从节点的同步请求后，会调用<code>BGSAVE</code>命令生成一个RDB快照文件。这个过程是异步的，主节点会在后台生成快照，同时继续处理客户端的请求。RDB文件生成完成后，主节点会将文件发送给从节点。</p>
+</li>
+<li><p><strong>传输RDB文件</strong>：主节点通过网络将生成的RDB文件传输给从节点。传输过程中，主节点会继续记录新的写操作命令到<code>replication backlog buffer</code>中。从节点接收到RDB文件后，会将其加载到内存中，并应用其中的数据。</p>
+</li>
+<li><p><strong>主节点记录写操作</strong>：在RDB文件生成和传输期间，主节点会将所有新的写操作命令记录到<code>replication backlog buffer</code>中。这个缓冲区的大小是有限的，通常为1MB，因此在高写入负载下，缓冲区可能会被填满。</p>
+</li>
+<li><p><strong>传输新写命令</strong>：当RDB文件传输完成后，主节点会将<code>replication backlog buffer</code>中的所有写操作命令发送给从节点。从节点接收到这些命令后，会依次执行这些命令，从而与主节点的数据保持一致。</p>
+</li>
+</ol>
+<h2 id="增量同步"><a href="#增量同步" class="headerlink" title="增量同步"></a>增量同步</h2><p>在Redis的主从复制机制中，增量同步（Partial Resynchronization）是一种高效的同步方式，它允许从节点（Replica）在网络恢复后，仅同步自上次同步以来主节点（Master）新增的数据，而不需要进行完整的完全同步（Full Synchronization）。增量同步基于<code>PSYNC</code>命令，并依赖于运行ID（run ID）和复制偏移量（offset）来实现。</p>
+<h3 id="增量同步的步骤"><a href="#增量同步的步骤" class="headerlink" title="增量同步的步骤"></a>增量同步的步骤</h3><p>还是借用小林哥的图：</p>
+<img src="https://cdn.xiaolincoding.com//picgo/1720157758362-f61b89b5-5194-4d63-8cbd-f00ca524a417.png" alt="Redis主从同步-增量同步" style="zoom:80%;">
+
+<p>增量同步的过程主要包括以下三个步骤：</p>
+<ol>
+<li><p><strong>从节点恢复网络并发送<code>PSYNC</code>命令</strong>：当从节点恢复网络连接后，它会向主节点发送<code>PSYNC</code>命令，请求进行增量同步。此时，<code>PSYNC</code>命令中的<code>offset</code>参数不再是<code>-1</code>，而是从节点上次同步时的复制偏移量。</p>
+</li>
+<li><p><strong>主节点响应<code>CONTINUE</code>命令</strong>：主节点接收到从节点的<code>PSYNC</code>命令后，会检查从节点提供的复制偏移量是否在<code>repl_backlog_buffer</code>缓冲区中。如果存在，主节点会响应<code>CONTINUE</code>命令，表示接下来将进行增量同步。</p>
+</li>
+<li><p><strong>主节点发送增量数据</strong>：主节点将从节点断线期间收到的所有写操作命令发送给从节点。从节点接收到这些命令后，会依次执行这些命令，从而与主节点的数据保持一致。</p>
+</li>
+</ol>
+<h3 id="增量数据的来源"><a href="#增量数据的来源" class="headerlink" title="增量数据的来源"></a>增量数据的来源</h3><p>主节点如何知道从节点缺少的是哪些增量数据呢？这主要依赖于两个关键组件：</p>
+<p><img src="https://cdn.xiaolincoding.com//picgo/1720157935326-a9eb173d-e938-4144-8b9e-c5120ebc39fe.png"></p>
+<ul>
+<li><strong><code>repl_backlog_buffer</code>缓冲区</strong>：这是一个环形缓冲区，用于存储主节点近期传播的写操作命令。当从节点断连后，主节点可以通过这个缓冲区找到从节点缺失的数据。</li>
+<li>**<code>replication offset</code>**：这是一个标记，用于记录主从节点各自的同步进度。主节点使用<code>master_repl_offset</code>来记录自己写到的位置，从节点使用<code>slave_repl_offset</code>来记录自己读到的位置。</li>
+</ul>
+<h4 id="repl-backlog-buffer缓冲区的写入时机"><a href="#repl-backlog-buffer缓冲区的写入时机" class="headerlink" title="repl_backlog_buffer缓冲区的写入时机"></a><code>repl_backlog_buffer</code>缓冲区的写入时机</h4><p>在主节点传播命令时，它会将写操作命令发送给从节点的同时，也会将这些命令写入到<code>repl_backlog_buffer</code>缓冲区中。因此，<code>repl_backlog_buffer</code>缓冲区中存放了近期传播的写操作命令。</p>
+<h4 id="增量同步的判断条件"><a href="#增量同步的判断条件" class="headerlink" title="增量同步的判断条件"></a>增量同步的判断条件</h4><p>当从节点断连后重新发起同步请求时，它会将自己的<code>slave_repl_offset</code>发送给主节点。主节点会根据<code>master_repl_offset</code>比较二者之间的数据差距，并判断是否可以进行增量同步。具体判断条件如下：</p>
+<ol>
+<li><strong>增量同步</strong>：如果从节点索要读取的数据还在<code>repl_backlog_buffer</code>缓冲区中（即主从节点的偏移量之差没有超过缓冲区的长度，可以抽象为没有被“套圈”），则采用增量同步方式。</li>
+<li><strong>完全同步</strong>：如果从节点索要的数据已经不在<code>repl_backlog_buffer</code>缓冲区中，说明落后数据太大，中间已有写操作缺失。为保证数据一致性，需要进行完全同步。</li>
+</ol>
+<h3 id="repl-backlog-buffer缓冲区的大小与调整"><a href="#repl-backlog-buffer缓冲区的大小与调整" class="headerlink" title="repl_backlog_buffer缓冲区的大小与调整"></a><code>repl_backlog_buffer</code>缓冲区的大小与调整</h3><p><code>repl_backlog_buffer</code>缓冲区的默认大小是1MB，并且由于它是一个环形缓冲区，当缓冲区写满后，主节点继续写入的话，就会覆盖之前的数据。因此，当主节点的写入速度远超于从节点的读取速度时，缓冲区的数据很快就会被覆盖。</p>
+<p>为了避免在网络恢复时频繁地使用完全同步的方式，我们应该<strong>调整<code>repl_backlog_buffer</code>缓冲区的大小，尽可能地大一些，以减少从节点要读取的数据被覆盖的概率</strong>，从而使得主节点能够更多地采用增量同步的方式。</p>
+<h2 id="扩展：Redis集群和主从同步能保证数据一致性吗？"><a href="#扩展：Redis集群和主从同步能保证数据一致性吗？" class="headerlink" title="扩展：Redis集群和主从同步能保证数据一致性吗？"></a>扩展：Redis集群和主从同步能保证数据一致性吗？</h2><p>在分布式系统中，数据一致性是一个关键问题。Redis作为一个高性能的内存数据库，其主从复制和集群模式在设计上遵循了CAP理论中的AP模型，即保证高可用性（Availability）和分区容错性（Partition Tolerance），而牺牲了强一致性（Consistency）。也就是说，在网络分区的情况下，Redis能够保证服务的可用性，但可能会出现部分节点间数据不一致的情况。</p>
+<h1 id="Redis-哨兵机制原理"><a href="#Redis-哨兵机制原理" class="headerlink" title="Redis 哨兵机制原理"></a>Redis 哨兵机制原理</h1><p>在Redis的主从架构中，主节点（Master）负责处理所有的写操作，而从节点（Replica）则负责处理读操作。这种读写分离的架构在大多数情况下能够提供良好的性能和扩展性。然而，当主节点发生故障时，整个系统将无法处理写请求，从而导致服务中断。为了解决这个问题，Redis在2.8版本之后引入了<strong>哨兵机制</strong>（Sentinel），用于实现主从节点的故障转移。</p>
+<h2 id="哨兵机制的作用"><a href="#哨兵机制的作用" class="headerlink" title="哨兵机制的作用"></a>哨兵机制的作用</h2><p>哨兵机制的主要作用是实现主从节点的故障转移，确保在主节点发生故障时，系统能够自动选举出一个新的主节点，并通知其他从节点和客户端更新配置，从而保证服务的连续性和高可用性。</p>
+<h3 id="哨兵节点的角色"><a href="#哨兵节点的角色" class="headerlink" title="哨兵节点的角色"></a>哨兵节点的角色</h3><p>哨兵节点是一个运行在特殊状态下的Redis进程，它充当观察者的角色，主要负责监控主从节点的状态。哨兵节点通过以下三个主要动作来实现故障转移：</p>
+<ol>
+<li><p><strong>观察（Monitoring）</strong>：</p>
+<ul>
+<li>哨兵节点会定期向主节点和从节点发送心跳检测（PING）命令，以确认它们的状态。</li>
+<li>如果主节点在一定时间内没有响应，哨兵节点会认为主节点发生了故障。</li>
+</ul>
+</li>
+<li><p><strong>选举（Election）</strong>：</p>
+<ul>
+<li>当哨兵节点检测到主节点故障时，它会与其他哨兵节点进行协商，选举出一个新的主节点。</li>
+<li>选举过程遵循Raft算法或类似的分布式一致性算法，确保选举结果的一致性和可靠性。</li>
+</ul>
+</li>
+<li><p><strong>通知（Notification）</strong>：</p>
+<ul>
+<li>一旦新的主节点被选举出来，哨兵节点会通知其他从节点更新配置，指向新的主节点。</li>
+<li>同时，哨兵节点还会通知客户端新的主节点的信息，以便客户端能够继续发送写请求。</li>
+</ul>
+</li>
+</ol>
+<h2 id="哨兵机制算法流程"><a href="#哨兵机制算法流程" class="headerlink" title="哨兵机制算法流程"></a>哨兵机制算法流程</h2><p>当Redis集群的主节点发生故障时，Sentinel机制将启动故障转移流程，从剩余的从节点中选举出一个新的主节点。这个过程主要分为四个步骤：故障节点主观下线、故障节点客观下线、Sentinel集群选举Leader、Sentinel Leader决定新主节点。</p>
+<h3 id="故障节点主观下线"><a href="#故障节点主观下线" class="headerlink" title="故障节点主观下线"></a>故障节点主观下线</h3><p>Sentinel集群中的每一个Sentinel节点会定时对Redis节点发送心跳检测包（PING），以检测节点是否正常运行。如果在<code>down-after-milliseconds</code>时间内，Redis节点没有回复Sentinel节点的心跳包，该Sentinel节点就会认为该节点主观下线（Subjectively Down, SDOWN）。</p>
+<p><img src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409282241271.png" alt="故障节点主观下线"></p>
+<h3 id="故障节点客观下线"><a href="#故障节点客观下线" class="headerlink" title="故障节点客观下线"></a>故障节点客观下线</h3><p>当一个Sentinel节点认为某个Redis节点主观下线时，它无法单独证明该节点确实下线了。因此，Sentinel节点会询问其他Sentinel节点，共同判断该节点是否客观下线（Objectively Down, ODOWN）。</p>
+<p>如果Sentinel集群中超过<code>quorum</code>数量的节点认为该Redis节点下线了，则该Redis节点客观下线。</p>
+<img src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409282253630.png" alt="客观下线" style="zoom:80%;">
+
+<p>若客观下线的是从节点，则检测到此结束，不会进行下一步了；若该节点是主节点，则需要进行接下来的故障转移。</p>
+<h3 id="Sentinel集群选举Leader"><a href="#Sentinel集群选举Leader" class="headerlink" title="Sentinel集群选举Leader"></a>Sentinel集群选举Leader</h3><p>在决定新的主节点之前，Sentinel集群需要先选举出一个Sentinel Leader，代表Sentinel集群进行决策。每个Sentinel节点都有机会成为Leader。</p>
+<p>每个Sentinel节点够可以变成Leader，在判定主节点主观下线后，节点会向Sentinel其他节点发送请求，将自己选举为Leader。被请求的节点如果没有为其他Sentinel节点投过票，则发起请求的节点票数+1，否则不增加票数。</p>
+<p>如果一个Sentinel节点获得的票数达到Leader的最低票数（<code>max(quorum, Sentinel集群节点数/2 + 1)</code>），则该节点变成leader，否则重新选举。</p>
+<h3 id="Sentinel-Leader决定新主节点"><a href="#Sentinel-Leader决定新主节点" class="headerlink" title="Sentinel Leader决定新主节点"></a>Sentinel Leader决定新主节点</h3><p>Sentinel集群选举出Leader后，由Leader决定哪个从节点成为新的主节点。选择新主节点的过程遵循以下优先级：</p>
+<ol>
+<li><strong>过滤故障节点</strong>：首先，过滤掉已经下线的从节点。</li>
+<li><strong>选择优先级最高的从节点</strong>：选择<code>slave-priority</code>值最大的从节点作为新的主节点。如果存在多个从节点具有相同的优先级，则继续下一步。</li>
+<li><strong>选择复制偏移量最大的从节点</strong>：选择<code>slave_repl_offset</code>值最大的从节点作为新的主节点。<code>slave_repl_offset</code>表示从节点与主节点的数据同步进度。如果存在多个从节点具有相同的复制偏移量，则继续下一步。</li>
+<li><strong>选择runid最小的从节点</strong>：选择<code>runid</code>最小的从节点作为新的主节点。<code>runid</code>是Redis节点的唯一标识符。</li>
+</ol>
+<h1 id="Redis-切片集群详解"><a href="#Redis-切片集群详解" class="headerlink" title="Redis 切片集群详解"></a>Redis 切片集群详解</h1><p>随着数据量的增长，单个 Redis 节点的存储容量和性能可能无法满足需求。为了解决这一问题，Redis 提供了<strong>切片集群（Redis Cluster）</strong>方案。通过将数据分布在多个服务器上，Redis Cluster 不仅降低了单点故障的风险，还显著提升了读写性能。本文将深入探讨 Redis Cluster 的工作原理、优点和缺点，并通过实例帮助读者更好地理解。</p>
+<h2 id="Redis-Cluster-的工作原理"><a href="#Redis-Cluster-的工作原理" class="headerlink" title="Redis Cluster 的工作原理"></a>Redis Cluster 的工作原理</h2><h3 id="哈希槽（Hash-Slots）"><a href="#哈希槽（Hash-Slots）" class="headerlink" title="哈希槽（Hash Slots）"></a>哈希槽（Hash Slots）</h3><p>Redis Cluster 采用哈希槽的方式来管理数据和节点之间的映射关系。一个 Redis Cluster 包含 16384 个哈希槽，这些哈希槽类似于数据分区。每个键值对（key-value pair）都会根据其 key 映射到一个特定的哈希槽中。具体步骤如下：</p>
+<ol>
+<li><strong>CRC16 哈希算法</strong>：首先，Redis 使用 CRC16 算法对键值对的 key 进行计算，得到一个 16 位的值。</li>
+<li><strong>哈希槽映射</strong>：然后，将这个 16 位的值对 16384 取模，得到一个 0 到 16383 之间的余数。这个余数即为该键值对对应的哈希槽编号。</li>
+</ol>
+<h3 id="哈希槽与节点的映射"><a href="#哈希槽与节点的映射" class="headerlink" title="哈希槽与节点的映射"></a>哈希槽与节点的映射</h3><p>在 Redis Cluster 中，哈希槽需要映射到具体的 Redis 节点上。有两种常见的映射方式：</p>
+<ul>
+<li><p><strong>平均分配</strong>：当使用 <code>cluster create</code> 命令创建集群时，Redis 会自动将 16384 个哈希槽平均分配到各个节点中。例如，如果集群中有 5 个节点，每个节点将分配到 16384 &#x2F; 5 ≈ 3276 个哈希槽。</p>
+</li>
+<li><p><strong>手动分配</strong>：在某些情况下，可能需要手动分配哈希槽。可以通过 <code>cluster meet</code> 命令手动建立节点之间的连接，然后使用 <code>cluster addslots</code> 命令为每个节点分配指定的哈希槽数量。例如，可以手动将哈希槽 0 到 5000 分配给节点 A，将 5001 到 10000 分配给节点 B，以此类推。</p>
+</li>
+</ul>
+<h2 id="Redis-Cluster-的优缺点"><a href="#Redis-Cluster-的优缺点" class="headerlink" title="Redis Cluster 的优缺点"></a>Redis Cluster 的优缺点</h2><h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><p><strong>1. 高可用性</strong>：Redis Cluster 通过主从复制（Master-Slave Replication）机制实现了高可用性。每个节点都可以配置一个或多个从节点，主节点负责处理写请求，从节点负责处理读请求。当主节点发生故障时，从节点可以自动接管主节点的角色，确保服务的连续性。</p>
+<p><strong>2. 高性能</strong>：Redis Cluster 采用数据分片机制，将数据分散到多个节点上，从而降低了单个节点的负载压力。这种分布式架构显著提升了系统的读写性能和吞吐量。</p>
+<p><strong>3. 高扩展性</strong>：Redis Cluster 支持动态扩展，可以根据需求增加或减少节点。此外，集群模式还可以将某些节点设置为代理节点（Proxy Nodes），自动转发请求，增加了系统的灵活性和可定制性。</p>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><p><strong>1. 部署和同步复杂</strong>：Redis Cluster 的部署和维护相对复杂。特别是在大规模集群中，节点之间的同步和数据一致性管理需要特别注意。</p>
+<p><strong>2.集群同步问题</strong>：在 Redis Cluster 中，节点之间的数据同步是一个关键问题。如果同步不及时或出现错误，可能会导致数据丢失或不一致。</p>
+<p><strong>3.数据分片限制</strong>：虽然 Redis Cluster 通过数据分片提升了性能，但在某些情况下，数据分片可能会带来一些限制。例如，某些复杂的查询操作可能需要跨多个节点进行，增加了系统的复杂性。</p>
+</div>
+        </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+            
+            
+                <div class="post-actions text-center clearfix" id="post-actions">
+                
+                    <a class="donate" href="javascript:;" onclick="krOpenDonateModal()"><i class="fa fa-bitcoin"></i> 打赏</a>
+                
+                
+                    <a class="share" href="javascript:;" onclick="krOpenShareModal()"><i class="fa fa-share-alt"></i> 分享</a>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    <a class="tag-none-link" href="/tags/%E9%9B%86%E7%BE%A4/" rel="tag">集群</a>
+                </div>
+                <div class="pull-date">
+                    <time datetime="2024-09-29T15:43:53.210Z" itemprop="dateModified">最后编辑：2024-09-29</time>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" Redis-缓存淘汰与过期删除" href="/2024/09/27/Redis-缓存淘汰与过期删除/"><i class="fa fa-angle-left"></i> 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" Redis-场景理解" href="/2024/09/27/Redis-场景理解/">下一篇 <i class="fa fa-angle-right"></i></a>
+            </div>
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+            
+                
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/user.jpg" alt="xiaoyan" loading="lazy" decoding="auto" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">是一只时时翻垃圾吃的宅子。</p>
+    </div>
+    <div class="site-meta">
+        <a class="meta-item" href="/archives/">
+            <span class="title">
+                文章
+            </span>
+            <span class="count">
+                24
+            </span>
+        </a>
+        <a class="meta-item" href="/categories/">
+            <span class="title">
+                分类
+            </span>
+            <span class="count">
+                9
+            </span>
+        </a>
+        <a class="meta-item" href="/tags/">
+            <span class="title">
+                标签
+            </span>
+            <span class="count">
+                32
+            </span>
+        </a>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix toc-div-class" >
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar" role="progressbar" aria-label="阅读进度："></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Redis%E4%B8%BB%E4%BB%8E%E5%90%8C%E6%AD%A5%E6%9C%BA%E5%88%B6%E8%AF%A6%E8%A7%A3"><span class="toc-number">1.</span> <span class="toc-text">Redis主从同步机制详解</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E5%85%A8%E5%90%8C%E6%AD%A5"><span class="toc-number">1.1.</span> <span class="toc-text">完全同步</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%8C%E5%85%A8%E5%90%8C%E6%AD%A5%E7%9A%84%E4%B8%89%E9%98%B6%E6%AE%B5"><span class="toc-number">1.1.1.</span> <span class="toc-text">完全同步的三阶段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E8%BF%87%E7%A8%8B%E8%AF%A6%E8%A7%A3"><span class="toc-number">1.1.2.</span> <span class="toc-text">实现过程详解</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A2%9E%E9%87%8F%E5%90%8C%E6%AD%A5"><span class="toc-number">1.2.</span> <span class="toc-text">增量同步</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A2%9E%E9%87%8F%E5%90%8C%E6%AD%A5%E7%9A%84%E6%AD%A5%E9%AA%A4"><span class="toc-number">1.2.1.</span> <span class="toc-text">增量同步的步骤</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A2%9E%E9%87%8F%E6%95%B0%E6%8D%AE%E7%9A%84%E6%9D%A5%E6%BA%90"><span class="toc-number">1.2.2.</span> <span class="toc-text">增量数据的来源</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#repl-backlog-buffer%E7%BC%93%E5%86%B2%E5%8C%BA%E7%9A%84%E5%86%99%E5%85%A5%E6%97%B6%E6%9C%BA"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">repl_backlog_buffer缓冲区的写入时机</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A2%9E%E9%87%8F%E5%90%8C%E6%AD%A5%E7%9A%84%E5%88%A4%E6%96%AD%E6%9D%A1%E4%BB%B6"><span class="toc-number">1.2.2.2.</span> <span class="toc-text">增量同步的判断条件</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#repl-backlog-buffer%E7%BC%93%E5%86%B2%E5%8C%BA%E7%9A%84%E5%A4%A7%E5%B0%8F%E4%B8%8E%E8%B0%83%E6%95%B4"><span class="toc-number">1.2.3.</span> <span class="toc-text">repl_backlog_buffer缓冲区的大小与调整</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%A9%E5%B1%95%EF%BC%9ARedis%E9%9B%86%E7%BE%A4%E5%92%8C%E4%B8%BB%E4%BB%8E%E5%90%8C%E6%AD%A5%E8%83%BD%E4%BF%9D%E8%AF%81%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7%E5%90%97%EF%BC%9F"><span class="toc-number">1.3.</span> <span class="toc-text">扩展：Redis集群和主从同步能保证数据一致性吗？</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Redis-%E5%93%A8%E5%85%B5%E6%9C%BA%E5%88%B6%E5%8E%9F%E7%90%86"><span class="toc-number">2.</span> <span class="toc-text">Redis 哨兵机制原理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%93%A8%E5%85%B5%E6%9C%BA%E5%88%B6%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="toc-number">2.1.</span> <span class="toc-text">哨兵机制的作用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%93%A8%E5%85%B5%E8%8A%82%E7%82%B9%E7%9A%84%E8%A7%92%E8%89%B2"><span class="toc-number">2.1.1.</span> <span class="toc-text">哨兵节点的角色</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%93%A8%E5%85%B5%E6%9C%BA%E5%88%B6%E7%AE%97%E6%B3%95%E6%B5%81%E7%A8%8B"><span class="toc-number">2.2.</span> <span class="toc-text">哨兵机制算法流程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%85%E9%9A%9C%E8%8A%82%E7%82%B9%E4%B8%BB%E8%A7%82%E4%B8%8B%E7%BA%BF"><span class="toc-number">2.2.1.</span> <span class="toc-text">故障节点主观下线</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%85%E9%9A%9C%E8%8A%82%E7%82%B9%E5%AE%A2%E8%A7%82%E4%B8%8B%E7%BA%BF"><span class="toc-number">2.2.2.</span> <span class="toc-text">故障节点客观下线</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Sentinel%E9%9B%86%E7%BE%A4%E9%80%89%E4%B8%BELeader"><span class="toc-number">2.2.3.</span> <span class="toc-text">Sentinel集群选举Leader</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Sentinel-Leader%E5%86%B3%E5%AE%9A%E6%96%B0%E4%B8%BB%E8%8A%82%E7%82%B9"><span class="toc-number">2.2.4.</span> <span class="toc-text">Sentinel Leader决定新主节点</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Redis-%E5%88%87%E7%89%87%E9%9B%86%E7%BE%A4%E8%AF%A6%E8%A7%A3"><span class="toc-number">3.</span> <span class="toc-text">Redis 切片集群详解</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis-Cluster-%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="toc-number">3.1.</span> <span class="toc-text">Redis Cluster 的工作原理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%93%88%E5%B8%8C%E6%A7%BD%EF%BC%88Hash-Slots%EF%BC%89"><span class="toc-number">3.1.1.</span> <span class="toc-text">哈希槽（Hash Slots）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%93%88%E5%B8%8C%E6%A7%BD%E4%B8%8E%E8%8A%82%E7%82%B9%E7%9A%84%E6%98%A0%E5%B0%84"><span class="toc-number">3.1.2.</span> <span class="toc-text">哈希槽与节点的映射</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis-Cluster-%E7%9A%84%E4%BC%98%E7%BC%BA%E7%82%B9"><span class="toc-number">3.2.</span> <span class="toc-text">Redis Cluster 的优缺点</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%98%E7%82%B9"><span class="toc-number">3.2.1.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%BA%E7%82%B9"><span class="toc-number">3.2.2.</span> <span class="toc-text">缺点</span></a></li></ol></li></ol></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类列表</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%9F%BA%E7%A1%80/">基础</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">并发编程</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E9%9B%86%E5%90%88/">集合</a><span class="category-list-count">5</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a><span class="category-list-count">5</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/%E6%97%A5%E5%BF%97/">日志</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9E%B6%E6%9E%84/">架构</a><span class="category-list-count">1</span></li></ul>
+  </aside>
+
+
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/DDD/" style="font-size: 0.6em;">DDD</a> <a href="/tags/I-O/" style="font-size: 0.6em;">I/O</a> <a href="/tags/Java8%E6%96%B0%E7%89%B9%E6%80%A7/" style="font-size: 0.6em;">Java8新特性</a> <a href="/tags/Java%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" style="font-size: 0.6em;">Java基本概念</a> <a href="/tags/List/" style="font-size: 0.6em;">List</a> <a href="/tags/Map/" style="font-size: 0.8em;">Map</a> <a href="/tags/MySQL%E5%9F%BA%E7%A1%80/" style="font-size: 0.6em;">MySQL基础</a> <a href="/tags/Object/" style="font-size: 0.6em;">Object</a> <a href="/tags/SQL%E8%B0%83%E4%BC%98/" style="font-size: 0.6em;">SQL调优</a> <a href="/tags/Set/" style="font-size: 0.6em;">Set</a> <a href="/tags/%E4%BA%8B%E5%8A%A1/" style="font-size: 0.8em;">事务</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 0.6em;">其他</a> <a href="/tags/%E5%8F%8D%E5%B0%84/" style="font-size: 0.6em;">反射</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 0.6em;">多线程</a> <a href="/tags/%E5%AF%B9%E8%B1%A1/" style="font-size: 0.6em;">对象</a> <a href="/tags/%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8/" style="font-size: 0.6em;">并发安全</a> <a href="/tags/%E5%BA%8F%E5%88%97%E5%8C%96/" style="font-size: 0.6em;">序列化</a> <a href="/tags/%E5%BC%82%E5%B8%B8/" style="font-size: 0.6em;">异常</a>
+      </div>
+  </aside>
+
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/27/Redis-%E5%9C%BA%E6%99%AF%E7%90%86%E8%A7%A3/"><i class="fa fa-book"></i> Redis-场景理解</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/27/Redis-%E9%9B%86%E7%BE%A4/"><i class="fa fa-book"></i> Redis-集群</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/27/Redis-%E7%BC%93%E5%AD%98%E6%B7%98%E6%B1%B0%E4%B8%8E%E8%BF%87%E6%9C%9F%E5%88%A0%E9%99%A4/"><i class="fa fa-book"></i> Redis-缓存淘汰与过期删除</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/27/Redis-%E4%BA%8B%E5%8A%A1%E4%B8%8E%E6%97%A5%E5%BF%97/"><i class="fa fa-book"></i> Redis-事务与日志</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/27/Redis-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B/"><i class="fa fa-book"></i> Redis-数据结构</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+            
+
+        
+
+                </div>
+    </div>
+</div>
+
+<footer>
+    <div id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2024 XIAOYAN 版权所有.</li>
+                            <li>本站已运行<span id="kr-since">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>自豪地使用 <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a> 主题</li>
+                            <li>站点由 xiaoyan 用 <i class="fa fa-heart" style="color:#d43f57"></i> 搭建</li>
+                        </div>
+                        <!-- 额外的追加注入项 -->
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                <div class="box theme-box" id="theme-toggle">
+                    <span class="fa fa-adjust"></span>
+                </div>
+            </div>
+            <div id="gotop-box" class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+
+    <div id="kr-donate-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseDonateModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-bitcoin"></i>
+            </div>
+            <div class="kr-modal-title">打赏</div>
+            <button class="kr-modal-close" onclick="krCloseDonateModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-donate-message">请我喝一杯冰阔咯~</div>
+            <div class="kr-donate-qr" id="kr-donate-qr">
+                
+            </div>
+            <div class="kr-donate-platforms">
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #1677ff;" title="支付宝" onclick="krDonateModalShowPlatformQR('https://qr.alipay.com/fkx15009k7u0fqrj8auepdf', '#1677ff')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-alipay">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M19 3h-14a2 2 0 0 0 -2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2 -2v-14a2 2 0 0 0 -2 -2z" />
+  <path d="M7 7h10" />
+  <path d="M12 3v7" />
+  <path d="M21 17.314c-2.971 -1.923 -15 -8.779 -15 -1.864c0 1.716 1.52 2.55 2.985 2.55c3.512 0 6.814 -5.425 6.814 -8h-6.604" />
+</svg>
+
+                        </button>
+                    
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #38ad5a;" title="微信支付" onclick="krDonateModalShowPlatformQR('wxp://f2f0hR4eF9Ypa3tpzjWme9fQDyWW3PIGe3WG5oiIakWLmDs', '#38ad5a')">
+                            <i class="fa fa-wechat"></i>
+                        </button>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/donate.min.js"></script>
+
+
+
+
+    <div id="kr-share-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseShareModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-share-alt"></i>
+            </div>
+            <div class="kr-modal-title">分享</div>
+            <button class="kr-modal-close" onclick="krCloseShareModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-share-message">让兄弟萌也来瞅一瞅！</div>
+            <div class="kr-share-qr" id="kr-share-qr"></div>
+            <div class="kr-share-platforms">
+                
+                    <button class="kr-share-platform-button" style="color: #e6162d;" title="QQ" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-qq"></i>
+                    </button>
+                
+                    <button class="kr-share-platform-button" style="color: #25d366;" title="微信" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-weixin"></i>
+                    </button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/share.min.js"></script>
+
+
+
+<!-- 额外的追加注入项 -->
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
+<meting-js
+  server="netease"
+  type="playlist"
+  fixed="true"
+  order="random"
+  id="12613265870">
+</meting-js>
+
+
+
+        <script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
+</script>
+
+
+  <script defer src="/vendors/nprogress@0.2.0/nprogress.js"></script>
+
+
+
+  <script defer src="/vendors/viewerjs@1.11.6/dist/viewer.min.js"></script>
+
+
+<script defer src="/js/kr-core.min.js"></script>
+
+
+  <script defer src="/js/kr-pjax.min.js"></script>
+
+
+<!-- 额外的追加注入项 -->
+
+  <script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+
+
+
+    </body>
+</html>

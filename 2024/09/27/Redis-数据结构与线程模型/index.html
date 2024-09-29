@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  
+    <link rel="icon" href="/images/earthstars.png">
+  
+  
+  <title>Redis-数据结构 | XIAOYAN</title>
+  <link rel="canonical" href="http://example.com/2024/09/27/Redis-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B/">
+  <meta name="author" content="xiaoyan" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="数据结构, 线程模型" />
+  
+  <meta name="description" content="数据结构Redis底层数据结构Redis是一种高性能的非关系型数据库（NoSQL），提供了多种数据类型以满足不同的应用需求。常见的数据类型包括String、List、Hash、Set和Zset。每种数据类型在Redis内部都有特定的底层数据结构来支持其功能和性能特性。 数据类型与底层结构    数据类型 底层结构 存储的值 读写能力    String 简单动态字符串（SDS） 字符串、整数或">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis-数据结构">
+<meta property="og:url" content="http://example.com/2024/09/27/Redis-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B/index.html">
+<meta property="og:site_name" content="XIAOYAN">
+<meta property="og:description" content="数据结构Redis底层数据结构Redis是一种高性能的非关系型数据库（NoSQL），提供了多种数据类型以满足不同的应用需求。常见的数据类型包括String、List、Hash、Set和Zset。每种数据类型在Redis内部都有特定的底层数据结构来支持其功能和性能特性。 数据类型与底层结构    数据类型 底层结构 存储的值 读写能力    String 简单动态字符串（SDS） 字符串、整数或">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409271934547.png">
+<meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409272108847.png">
+<meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409272106480.png">
+<meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409272144039.png">
+<meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409280938820.png">
+<meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409281016047.png">
+<meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409281042500.png">
+<meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409281051071.png">
+<meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409281141887.png">
+<meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409281246104.png">
+<meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409281311664.png">
+<meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409281311428.png">
+<meta property="article:published_time" content="2024-09-27T00:53:09.000Z">
+<meta property="article:modified_time" content="2024-09-28T05:12:57.080Z">
+<meta property="article:author" content="xiaoyan">
+<meta property="article:tag" content="数据结构">
+<meta property="article:tag" content="线程模型">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409271934547.png">
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kr-core.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/highlight.js/night-eighties.min.css" media="all"></link>
+  
+  <link rel="stylesheet" id="theme-light-css" href="/css/kr-theme/light.min.css" media="all"></link>
+  <link rel="stylesheet" id="theme-dark-css" href="/css/kr-theme/dark.min.css" media="(prefers-color-scheme: dark)"></link>
+  <script src="/js/kr-theme.min.js"></script>
+  <link rel="stylesheet" id="fontawe-css" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="nprogress-css" href="/vendors/nprogress@0.2.0/nprogress.css" media="all"></link>
+  
+  
+    <link rel="stylesheet" href="/vendors/viewerjs@1.11.6/dist/viewer.min.css"></link>
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  
+    <script src="/vendors/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+  
+  <!-- 自定义站点横幅和背景 -->
+  <style>
+    
+      .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_light.png');
+      }
+      html[data-theme="dark"] .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_dark.png');
+      }
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+        html[data-theme="dark"] body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+      }
+    
+    
+      .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+      html[data-theme="dark"] .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+    
+  </style>
+
+  <!-- 额外的追加注入项 -->
+  
+    <link rel="stylesheet" href="/css/custom.css">
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    <li>
+                                        
+                                            <a target="_blank" rel="noopener" href="https://xiaoyanfufu.top/">
+                                        
+                                            
+                                                <i class="fa fa-home"></i>
+                                            
+                                            首页
+                                        </a>
+                                        
+                                    </li>
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">XIAOYAN</a></div>
+                    <div id="kratos-nav-toggle-wrapper" class="nav-toggle">
+                        <a id="kratos-nav-toggle" class="kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>XIAOYAN</h2> <br />
+                        <span>山重水复疑无路，柳暗花明又一村。</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+
+
+        
+
+            
+
+            <section class="kr-main-col col-md-8">
+
+        
+
+            <article itemscope itemtype="https://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/27/Redis-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B/">
+    <div class="kratos-hentry kratos-page-inner clearfix">
+        <header class="kratos-page-header">
+            
+                <h1 class="kratos-page-title text-center" itemprop="name headline">Redis-数据结构</h1>
+            
+            <ul class="kratos-page-meta text-center">
+                <li><time datetime="2024-09-27T00:53:09.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2024-09-27</time></li>
+                <li itemprop="author" itemscope itemtype="https://schema.org/Person">
+                    <i class="fa fa-user"></i> 作者 <span itemprop="name">xiaoyan</span>
+                </li>
+                
+                    <li>
+                        <i class="fa fa-edit"></i> 
+                        
+                        
+                            ~13.32K
+                        
+                        字
+                    </li>
+                
+                
+                
+            </ul>
+        </header>
+        <div class="kratos-page-content kr-post">
+            
+            
+            
+                <div class="kratos-post-inner-toc toc-div-class" >
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="toc-number">1.</span> <span class="toc-text">数据结构</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="toc-number">1.1.</span> <span class="toc-text">Redis底层数据结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%B8%8E%E5%BA%95%E5%B1%82%E7%BB%93%E6%9E%84"><span class="toc-number">1.1.1.</span> <span class="toc-text">数据类型与底层结构</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Zset%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.2.</span> <span class="toc-text">Zset实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E4%BA%86%E8%A7%A3"><span class="toc-number">1.2.1.</span> <span class="toc-text">基础了解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8Zset"><span class="toc-number">1.2.2.</span> <span class="toc-text">如何使用Zset</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B7%B3%E8%A1%A8%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.3.</span> <span class="toc-text">跳表实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Redis-%E4%B8%BA%E5%95%A5%E4%BD%BF%E7%94%A8%E8%B7%B3%E8%A1%A8%E8%80%8C%E4%B8%8D%E6%98%AFB-%E6%A0%91%EF%BC%9F"><span class="toc-number">1.3.1.</span> <span class="toc-text">Redis 为啥使用跳表而不是B+树？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%8B%E7%BC%A9%E5%88%97%E8%A1%A8%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.4.</span> <span class="toc-text">压缩列表实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E5%AD%97%E6%AE%B5"><span class="toc-number">1.4.1.</span> <span class="toc-text">主要字段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E6%89%BE%E5%85%83%E7%B4%A0"><span class="toc-number">1.4.2.</span> <span class="toc-text">查找元素</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8A%82%E7%82%B9%E7%BB%93%E6%9E%84"><span class="toc-number">1.4.3.</span> <span class="toc-text">节点结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%92%E5%85%A5%E6%95%B0%E6%8D%AE"><span class="toc-number">1.4.4.</span> <span class="toc-text">插入数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9E%E9%94%81%E6%9B%B4%E6%96%B0%E9%97%AE%E9%A2%98"><span class="toc-number">1.4.5.</span> <span class="toc-text">连锁更新问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Listpack%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.5.</span> <span class="toc-text">Listpack实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Listpack%E7%9A%84%E7%89%B9%E7%82%B9"><span class="toc-number">1.5.1.</span> <span class="toc-text">Listpack的特点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Listpack%E7%9A%84%E5%A4%B4%E9%83%A8%E4%BF%A1%E6%81%AF"><span class="toc-number">1.5.2.</span> <span class="toc-text">Listpack的头部信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Listpack%E8%8A%82%E7%82%B9%E7%9A%84%E7%BB%93%E6%9E%84"><span class="toc-number">1.5.3.</span> <span class="toc-text">Listpack节点的结构</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Hash%E8%A1%A8%E6%89%A9%E5%AE%B9"><span class="toc-number">1.6.</span> <span class="toc-text">Hash表扩容</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%A0%E7%BB%9Frehash%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">1.6.1.</span> <span class="toc-text">传统rehash的问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B8%90%E8%BF%9B%E5%BC%8Frehash"><span class="toc-number">1.6.2.</span> <span class="toc-text">渐进式rehash</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B8%90%E8%BF%9B%E5%BC%8Frehash%E7%9A%84%E6%AD%A5%E9%AA%A4"><span class="toc-number">1.6.2.1.</span> <span class="toc-text">渐进式rehash的步骤</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B8%90%E8%BF%9B%E5%BC%8Frehash%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="toc-number">1.6.2.2.</span> <span class="toc-text">渐进式rehash的优势</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B8%90%E8%BF%9B%E5%BC%8Frehash%E6%9C%9F%E9%97%B4%E7%9A%84Hash%E8%A1%A8%E6%93%8D%E4%BD%9C"><span class="toc-number">1.6.3.</span> <span class="toc-text">渐进式rehash期间的Hash表操作</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#String%E5%AD%98%E5%82%A8"><span class="toc-number">1.7.</span> <span class="toc-text">String存储</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#SDS%E7%9A%84%E7%BB%93%E6%9E%84"><span class="toc-number">1.7.1.</span> <span class="toc-text">SDS的结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SDS%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="toc-number">1.7.2.</span> <span class="toc-text">SDS的优势</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B"><span class="toc-number">1.7.3.</span> <span class="toc-text">示例</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B"><span class="toc-number">2.</span> <span class="toc-text">线程模型</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis%E4%B8%BA%E4%BB%80%E4%B9%88%E5%BF%AB%EF%BC%9F"><span class="toc-number">2.1.</span> <span class="toc-text">Redis为什么快？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis%E5%AF%B9%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-number">2.2.</span> <span class="toc-text">Redis对多线程的使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0IO%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8"><span class="toc-number">2.3.</span> <span class="toc-text">Redis如何实现IO多路复用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8%E7%9A%84%E6%A6%82%E5%BF%B5"><span class="toc-number">2.3.1.</span> <span class="toc-text">I&#x2F;O多路复用的概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Redis%E4%B8%AD%E7%9A%84I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8"><span class="toc-number">2.3.2.</span> <span class="toc-text">Redis中的I&#x2F;O多路复用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B"><span class="toc-number">2.4.</span> <span class="toc-text">Redis网络模型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%95Reactor%E5%8D%95%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B"><span class="toc-number">2.4.1.</span> <span class="toc-text">单Reactor单线程模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Redis-6-0%E7%9A%84%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BD%91%E7%BB%9CI-O"><span class="toc-number">2.4.2.</span> <span class="toc-text">Redis 6.0的多线程网络I&#x2F;O</span></a></li></ol></li></ol></li></ol>
+                </div>
+            
+            <hr />
+            <div itemprop="articleBody"><span id="more"></span>
+
+<h1 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h1><h2 id="Redis底层数据结构"><a href="#Redis底层数据结构" class="headerlink" title="Redis底层数据结构"></a>Redis底层数据结构</h2><p>Redis是一种高性能的非关系型数据库（NoSQL），提供了多种数据类型以满足不同的应用需求。常见的数据类型包括<strong>String</strong>、<strong>List</strong>、<strong>Hash</strong>、<strong>Set</strong>和<strong>Zset</strong>。每种数据类型在Redis内部都有特定的底层数据结构来支持其功能和性能特性。</p>
+<h3 id="数据类型与底层结构"><a href="#数据类型与底层结构" class="headerlink" title="数据类型与底层结构"></a>数据类型与底层结构</h3><p><img src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409271934547.png" alt="Redis底层数据结构图"></p>
+<table>
+<thead>
+<tr>
+<th>数据类型</th>
+<th>底层结构</th>
+<th>存储的值</th>
+<th>读写能力</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>String</strong></td>
+<td>简单动态字符串（SDS）</td>
+<td>字符串、整数或浮点数</td>
+<td>支持原子性的读写操作，适用于计数器、缓存等场景。</td>
+</tr>
+<tr>
+<td><strong>List</strong></td>
+<td>双向链表或压缩列表（ziplist）</td>
+<td>字符串元素的列表</td>
+<td>支持高效的插入和删除操作，适用于消息队列、任务队列等。</td>
+</tr>
+<tr>
+<td><strong>Hash</strong></td>
+<td>哈希表或压缩列表（ziplist）</td>
+<td>字段-值对</td>
+<td>支持快速的查找、插入和删除操作，适用于存储对象属性。</td>
+</tr>
+<tr>
+<td><strong>Set</strong></td>
+<td>哈希表或整数集合（intset）</td>
+<td>无序、唯一的字符串集合</td>
+<td>支持高效的集合运算（交集、并集、差集），适用于标签系统、好友关系等。</td>
+</tr>
+<tr>
+<td><strong>Zset</strong></td>
+<td>跳表或压缩列表（ziplist）</td>
+<td>有序、唯一的字符串集合，每个元素关联一个分数</td>
+<td>支持按分数排序的查找、插入和删除操作，适用于排行榜、范围查询等。</td>
+</tr>
+</tbody></table>
+<p>而在后续的版本更新中，又增加了新的四种数据结构支持：<strong>BitMap（2.2）</strong>、<strong>HyperLogLog（2.8）</strong>、<strong>GEO（3.2）</strong>、<strong>Stream（5.0）</strong></p>
+<p>redis数据结构常用的场景分别如下：</p>
+<ul>
+<li><strong>String：</strong>不仅存储字符串数据，还维护了字符串的长度和可用空间。适用于存储对象、简单计数器、分布式锁、session等。例如，可以使用<code>INCR</code>命令实现一个简单的计数器，用于统计网站的访问量。</li>
+<li><strong>List：</strong>使用双向链表来存储数据。适用于消息队列、任务队列等。例如，可以使用<code>LPUSH</code>和<code>RPOP</code>命令实现一个简单的消息队列，用于处理异步任务。</li>
+<li><strong>Hash：</strong>使用哈希表来存储数据。适用于存储对象属性，如购物车。例如，可以使用<code>HSET</code>和<code>HGET</code>命令存储用户的购物车信息。</li>
+<li><strong>Set：</strong>高效地进行集合运算（交集、并集、差集）。适用于标签系统、好友关系等。例如，可以使用<code>SINTER</code>命令计算两个用户之间的共同好友。</li>
+<li><strong>Zset：</strong>使用跳表来存储数据，这样可以高效地进行按分数排序。适用于排行榜、范围查询等。例如，可以使用<code>ZADD</code>和<code>ZRANGE</code>命令实现一个热度榜，用于展示热门文章。</li>
+</ul>
+<p>在后续的版本更新中，Redis增加了四种新的数据结构：</p>
+<ul>
+<li><strong>BitMap（2.2）</strong>：用于存放二值计算，如用户签到等。</li>
+<li><strong>HyperLogLog（2.8）</strong>：用于海量基数统计，比如统计网站的独立访客数。</li>
+<li><strong>GEO（3.2）</strong>：常用于存放地理位置信息，比如高德地图、滴滴打车。</li>
+<li><strong>Stream（5.0）</strong>：常用于做详细队列，与List不同的是，Stream会自动生成全局唯一ID，支持消费组形式消费数据。</li>
+</ul>
+<h2 id="Zset实现"><a href="#Zset实现" class="headerlink" title="Zset实现"></a>Zset实现</h2><h3 id="基础了解"><a href="#基础了解" class="headerlink" title="基础了解"></a>基础了解</h3><p>Zset（有序集合）是Redis中一种非常重要的数据类型，它能够存储有序的字符串集合，并且每个元素都关联一个分数（score），通过分数可以对元素进行排序。Zset的底层实现主要依赖于两种数据结构：<strong>跳表（Skip List）</strong>和<strong>压缩列表（ziplist）</strong>。<strong>在Redis 7.0及之后的版本中，压缩列表已被弃用，取而代之的是listpack</strong>。</p>
+<p>在Redis7.0版本之前，Zset数据结构为：</p>
+<ul>
+<li>若有序集合的元素小于128，且元素的数据大小小于64字节时，Redis会采用压缩列表作为底层数据结构。</li>
+<li>若有序集合不满足以上条件，则采用跳表作为数据结构。</li>
+</ul>
+<h3 id="如何使用Zset"><a href="#如何使用Zset" class="headerlink" title="如何使用Zset"></a>如何使用Zset</h3><p>以某文章热度为例，以下介绍在Redis中如何使用Zset。</p>
+<ol>
+<li><strong>使用<code>ZADD</code>添加文章</strong></li>
+</ol>
+<p><code>ZADD</code>命令用于向有序集合中添加一个或多个元素。每个元素都关联一个分数（score），用于排序。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ZADD article_hotness 0 &quot;article_id_1&quot; 0 &quot;article_id_2&quot; 0 &quot;article_id_3&quot;</span><br></pre></td></tr></table></figure>
+
+<p>在这个例子中，我们向名为<code>article_hotness</code>的有序集合中添加了三篇文章，初始热度为0。</p>
+<ol start="2">
+<li><strong>使用<code>ZINCRBY</code>增加文章热度</strong></li>
+</ol>
+<p><code>ZINCRBY</code>命令用于增加有序集合中某个元素的分数（热度）。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ZINCRBY article_hotness 10 &quot;article_id_1&quot;</span><br><span class="line">ZINCRBY article_hotness 20 &quot;article_id_2&quot;</span><br><span class="line">ZINCRBY article_hotness 30 &quot;article_id_3&quot;</span><br></pre></td></tr></table></figure>
+
+<p>在这个例子中，我们分别增加了三篇文章的热度，<code>article_id_1</code>增加了10，<code>article_id_2</code>增加了20，<code>article_id_3</code>增加了30。</p>
+<ol start="3">
+<li><strong>使用<code>ZRANGE</code>和<code>WITHSCORES</code>获取热度前三的文章</strong></li>
+</ol>
+<p><code>ZRANGE</code>命令用于获取有序集合中指定范围内的元素。由于Zset默认是按升序排列的，因此我们需要获取热度最高的三篇文章时，可以使用反转范围来获取。<code>WITHSCORES</code>选项用于同时返回元素的分数。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ZREVRANGE article_hotness 0 2 WITHSCORES</span><br></pre></td></tr></table></figure>
+
+<p>在这个例子中，我们使用<code>ZREVRANGE</code>命令来获取热度前三的文章及其热度值。</p>
+<ol start="4">
+<li><strong>使用<code>ZRANGEBYSCORE</code>找出热度大于500的文章</strong></li>
+</ol>
+<p><code>ZRANGEBYSCORE</code>命令用于获取有序集合中分数在指定范围内的元素。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ZRANGEBYSCORE article_hotness 500 +inf WITHSCORES</span><br></pre></td></tr></table></figure>
+
+<p>在这个例子中，我们获取了热度大于500的所有文章及其热度值。</p>
+<h2 id="跳表实现"><a href="#跳表实现" class="headerlink" title="跳表实现"></a>跳表实现</h2><p>链表在查询数据时，需要一个个元素遍历，时间复杂度是O(N)的，查询效率贼低，所以就有了跳表。跳表是在链表的基础上改进的，实现了一种“多层”的有序链表结构，以便于快速定位数据位置。</p>
+<img src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409272108847.png" alt="跳表数据结构" style="zoom:80%;">
+
+<p>以上图中头节点有L0~L2三个头指针，分别指向不同层级的节点，每个层级的节点都通过指针连接起来。</p>
+<ul>
+<li>L0层有5个节点：1、2、3、4、5</li>
+<li>L1层有3个节点：2、3、4</li>
+<li>L2层有1个节点：3</li>
+</ul>
+<p>跳表的核心思想是通过增加多级索引来加速查找过程。跳表的每一层都是一个有序链表，高层级的节点数量较少，低层级的节点数量较多。通过这种方式，跳表可以在O(log n)的时间复杂度内完成查找操作。</p>
+<p>跳表是如何工作的呢？举个例子，假设我们在链表中需要查找33这个数据节点，一个个元素遍历到该节点需要查找6次(1-&gt;5-&gt;11-&gt;20-&gt;27-&gt;33)，加了一层索引后，优化到需要4次(1-&gt;11-&gt;27-x-&gt;50转往下一层节点找27-&gt;33)，以此类推。查找流程示意图如下。</p>
+<p><img src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409272106480.png" alt="跳表查找元素模拟"></p>
+<p>这个查找的过程在链表中跳跃，最后定位到元素，当数据量巨大时，查询的时间复杂度就来到了O(logn)。</p>
+<p>那么跳表的节点如何实现多层级的？跳表的节点结构包含以下几个关键部分：</p>
+<ul>
+<li><strong>元素值（ele）</strong>：存储节点的值，通常是一个字符串（sds类型）。</li>
+<li><strong>分数（score）</strong>：存储节点的分数，用于排序，通常是一个双精度浮点数（double类型）。</li>
+<li><strong>后向指针（backward）</strong>：指向前一个节点，方便从跳表的尾节点开始访问，倒序查找时方便。</li>
+<li><strong>层级数组（level[]）</strong>：包含多个层级的信息，每个层级包含两个信息：<ul>
+<li><strong>前向节点指针（forward）</strong>：指向当前层级的下一个节点。</li>
+<li><strong>跨度（span）</strong>：表示当前节点到下一个节点之间的跨度，用于计算节点的排名。</li>
+</ul>
+</li>
+</ul>
+<p>以下是跳表节点的C语言数据结构示例：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> &#123;</span></span><br><span class="line">    sds ele;  <span class="comment">// 元素值</span></span><br><span class="line">    <span class="type">double</span> score;  <span class="comment">// 分数</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">backward</span>;</span>  <span class="comment">// 后向指针</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistLevel</span> &#123;</span></span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">forward</span>;</span>  <span class="comment">// 前向节点指针</span></span><br><span class="line">        <span class="type">unsigned</span> <span class="type">int</span> span;  <span class="comment">// 跨度</span></span><br><span class="line">    &#125; level[];  <span class="comment">// 层级数组</span></span><br><span class="line">&#125; zskiplistNode;</span><br></pre></td></tr></table></figure>
+
+<p>跟我的刚开始想象不同的是，在跳表中，跨度（Span）并<strong>不是固定的步长</strong>，而是表示当前节点到下一个节点之间的<strong>“距离”</strong>。跨度可以是1，也可以是2，不必与上一个节点同层级的跨度一致。跨度的主要作用是帮助计算节点的排名（rank），而不是用于遍历操作。遍历操作只需要通过链表的前向指针（forward）来实现。在这里继续引用小林哥的模拟图：</p>
+<img src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409272144039.png" alt="zset多层级示意图" style="zoom: 80%;">
+
+<p>Redis跳表在创建节点时，随机生成每个节点的层数，并没有严格维持相邻两层的节点数量比例为2:1的情况。具体的做法是，跳表在创建节点时，会生成一个范围是[0, 1]的随机数，并根据这个随机数来决定节点的层数。如果随机数小于0.25（选取0.25基于概率和性能考虑），则增加一层，然后生成下一个随机数，直到随机数大于0.25结束。最后，层数越高，概率越低，最高不会超过<strong>64</strong>层。</p>
+<h3 id="Redis-为啥使用跳表而不是B-树？"><a href="#Redis-为啥使用跳表而不是B-树？" class="headerlink" title="Redis 为啥使用跳表而不是B+树？"></a>Redis 为啥使用跳表而不是B+树？</h3><p>Redis选择跳表（Skip List）而不是B+树（B+ Tree）作为有序集合（Zset）的底层数据结构，主要是基于以下几个方面的考虑：内存占用、对范围查找的支持、实现难易程度。</p>
+<ol>
+<li>内存占用更少</li>
+</ol>
+<ul>
+<li><strong>B+树</strong>：每个节点通常包含两个指针（至少），一个指向左子节点，一个指向右子节点。此外，B+树的叶子节点还需要存储数据，这会占用更多的内存。</li>
+<li><strong>跳表</strong>：跳表的节点包含一个前向指针和一个跨度（span），平均每个节点包含约1.33个指针（概率期望值，p &#x3D; 0.25）。由于跳表的层数是随机生成的，高层级的节点数量较少，因此总体内存占用较少。</li>
+</ul>
+<ol start="2">
+<li>范围查询更简单</li>
+</ol>
+<ul>
+<li><strong>B+树</strong>：B+树的范围查询需要从根节点开始遍历，找到范围的起始节点，然后沿着叶子节点链表遍历到范围的结束节点。这个过程相对复杂，尤其是在范围较大时。</li>
+<li><strong>跳表</strong>：跳表的范围查询非常简单。只需要从最高层级开始，逐级向下查找，直到找到范围的起始节点，然后沿着链表遍历到范围的结束节点。由于跳表的层级结构，范围查询的效率非常高。</li>
+</ul>
+<ol start="3">
+<li>算法实现难度更简单</li>
+</ol>
+<ul>
+<li><strong>B+树</strong>：B+树的实现相对复杂，需要维护平衡性，插入和删除操作需要进行复杂的旋转和分裂操作，以保持树的平衡。</li>
+<li><strong>跳表</strong>：跳表的实现相对简单，插入和删除操作只需要更新指针，不需要进行复杂的平衡操作。跳表的层数是随机生成的，不需要严格维持平衡性，因此实现难度较低。</li>
+</ul>
+<h2 id="压缩列表实现"><a href="#压缩列表实现" class="headerlink" title="压缩列表实现"></a>压缩列表实现</h2><p>压缩列表（ziplist）是Redis为优化内存使用而设计的一种紧凑的顺序存储结构，类似于数组。它通过一系列精心设计的字段来高效地存储和访问数据，特别适用于存储少量数据。</p>
+<h3 id="主要字段"><a href="#主要字段" class="headerlink" title="主要字段"></a>主要字段</h3><p>压缩列表包含以下几个关键字段：</p>
+<ul>
+<li><strong>zlbytes</strong>：记录当前压缩列表总共占用的字节数。这个字段帮助快速计算列表的总大小，无需遍历整个列表。</li>
+<li><strong>zltail</strong>：记录最后一个节点相对于头节点的偏移量。通过这个字段，可以快速定位到最后一个节点，而不需要从头遍历整个列表。</li>
+<li><strong>zllen</strong>：记录当前压缩列表中节点的数量。这个字段帮助快速获取列表的长度。</li>
+<li><strong>zlend</strong>：表示压缩列表的结束位置，通常值为0xff（即十进制的255）。这个字段用于标识列表的结束，类似于C语言中的空字符（’\0’）。</li>
+</ul>
+<h3 id="查找元素"><a href="#查找元素" class="headerlink" title="查找元素"></a>查找元素</h3><p>在压缩列表中，查找第一个和最后一个元素非常高效，时间复杂度为O(1)。具体来说：</p>
+<ul>
+<li><strong>查找第一个元素</strong>：直接从列表头开始，时间复杂度为O(1)。</li>
+<li><strong>查找最后一个元素</strong>：通过<code>zltail</code>字段可以直接计算出最后一个节点的位置，时间复杂度也为O(1)。</li>
+</ul>
+<p>然而，查找其他元素则需要遍历列表，时间复杂度为O(n)，其中n是列表中节点的数量。因此，压缩列表并不适合存储大量数据，更适合用于存储少量、频繁访问的数据。</p>
+<h3 id="节点结构"><a href="#节点结构" class="headerlink" title="节点结构"></a>节点结构</h3><p>压缩列表中的每个节点包含以下三个部分：</p>
+<ul>
+<li><strong>prevlen</strong>：记录前一个节点的长度。这个字段使得从后向前遍历列表成为可能，因为可以通过<code>prevlen</code>快速定位到前一个节点。</li>
+<li><strong>encoding</strong>：记录当前节点实际数据的类型和长度。Redis支持两种主要的数据类型：字符串和整数。<code>encoding</code>字段根据数据类型和大小动态调整，以节省内存。</li>
+<li><strong>data</strong>：记录当前节点的实际数据。根据<code>encoding</code>字段的不同，<code>data</code>部分可以是字符串或整数。</li>
+</ul>
+<h3 id="插入数据"><a href="#插入数据" class="headerlink" title="插入数据"></a>插入数据</h3><p>当向压缩列表插入数据时，Redis会根据插入数据的类型和大小动态调整<code>prevlen</code>和<code>encoding</code>字段的空间占用。例如：</p>
+<ul>
+<li>如果插入的是一个较小的整数，<code>encoding</code>字段可能会使用较少的字节来表示这个整数。</li>
+<li>如果插入的是一个较长的字符串，<code>encoding</code>字段可能会使用更多的字节来表示字符串的长度。</li>
+</ul>
+<p>这种根据数据类型和大小进行动态空间分配的设计思想，正是Redis为了节省内存而采用的核心策略。</p>
+<h3 id="连锁更新问题"><a href="#连锁更新问题" class="headerlink" title="连锁更新问题"></a>连锁更新问题</h3><p>压缩列表的缺点是会发生<strong>“连锁更新”</strong>问题，因为连锁更新一旦发生，就会导致压缩列表多次重新分配分配，从而影响直接压缩列表的访问性能。</p>
+<p>为什么会发生连锁更新问题？因为当插入或删除节点时，如果前一个节点的长度发生变化，可能会导致后续节点的<code>prevlen</code>字段需要更新，从而引发连锁更新。</p>
+<ul>
+<li>在压缩列表中，<code>prevlen</code>字段的长度是动态的，根据前一个节点的长度来决定。例如，如果前一个节点的长度小于254字节，<code>prevlen</code>字段占用1字节；如果大于等于254字节，<code>prevlen</code>字段占用5字节。</li>
+</ul>
+<h2 id="Listpack实现"><a href="#Listpack实现" class="headerlink" title="Listpack实现"></a>Listpack实现</h2><p>尽管<code>quicklist</code>通过控制<code>quicklistnode</code>中元素的大小和数量来缓解压缩列表（ziplist）的性能问题，但它并未完全解决压缩列表中存在的“连锁更新”问题。为了进一步优化，Redis在5.0版本中引入了一个新的数据结构——<code>listpack</code>。</p>
+<h3 id="Listpack的特点"><a href="#Listpack的特点" class="headerlink" title="Listpack的特点"></a>Listpack的特点</h3><p><code>listpack</code>最大的特点是每个节点不再包含前一个节点的长度信息。这一设计从根本上消除了“连锁更新”问题，从而提高了数据结构的稳定性和性能。</p>
+<h3 id="Listpack的头部信息"><a href="#Listpack的头部信息" class="headerlink" title="Listpack的头部信息"></a>Listpack的头部信息</h3><p><code>listpack</code>的头部包含两个关键数据：</p>
+<ul>
+<li><strong>listpack总字节数</strong>：记录整个<code>listpack</code>结构占用的总字节数。这个字段帮助快速计算<code>listpack</code>的大小，无需遍历整个结构。</li>
+<li><strong>listpack元素数量</strong>：记录<code>listpack</code>中包含的元素数量。这个字段帮助快速获取<code>listpack</code>的长度。</li>
+</ul>
+<p><img src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409280938820.png" alt="listpack结构示意"></p>
+<h3 id="Listpack节点的结构"><a href="#Listpack节点的结构" class="headerlink" title="Listpack节点的结构"></a>Listpack节点的结构</h3><p><code>listpack</code>中的每个节点包含以下三个部分：</p>
+<ul>
+<li><strong>encoding</strong>：定义该元素的编码类型。<code>encoding</code>字段根据数据类型和大小动态调整，以节省内存。例如，如果数据是一个小整数，<code>encoding</code>字段可能会使用较少的字节来表示这个整数。</li>
+<li><strong>data</strong>：实际存放的数据。根据<code>encoding</code>字段的不同，<code>data</code>部分可以是字符串或整数。</li>
+<li><strong>len</strong>：<code>encoding</code>和<code>data</code>的总长度。这个字段记录了当前节点的总字节数，帮助快速计算节点的长度。</li>
+</ul>
+<p>假设我们有一个<code>listpack</code>，其中存储了三个节点：</p>
+<ol>
+<li>第一个节点存储了一个整数<code>123</code>。</li>
+<li>第二个节点存储了一个字符串<code>&quot;hello&quot;</code>。</li>
+<li>第三个节点存储了一个整数<code>456</code>。</li>
+</ol>
+<p>在这种情况下，<code>listpack</code>的头部会记录整个<code>listpack</code>的总字节数和元素数量。每个节点的<code>encoding</code>字段会根据数据类型（整数或字符串）和数据大小动态调整，而<code>len</code>字段会记录当前节点的总字节数。</p>
+<p>例如：</p>
+<ul>
+<li>第一个节点的<code>encoding</code>可能是<code>0x01</code>（表示一个小整数），<code>data</code>是<code>123</code>，<code>len</code>可能是<code>2</code>字节。</li>
+<li>第二个节点的<code>encoding</code>可能是<code>0x02</code>（表示一个字符串），<code>data</code>是<code>&quot;hello&quot;</code>，<code>len</code>可能是<code>7</code>字节。</li>
+<li>第三个节点的<code>encoding</code>可能是<code>0x01</code>（表示一个小整数），<code>data</code>是<code>456</code>，<code>len</code>可能是<code>2</code>字节。</li>
+</ul>
+<p>通过这种设计，<code>listpack</code>在存储数据时更加紧凑和高效，同时避免了压缩列表中“连锁更新”的问题（因为已经不会影响其他节点长度字段的变化），从而提高了整体性能和稳定性。</p>
+<h2 id="Hash表扩容"><a href="#Hash表扩容" class="headerlink" title="Hash表扩容"></a>Hash表扩容</h2><p>在Redis中，Hash表的扩容（rehash）是一个关键操作，用于处理Hash表在数据量增加时可能出现的性能问题。然而，传统的rehash过程可能会导致性能瓶颈，特别是在Hash表中数据量非常大的情况下。为了解决这个问题，Redis采用了渐进式rehash机制。</p>
+<h3 id="传统rehash的问题"><a href="#传统rehash的问题" class="headerlink" title="传统rehash的问题"></a>传统rehash的问题</h3><p>在传统的rehash过程中，需要使用两个Hash表：</p>
+<ol>
+<li><strong>Hash表1</strong>：当前正在使用的Hash表。</li>
+<li><strong>Hash表2</strong>：新建的Hash表，空间大小通常是Hash表1的两倍。</li>
+</ol>
+<p>传统rehash的步骤如下：</p>
+<ol>
+<li><strong>分配空间</strong>：为Hash表2分配空间。</li>
+<li><strong>数据迁移</strong>：将Hash表1中的所有数据重新分配到Hash表2中。</li>
+<li><strong>释放空间</strong>：数据迁移完成后，释放Hash表1的空间，并将Hash表2设置为当前使用的Hash表。</li>
+</ol>
+<p>这种一次性完成数据迁移的方式存在以下问题：</p>
+<ul>
+<li><strong>性能影响</strong>：如果Hash表1中的数据量非常大，数据迁移过程需要大量复制操作，可能导致Redis阻塞，影响性能。</li>
+<li><strong>阻塞风险</strong>：在数据迁移期间，Redis无法处理其他请求，可能导致服务中断。</li>
+</ul>
+<img src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409281016047.png" alt="Redis中Hash扩容(图片来源小林coding)">
+
+<h3 id="渐进式rehash"><a href="#渐进式rehash" class="headerlink" title="渐进式rehash"></a>渐进式rehash</h3><p>为了避免上述问题，Redis采用了渐进式rehash机制。渐进式rehash的核心思想是将数据迁移过程分散到多次操作中，而不是一次性完成。</p>
+<h4 id="渐进式rehash的步骤"><a href="#渐进式rehash的步骤" class="headerlink" title="渐进式rehash的步骤"></a>渐进式rehash的步骤</h4><ol>
+<li><strong>分配空间</strong>：为Hash表2分配空间。</li>
+<li><strong>逐步迁移</strong>：在rehash期间，每次对Hash表进行增删改查操作时，Redis除了执行这些操作，还会顺序地将索引位置上的所有key-value迁移到Hash表2中。</li>
+<li><strong>完成迁移</strong>：随着处理客户端发起的Hash表操作越来越多，最终某个时间点会将Hash表1中的所有key-value迁移到Hash表2中，完成rehash操作。</li>
+</ol>
+<h4 id="渐进式rehash的优势"><a href="#渐进式rehash的优势" class="headerlink" title="渐进式rehash的优势"></a>渐进式rehash的优势</h4><ul>
+<li><strong>避免阻塞</strong>：通过将数据迁移分散到多次操作中，避免了在rehash过程中Redis的阻塞，提高了系统的可用性。</li>
+<li><strong>平滑过渡</strong>：渐进式rehash使得Hash表的扩容过程更加平滑，减少了性能波动。</li>
+</ul>
+<h3 id="渐进式rehash期间的Hash表操作"><a href="#渐进式rehash期间的Hash表操作" class="headerlink" title="渐进式rehash期间的Hash表操作"></a>渐进式rehash期间的Hash表操作</h3><p>在渐进式rehash进行期间，Redis会同时维护两个Hash表（Hash表1和Hash表2）。因此，Hash表的删除、查找、更新等操作会在两个Hash表中进行：</p>
+<ul>
+<li><strong>查找操作：先在Hash表1中查找，如果没找到，再在Hash表2中查找。</strong></li>
+<li><strong>新增操作：新增的key-value会被保存到Hash表2中，而Hash表1不再进行任何添加操作。</strong></li>
+<li><strong>删除和更新操作：同样会在两个Hash表中进行查找和操作。</strong></li>
+</ul>
+<p>随着渐进式rehash的进行，Hash表1的key-value数量会逐渐减少，最终变为空表。当所有数据都迁移到Hash表2后，Hash表1会被释放，Hash表2成为当前使用的Hash表。</p>
+<p>假设我们有一个Hash表1，其中包含100万个key-value对。当Hash表1需要扩容时，Redis会执行以下步骤：</p>
+<ol>
+<li><strong>分配空间</strong>：为Hash表2分配空间，大小为Hash表1的两倍。</li>
+<li><strong>逐步迁移</strong>：在每次对Hash表进行操作时，Redis会逐步将Hash表1中的数据迁移到Hash表2中。例如，每次操作时迁移1000个key-value对。</li>
+<li><strong>完成迁移</strong>：随着操作的进行，最终所有数据都会迁移到Hash表2中。</li>
+</ol>
+<p>通过这种方式，Redis避免了在rehash过程中可能出现的性能瓶颈和阻塞问题，确保了系统的稳定性和性能。</p>
+<h2 id="String存储"><a href="#String存储" class="headerlink" title="String存储"></a>String存储</h2><p>在Redis中，String类型的数据是通过SDS（Simple Dynamic String）数据结构来存储的。SDS是Redis自己实现的一种字符串表示方式，相较于C语言中的字符数组（char[]），SDS提供了更多的功能和优势。</p>
+<h3 id="SDS的结构"><a href="#SDS的结构" class="headerlink" title="SDS的结构"></a>SDS的结构</h3><p>SDS的结构中包含以下几个成员变量：</p>
+<ul>
+<li><strong>len</strong>：记录了字符串的实际长度。这个字段使得获取字符串长度的时间复杂度为O(1)，因为可以直接从<code>len</code>属性读取，而不需要像C语言中的<code>strlen</code>函数那样遍历整个字符数组。</li>
+<li><strong>alloc</strong>：分配给字符串的空间数组长度。这个字段记录了当前SDS结构中为字符数组分配的总空间大小，用于管理内存分配和释放。</li>
+<li><strong>flags</strong>：用来表示不同类型的SDS。SDS有多种类型，<code>flags</code>字段用于区分这些类型，以便在不同情况下进行不同的处理。</li>
+<li>**buf[]**：字符数组，用来保存实际的字符串数据。这个字段存储了字符串的内容。</li>
+</ul>
+<img src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409281042500.png" alt="SDS数据结构示意图" style="zoom:67%;">
+
+<h3 id="SDS的优势"><a href="#SDS的优势" class="headerlink" title="SDS的优势"></a>SDS的优势</h3><p>相较于C语言的字符数组，SDS具备以下优势：</p>
+<ol>
+<li><p><strong>O(1)的获取长度时间复杂度</strong>：</p>
+<ul>
+<li>在C语言中，获取字符串长度需要调用<code>strlen</code>函数，该函数需要遍历整个字符数组，时间复杂度为O(n)。</li>
+<li>在SDS中，字符串的长度直接存储在<code>len</code>字段中，获取长度的时间复杂度为O(1)，极大地提高了性能。</li>
+</ul>
+</li>
+<li><p><strong>二进制安全</strong>：</p>
+<ul>
+<li>C语言的字符串以空字符（’\0’）作为字符串的结束标志，这使得C语言字符串不能存储包含空字符的二进制数据。</li>
+<li>SDS使用<code>len</code>字段来表示字符串的长度，因此不需要以空字符作为结束标志，可以安全地存储任意二进制数据。</li>
+</ul>
+</li>
+<li><p><strong>避免缓冲区溢出</strong>：</p>
+<ul>
+<li>在C语言中，如果字符串操作不当，可能会导致缓冲区溢出，即写入的数据超出了分配的内存空间，导致程序崩溃或安全漏洞。</li>
+<li>SDS通过<code>alloc</code>字段记录分配的内存空间大小，并在字符串操作时检查是否超出分配的空间，从而避免了缓冲区溢出的问题。</li>
+</ul>
+</li>
+</ol>
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><p>假设我们有一个字符串<code>&quot;hello&quot;</code>，在C语言中，它通常表示为：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">char</span> str[] = <span class="string">&quot;hello&quot;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>在SDS中，这个字符串的表示方式如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sdshdr</span> &#123;</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">int</span> len;   <span class="comment">// 字符串长度，值为5</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">int</span> alloc; <span class="comment">// 分配的空间大小，假设为10</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">char</span> flags; <span class="comment">// SDS类型标志，假设为0</span></span><br><span class="line">    <span class="type">char</span> buf[];         <span class="comment">// 字符数组，存储&quot;hello&quot;</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>在这个例子中：</p>
+<ul>
+<li><code>len</code>字段的值为5，表示字符串<code>&quot;hello&quot;</code>的长度。</li>
+<li><code>alloc</code>字段的值为10，表示为字符数组分配了10个字节的内存空间。</li>
+<li><code>flags</code>字段的值为0，表示这是一个基本的SDS类型。</li>
+<li><code>buf[]</code>字段存储了字符串<code>&quot;hello&quot;</code>的实际内容。</li>
+</ul>
+<p>通过这种方式，SDS不仅提供了高效的性能，还解决了C语言字符串的一些常见问题，如缓冲区溢出和二进制不安全等。</p>
+<h1 id="线程模型"><a href="#线程模型" class="headerlink" title="线程模型"></a>线程模型</h1><h2 id="Redis为什么快？"><a href="#Redis为什么快？" class="headerlink" title="Redis为什么快？"></a>Redis为什么快？</h2><img src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409281051071.png" alt="Redis基准测试" style="zoom:80%;">
+
+<p>Redis以其极高的性能而闻名，官方基准测试结果显示，单线程的Redis吞吐量可以达到每秒10万次操作（100,000 ops&#x2F;s）。Redis之所以能够实现如此高的性能，主要有以下几个原因：</p>
+<ol>
+<li><strong>内存操作</strong></li>
+</ol>
+<p>Redis的大部分操作都是在内存中完成的。内存的访问速度远远快于磁盘I&#x2F;O，因此数据操作的性能瓶颈通常不在于CPU，而在于数据的I&#x2F;O操作。Redis基于内存操作，将性能瓶颈从磁盘I&#x2F;O转移到了内存和网络传输上。此外，Redis还采用了高性能的数据结构，如哈希表、跳表等，进一步提升了操作效率。</p>
+<ol start="2">
+<li><strong>单线程模型</strong></li>
+</ol>
+<p>Redis采用单线程模型来处理网络I&#x2F;O和请求数据。单线程模型有以下几个优势：</p>
+<ul>
+<li><strong>避免线程竞争</strong>：多线程程序中，线程间的竞争和同步开销较大。单线程模型避免了线程间的竞争问题，减少了线程切换的开销。</li>
+<li><strong>简化设计</strong>：单线程模型简化了程序设计，避免了复杂的线程同步和锁机制，降低了出错的概率。</li>
+</ul>
+<ol start="3">
+<li><strong>I&#x2F;O多路复用机制</strong></li>
+</ol>
+<p>Redis采用I&#x2F;O多路复用机制来处理大量的客户端socket请求。I&#x2F;O多路复用机制允许一个线程同时处理多个I&#x2F;O流，具体来说：</p>
+<ul>
+<li><strong>内核监听</strong>：在Redis单线程的情况下，I&#x2F;O多路复用机制允许内核同时监听多个socket上的连接请求和数据请求。</li>
+<li><strong>请求处理</strong>：一旦有请求到达，内核会将请求交给Redis线程处理，从而实现了一个Redis线程处理多个I&#x2F;O流的效果。</li>
+</ul>
+<ol start="4">
+<li><strong>高效的数据结构</strong></li>
+</ol>
+<p>Redis内部使用了多种高效的数据结构，如哈希表、跳表、压缩列表等。这些数据结构在内存中操作时，能够提供高效的插入、删除和查找操作，进一步提升了Redis的性能。</p>
+<h2 id="Redis对多线程的使用"><a href="#Redis对多线程的使用" class="headerlink" title="Redis对多线程的使用"></a>Redis对多线程的使用</h2><p>Redis的单线程模型指的是“接收客户端请求 -&gt; 解析客户端请求 -&gt; 进行数据操作 -&gt; 返回数据给客户端”这个过程由一个主线程完成。</p>
+<p>虽然Redis在处理客户端请求时采用单线程模型，但这并不意味着Redis程序本身是单线程的。实际上，Redis在启动时会启动多个后台线程（BIO，Background I&#x2F;O）来处理一些耗时的任务，从而避免这些任务占用主线程的资源，影响Redis的性能。</p>
+<ul>
+<li>在Redis2.6，后台会启动线程分别完成关闭文件和AOF刷盘任务；</li>
+<li>在Redis4.0版本后，新增了一个线程用于异步释放内存操作，也就是lazyfree。例如，执行unlink key &#x2F; flushdb async &#x2F; flushall async等命令，异步释放内存，这样的好处是不占用主线程。</li>
+</ul>
+<p>将这些“关闭文件”、“AOF算盘”、“释放空间”任务交由创建的独立线程完成，能够极大地提升Redis的处理效率，因为这些操作都是极为耗时的，若由主线程完成可能会造成阻塞，同时也没法处理其他socket请求了，严重影响了Redis的性能。</p>
+<img src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409281141887.png" alt="Redis BIO(图片来源小林coding)" style="zoom:80%;">
+
+<p>虽然Redis的主要工作（网络I&#x2F;O和执行命令）一直是单线程模型，但在Redis 6.0版本也引入了多个线程来处理网络I&#x2F;O请求。这是因为随着网络硬件性能的提升，Redis的性能瓶颈有时候会出现在处理网络I&#x2F;O上。</p>
+<p><strong>多线程网络I&#x2F;O的优势</strong></p>
+<ul>
+<li><strong>提升网络I&#x2F;O并行度</strong>：通过引入多线程处理网络I&#x2F;O请求，Redis能够更高效地处理大量的并发连接和数据传输，从而提升整体的性能。</li>
+<li><strong>不影响命令执行</strong>：尽管引入了多线程处理网络I&#x2F;O，<strong>但对于执行命令，Redis仍然采用单线程模型</strong>。这种设计确保了命令执行的顺序性和一致性，避免了多线程带来的复杂性和潜在的竞争问题。</li>
+</ul>
+<h2 id="Redis如何实现IO多路复用"><a href="#Redis如何实现IO多路复用" class="headerlink" title="Redis如何实现IO多路复用"></a>Redis如何实现IO多路复用</h2><p>Redis采用单线程模型来执行命令，这意味着所有的任务都按照顺序执行。然而，由于输入输出（I&#x2F;O）操作是阻塞的，如果一个文件的I&#x2F;O操作阻塞，整个进程将无法为其他客户端提供服务。为了解决这个问题，Redis采用了I&#x2F;O多路复用技术。</p>
+<h3 id="I-O多路复用的概念"><a href="#I-O多路复用的概念" class="headerlink" title="I&#x2F;O多路复用的概念"></a>I&#x2F;O多路复用的概念</h3><p>I&#x2F;O多路复用（I&#x2F;O Multiplexing）是一种允许单个线程同时监视多个文件描述符（如socket）的技术。通过这种技术，单个线程可以检查多个socket的I&#x2F;O就绪状态，从而在单个线程中处理多个I&#x2F;O流。</p>
+<h3 id="Redis中的I-O多路复用"><a href="#Redis中的I-O多路复用" class="headerlink" title="Redis中的I&#x2F;O多路复用"></a>Redis中的I&#x2F;O多路复用</h3><p>在Redis中，I&#x2F;O多路复用主要用于处理多个客户端连接的网络I&#x2F;O操作。Redis使用了一种称为<code>epoll</code>的机制来实现I&#x2F;O多路复用。<code>epoll</code>是Linux系统中的一种高效的I&#x2F;O多路复用技术，能够显著提高Redis在高并发环境下的性能。其模型参考一张网络来源图：</p>
+<img src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409281246104.png" alt="Redis I/O多路复用" style="zoom: 67%;">
+
+<ol>
+<li><strong>监听多个socket</strong>：Redis主线程会监听多个客户端连接的socket。每个socket代表一个客户端连接。</li>
+<li><strong>事件通知</strong>：当某个socket上有数据到达（如客户端发送请求），<code>epoll</code>机制会通知Redis主线程。</li>
+<li><strong>处理事件</strong>：Redis主线程接收到事件通知后，会处理该socket上的请求，执行相应的命令，并将结果返回给客户端。<strong>epoll机制使用非阻塞I&#x2F;O操作。当某个文件描述符上的I&#x2F;O操作无法立即完成时，I&#x2F;O多路复用机制会立即返回，并继续监听其他文件描述符上的事件。</strong></li>
+<li><strong>继续监听</strong>：处理完一个事件后，Redis主线程继续监听其他socket，等待下一个事件的到来。</li>
+</ol>
+<p>假设我们有一个Redis服务器，它需要处理多个客户端的请求。在传统的阻塞I&#x2F;O模型中，每个客户端连接都需要一个独立的线程来处理，这会导致线程数量过多，资源消耗大。而在Redis的I&#x2F;O多路复用模型中，所有客户端连接的socket都由一个主线程监听和处理。</p>
+<p>例如，当客户端A发送一个请求时，<code>epoll</code>机制会通知Redis主线程处理该请求；同时，客户端B的请求也会被<code>epoll</code>监听到，并交给Redis主线程处理。通过这种方式，Redis能够高效地处理大量的并发请求，而不会因为线程切换和竞争导致性能下降。</p>
+<p>Redis通过采用I&#x2F;O多路复用技术，实现了在单个线程中高效处理多个客户端连接的请求。这种设计使得Redis能够在高并发环境下提供极高的性能，同时确保系统的稳定性和响应速度。通过<code>epoll</code>机制，Redis能够监听多个socket，并在事件发生时及时处理，避免了传统阻塞I&#x2F;O模型中的性能瓶颈。</p>
+<h2 id="Redis网络模型"><a href="#Redis网络模型" class="headerlink" title="Redis网络模型"></a>Redis网络模型</h2><p>Redis在6.0版本之前，采用的是单Reactor单线程模型。这种模型虽然简单，但在高并发环境下存在一些性能瓶颈。为了进一步提升性能，Redis在6.0版本引入了多线程处理网络I&#x2F;O，但<strong>命令的执行仍然保持单线程模式</strong>。</p>
+<h3 id="单Reactor单线程模型"><a href="#单Reactor单线程模型" class="headerlink" title="单Reactor单线程模型"></a>单Reactor单线程模型</h3><p>在Redis 6.0之前，Redis采用的是单Reactor单线程模型。缺点：</p>
+<ul>
+<li><strong>无法充分利用多核CPU</strong>：单线程模型无法充分利用多核CPU的计算能力，限制了Redis在高并发环境下的性能。</li>
+<li><strong>业务处理延时</strong>：在进行业务处理时，无法执行其他连接的事件。如果业务处理时间较长，会造成较大的延时，影响系统的响应速度。</li>
+</ul>
+<img src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409281311664.png" alt="单Reactor" style="zoom:80%;">
+
+<h3 id="Redis-6-0的多线程网络I-O"><a href="#Redis-6-0的多线程网络I-O" class="headerlink" title="Redis 6.0的多线程网络I&#x2F;O"></a>Redis 6.0的多线程网络I&#x2F;O</h3><p>为了解决单Reactor单线程模型的性能瓶颈，Redis在6.0版本引入了多线程处理网络I&#x2F;O。具体来说：</p>
+<ul>
+<li><strong>多线程处理网络I&#x2F;O</strong>：Redis 6.0将网络I&#x2F;O操作从主线程中分离出来，使用多个线程来处理网络I&#x2F;O请求，从而提高网络I&#x2F;O的并行度和处理效率。</li>
+<li><strong>单线程执行命令</strong>：尽管网络I&#x2F;O采用了多线程处理，但对于命令的执行，Redis仍然保持单线程模式。这种设计确保了命令执行的顺序性和一致性，避免了多线程带来的复杂性和潜在的竞争问题。</li>
+</ul>
+<p><strong>优点</strong></p>
+<ul>
+<li><strong>提升网络I&#x2F;O并行度</strong>：通过多线程处理网络I&#x2F;O，Redis能够更高效地处理大量的并发连接和数据传输，从而提升整体的性能。</li>
+<li><strong>不影响命令执行</strong>：尽管引入了多线程处理网络I&#x2F;O，但对于命令的执行，Redis仍然采用单线程模型。这种设计确保了命令执行的顺序性和一致性，避免了多线程带来的复杂性和潜在的竞争问题。</li>
+</ul>
+<img src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409281311428.png" alt="多线程Reactor" style="zoom:80%;">
+
+<p>假设我们有一个Redis服务器，它需要处理大量的客户端请求。在Redis 6.0之前，所有的网络I&#x2F;O和命令执行都在一个主线程中进行。如果某个客户端的请求处理时间较长，会导致主线程阻塞，无法处理其他客户端的请求。</p>
+<p>在Redis 6.0中，网络I&#x2F;O操作被分离出来，由多个线程处理。例如，当客户端A发送一个请求时，网络I&#x2F;O线程会处理该请求的读取和写入操作；同时，客户端B的请求也会被其他网络I&#x2F;O线程处理。这样，即使某个客户端的请求处理时间较长，也不会影响其他客户端的请求处理。</p>
+<p>Redis在6.0版本之前采用单Reactor单线程模型，虽然简单，但在高并发环境下存在性能瓶颈。为了进一步提升性能，Redis在6.0版本引入了多线程处理网络I&#x2F;O，但命令的执行仍然保持单线程模式。这种设计使得Redis能够在高并发环境下提供极高的性能，同时确保系统的稳定性和响应速度。</p>
+</div>
+        </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+            
+            
+                <div class="post-actions text-center clearfix" id="post-actions">
+                
+                    <a class="donate" href="javascript:;" onclick="krOpenDonateModal()"><i class="fa fa-bitcoin"></i> 打赏</a>
+                
+                
+                    <a class="share" href="javascript:;" onclick="krOpenShareModal()"><i class="fa fa-share-alt"></i> 分享</a>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    <a class="tag-none-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a>, <a class="tag-none-link" href="/tags/%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B/" rel="tag">线程模型</a>
+                </div>
+                <div class="pull-date">
+                    <time datetime="2024-09-28T05:12:57.080Z" itemprop="dateModified">最后编辑：2024-09-28</time>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" DDD架构设计" href="/2024/09/25/DDD架构设计/"><i class="fa fa-angle-left"></i> 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" Redis-事务与日志" href="/2024/09/27/Redis-事务与日志/">下一篇 <i class="fa fa-angle-right"></i></a>
+            </div>
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+            
+                
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/user.jpg" alt="xiaoyan" loading="lazy" decoding="auto" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">是一只时时翻垃圾吃的宅子。</p>
+    </div>
+    <div class="site-meta">
+        <a class="meta-item" href="/archives/">
+            <span class="title">
+                文章
+            </span>
+            <span class="count">
+                24
+            </span>
+        </a>
+        <a class="meta-item" href="/categories/">
+            <span class="title">
+                分类
+            </span>
+            <span class="count">
+                9
+            </span>
+        </a>
+        <a class="meta-item" href="/tags/">
+            <span class="title">
+                标签
+            </span>
+            <span class="count">
+                32
+            </span>
+        </a>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix toc-div-class" >
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar" role="progressbar" aria-label="阅读进度："></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="toc-number">1.</span> <span class="toc-text">数据结构</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="toc-number">1.1.</span> <span class="toc-text">Redis底层数据结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E4%B8%8E%E5%BA%95%E5%B1%82%E7%BB%93%E6%9E%84"><span class="toc-number">1.1.1.</span> <span class="toc-text">数据类型与底层结构</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Zset%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.2.</span> <span class="toc-text">Zset实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E4%BA%86%E8%A7%A3"><span class="toc-number">1.2.1.</span> <span class="toc-text">基础了解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8Zset"><span class="toc-number">1.2.2.</span> <span class="toc-text">如何使用Zset</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B7%B3%E8%A1%A8%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.3.</span> <span class="toc-text">跳表实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Redis-%E4%B8%BA%E5%95%A5%E4%BD%BF%E7%94%A8%E8%B7%B3%E8%A1%A8%E8%80%8C%E4%B8%8D%E6%98%AFB-%E6%A0%91%EF%BC%9F"><span class="toc-number">1.3.1.</span> <span class="toc-text">Redis 为啥使用跳表而不是B+树？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%8B%E7%BC%A9%E5%88%97%E8%A1%A8%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.4.</span> <span class="toc-text">压缩列表实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E5%AD%97%E6%AE%B5"><span class="toc-number">1.4.1.</span> <span class="toc-text">主要字段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E6%89%BE%E5%85%83%E7%B4%A0"><span class="toc-number">1.4.2.</span> <span class="toc-text">查找元素</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8A%82%E7%82%B9%E7%BB%93%E6%9E%84"><span class="toc-number">1.4.3.</span> <span class="toc-text">节点结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%92%E5%85%A5%E6%95%B0%E6%8D%AE"><span class="toc-number">1.4.4.</span> <span class="toc-text">插入数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9E%E9%94%81%E6%9B%B4%E6%96%B0%E9%97%AE%E9%A2%98"><span class="toc-number">1.4.5.</span> <span class="toc-text">连锁更新问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Listpack%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.5.</span> <span class="toc-text">Listpack实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Listpack%E7%9A%84%E7%89%B9%E7%82%B9"><span class="toc-number">1.5.1.</span> <span class="toc-text">Listpack的特点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Listpack%E7%9A%84%E5%A4%B4%E9%83%A8%E4%BF%A1%E6%81%AF"><span class="toc-number">1.5.2.</span> <span class="toc-text">Listpack的头部信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Listpack%E8%8A%82%E7%82%B9%E7%9A%84%E7%BB%93%E6%9E%84"><span class="toc-number">1.5.3.</span> <span class="toc-text">Listpack节点的结构</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Hash%E8%A1%A8%E6%89%A9%E5%AE%B9"><span class="toc-number">1.6.</span> <span class="toc-text">Hash表扩容</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%A0%E7%BB%9Frehash%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">1.6.1.</span> <span class="toc-text">传统rehash的问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B8%90%E8%BF%9B%E5%BC%8Frehash"><span class="toc-number">1.6.2.</span> <span class="toc-text">渐进式rehash</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B8%90%E8%BF%9B%E5%BC%8Frehash%E7%9A%84%E6%AD%A5%E9%AA%A4"><span class="toc-number">1.6.2.1.</span> <span class="toc-text">渐进式rehash的步骤</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B8%90%E8%BF%9B%E5%BC%8Frehash%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="toc-number">1.6.2.2.</span> <span class="toc-text">渐进式rehash的优势</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B8%90%E8%BF%9B%E5%BC%8Frehash%E6%9C%9F%E9%97%B4%E7%9A%84Hash%E8%A1%A8%E6%93%8D%E4%BD%9C"><span class="toc-number">1.6.3.</span> <span class="toc-text">渐进式rehash期间的Hash表操作</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#String%E5%AD%98%E5%82%A8"><span class="toc-number">1.7.</span> <span class="toc-text">String存储</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#SDS%E7%9A%84%E7%BB%93%E6%9E%84"><span class="toc-number">1.7.1.</span> <span class="toc-text">SDS的结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SDS%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="toc-number">1.7.2.</span> <span class="toc-text">SDS的优势</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B"><span class="toc-number">1.7.3.</span> <span class="toc-text">示例</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B"><span class="toc-number">2.</span> <span class="toc-text">线程模型</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis%E4%B8%BA%E4%BB%80%E4%B9%88%E5%BF%AB%EF%BC%9F"><span class="toc-number">2.1.</span> <span class="toc-text">Redis为什么快？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis%E5%AF%B9%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-number">2.2.</span> <span class="toc-text">Redis对多线程的使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0IO%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8"><span class="toc-number">2.3.</span> <span class="toc-text">Redis如何实现IO多路复用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8%E7%9A%84%E6%A6%82%E5%BF%B5"><span class="toc-number">2.3.1.</span> <span class="toc-text">I&#x2F;O多路复用的概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Redis%E4%B8%AD%E7%9A%84I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8"><span class="toc-number">2.3.2.</span> <span class="toc-text">Redis中的I&#x2F;O多路复用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B"><span class="toc-number">2.4.</span> <span class="toc-text">Redis网络模型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%95Reactor%E5%8D%95%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B"><span class="toc-number">2.4.1.</span> <span class="toc-text">单Reactor单线程模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Redis-6-0%E7%9A%84%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BD%91%E7%BB%9CI-O"><span class="toc-number">2.4.2.</span> <span class="toc-text">Redis 6.0的多线程网络I&#x2F;O</span></a></li></ol></li></ol></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类列表</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%9F%BA%E7%A1%80/">基础</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">并发编程</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E9%9B%86%E5%90%88/">集合</a><span class="category-list-count">5</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a><span class="category-list-count">5</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/%E6%97%A5%E5%BF%97/">日志</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9E%B6%E6%9E%84/">架构</a><span class="category-list-count">1</span></li></ul>
+  </aside>
+
+
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/DDD/" style="font-size: 0.6em;">DDD</a> <a href="/tags/I-O/" style="font-size: 0.6em;">I/O</a> <a href="/tags/Java8%E6%96%B0%E7%89%B9%E6%80%A7/" style="font-size: 0.6em;">Java8新特性</a> <a href="/tags/Java%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" style="font-size: 0.6em;">Java基本概念</a> <a href="/tags/List/" style="font-size: 0.6em;">List</a> <a href="/tags/Map/" style="font-size: 0.8em;">Map</a> <a href="/tags/MySQL%E5%9F%BA%E7%A1%80/" style="font-size: 0.6em;">MySQL基础</a> <a href="/tags/Object/" style="font-size: 0.6em;">Object</a> <a href="/tags/SQL%E8%B0%83%E4%BC%98/" style="font-size: 0.6em;">SQL调优</a> <a href="/tags/Set/" style="font-size: 0.6em;">Set</a> <a href="/tags/%E4%BA%8B%E5%8A%A1/" style="font-size: 0.8em;">事务</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 0.6em;">其他</a> <a href="/tags/%E5%8F%8D%E5%B0%84/" style="font-size: 0.6em;">反射</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 0.6em;">多线程</a> <a href="/tags/%E5%AF%B9%E8%B1%A1/" style="font-size: 0.6em;">对象</a> <a href="/tags/%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8/" style="font-size: 0.6em;">并发安全</a> <a href="/tags/%E5%BA%8F%E5%88%97%E5%8C%96/" style="font-size: 0.6em;">序列化</a> <a href="/tags/%E5%BC%82%E5%B8%B8/" style="font-size: 0.6em;">异常</a>
+      </div>
+  </aside>
+
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/27/Redis-%E5%9C%BA%E6%99%AF%E7%90%86%E8%A7%A3/"><i class="fa fa-book"></i> Redis-场景理解</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/27/Redis-%E9%9B%86%E7%BE%A4/"><i class="fa fa-book"></i> Redis-集群</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/27/Redis-%E7%BC%93%E5%AD%98%E6%B7%98%E6%B1%B0%E4%B8%8E%E8%BF%87%E6%9C%9F%E5%88%A0%E9%99%A4/"><i class="fa fa-book"></i> Redis-缓存淘汰与过期删除</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/27/Redis-%E4%BA%8B%E5%8A%A1%E4%B8%8E%E6%97%A5%E5%BF%97/"><i class="fa fa-book"></i> Redis-事务与日志</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/27/Redis-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B/"><i class="fa fa-book"></i> Redis-数据结构</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+            
+
+        
+
+                </div>
+    </div>
+</div>
+
+<footer>
+    <div id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2024 XIAOYAN 版权所有.</li>
+                            <li>本站已运行<span id="kr-since">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>自豪地使用 <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a> 主题</li>
+                            <li>站点由 xiaoyan 用 <i class="fa fa-heart" style="color:#d43f57"></i> 搭建</li>
+                        </div>
+                        <!-- 额外的追加注入项 -->
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                <div class="box theme-box" id="theme-toggle">
+                    <span class="fa fa-adjust"></span>
+                </div>
+            </div>
+            <div id="gotop-box" class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+
+    <div id="kr-donate-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseDonateModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-bitcoin"></i>
+            </div>
+            <div class="kr-modal-title">打赏</div>
+            <button class="kr-modal-close" onclick="krCloseDonateModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-donate-message">请我喝一杯冰阔咯~</div>
+            <div class="kr-donate-qr" id="kr-donate-qr">
+                
+            </div>
+            <div class="kr-donate-platforms">
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #1677ff;" title="支付宝" onclick="krDonateModalShowPlatformQR('https://qr.alipay.com/fkx15009k7u0fqrj8auepdf', '#1677ff')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-alipay">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M19 3h-14a2 2 0 0 0 -2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2 -2v-14a2 2 0 0 0 -2 -2z" />
+  <path d="M7 7h10" />
+  <path d="M12 3v7" />
+  <path d="M21 17.314c-2.971 -1.923 -15 -8.779 -15 -1.864c0 1.716 1.52 2.55 2.985 2.55c3.512 0 6.814 -5.425 6.814 -8h-6.604" />
+</svg>
+
+                        </button>
+                    
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #38ad5a;" title="微信支付" onclick="krDonateModalShowPlatformQR('wxp://f2f0hR4eF9Ypa3tpzjWme9fQDyWW3PIGe3WG5oiIakWLmDs', '#38ad5a')">
+                            <i class="fa fa-wechat"></i>
+                        </button>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/donate.min.js"></script>
+
+
+
+
+    <div id="kr-share-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseShareModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-share-alt"></i>
+            </div>
+            <div class="kr-modal-title">分享</div>
+            <button class="kr-modal-close" onclick="krCloseShareModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-share-message">让兄弟萌也来瞅一瞅！</div>
+            <div class="kr-share-qr" id="kr-share-qr"></div>
+            <div class="kr-share-platforms">
+                
+                    <button class="kr-share-platform-button" style="color: #e6162d;" title="QQ" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-qq"></i>
+                    </button>
+                
+                    <button class="kr-share-platform-button" style="color: #25d366;" title="微信" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-weixin"></i>
+                    </button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/share.min.js"></script>
+
+
+
+<!-- 额外的追加注入项 -->
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
+<meting-js
+  server="netease"
+  type="playlist"
+  fixed="true"
+  order="random"
+  id="12613265870">
+</meting-js>
+
+
+
+        <script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
+</script>
+
+
+  <script defer src="/vendors/nprogress@0.2.0/nprogress.js"></script>
+
+
+
+  <script defer src="/vendors/viewerjs@1.11.6/dist/viewer.min.js"></script>
+
+
+<script defer src="/js/kr-core.min.js"></script>
+
+
+  <script defer src="/js/kr-pjax.min.js"></script>
+
+
+<!-- 额外的追加注入项 -->
+
+  <script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+
+
+
+    </body>
+</html>

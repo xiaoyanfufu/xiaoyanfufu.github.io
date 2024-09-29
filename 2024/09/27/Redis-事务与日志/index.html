@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  
+    <link rel="icon" href="/images/earthstars.png">
+  
+  
+  <title>Redis-事务与日志 | XIAOYAN</title>
+  <link rel="canonical" href="http://example.com/2024/09/27/Redis-%E4%BA%8B%E5%8A%A1%E4%B8%8E%E6%97%A5%E5%BF%97/">
+  <meta name="author" content="xiaoyan" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="事务, 日志" />
+  
+  <meta name="description" content="事务如何实现Redis原子性Redis在执行单条命令时具有原子性，因为Redis采用单线程模型，所有的命令都在一个主线程中顺序执行，不存在多线程竞争问题。然而，如果需要执行多条命令并保持原子性，Redis提供了Lua脚本功能，可以将多条Redis命令组合成一个整体执行，从而保证操作的原子性。 假设我们有一个分布式系统，多个进程需要访问一个共享资源，我们可以使用以下Lua脚本来实现分布式锁： 123">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis-事务与日志">
+<meta property="og:url" content="http://example.com/2024/09/27/Redis-%E4%BA%8B%E5%8A%A1%E4%B8%8E%E6%97%A5%E5%BF%97/index.html">
+<meta property="og:site_name" content="XIAOYAN">
+<meta property="og:description" content="事务如何实现Redis原子性Redis在执行单条命令时具有原子性，因为Redis采用单线程模型，所有的命令都在一个主线程中顺序执行，不存在多线程竞争问题。然而，如果需要执行多条命令并保持原子性，Redis提供了Lua脚本功能，可以将多条Redis命令组合成一个整体执行，从而保证操作的原子性。 假设我们有一个分布式系统，多个进程需要访问一个共享资源，我们可以使用以下Lua脚本来实现分布式锁： 123">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409281555558.png">
+<meta property="article:published_time" content="2024-09-27T00:53:42.000Z">
+<meta property="article:modified_time" content="2024-09-28T08:28:12.668Z">
+<meta property="article:author" content="xiaoyan">
+<meta property="article:tag" content="事务">
+<meta property="article:tag" content="日志">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409281555558.png">
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kr-core.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/highlight.js/night-eighties.min.css" media="all"></link>
+  
+  <link rel="stylesheet" id="theme-light-css" href="/css/kr-theme/light.min.css" media="all"></link>
+  <link rel="stylesheet" id="theme-dark-css" href="/css/kr-theme/dark.min.css" media="(prefers-color-scheme: dark)"></link>
+  <script src="/js/kr-theme.min.js"></script>
+  <link rel="stylesheet" id="fontawe-css" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="nprogress-css" href="/vendors/nprogress@0.2.0/nprogress.css" media="all"></link>
+  
+  
+    <link rel="stylesheet" href="/vendors/viewerjs@1.11.6/dist/viewer.min.css"></link>
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  
+    <script src="/vendors/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+  
+  <!-- 自定义站点横幅和背景 -->
+  <style>
+    
+      .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_light.png');
+      }
+      html[data-theme="dark"] .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_dark.png');
+      }
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+        html[data-theme="dark"] body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+      }
+    
+    
+      .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+      html[data-theme="dark"] .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+    
+  </style>
+
+  <!-- 额外的追加注入项 -->
+  
+    <link rel="stylesheet" href="/css/custom.css">
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    <li>
+                                        
+                                            <a target="_blank" rel="noopener" href="https://xiaoyanfufu.top/">
+                                        
+                                            
+                                                <i class="fa fa-home"></i>
+                                            
+                                            首页
+                                        </a>
+                                        
+                                    </li>
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">XIAOYAN</a></div>
+                    <div id="kratos-nav-toggle-wrapper" class="nav-toggle">
+                        <a id="kratos-nav-toggle" class="kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>XIAOYAN</h2> <br />
+                        <span>山重水复疑无路，柳暗花明又一村。</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+
+
+        
+
+            
+
+            <section class="kr-main-col col-md-8">
+
+        
+
+            <article itemscope itemtype="https://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/27/Redis-%E4%BA%8B%E5%8A%A1%E4%B8%8E%E6%97%A5%E5%BF%97/">
+    <div class="kratos-hentry kratos-page-inner clearfix">
+        <header class="kratos-page-header">
+            
+                <h1 class="kratos-page-title text-center" itemprop="name headline">Redis-事务与日志</h1>
+            
+            <ul class="kratos-page-meta text-center">
+                <li><time datetime="2024-09-27T00:53:42.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2024-09-27</time></li>
+                <li itemprop="author" itemscope itemtype="https://schema.org/Person">
+                    <i class="fa fa-user"></i> 作者 <span itemprop="name">xiaoyan</span>
+                </li>
+                
+                    <li>
+                        <i class="fa fa-edit"></i> 
+                        
+                        
+                            ~2.67K
+                        
+                        字
+                    </li>
+                
+                
+                
+            </ul>
+        </header>
+        <div class="kratos-page-content kr-post">
+            
+            
+            
+                <div class="kratos-post-inner-toc toc-div-class" >
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8B%E5%8A%A1"><span class="toc-number">1.</span> <span class="toc-text">事务</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0Redis%E5%8E%9F%E5%AD%90%E6%80%A7"><span class="toc-number">1.1.</span> <span class="toc-text">如何实现Redis原子性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis%E4%BA%8B%E5%8A%A1"><span class="toc-number">1.2.</span> <span class="toc-text">Redis事务</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Redis%E4%BA%8B%E5%8A%A1%E7%9A%84%E5%91%BD%E4%BB%A4"><span class="toc-number">1.2.1.</span> <span class="toc-text">Redis事务的命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Redis%E4%BA%8B%E5%8A%A1%E7%9A%84%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B"><span class="toc-number">1.2.2.</span> <span class="toc-text">Redis事务的执行流程</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%97%A5%E5%BF%97"><span class="toc-number">2.</span> <span class="toc-text">日志</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis%E7%9A%84%E6%8C%81%E4%B9%85%E5%8C%96"><span class="toc-number">2.1.</span> <span class="toc-text">Redis的持久化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#AOF%E6%97%A5%E5%BF%97%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.1.1.</span> <span class="toc-text">AOF日志实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RDB%E5%BF%AB%E7%85%A7%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.1.2.</span> <span class="toc-text">RDB快照实现</span></a></li></ol></li></ol></li></ol>
+                </div>
+            
+            <hr />
+            <div itemprop="articleBody"><h1 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h1><h2 id="如何实现Redis原子性"><a href="#如何实现Redis原子性" class="headerlink" title="如何实现Redis原子性"></a>如何实现Redis原子性</h2><p>Redis在执行单条命令时具有原子性，因为Redis采用单线程模型，所有的命令都在一个主线程中顺序执行，不存在多线程竞争问题。然而，如果需要执行多条命令并保持原子性，Redis提供了Lua脚本功能，可以将多条Redis命令组合成一个整体执行，从而保证操作的原子性。</p>
+<p>假设我们有一个分布式系统，多个进程需要访问一个共享资源，我们可以使用以下Lua脚本来实现分布式锁：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- Lua脚本实现分布式锁</span></span><br><span class="line"><span class="keyword">local</span> lockKey = KEYS[<span class="number">1</span>]</span><br><span class="line"><span class="keyword">local</span> lockValue = ARGV[<span class="number">1</span>]</span><br><span class="line"><span class="keyword">local</span> lockTimeout = <span class="built_in">tonumber</span>(ARGV[<span class="number">2</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 尝试获取锁</span></span><br><span class="line"><span class="keyword">local</span> result = redis.call(<span class="string">&#x27;SET&#x27;</span>, lockKey, lockValue, <span class="string">&#x27;NX&#x27;</span>, <span class="string">&#x27;EX&#x27;</span>, lockTimeout)</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 如果获取锁成功，返回1；否则返回0</span></span><br><span class="line"><span class="keyword">if</span> result <span class="keyword">then</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<p>在Redis中执行该Lua脚本的命令如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">EVAL <span class="string">&quot;local lockKey = KEYS[1]; local lockValue = ARGV[1]; local lockTimeout = tonumber(ARGV[2]); local result = redis.call(&#x27;SET&#x27;, lockKey, lockValue, &#x27;NX&#x27;, &#x27;EX&#x27;, lockTimeout); if result then return 1 else return 0 end&quot;</span> 1 lockKey lockValue lockTimeout</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>EVAL</code>：Redis的命令，用于执行Lua脚本。</li>
+<li><code>&quot;local lockKey = KEYS[1]; local lockValue = ARGV[1]; local lockTimeout = tonumber(ARGV[2]); local result = redis.call(&#39;SET&#39;, lockKey, lockValue, &#39;NX&#39;, &#39;EX&#39;, lockTimeout); if result then return 1 else return 0 end&quot;</code>：Lua脚本内容。</li>
+<li><code>1</code>：表示脚本中有一个键（<code>lockKey</code>）。</li>
+<li><code>lockKey</code>、<code>lockValue</code>、<code>lockTimeout</code>：传递给Lua脚本的参数。</li>
+</ul>
+<h2 id="Redis事务"><a href="#Redis事务" class="headerlink" title="Redis事务"></a>Redis事务</h2><p>除了使用Lua脚本，Redis事务也可以保证Redis的原子性。Redis事务通过<code>MULTI</code>、<code>EXEC</code>、<code>DISCARD</code>和<code>WATCH</code>命令来实现。事务可以将多个命令打包成一个整体执行，从而保证这些命令在执行过程中不会被其他命令打断，保证操作的原子性。</p>
+<h3 id="Redis事务的命令"><a href="#Redis事务的命令" class="headerlink" title="Redis事务的命令"></a>Redis事务的命令</h3><ul>
+<li>**<code>MULTI</code>**：标记一个事务块的开始。</li>
+<li>**<code>EXEC</code>**：执行事务块中的所有命令。</li>
+<li>**<code>DISCARD</code>**：取消事务，放弃执行事务块中的所有命令。</li>
+<li>**<code>WATCH</code>**：监视一个或多个键，如果在事务执行之前这些键被其他命令修改，事务将被中断。</li>
+</ul>
+<h3 id="Redis事务的执行流程"><a href="#Redis事务的执行流程" class="headerlink" title="Redis事务的执行流程"></a>Redis事务的执行流程</h3><ol>
+<li><strong>开启事务</strong>：使用<code>MULTI</code>命令开启一个事务。</li>
+<li><strong>添加命令</strong>：在事务块中添加多个Redis命令。</li>
+<li><strong>执行事务</strong>：使用<code>EXEC</code>命令执行事务块中的所有命令。</li>
+<li><strong>取消事务</strong>（可选）：如果需要取消事务，可以使用<code>DISCARD</code>命令。</li>
+</ol>
+<p>假设我们需要执行以下两条命令，并确保它们具有原子性：</p>
+<ol>
+<li>将键<code>key1</code>的值设置为<code>value1</code>。</li>
+<li>将键<code>key2</code>的值设置为<code>value2</code>。</li>
+</ol>
+<p>我们可以使用Redis事务来实现：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 开启事务</span></span><br><span class="line">MULTI</span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加命令</span></span><br><span class="line">SET key1 value1</span><br><span class="line">SET key2 value2</span><br><span class="line"></span><br><span class="line"><span class="comment"># 执行事务</span></span><br><span class="line">EXEC</span><br></pre></td></tr></table></figure>
+
+<p>Redis事务在执行过程中，如果某个命令执行失败，Redis不会进行事务回滚。也就是说，即使某个命令执行失败，事务块中的其他命令仍然会继续执行。</p>
+<h1 id="日志"><a href="#日志" class="headerlink" title="日志"></a>日志</h1><h2 id="Redis的持久化"><a href="#Redis的持久化" class="headerlink" title="Redis的持久化"></a>Redis的持久化</h2><p>Redis是一个高性能的内存数据库，所有的读写操作都在内存中进行。然而，内存中的数据在系统重启后会丢失，为了确保数据在重启后能够恢复，Redis提供了持久化机制，将数据存储到磁盘中。Redis的持久化主要通过两种机制实现：AOF（Append-Only File）日志和RDB（Redis Database）快照。</p>
+<p>Redis的持久化主要通过两种机制：</p>
+<ul>
+<li>AOF日志：每执行一条操作命令，就把该命令以追加的方式写入日志文件中。</li>
+<li>RDB快照：将某一刻的内存数据，以二进制的方式写入磁盘中。</li>
+</ul>
+<h3 id="AOF日志实现"><a href="#AOF日志实现" class="headerlink" title="AOF日志实现"></a>AOF日志实现</h3><p>AOF日志是一种记录Redis操作命令的持久化方式。每当Redis执行一条写操作命令时，该命令会被追加到AOF日志文件中。当Redis重启时，可以通过读取AOF日志文件并逐行执行命令来恢复数据。</p>
+<img src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409281555558.png" alt="AOF执行流程" style="zoom:80%;">
+
+<p>Redis提供了三种AOF日志回写硬盘的策略：</p>
+<ol>
+<li><strong>Always</strong>：每执行一条命令后，立即将该命令写入磁盘日志文件中。这种策略保证了数据的实时持久化，但会对性能产生较大影响。</li>
+<li><strong>Everysec</strong>：每秒将AOF日志文件的内核缓冲区中的数据写入磁盘日志文件。这种策略在性能和数据安全性之间取得了平衡。</li>
+<li><strong>No</strong>：将命令写入AOF日志的内核缓冲区，由操作系统决定何时将日志写入磁盘日志文件。这种策略性能最高，但数据安全性较低。</li>
+</ol>
+<h3 id="RDB快照实现"><a href="#RDB快照实现" class="headerlink" title="RDB快照实现"></a>RDB快照实现</h3><p>因为AOF日志记录的是命令操作，并非实际的数据。当AOF日志巨大时，Redis在启动中执行一次全量的命令操作，势必造成Redis恢复操作缓慢。为了解决这个问题，Redis增加了RDB快照。</p>
+<p>RDB快照是一种记录Redis内存数据状态的持久化方式。RDB快照将某一时刻的内存数据以二进制格式写入磁盘文件中。当Redis重启时，可以通过加载RDB快照文件来快速恢复数据。</p>
+<p>Redis提供了两条命令来生成RDB快照文件：</p>
+<ol>
+<li><strong>save</strong>：在主线程中生成RDB快照文件。由于是在主线程中执行，如果快照文件较大，可能会阻塞主线程，影响Redis的性能。</li>
+<li><strong>bgsave</strong>：创建一个子线程来生成RDB快照文件。这种方式避免了主线程的阻塞，提高了Redis的性能。</li>
+</ol>
+</div>
+        </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+            
+            
+                <div class="post-actions text-center clearfix" id="post-actions">
+                
+                    <a class="donate" href="javascript:;" onclick="krOpenDonateModal()"><i class="fa fa-bitcoin"></i> 打赏</a>
+                
+                
+                    <a class="share" href="javascript:;" onclick="krOpenShareModal()"><i class="fa fa-share-alt"></i> 分享</a>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    <a class="tag-none-link" href="/tags/%E4%BA%8B%E5%8A%A1/" rel="tag">事务</a>, <a class="tag-none-link" href="/tags/%E6%97%A5%E5%BF%97/" rel="tag">日志</a>
+                </div>
+                <div class="pull-date">
+                    <time datetime="2024-09-28T08:28:12.668Z" itemprop="dateModified">最后编辑：2024-09-28</time>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" Redis-数据结构" href="/2024/09/27/Redis-数据结构与线程模型/"><i class="fa fa-angle-left"></i> 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" Redis-缓存淘汰与过期删除" href="/2024/09/27/Redis-缓存淘汰与过期删除/">下一篇 <i class="fa fa-angle-right"></i></a>
+            </div>
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+            
+                
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/user.jpg" alt="xiaoyan" loading="lazy" decoding="auto" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">是一只时时翻垃圾吃的宅子。</p>
+    </div>
+    <div class="site-meta">
+        <a class="meta-item" href="/archives/">
+            <span class="title">
+                文章
+            </span>
+            <span class="count">
+                24
+            </span>
+        </a>
+        <a class="meta-item" href="/categories/">
+            <span class="title">
+                分类
+            </span>
+            <span class="count">
+                9
+            </span>
+        </a>
+        <a class="meta-item" href="/tags/">
+            <span class="title">
+                标签
+            </span>
+            <span class="count">
+                32
+            </span>
+        </a>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix toc-div-class" >
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar" role="progressbar" aria-label="阅读进度："></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8B%E5%8A%A1"><span class="toc-number">1.</span> <span class="toc-text">事务</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0Redis%E5%8E%9F%E5%AD%90%E6%80%A7"><span class="toc-number">1.1.</span> <span class="toc-text">如何实现Redis原子性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis%E4%BA%8B%E5%8A%A1"><span class="toc-number">1.2.</span> <span class="toc-text">Redis事务</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Redis%E4%BA%8B%E5%8A%A1%E7%9A%84%E5%91%BD%E4%BB%A4"><span class="toc-number">1.2.1.</span> <span class="toc-text">Redis事务的命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Redis%E4%BA%8B%E5%8A%A1%E7%9A%84%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B"><span class="toc-number">1.2.2.</span> <span class="toc-text">Redis事务的执行流程</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%97%A5%E5%BF%97"><span class="toc-number">2.</span> <span class="toc-text">日志</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis%E7%9A%84%E6%8C%81%E4%B9%85%E5%8C%96"><span class="toc-number">2.1.</span> <span class="toc-text">Redis的持久化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#AOF%E6%97%A5%E5%BF%97%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.1.1.</span> <span class="toc-text">AOF日志实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RDB%E5%BF%AB%E7%85%A7%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.1.2.</span> <span class="toc-text">RDB快照实现</span></a></li></ol></li></ol></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类列表</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%9F%BA%E7%A1%80/">基础</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">并发编程</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E9%9B%86%E5%90%88/">集合</a><span class="category-list-count">5</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a><span class="category-list-count">5</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/%E6%97%A5%E5%BF%97/">日志</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9E%B6%E6%9E%84/">架构</a><span class="category-list-count">1</span></li></ul>
+  </aside>
+
+
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/DDD/" style="font-size: 0.6em;">DDD</a> <a href="/tags/I-O/" style="font-size: 0.6em;">I/O</a> <a href="/tags/Java8%E6%96%B0%E7%89%B9%E6%80%A7/" style="font-size: 0.6em;">Java8新特性</a> <a href="/tags/Java%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" style="font-size: 0.6em;">Java基本概念</a> <a href="/tags/List/" style="font-size: 0.6em;">List</a> <a href="/tags/Map/" style="font-size: 0.8em;">Map</a> <a href="/tags/MySQL%E5%9F%BA%E7%A1%80/" style="font-size: 0.6em;">MySQL基础</a> <a href="/tags/Object/" style="font-size: 0.6em;">Object</a> <a href="/tags/SQL%E8%B0%83%E4%BC%98/" style="font-size: 0.6em;">SQL调优</a> <a href="/tags/Set/" style="font-size: 0.6em;">Set</a> <a href="/tags/%E4%BA%8B%E5%8A%A1/" style="font-size: 0.8em;">事务</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 0.6em;">其他</a> <a href="/tags/%E5%8F%8D%E5%B0%84/" style="font-size: 0.6em;">反射</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 0.6em;">多线程</a> <a href="/tags/%E5%AF%B9%E8%B1%A1/" style="font-size: 0.6em;">对象</a> <a href="/tags/%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8/" style="font-size: 0.6em;">并发安全</a> <a href="/tags/%E5%BA%8F%E5%88%97%E5%8C%96/" style="font-size: 0.6em;">序列化</a> <a href="/tags/%E5%BC%82%E5%B8%B8/" style="font-size: 0.6em;">异常</a>
+      </div>
+  </aside>
+
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/27/Redis-%E5%9C%BA%E6%99%AF%E7%90%86%E8%A7%A3/"><i class="fa fa-book"></i> Redis-场景理解</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/27/Redis-%E9%9B%86%E7%BE%A4/"><i class="fa fa-book"></i> Redis-集群</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/27/Redis-%E7%BC%93%E5%AD%98%E6%B7%98%E6%B1%B0%E4%B8%8E%E8%BF%87%E6%9C%9F%E5%88%A0%E9%99%A4/"><i class="fa fa-book"></i> Redis-缓存淘汰与过期删除</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/27/Redis-%E4%BA%8B%E5%8A%A1%E4%B8%8E%E6%97%A5%E5%BF%97/"><i class="fa fa-book"></i> Redis-事务与日志</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/27/Redis-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B/"><i class="fa fa-book"></i> Redis-数据结构</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+            
+
+        
+
+                </div>
+    </div>
+</div>
+
+<footer>
+    <div id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2024 XIAOYAN 版权所有.</li>
+                            <li>本站已运行<span id="kr-since">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>自豪地使用 <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a> 主题</li>
+                            <li>站点由 xiaoyan 用 <i class="fa fa-heart" style="color:#d43f57"></i> 搭建</li>
+                        </div>
+                        <!-- 额外的追加注入项 -->
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                <div class="box theme-box" id="theme-toggle">
+                    <span class="fa fa-adjust"></span>
+                </div>
+            </div>
+            <div id="gotop-box" class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+
+    <div id="kr-donate-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseDonateModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-bitcoin"></i>
+            </div>
+            <div class="kr-modal-title">打赏</div>
+            <button class="kr-modal-close" onclick="krCloseDonateModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-donate-message">请我喝一杯冰阔咯~</div>
+            <div class="kr-donate-qr" id="kr-donate-qr">
+                
+            </div>
+            <div class="kr-donate-platforms">
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #1677ff;" title="支付宝" onclick="krDonateModalShowPlatformQR('https://qr.alipay.com/fkx15009k7u0fqrj8auepdf', '#1677ff')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-alipay">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M19 3h-14a2 2 0 0 0 -2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2 -2v-14a2 2 0 0 0 -2 -2z" />
+  <path d="M7 7h10" />
+  <path d="M12 3v7" />
+  <path d="M21 17.314c-2.971 -1.923 -15 -8.779 -15 -1.864c0 1.716 1.52 2.55 2.985 2.55c3.512 0 6.814 -5.425 6.814 -8h-6.604" />
+</svg>
+
+                        </button>
+                    
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #38ad5a;" title="微信支付" onclick="krDonateModalShowPlatformQR('wxp://f2f0hR4eF9Ypa3tpzjWme9fQDyWW3PIGe3WG5oiIakWLmDs', '#38ad5a')">
+                            <i class="fa fa-wechat"></i>
+                        </button>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/donate.min.js"></script>
+
+
+
+
+    <div id="kr-share-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseShareModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-share-alt"></i>
+            </div>
+            <div class="kr-modal-title">分享</div>
+            <button class="kr-modal-close" onclick="krCloseShareModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-share-message">让兄弟萌也来瞅一瞅！</div>
+            <div class="kr-share-qr" id="kr-share-qr"></div>
+            <div class="kr-share-platforms">
+                
+                    <button class="kr-share-platform-button" style="color: #e6162d;" title="QQ" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-qq"></i>
+                    </button>
+                
+                    <button class="kr-share-platform-button" style="color: #25d366;" title="微信" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-weixin"></i>
+                    </button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/share.min.js"></script>
+
+
+
+<!-- 额外的追加注入项 -->
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
+<meting-js
+  server="netease"
+  type="playlist"
+  fixed="true"
+  order="random"
+  id="12613265870">
+</meting-js>
+
+
+
+        <script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
+</script>
+
+
+  <script defer src="/vendors/nprogress@0.2.0/nprogress.js"></script>
+
+
+
+  <script defer src="/vendors/viewerjs@1.11.6/dist/viewer.min.js"></script>
+
+
+<script defer src="/js/kr-core.min.js"></script>
+
+
+  <script defer src="/js/kr-pjax.min.js"></script>
+
+
+<!-- 额外的追加注入项 -->
+
+  <script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+
+
+
+    </body>
+</html>

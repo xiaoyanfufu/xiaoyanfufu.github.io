@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  
+    <link rel="icon" href="/images/earthstars.png">
+  
+  
+  <title>Redis-缓存淘汰与过期删除 | XIAOYAN</title>
+  <link rel="canonical" href="http://example.com/2024/09/27/Redis-%E7%BC%93%E5%AD%98%E6%B7%98%E6%B1%B0%E4%B8%8E%E8%BF%87%E6%9C%9F%E5%88%A0%E9%99%A4/">
+  <meta name="author" content="xiaoyan" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="策略" />
+  
+  <meta name="description" content="过期删除策略和内存淘汰策略有什么区别？ 过期删除策略是将已过期的键值进行删除，Redis采用的删除策略是惰性删除和定时删除。 内存淘汰策略是在内存满了的时候，redis触发内存淘汰策略，来淘汰一些不必要的内存资源，以腾出空间来保存新的内容。  Redis内存淘汰策略在32位系统中，Redis的maxmemory默认值为3GB，这是因为32位系统最高支持4GB内存，而系统本身需要一定的内存资源来运行">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis-缓存淘汰与过期删除">
+<meta property="og:url" content="http://example.com/2024/09/27/Redis-%E7%BC%93%E5%AD%98%E6%B7%98%E6%B1%B0%E4%B8%8E%E8%BF%87%E6%9C%9F%E5%88%A0%E9%99%A4/index.html">
+<meta property="og:site_name" content="XIAOYAN">
+<meta property="og:description" content="过期删除策略和内存淘汰策略有什么区别？ 过期删除策略是将已过期的键值进行删除，Redis采用的删除策略是惰性删除和定时删除。 内存淘汰策略是在内存满了的时候，redis触发内存淘汰策略，来淘汰一些不必要的内存资源，以腾出空间来保存新的内容。  Redis内存淘汰策略在32位系统中，Redis的maxmemory默认值为3GB，这是因为32位系统最高支持4GB内存，而系统本身需要一定的内存资源来运行">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409281749551.png">
+<meta property="article:published_time" content="2024-09-27T00:54:17.000Z">
+<meta property="article:modified_time" content="2024-09-28T10:24:08.666Z">
+<meta property="article:author" content="xiaoyan">
+<meta property="article:tag" content="策略">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409281749551.png">
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kr-core.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/highlight.js/night-eighties.min.css" media="all"></link>
+  
+  <link rel="stylesheet" id="theme-light-css" href="/css/kr-theme/light.min.css" media="all"></link>
+  <link rel="stylesheet" id="theme-dark-css" href="/css/kr-theme/dark.min.css" media="(prefers-color-scheme: dark)"></link>
+  <script src="/js/kr-theme.min.js"></script>
+  <link rel="stylesheet" id="fontawe-css" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="nprogress-css" href="/vendors/nprogress@0.2.0/nprogress.css" media="all"></link>
+  
+  
+    <link rel="stylesheet" href="/vendors/viewerjs@1.11.6/dist/viewer.min.css"></link>
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  
+    <script src="/vendors/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+  
+  <!-- 自定义站点横幅和背景 -->
+  <style>
+    
+      .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_light.png');
+      }
+      html[data-theme="dark"] .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_dark.png');
+      }
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+        html[data-theme="dark"] body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+      }
+    
+    
+      .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+      html[data-theme="dark"] .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+    
+  </style>
+
+  <!-- 额外的追加注入项 -->
+  
+    <link rel="stylesheet" href="/css/custom.css">
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    <li>
+                                        
+                                            <a target="_blank" rel="noopener" href="https://xiaoyanfufu.top/">
+                                        
+                                            
+                                                <i class="fa fa-home"></i>
+                                            
+                                            首页
+                                        </a>
+                                        
+                                    </li>
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">XIAOYAN</a></div>
+                    <div id="kratos-nav-toggle-wrapper" class="nav-toggle">
+                        <a id="kratos-nav-toggle" class="kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>XIAOYAN</h2> <br />
+                        <span>山重水复疑无路，柳暗花明又一村。</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+
+
+        
+
+            
+
+            <section class="kr-main-col col-md-8">
+
+        
+
+            <article itemscope itemtype="https://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/27/Redis-%E7%BC%93%E5%AD%98%E6%B7%98%E6%B1%B0%E4%B8%8E%E8%BF%87%E6%9C%9F%E5%88%A0%E9%99%A4/">
+    <div class="kratos-hentry kratos-page-inner clearfix">
+        <header class="kratos-page-header">
+            
+                <h1 class="kratos-page-title text-center" itemprop="name headline">Redis-缓存淘汰与过期删除</h1>
+            
+            <ul class="kratos-page-meta text-center">
+                <li><time datetime="2024-09-27T00:54:17.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2024-09-27</time></li>
+                <li itemprop="author" itemscope itemtype="https://schema.org/Person">
+                    <i class="fa fa-user"></i> 作者 <span itemprop="name">xiaoyan</span>
+                </li>
+                
+                    <li>
+                        <i class="fa fa-edit"></i> 
+                        
+                        
+                            ~1.93K
+                        
+                        字
+                    </li>
+                
+                
+                
+            </ul>
+        </header>
+        <div class="kratos-page-content kr-post">
+            
+            
+            
+                <div class="kratos-post-inner-toc toc-div-class" >
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%BF%87%E6%9C%9F%E5%88%A0%E9%99%A4%E7%AD%96%E7%95%A5%E5%92%8C%E5%86%85%E5%AD%98%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">过期删除策略和内存淘汰策略有什么区别？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Redis%E5%86%85%E5%AD%98%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5"><span class="toc-number">2.</span> <span class="toc-text">Redis内存淘汰策略</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Redis%E8%BF%87%E6%9C%9F%E5%88%A0%E9%99%A4%E7%AD%96%E7%95%A5"><span class="toc-number">3.</span> <span class="toc-text">Redis过期删除策略</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%83%B0%E6%80%A7%E5%88%A0%E9%99%A4"><span class="toc-number">3.0.1.</span> <span class="toc-text">惰性删除</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E6%9C%9F%E5%88%A0%E9%99%A4"><span class="toc-number">3.0.2.</span> <span class="toc-text">定期删除</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E6%9C%9F%E5%88%A0%E9%99%A4%E7%9A%84%E9%85%8D%E7%BD%AE"><span class="toc-number">3.0.2.1.</span> <span class="toc-text">定期删除的配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E6%9C%9F%E5%88%A0%E9%99%A4%E7%9A%84%E6%B5%81%E7%A8%8B"><span class="toc-number">3.0.2.2.</span> <span class="toc-text">定期删除的流程</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Redis%E7%BC%93%E5%AD%98%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E8%BF%87%E6%9C%9F%E7%9B%B4%E6%8E%A5%E5%88%A0"><span class="toc-number">4.</span> <span class="toc-text">Redis缓存为什么不过期直接删</span></a></li></ol>
+                </div>
+            
+            <hr />
+            <div itemprop="articleBody"><h1 id="过期删除策略和内存淘汰策略有什么区别？"><a href="#过期删除策略和内存淘汰策略有什么区别？" class="headerlink" title="过期删除策略和内存淘汰策略有什么区别？"></a>过期删除策略和内存淘汰策略有什么区别？</h1><ul>
+<li>过期删除策略是将已过期的键值进行删除，Redis采用的删除策略是惰性删除和定时删除。</li>
+<li>内存淘汰策略是在内存满了的时候，redis触发内存淘汰策略，来淘汰一些不必要的内存资源，以腾出空间来保存新的内容。</li>
+</ul>
+<h1 id="Redis内存淘汰策略"><a href="#Redis内存淘汰策略" class="headerlink" title="Redis内存淘汰策略"></a>Redis内存淘汰策略</h1><p>在32位系统中，Redis的<code>maxmemory</code>默认值为3GB，这是因为32位系统最高支持4GB内存，而系统本身需要一定的内存资源来运行。为了避免因内存不足而导致Redis崩溃，设置<code>maxmemory</code>为3GB是一个合理的默认值。</p>
+<p>Redis提供了8种内存淘汰策略，这些策略可以根据是否进行数据淘汰分为两类：</p>
+<p><em><strong>1. 不进行数据淘汰</strong></em></p>
+<ul>
+<li><strong>noeviction</strong>（Redis 3.0之后默认使用的策略）：当运行内存达到最大内存时，不会淘汰任何数据。如果有新的数据插入，Redis会返回错误。但对于普通的查询或删除操作，Redis可以正常运行。</li>
+</ul>
+<p><em><strong>2. 进行数据淘汰</strong></em></p>
+<p>针对“进行数据淘汰”这一类策略，又可以继续分为“在设置了过期时间的数据中淘汰”和“在所有数据范围内淘汰”两类。</p>
+<p><strong>“在设置了过期时间的数据中淘汰”：</strong></p>
+<ul>
+<li><strong>volatile-random</strong>：随机淘汰设置了过期时间的数据。</li>
+<li><strong>volatile-ttl</strong>：优先淘汰过期时间最早的数据。</li>
+<li><strong>volatile-lru</strong>（Redis 3.0之前默认使用策略）：淘汰所有设置了过期时间的数据中，最久未使用的键值。</li>
+<li><strong>volatile-lfu</strong>：淘汰所有设置了过期时间的数据中，最少使用的数据。</li>
+</ul>
+<p><strong>“在所有数据范围中进行淘汰”：</strong></p>
+<ul>
+<li>allkeys-random：随机淘汰任意键值</li>
+<li>allkey-lru：淘汰整个键值中最久未使用的键值</li>
+<li>allkeys-lfu：淘汰整个键值中最少使用的键值</li>
+</ul>
+<h1 id="Redis过期删除策略"><a href="#Redis过期删除策略" class="headerlink" title="Redis过期删除策略"></a>Redis过期删除策略</h1><p>Redis使用<code>惰性删除</code>和<code>定期删除</code>相结合的过期删除策略，以在CPU使用时间和避免内存空间浪费之间取得平衡。</p>
+<h3 id="惰性删除"><a href="#惰性删除" class="headerlink" title="惰性删除"></a>惰性删除</h3><p>Redis的惰性删除策略由<code>db.c</code>文件中的<code>expireIfNeeded</code>函数实现。惰性删除的核心思想是：在访问或修改key之前，先检查key是否过期，如果过期则删除该key。</p>
+<p>以下是expireIfNeeded函数源码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">expireIfNeeded</span><span class="params">(redisDb *db, robj *key)</span> &#123;</span><br><span class="line">    <span class="comment">// 检查key是否设置了过期时间</span></span><br><span class="line">    <span class="keyword">if</span> (!keyIsExpired(db,key)) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 如果key过期，则删除该key</span></span><br><span class="line">    <span class="keyword">if</span> (server.lazyfree_lazy_expire)</span><br><span class="line">        dbAsyncDelete(db,key);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        dbSyncDelete(db,key);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 返回1表示key已被删除</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>检查key是否过期</strong>：在访问或修改key之前，调用<code>expireIfNeeded</code>函数检查key是否过期。</li>
+<li><strong>删除过期key</strong>：如果key过期，则根据<code>lazyfree_lazy_expire</code>参数配置，选择异步删除（<code>dbAsyncDelete</code>）或同步删除（<code>dbSyncDelete</code>）。</li>
+<li><strong>返回结果</strong>：如果key过期并被删除，返回<code>null</code>给客户端；如果key未过期，则正常返回键值对给客户端。</li>
+</ul>
+<img src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409281749551.png" alt="惰性删除流程">
+
+<h3 id="定期删除"><a href="#定期删除" class="headerlink" title="定期删除"></a>定期删除</h3><p>Redis的定期删除策略是每隔一段时间从内存中随机抽取一定数量的key进行检查，并删除其中过期的key。定期删除的目的是避免内存中积累过多的过期key，从而浪费内存空间。</p>
+<h4 id="定期删除的配置"><a href="#定期删除的配置" class="headerlink" title="定期删除的配置"></a>定期删除的配置</h4><ol>
+<li><strong>间隔检查时间</strong>：默认是1秒检查10次，可以通过<code>redis.conf</code>文件进行配置。</li>
+<li><strong>随机抽查数量</strong>：在源码中，定期删除的实现在<code>expire.c</code>文件下的<code>activeExpireCycle</code>函数中，其中随机抽查的数量由<code>ACTIVE_EXPIRE_CYCLE_LOOKUPS_PER_LOOP</code>定义，数值是20。</li>
+</ol>
+<h4 id="定期删除的流程"><a href="#定期删除的流程" class="headerlink" title="定期删除的流程"></a>定期删除的流程</h4><ol>
+<li><strong>随机抽取key</strong>：从过期字典中随机抽取20个key。</li>
+<li><strong>检查并删除过期key</strong>：检查这些key是否已过期，并删除已过期的key。</li>
+<li><strong>循环检查</strong>：如果本轮已过期的key超过5个，则继续抽取20个key再次进行检查删除，直到不满足该条件，退出。</li>
+</ol>
+<h1 id="Redis缓存为什么不过期直接删"><a href="#Redis缓存为什么不过期直接删" class="headerlink" title="Redis缓存为什么不过期直接删"></a>Redis缓存为什么不过期直接删</h1><p>在Redis中，过期key的删除策略是惰性删除和定期删除相结合的方式。然而，在内存不紧张但CPU紧张的情况下，Redis并不会立即删除过期的key，而是选择延迟删除。这种设计主要是为了在CPU资源紧张的情况下，优先保证业务性能，避免因频繁删除过期key而占用过多的CPU时间。</p>
+</div>
+        </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+            
+            
+                <div class="post-actions text-center clearfix" id="post-actions">
+                
+                    <a class="donate" href="javascript:;" onclick="krOpenDonateModal()"><i class="fa fa-bitcoin"></i> 打赏</a>
+                
+                
+                    <a class="share" href="javascript:;" onclick="krOpenShareModal()"><i class="fa fa-share-alt"></i> 分享</a>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    <a class="tag-none-link" href="/tags/%E7%AD%96%E7%95%A5/" rel="tag">策略</a>
+                </div>
+                <div class="pull-date">
+                    <time datetime="2024-09-28T10:24:08.666Z" itemprop="dateModified">最后编辑：2024-09-28</time>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" Redis-事务与日志" href="/2024/09/27/Redis-事务与日志/"><i class="fa fa-angle-left"></i> 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" Redis-集群" href="/2024/09/27/Redis-集群/">下一篇 <i class="fa fa-angle-right"></i></a>
+            </div>
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+            
+                
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/user.jpg" alt="xiaoyan" loading="lazy" decoding="auto" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">是一只时时翻垃圾吃的宅子。</p>
+    </div>
+    <div class="site-meta">
+        <a class="meta-item" href="/archives/">
+            <span class="title">
+                文章
+            </span>
+            <span class="count">
+                24
+            </span>
+        </a>
+        <a class="meta-item" href="/categories/">
+            <span class="title">
+                分类
+            </span>
+            <span class="count">
+                9
+            </span>
+        </a>
+        <a class="meta-item" href="/tags/">
+            <span class="title">
+                标签
+            </span>
+            <span class="count">
+                32
+            </span>
+        </a>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix toc-div-class" >
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar" role="progressbar" aria-label="阅读进度："></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%BF%87%E6%9C%9F%E5%88%A0%E9%99%A4%E7%AD%96%E7%95%A5%E5%92%8C%E5%86%85%E5%AD%98%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">过期删除策略和内存淘汰策略有什么区别？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Redis%E5%86%85%E5%AD%98%E6%B7%98%E6%B1%B0%E7%AD%96%E7%95%A5"><span class="toc-number">2.</span> <span class="toc-text">Redis内存淘汰策略</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Redis%E8%BF%87%E6%9C%9F%E5%88%A0%E9%99%A4%E7%AD%96%E7%95%A5"><span class="toc-number">3.</span> <span class="toc-text">Redis过期删除策略</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%83%B0%E6%80%A7%E5%88%A0%E9%99%A4"><span class="toc-number">3.0.1.</span> <span class="toc-text">惰性删除</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E6%9C%9F%E5%88%A0%E9%99%A4"><span class="toc-number">3.0.2.</span> <span class="toc-text">定期删除</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E6%9C%9F%E5%88%A0%E9%99%A4%E7%9A%84%E9%85%8D%E7%BD%AE"><span class="toc-number">3.0.2.1.</span> <span class="toc-text">定期删除的配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E6%9C%9F%E5%88%A0%E9%99%A4%E7%9A%84%E6%B5%81%E7%A8%8B"><span class="toc-number">3.0.2.2.</span> <span class="toc-text">定期删除的流程</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Redis%E7%BC%93%E5%AD%98%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E8%BF%87%E6%9C%9F%E7%9B%B4%E6%8E%A5%E5%88%A0"><span class="toc-number">4.</span> <span class="toc-text">Redis缓存为什么不过期直接删</span></a></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类列表</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%9F%BA%E7%A1%80/">基础</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">并发编程</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E9%9B%86%E5%90%88/">集合</a><span class="category-list-count">5</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a><span class="category-list-count">5</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/%E6%97%A5%E5%BF%97/">日志</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9E%B6%E6%9E%84/">架构</a><span class="category-list-count">1</span></li></ul>
+  </aside>
+
+
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/DDD/" style="font-size: 0.6em;">DDD</a> <a href="/tags/I-O/" style="font-size: 0.6em;">I/O</a> <a href="/tags/Java8%E6%96%B0%E7%89%B9%E6%80%A7/" style="font-size: 0.6em;">Java8新特性</a> <a href="/tags/Java%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" style="font-size: 0.6em;">Java基本概念</a> <a href="/tags/List/" style="font-size: 0.6em;">List</a> <a href="/tags/Map/" style="font-size: 0.8em;">Map</a> <a href="/tags/MySQL%E5%9F%BA%E7%A1%80/" style="font-size: 0.6em;">MySQL基础</a> <a href="/tags/Object/" style="font-size: 0.6em;">Object</a> <a href="/tags/SQL%E8%B0%83%E4%BC%98/" style="font-size: 0.6em;">SQL调优</a> <a href="/tags/Set/" style="font-size: 0.6em;">Set</a> <a href="/tags/%E4%BA%8B%E5%8A%A1/" style="font-size: 0.8em;">事务</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 0.6em;">其他</a> <a href="/tags/%E5%8F%8D%E5%B0%84/" style="font-size: 0.6em;">反射</a> <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 0.6em;">多线程</a> <a href="/tags/%E5%AF%B9%E8%B1%A1/" style="font-size: 0.6em;">对象</a> <a href="/tags/%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8/" style="font-size: 0.6em;">并发安全</a> <a href="/tags/%E5%BA%8F%E5%88%97%E5%8C%96/" style="font-size: 0.6em;">序列化</a> <a href="/tags/%E5%BC%82%E5%B8%B8/" style="font-size: 0.6em;">异常</a>
+      </div>
+  </aside>
+
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/27/Redis-%E5%9C%BA%E6%99%AF%E7%90%86%E8%A7%A3/"><i class="fa fa-book"></i> Redis-场景理解</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/27/Redis-%E9%9B%86%E7%BE%A4/"><i class="fa fa-book"></i> Redis-集群</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/27/Redis-%E7%BC%93%E5%AD%98%E6%B7%98%E6%B1%B0%E4%B8%8E%E8%BF%87%E6%9C%9F%E5%88%A0%E9%99%A4/"><i class="fa fa-book"></i> Redis-缓存淘汰与过期删除</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/27/Redis-%E4%BA%8B%E5%8A%A1%E4%B8%8E%E6%97%A5%E5%BF%97/"><i class="fa fa-book"></i> Redis-事务与日志</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/27/Redis-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B/"><i class="fa fa-book"></i> Redis-数据结构</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+            
+
+        
+
+                </div>
+    </div>
+</div>
+
+<footer>
+    <div id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2024 XIAOYAN 版权所有.</li>
+                            <li>本站已运行<span id="kr-since">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>自豪地使用 <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a> 主题</li>
+                            <li>站点由 xiaoyan 用 <i class="fa fa-heart" style="color:#d43f57"></i> 搭建</li>
+                        </div>
+                        <!-- 额外的追加注入项 -->
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                <div class="box theme-box" id="theme-toggle">
+                    <span class="fa fa-adjust"></span>
+                </div>
+            </div>
+            <div id="gotop-box" class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+
+    <div id="kr-donate-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseDonateModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-bitcoin"></i>
+            </div>
+            <div class="kr-modal-title">打赏</div>
+            <button class="kr-modal-close" onclick="krCloseDonateModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-donate-message">请我喝一杯冰阔咯~</div>
+            <div class="kr-donate-qr" id="kr-donate-qr">
+                
+            </div>
+            <div class="kr-donate-platforms">
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #1677ff;" title="支付宝" onclick="krDonateModalShowPlatformQR('https://qr.alipay.com/fkx15009k7u0fqrj8auepdf', '#1677ff')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-alipay">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M19 3h-14a2 2 0 0 0 -2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2 -2v-14a2 2 0 0 0 -2 -2z" />
+  <path d="M7 7h10" />
+  <path d="M12 3v7" />
+  <path d="M21 17.314c-2.971 -1.923 -15 -8.779 -15 -1.864c0 1.716 1.52 2.55 2.985 2.55c3.512 0 6.814 -5.425 6.814 -8h-6.604" />
+</svg>
+
+                        </button>
+                    
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #38ad5a;" title="微信支付" onclick="krDonateModalShowPlatformQR('wxp://f2f0hR4eF9Ypa3tpzjWme9fQDyWW3PIGe3WG5oiIakWLmDs', '#38ad5a')">
+                            <i class="fa fa-wechat"></i>
+                        </button>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/donate.min.js"></script>
+
+
+
+
+    <div id="kr-share-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseShareModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-share-alt"></i>
+            </div>
+            <div class="kr-modal-title">分享</div>
+            <button class="kr-modal-close" onclick="krCloseShareModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-share-message">让兄弟萌也来瞅一瞅！</div>
+            <div class="kr-share-qr" id="kr-share-qr"></div>
+            <div class="kr-share-platforms">
+                
+                    <button class="kr-share-platform-button" style="color: #e6162d;" title="QQ" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-qq"></i>
+                    </button>
+                
+                    <button class="kr-share-platform-button" style="color: #25d366;" title="微信" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-weixin"></i>
+                    </button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/share.min.js"></script>
+
+
+
+<!-- 额外的追加注入项 -->
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
+<meting-js
+  server="netease"
+  type="playlist"
+  fixed="true"
+  order="random"
+  id="12613265870">
+</meting-js>
+
+
+
+        <script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
+</script>
+
+
+  <script defer src="/vendors/nprogress@0.2.0/nprogress.js"></script>
+
+
+
+  <script defer src="/vendors/viewerjs@1.11.6/dist/viewer.min.js"></script>
+
+
+<script defer src="/js/kr-core.min.js"></script>
+
+
+  <script defer src="/js/kr-pjax.min.js"></script>
+
+
+<!-- 额外的追加注入项 -->
+
+  <script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+
+
+
+    </body>
+</html>
