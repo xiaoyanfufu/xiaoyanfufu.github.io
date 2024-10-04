@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  
+    <link rel="icon" href="/images/earthstars.png">
+  
+  
+  <title>Spring-基础（上） | XIAOYAN</title>
+  <link rel="canonical" href="http://example.com/2024/09/30/Spring-%E5%9F%BA%E7%A1%80%EF%BC%88%E4%B8%8A%EF%BC%89/">
+  <meta name="author" content="xiaoyan" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="AOP, IoC" />
+  
+  <meta name="description" content="理解Spring框架Spring框架作为Java企业级应用开发的核心组件，其核心特性涵盖了多个关键领域，为开发者提供了强大的工具和抽象层，以简化复杂的企业级应用开发。以下Spring框架几个核心特性： 1.控制反转（IoC）容器 Spring的核心之一是其控制反转（Inversion of Control, IoC）容器。IoC容器通过反转对象的创建和管理职责，使得开发者能够专注于业务逻辑的实现，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring-基础（上）">
+<meta property="og:url" content="http://example.com/2024/09/30/Spring-%E5%9F%BA%E7%A1%80%EF%BC%88%E4%B8%8A%EF%BC%89/index.html">
+<meta property="og:site_name" content="XIAOYAN">
+<meta property="og:description" content="理解Spring框架Spring框架作为Java企业级应用开发的核心组件，其核心特性涵盖了多个关键领域，为开发者提供了强大的工具和抽象层，以简化复杂的企业级应用开发。以下Spring框架几个核心特性： 1.控制反转（IoC）容器 Spring的核心之一是其控制反转（Inversion of Control, IoC）容器。IoC容器通过反转对象的创建和管理职责，使得开发者能够专注于业务逻辑的实现，">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://cdn.xiaolincoding.com//picgo/1716791217083-132fe2ba-706a-4d8d-aef3-1617a2046585.png">
+<meta property="article:published_time" content="2024-09-30T03:48:27.000Z">
+<meta property="article:modified_time" content="2024-10-03T13:10:57.630Z">
+<meta property="article:author" content="xiaoyan">
+<meta property="article:tag" content="IoC">
+<meta property="article:tag" content="AOP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.xiaolincoding.com//picgo/1716791217083-132fe2ba-706a-4d8d-aef3-1617a2046585.png">
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kr-core.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/highlight.js/night-eighties.min.css" media="all"></link>
+  
+  <link rel="stylesheet" id="theme-light-css" href="/css/kr-theme/light.min.css" media="all"></link>
+  <link rel="stylesheet" id="theme-dark-css" href="/css/kr-theme/dark.min.css" media="(prefers-color-scheme: dark)"></link>
+  <script src="/js/kr-theme.min.js"></script>
+  <link rel="stylesheet" id="fontawe-css" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="nprogress-css" href="/vendors/nprogress@0.2.0/nprogress.css" media="all"></link>
+  
+  
+    <link rel="stylesheet" href="/vendors/viewerjs@1.11.6/dist/viewer.min.css"></link>
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  
+    <script src="/vendors/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+  
+  <!-- 自定义站点横幅和背景 -->
+  <style>
+    
+      .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_light.png');
+      }
+      html[data-theme="dark"] .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_dark.png');
+      }
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+        html[data-theme="dark"] body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+      }
+    
+    
+      .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+      html[data-theme="dark"] .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+    
+  </style>
+
+  <!-- 额外的追加注入项 -->
+  
+    <link rel="stylesheet" href="/css/custom.css">
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    <li>
+                                        
+                                            <a href="/">
+                                        
+                                            
+                                                <i class="fa fa-home"></i>
+                                            
+                                            首页
+                                        </a>
+                                        
+                                    </li>
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">XIAOYAN</a></div>
+                    <div id="kratos-nav-toggle-wrapper" class="nav-toggle">
+                        <a id="kratos-nav-toggle" class="kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>XIAOYAN</h2> <br />
+                        <span>山重水复疑无路，柳暗花明又一村。</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+
+
+        
+
+            
+
+            <section class="kr-main-col col-md-8">
+
+        
+
+            <article itemscope itemtype="https://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/30/Spring-%E5%9F%BA%E7%A1%80%EF%BC%88%E4%B8%8A%EF%BC%89/">
+    <div class="kratos-hentry kratos-page-inner clearfix">
+        <header class="kratos-page-header">
+            
+                <h1 class="kratos-page-title text-center" itemprop="name headline">Spring-基础（上）</h1>
+            
+            <ul class="kratos-page-meta text-center">
+                <li><time datetime="2024-09-30T03:48:27.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2024-09-30</time></li>
+                <li itemprop="author" itemscope itemtype="https://schema.org/Person">
+                    <i class="fa fa-user"></i> 作者 <span itemprop="name">xiaoyan</span>
+                </li>
+                
+                    <li>
+                        <i class="fa fa-edit"></i> 
+                        
+                        
+                            ~21.82K
+                        
+                        字
+                    </li>
+                
+                
+                
+            </ul>
+        </header>
+        <div class="kratos-page-content kr-post">
+            
+            
+            
+                <div class="kratos-post-inner-toc toc-div-class" >
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%90%86%E8%A7%A3Spring%E6%A1%86%E6%9E%B6"><span class="toc-number">1.</span> <span class="toc-text">理解Spring框架</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#IoC"><span class="toc-number">2.</span> <span class="toc-text">IoC</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%A7%E5%88%B6%E5%8F%8D%E8%BD%AC%EF%BC%88IoC%EF%BC%89"><span class="toc-number">2.1.</span> <span class="toc-text">控制反转（IoC）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#IoC%E7%9A%84%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5"><span class="toc-number">2.1.1.</span> <span class="toc-text">IoC的核心概念</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E6%8E%A7%E5%88%B6%E5%8F%8D%E8%BD%AC%EF%BC%88Inversion-of-Control%EF%BC%89"><span class="toc-number">2.1.1.1.</span> <span class="toc-text">1. 控制反转（Inversion of Control）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%EF%BC%88Dependency-Injection-DI%EF%BC%89"><span class="toc-number">2.1.1.2.</span> <span class="toc-text">2. 依赖注入（Dependency Injection, DI）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IoC%E5%AE%B9%E5%99%A8%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="toc-number">2.1.2.</span> <span class="toc-text">IoC容器的优势</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IoC%E5%AE%B9%E5%99%A8%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.1.3.</span> <span class="toc-text">IoC容器的实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B"><span class="toc-number">2.1.4.</span> <span class="toc-text">示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BE%9D%E8%B5%96%E5%80%92%E7%BD%AE%E3%80%81%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%E3%80%81%E6%8E%A7%E5%88%B6%E5%8F%8D%E8%BD%AC"><span class="toc-number">2.2.</span> <span class="toc-text">依赖倒置、依赖注入、控制反转</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%A7%E5%88%B6%E5%8F%8D%E8%BD%AC%EF%BC%88Inversion-of-Control-IoC%EF%BC%89"><span class="toc-number">2.2.1.</span> <span class="toc-text">控制反转（Inversion of Control, IoC）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%EF%BC%88Dependency-Injection-DI%EF%BC%89"><span class="toc-number">2.2.2.</span> <span class="toc-text">依赖注入（Dependency Injection, DI）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%9D%E8%B5%96%E5%80%92%E7%BD%AE%E5%8E%9F%E5%88%99%EF%BC%88Dependency-Inversion-Principle-DIP%EF%BC%89"><span class="toc-number">2.2.3.</span> <span class="toc-text">依赖倒置原则（Dependency Inversion Principle, DIP）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-IoC-%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.3.</span> <span class="toc-text">Spring IoC 的设计与实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Bean-%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E7%AE%A1%E7%90%86"><span class="toc-number">2.3.1.</span> <span class="toc-text">Bean 生命周期管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%EF%BC%88Dependency-Injection%EF%BC%89"><span class="toc-number">2.3.2.</span> <span class="toc-text">依赖注入（Dependency Injection）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Bean-%E7%9A%84%E4%BD%9C%E7%94%A8%E5%9F%9F%E7%AE%A1%E7%90%86"><span class="toc-number">2.3.3.</span> <span class="toc-text">Bean 的作用域管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86"><span class="toc-number">2.3.4.</span> <span class="toc-text">异常处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%A2%E5%90%91%E5%88%87%E9%9D%A2%E7%BC%96%E7%A8%8B%EF%BC%88AOP%EF%BC%89%E6%94%AF%E6%8C%81"><span class="toc-number">2.3.5.</span> <span class="toc-text">面向切面编程（AOP）支持</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E8%BD%BD"><span class="toc-number">2.3.6.</span> <span class="toc-text">配置文件加载</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#AOP"><span class="toc-number">3.</span> <span class="toc-text">AOP</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9D%A2%E5%90%91%E5%88%87%E9%9D%A2%E7%BC%96%E7%A8%8B%EF%BC%88AOP%EF%BC%89"><span class="toc-number">3.1.</span> <span class="toc-text">面向切面编程（AOP）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#AOP%E7%9A%84%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5"><span class="toc-number">3.1.1.</span> <span class="toc-text">AOP的核心概念</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E5%88%87%E9%9D%A2%EF%BC%88Aspect%EF%BC%89"><span class="toc-number">3.1.1.1.</span> <span class="toc-text">1. 切面（Aspect）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E8%BF%9E%E6%8E%A5%E7%82%B9%EF%BC%88Join-Point%EF%BC%89"><span class="toc-number">3.1.1.2.</span> <span class="toc-text">2. 连接点（Join Point）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E9%80%9A%E7%9F%A5%EF%BC%88Advice%EF%BC%89"><span class="toc-number">3.1.1.3.</span> <span class="toc-text">3. 通知（Advice）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E5%88%87%E7%82%B9%EF%BC%88Pointcut%EF%BC%89"><span class="toc-number">3.1.1.4.</span> <span class="toc-text">4. 切点（Pointcut）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-%E5%BC%95%E4%BB%8B%EF%BC%88Introduction%EF%BC%89"><span class="toc-number">3.1.1.5.</span> <span class="toc-text">5. 引介（Introduction）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-%E7%BB%87%E5%85%A5%EF%BC%88Weaving%EF%BC%89"><span class="toc-number">3.1.1.6.</span> <span class="toc-text">6. 织入（Weaving）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-AOP%E4%BB%A3%E7%90%86%EF%BC%88AOP-Proxy%EF%BC%89"><span class="toc-number">3.1.1.7.</span> <span class="toc-text">7. AOP代理（AOP Proxy）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-%E7%9B%AE%E6%A0%87%E5%AF%B9%E8%B1%A1%EF%BC%88Target-Object%EF%BC%89"><span class="toc-number">3.1.1.8.</span> <span class="toc-text">8. 目标对象（Target Object）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AOP%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">3.1.2.</span> <span class="toc-text">AOP的应用场景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AOP%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%9C%BA%E5%88%B6"><span class="toc-number">3.1.3.</span> <span class="toc-text">AOP的实现机制</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#JDK%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86"><span class="toc-number">3.1.3.1.</span> <span class="toc-text">JDK动态代理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#CGLIB%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86"><span class="toc-number">3.1.3.2.</span> <span class="toc-text">CGLIB动态代理</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B-1"><span class="toc-number">3.1.4.</span> <span class="toc-text">示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BD%95%E8%A6%81%E6%9C%89Spring-AOP"><span class="toc-number">3.2.</span> <span class="toc-text">为何要有Spring AOP</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-AOP-%E5%8E%9F%E7%90%86%EF%BC%9A%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86%E6%8A%80%E6%9C%AF%E7%9A%84%E5%BA%94%E7%94%A8"><span class="toc-number">3.3.</span> <span class="toc-text">Spring AOP 原理：动态代理技术的应用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#JDK-Proxy"><span class="toc-number">3.3.1.</span> <span class="toc-text">JDK Proxy</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CGLIB"><span class="toc-number">3.3.2.</span> <span class="toc-text">CGLIB</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Spring-AOP-%E7%9A%84%E9%80%89%E6%8B%A9%E7%AD%96%E7%95%A5"><span class="toc-number">3.3.3.</span> <span class="toc-text">Spring AOP 的选择策略</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86%E4%B8%8E%E9%9D%99%E6%80%81%E4%BB%A3%E7%90%86%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">3.4.</span> <span class="toc-text">动态代理与静态代理的区别</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%99%E6%80%81%E4%BB%A3%E7%90%86"><span class="toc-number">3.4.1.</span> <span class="toc-text">静态代理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86"><span class="toc-number">3.4.2.</span> <span class="toc-text">动态代理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8C%BA%E5%88%AB%E6%80%BB%E7%BB%93"><span class="toc-number">3.4.3.</span> <span class="toc-text">区别总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#AOP-%E5%AE%9E%E7%8E%B0%E5%B8%B8%E8%A7%81%E6%B3%A8%E8%A7%A3"><span class="toc-number">3.5.</span> <span class="toc-text">AOP 实现常见注解</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%8D%E5%B0%84%E7%9A%84%E7%89%B9%E6%80%A7%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">4.</span> <span class="toc-text">反射的特性及其应用场景</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%B9%E6%80%A7"><span class="toc-number">4.0.1.</span> <span class="toc-text">特性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">4.0.2.</span> <span class="toc-text">应用场景</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-Spring-%E6%A1%86%E6%9E%B6%E4%B8%AD%E7%9A%84%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%EF%BC%88DI%EF%BC%89%E5%92%8C%E6%8E%A7%E5%88%B6%E5%8F%8D%E8%BD%AC%EF%BC%88IoC%EF%BC%89"><span class="toc-number">4.0.2.1.</span> <span class="toc-text">1. Spring 框架中的依赖注入（DI）和控制反转（IoC）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86"><span class="toc-number">4.0.2.2.</span> <span class="toc-text">2. 动态代理</span></a></li></ol></li></ol></li></ol></li></ol>
+                </div>
+            
+            <hr />
+            <div itemprop="articleBody"><h1 id="理解Spring框架"><a href="#理解Spring框架" class="headerlink" title="理解Spring框架"></a>理解Spring框架</h1><p>Spring框架作为Java企业级应用开发的核心组件，其核心特性涵盖了多个关键领域，为开发者提供了强大的工具和抽象层，以简化复杂的企业级应用开发。以下Spring框架几个核心特性：</p>
+<p><strong>1.控制反转（IoC）容器</strong></p>
+<p>Spring的核心之一是其控制反转（Inversion of Control, IoC）容器。IoC容器通过反转对象的创建和管理职责，使得开发者能够专注于业务逻辑的实现，而非对象的生命周期管理。具体来说，开发者只需定义bean及其依赖关系，Spring容器会自动负责这些对象的创建、组装和管理。</p>
+<ul>
+<li><strong>依赖注入（Dependency Injection, DI）</strong>：IoC容器通过依赖注入机制，将对象之间的依赖关系从代码中解耦，使得对象的创建和依赖关系的管理更加灵活和可配置。Spring支持多种依赖注入方式，包括构造器注入、Setter注入和字段注入。</li>
+<li><strong>Bean生命周期管理</strong>：Spring容器不仅负责bean的创建，还管理其生命周期，包括初始化和销毁阶段。开发者可以通过实现特定的接口或使用注解来定制bean的生命周期行为。</li>
+</ul>
+<p><strong>2.面向切面编程（AOP）</strong></p>
+<p>面向切面编程（Aspect-Oriented Programming, AOP）是Spring框架的另一大核心特性。AOP允许开发者将横切关注点（如事务管理、日志记录、安全性等）模块化，从而提高代码的模块化程度和可维护性。</p>
+<ul>
+<li><strong>切面（Aspect）</strong>：切面是对横切关注点的模块化封装，通常包括通知（Advice）和切点（Pointcut）。通知定义了在切点处执行的行为，而切点则定义了在何处应用这些行为。</li>
+<li><strong>连接点（Join Point）</strong>：连接点是程序执行过程中的特定点，如方法调用、异常抛出等。Spring AOP支持在方法调用和异常抛出处应用切面。</li>
+<li><strong>代理机制</strong>：Spring AOP通过代理机制实现切面的应用。Spring支持两种代理方式：基于JDK动态代理和基于CGLIB的代理。前者适用于接口代理，后者适用于类代理。</li>
+</ul>
+<p><strong>3. 事务管理</strong></p>
+<p>Spring框架提供了一致且灵活的事务管理机制，使得开发者能够以声明式或编程式的方式管理事务。</p>
+<ul>
+<li><strong>声明式事务管理</strong>：通过使用<code>@Transactional</code>注解或XML配置，开发者可以声明事务边界和事务属性，Spring会自动管理事务的开始、提交和回滚。</li>
+<li><strong>编程式事务管理</strong>：对于需要更细粒度控制的事务场景，Spring提供了<code>TransactionTemplate</code>和<code>PlatformTransactionManager</code>等API，允许开发者以编程方式管理事务。</li>
+<li><strong>事务传播行为</strong>：Spring支持多种事务传播行为（如REQUIRED、REQUIRES_NEW、NESTED等），使得开发者能够灵活控制事务的传播和隔离级别。</li>
+</ul>
+<p><strong>4. Spring MVC框架</strong></p>
+<p>Spring MVC是基于Servlet API构建的Web框架，采用了模型-视图-控制器（Model-View-Controller, MVC）架构模式，为开发者提供了一种结构化的方式来构建Web应用。</p>
+<ul>
+<li><strong>模型（Model）</strong>：模型层负责处理业务逻辑和数据访问，通常由服务层和数据访问层组成。</li>
+<li><strong>视图（View）</strong>：视图层负责展示数据，通常由JSP、Thymeleaf、FreeMarker等模板引擎实现。</li>
+<li><strong>控制器（Controller）</strong>：控制器层负责处理用户请求，调用模型层处理业务逻辑，并将结果传递给视图层进行展示。Spring MVC通过<code>@Controller</code>和<code>@RequestMapping</code>等注解，简化了控制器的开发。IoC与AOP</li>
+</ul>
+<h1 id="IoC"><a href="#IoC" class="headerlink" title="IoC"></a>IoC</h1><h2 id="控制反转（IoC）"><a href="#控制反转（IoC）" class="headerlink" title="控制反转（IoC）"></a>控制反转（IoC）</h2><p>控制反转（Inversion of Control, IoC）是Spring框架的核心设计原则之一，它通过反转对象的创建和管理职责，使得开发者能够专注于业务逻辑的实现，而非对象的生命周期管理。依赖注入（Dependency Injection, DI）是IoC的一种具体实现方式。</p>
+<p>在传统的开发模式中，对象的创建和管理通常由开发者手动完成，使用<code>new</code>关键字来实例化对象。这种方式会导致代码中各个对象之间的耦合度较高，难以维护和扩展。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UserService</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">UserRepository</span> <span class="variable">userRepository</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">UserRepository</span>();</span><br><span class="line">    <span class="comment">// 业务逻辑</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>而在使用IoC思想的开发中，对象的创建和管理职责被反转给IoC容器，开发者只需定义bean及其依赖关系，Spring容器会自动负责这些对象的创建、组装和管理。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UserService</span> &#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> UserRepository userRepository;</span><br><span class="line">    <span class="comment">// 业务逻辑</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="IoC的核心概念"><a href="#IoC的核心概念" class="headerlink" title="IoC的核心概念"></a>IoC的核心概念</h3><h4 id="1-控制反转（Inversion-of-Control）"><a href="#1-控制反转（Inversion-of-Control）" class="headerlink" title="1. 控制反转（Inversion of Control）"></a>1. 控制反转（Inversion of Control）</h4><p>所谓<strong>控制</strong>，就是对象的创建、初始化、销毁等生命周期管理。在传统的开发模式中，这些控制权由开发者掌握，而在IoC模式中，这些控制权被反转给IoC容器。</p>
+<ul>
+<li><strong>创建对象</strong>：原来是<code>new</code>一个对象，现在是由Spring容器创建。</li>
+<li><strong>初始化对象</strong>：原来是使用构造器或者setter方法给依赖赋值，现在由Spring自动注入。</li>
+<li><strong>销毁对象</strong>：原来是通过给对象赋<code>null</code>值销毁，现在由Spring容器管理生命周期进行销毁。</li>
+</ul>
+<p>所谓<strong>反转</strong>，其实就是反转的控制权，对象的生命周期已经由Spring容器管理来进行控制，开发者由对象的控制者，变成了IoC的被动控制者。</p>
+<h4 id="2-依赖注入（Dependency-Injection-DI）"><a href="#2-依赖注入（Dependency-Injection-DI）" class="headerlink" title="2. 依赖注入（Dependency Injection, DI）"></a>2. 依赖注入（Dependency Injection, DI）</h4><p>依赖注入是IoC的一种实现方式，通过依赖注入，对象之间的依赖关系从代码中解耦，使得对象的创建和依赖关系的管理更加灵活和可配置。Spring支持多种依赖注入方式，包括构造器注入、Setter注入和字段注入。</p>
+<ul>
+<li><strong>构造器注入</strong>：通过构造器参数注入依赖。</li>
+<li><strong>Setter注入</strong>：通过Setter方法注入依赖。</li>
+<li><strong>字段注入</strong>：通过字段注解注入依赖。</li>
+</ul>
+<h3 id="IoC容器的优势"><a href="#IoC容器的优势" class="headerlink" title="IoC容器的优势"></a>IoC容器的优势</h3><ul>
+<li><strong>降低耦合度</strong>：对象之间的依赖关系通过配置文件或注解进行管理，减少了代码中的硬编码依赖。</li>
+<li><strong>提高可测试性</strong>：通过依赖注入，可以方便地使用Mock对象进行单元测试。</li>
+<li><strong>增强可维护性</strong>：对象的创建和管理由容器负责，开发者只需关注业务逻辑的实现。</li>
+</ul>
+<h3 id="IoC容器的实现"><a href="#IoC容器的实现" class="headerlink" title="IoC容器的实现"></a>IoC容器的实现</h3><p>Spring框架通过IoC容器来管理bean的生命周期和依赖关系。Spring IoC容器的主要实现包括：</p>
+<p><strong>1. BeanFactory</strong></p>
+<p>BeanFactory是Spring IoC容器的基本实现，提供了最基本的IoC功能。BeanFactory是一个接口，定义了获取bean、检查bean类型、检查bean作用域等方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">BeanFactory</span> <span class="variable">beanFactory</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">XmlBeanFactory</span>(<span class="keyword">new</span> <span class="title class_">ClassPathResource</span>(<span class="string">&quot;applicationContext.xml&quot;</span>));</span><br><span class="line"><span class="type">UserService</span> <span class="variable">userService</span> <span class="operator">=</span> (UserService) beanFactory.getBean(<span class="string">&quot;userService&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p><strong>2. ApplicationContext</strong></p>
+<p>ApplicationContext是BeanFactory的子接口，提供了更高级的功能，如国际化支持、事件发布、资源加载等。ApplicationContext是Spring应用上下文的核心接口，通常在企业级应用中使用。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">ApplicationContext</span> <span class="variable">context</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ClassPathXmlApplicationContext</span>(<span class="string">&quot;applicationContext.xml&quot;</span>);</span><br><span class="line"><span class="type">UserService</span> <span class="variable">userService</span> <span class="operator">=</span> context.getBean(UserService.class);</span><br></pre></td></tr></table></figure>
+
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><p>以下是一个简单的IoC示例，展示了如何使用Spring IoC容器管理bean及其依赖关系。</p>
+<ul>
+<li>定义服务类</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UserService</span> &#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> UserRepository userRepository;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">saveUser</span><span class="params">(User user)</span> &#123;</span><br><span class="line">        userRepository.save(user);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>定义数据访问类</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Repository</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UserRepository</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">save</span><span class="params">(User user)</span> &#123;</span><br><span class="line">        <span class="comment">// 数据保存逻辑</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>配置Spring上下文</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@ComponentScan(&quot;com.example&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AppConfig</span> &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>使用IoC容器</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Main</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">ApplicationContext</span> <span class="variable">context</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">AnnotationConfigApplicationContext</span>(AppConfig.class);</span><br><span class="line">        <span class="type">UserService</span> <span class="variable">userService</span> <span class="operator">=</span> context.getBean(UserService.class);</span><br><span class="line">        userService.saveUser(<span class="keyword">new</span> <span class="title class_">User</span>());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>控制反转（IoC）是Spring框架的核心设计原则之一，通过反转对象的创建和管理职责，使得开发者能够专注于业务逻辑的实现。依赖注入（DI）是IoC的一种具体实现方式，通过依赖注入，对象之间的依赖关系从代码中解耦，使得对象的创建和依赖关系的管理更加灵活和可配置。Spring IoC容器通过BeanFactory和ApplicationContext实现bean的生命周期管理，提供了强大的工具和抽象层，以简化复杂的企业级应用开发。深入理解IoC的原理和应用，能够帮助开发者更好地利用Spring框架，提升代码的质量和开发效率。</p>
+<h2 id="依赖倒置、依赖注入、控制反转"><a href="#依赖倒置、依赖注入、控制反转" class="headerlink" title="依赖倒置、依赖注入、控制反转"></a>依赖倒置、依赖注入、控制反转</h2><h3 id="控制反转（Inversion-of-Control-IoC）"><a href="#控制反转（Inversion-of-Control-IoC）" class="headerlink" title="控制反转（Inversion of Control, IoC）"></a>控制反转（Inversion of Control, IoC）</h3><p><strong>控制反转</strong>是一种设计原则，它将程序的执行流程控制权从开发者手中转移到了框架或容器中。传统上，开发者通过编写代码来控制程序的执行流程，而在使用框架后，框架接管了这一职责。这种“反转”意味着开发者不再直接控制程序的执行顺序，而是通过配置或声明的方式让框架来管理。</p>
+<h3 id="依赖注入（Dependency-Injection-DI）"><a href="#依赖注入（Dependency-Injection-DI）" class="headerlink" title="依赖注入（Dependency Injection, DI）"></a>依赖注入（Dependency Injection, DI）</h3><p><strong>依赖注入</strong>是一种实现控制反转的具体技术。它通过将依赖对象的创建和管理从类内部转移到外部，从而实现类之间的解耦。依赖注入主要有三种方式：</p>
+<ol>
+<li><strong>构造函数注入</strong>：通过类的构造函数传递依赖对象。</li>
+<li><strong>Setter方法注入</strong>：通过类的Setter方法传递依赖对象。</li>
+<li><strong>字段注入</strong>：通过字段注解直接注入依赖对象。</li>
+</ol>
+<p>依赖注入的核心思想是：类不应该负责创建和管理自己的依赖，而是由外部容器或框架来负责。</p>
+<h3 id="依赖倒置原则（Dependency-Inversion-Principle-DIP）"><a href="#依赖倒置原则（Dependency-Inversion-Principle-DIP）" class="headerlink" title="依赖倒置原则（Dependency Inversion Principle, DIP）"></a>依赖倒置原则（Dependency Inversion Principle, DIP）</h3><p><strong>依赖倒置原则</strong>是面向对象设计中的一个重要原则，它指导我们如何设计模块之间的依赖关系。具体来说，依赖倒置原则包含两个关键点：</p>
+<ol>
+<li><p><strong>高层模块不应该依赖于低层模块</strong>：传统的设计中，高层模块通常直接依赖于低层模块的具体实现。依赖倒置原则要求高层模块和低层模块都应该依赖于抽象接口或抽象类，而不是具体的实现。</p>
+</li>
+<li><p><strong>抽象不应该依赖于细节，细节应该依赖于抽象</strong>：这意味着接口或抽象类的设计应该独立于具体的实现细节，而具体的实现类应该依赖于这些抽象。</p>
+</li>
+</ol>
+<p>依赖倒置原则通过引入抽象层，使得系统更加灵活、可扩展，并且降低了模块之间的耦合度。</p>
+<h2 id="Spring-IoC-的设计与实现"><a href="#Spring-IoC-的设计与实现" class="headerlink" title="Spring IoC 的设计与实现"></a>Spring IoC 的设计与实现</h2><p>在深入探讨如何自行实现 Spring IoC（Inversion of Control，控制反转）容器时，我们需要关注以下几个关键方面，以确保设计的科学性和专业性：</p>
+<h3 id="Bean-生命周期管理"><a href="#Bean-生命周期管理" class="headerlink" title="Bean 生命周期管理"></a>Bean 生命周期管理</h3><p>Bean 的生命周期管理是 IoC 容器设计的核心。为了实现这一功能，可以采用以下策略：</p>
+<ul>
+<li><p><strong>工厂模式</strong>：通过工厂模式来创建和管理 Bean 实例，确保 Bean 的创建过程与业务逻辑解耦。工厂模式可以进一步细分为简单工厂、工厂方法和抽象工厂，根据具体需求选择合适的模式。</p>
+</li>
+<li><p><strong>单例模式</strong>：对于需要全局共享的 Bean，可以采用单例模式来确保系统中只有一个实例存在。单例模式可以通过双重检查锁定（Double-Checked Locking）或静态内部类等方式实现，以保证线程安全。</p>
+</li>
+<li><p><strong>生命周期回调</strong>：除了基本的创建和销毁，还可以引入生命周期回调机制，如 <code>@PostConstruct</code> 和 <code>@PreDestroy</code> 注解，以支持 Bean 在初始化和销毁时的自定义逻辑。</p>
+</li>
+</ul>
+<h3 id="依赖注入（Dependency-Injection）"><a href="#依赖注入（Dependency-Injection）" class="headerlink" title="依赖注入（Dependency Injection）"></a>依赖注入（Dependency Injection）</h3><p>依赖注入是 Spring IoC 的核心特性之一，其实现需要考虑以下几个方面：</p>
+<ul>
+<li><p><strong>注入方式</strong>：支持多种注入方式，包括字段注入（Field Injection）、构造器注入（Constructor Injection）和 setter 注入（Setter Injection）。构造器注入通常被认为是最佳实践，因为它可以确保 Bean 在创建时所有依赖都已满足。</p>
+</li>
+<li><p><strong>反射机制</strong>：利用 Java 的反射机制来动态地解析和注入依赖。反射机制允许在运行时获取类的字段、方法和构造器信息，从而实现依赖的自动注入。</p>
+</li>
+<li><p><strong>配置元数据</strong>：依赖注入的实现依赖于配置元数据，这些元数据可以通过 XML 配置文件、注解（如 <code>@Autowired</code>、<code>@Inject</code>）或 Java 配置类（如 <code>@Configuration</code>）来提供。</p>
+</li>
+</ul>
+<h3 id="Bean-的作用域管理"><a href="#Bean-的作用域管理" class="headerlink" title="Bean 的作用域管理"></a>Bean 的作用域管理</h3><p>Bean 的作用域决定了 Bean 实例的生命周期和可见性。常见的 Bean 作用域包括：</p>
+<ul>
+<li><strong>单例（Singleton）</strong>：在整个应用中只存在一个 Bean 实例。</li>
+<li><strong>原型（Prototype）</strong>：每次请求时都会创建一个新的 Bean 实例。</li>
+<li><strong>会话（Session）</strong>：在 Web 应用中，每个会话对应一个 Bean 实例。</li>
+<li><strong>请求（Request）</strong>：在 Web 应用中，每个请求对应一个 Bean 实例。</li>
+</ul>
+<p>为了支持多种作用域，可以使用 <code>Map</code> 或其他数据结构来存储不同作用域的 Bean 实例。例如，可以使用 <code>ConcurrentHashMap</code> 来存储单例 Bean，使用 <code>ThreadLocal</code> 来存储线程作用域的 Bean。</p>
+<h3 id="异常处理"><a href="#异常处理" class="headerlink" title="异常处理"></a>异常处理</h3><p>在 Bean 管理和依赖注入过程中，可能会遇到各种异常情况，如依赖注入失败、Bean 未找到等。为了确保系统的健壮性，需要定义特定的异常类型，并使用 <code>try-catch</code> 机制进行处理。</p>
+<ul>
+<li><p><strong>自定义异常</strong>：定义如 <code>BeanNotFoundException</code>、<code>DependencyInjectionException</code> 等自定义异常，以便在发生错误时能够提供更详细的错误信息。</p>
+</li>
+<li><p><strong>异常传播</strong>：在异常处理过程中，考虑异常的传播机制，确保异常能够正确地传递到调用者，以便进行适当的处理。</p>
+</li>
+</ul>
+<h3 id="面向切面编程（AOP）支持"><a href="#面向切面编程（AOP）支持" class="headerlink" title="面向切面编程（AOP）支持"></a>面向切面编程（AOP）支持</h3><p>AOP（Aspect-Oriented Programming）是 Spring 框架的另一个重要特性，它允许在不修改原有代码的情况下，通过切面（Aspect）来增强功能。</p>
+<ul>
+<li><p><strong>动态代理</strong>：使用 Java 的动态代理机制来实现 AOP。动态代理可以在运行时生成代理类，从而在不修改原有类的情况下，插入额外的逻辑（如日志记录、事务管理等）。</p>
+</li>
+<li><p><strong>切面编程</strong>：定义切面（Aspect）、切点（Pointcut）和通知（Advice），通过这些元素来实现横切关注点的分离。常见的通知类型包括前置通知（Before Advice）、后置通知（After Advice）、环绕通知（Around Advice）等。</p>
+</li>
+</ul>
+<h3 id="配置文件加载"><a href="#配置文件加载" class="headerlink" title="配置文件加载"></a>配置文件加载</h3><p>配置文件的加载是 IoC 容器启动的关键步骤之一，它决定了容器如何初始化和管理 Bean。</p>
+<ul>
+<li><p><strong>配置文件格式</strong>：支持多种配置文件格式，如 XML、注解（如 <code>@ComponentScan</code>、<code>@Bean</code>）和 Java 配置类（如 <code>@Configuration</code>）。每种配置方式都有其优缺点，可以根据具体需求选择合适的配置方式。</p>
+</li>
+<li><p><strong>配置解析</strong>：配置文件的解析是加载过程中的关键步骤。可以使用 DOM 解析器（如 <code>DocumentBuilder</code>）来解析 XML 配置文件，使用反射机制来解析注解配置，使用 Java 反射来解析 Java 配置类。</p>
+</li>
+<li><p><strong>配置合并</strong>：在复杂的应用中，可能需要从多个配置文件中加载 Bean 信息。为了确保配置的一致性和完整性，可以实现配置的合并机制，将多个配置文件中的信息合并为一个统一的配置对象。</p>
+</li>
+</ul>
+<p>通过以上几个方面的深入设计和实现，可以构建一个功能完备、性能优越的 Spring IoC 容器，满足复杂应用场景的需求。</p>
+<h1 id="AOP"><a href="#AOP" class="headerlink" title="AOP"></a>AOP</h1><h2 id="面向切面编程（AOP）"><a href="#面向切面编程（AOP）" class="headerlink" title="面向切面编程（AOP）"></a>面向切面编程（AOP）</h2><p>面向切面编程（Aspect-Oriented Programming, AOP）是Spring框架的另一大核心特性，它允许开发者将横切关注点（如事务管理、日志记录、安全性等）模块化，从而提高代码的模块化程度和可维护性。AOP的核心思想是将<strong>核心业务逻辑</strong>与<strong>周边业务逻辑</strong>分离，并通过切面将它们编织在一起。</p>
+<h3 id="AOP的核心概念"><a href="#AOP的核心概念" class="headerlink" title="AOP的核心概念"></a>AOP的核心概念</h3><p><img src="https://cdn.xiaolincoding.com//picgo/1716791217083-132fe2ba-706a-4d8d-aef3-1617a2046585.png" alt="来源小林coding"></p>
+<h4 id="1-切面（Aspect）"><a href="#1-切面（Aspect）" class="headerlink" title="1. 切面（Aspect）"></a>1. 切面（Aspect）</h4><p>切面是对横切关注点的模块化封装，通常包括通知（Advice）和切点（Pointcut）。切面定义了在哪些连接点（Join Point）上应用哪些通知。</p>
+<h4 id="2-连接点（Join-Point）"><a href="#2-连接点（Join-Point）" class="headerlink" title="2. 连接点（Join Point）"></a>2. 连接点（Join Point）</h4><p>连接点是程序执行过程中的一个特定点，例如方法调用、异常抛出等。在Spring AOP中，连接点仅支持方法级别的连接点。</p>
+<h4 id="3-通知（Advice）"><a href="#3-通知（Advice）" class="headerlink" title="3. 通知（Advice）"></a>3. 通知（Advice）</h4><p>通知定义了在切点处执行的行为。Spring AOP支持多种类型的通知，包括：</p>
+<ul>
+<li><strong>前置通知（Before Advice）</strong>：在目标方法执行前执行。</li>
+<li><strong>后置通知（After Advice）</strong>：在目标方法执行后执行，无论方法是否成功完成。</li>
+<li><strong>返回通知（After Returning Advice）</strong>：在目标方法成功执行后执行。</li>
+<li><strong>异常通知（After Throwing Advice）</strong>：在目标方法抛出异常后执行。</li>
+<li><strong>环绕通知（Around Advice）</strong>：在目标方法执行前后执行，可以控制方法的执行流程。</li>
+</ul>
+<h4 id="4-切点（Pointcut）"><a href="#4-切点（Pointcut）" class="headerlink" title="4. 切点（Pointcut）"></a>4. 切点（Pointcut）</h4><p>切点用于匹配连接点，定义了在哪些连接点上应用通知。切点通常通过表达式来匹配特定的连接点。</p>
+<h4 id="5-引介（Introduction）"><a href="#5-引介（Introduction）" class="headerlink" title="5. 引介（Introduction）"></a>5. 引介（Introduction）</h4><p>引介允许一个切面声明被通知对象未被实现的额外接口。通过引介，可以为一个对象代理多个目标类。</p>
+<h4 id="6-织入（Weaving）"><a href="#6-织入（Weaving）" class="headerlink" title="6. 织入（Weaving）"></a>6. 织入（Weaving）</h4><p>织入是将切面应用到目标对象的过程。在织入过程中，切面中的通知逻辑会被插入到目标方法上，使得通知逻辑在方法调用时得到执行。</p>
+<h4 id="7-AOP代理（AOP-Proxy）"><a href="#7-AOP代理（AOP-Proxy）" class="headerlink" title="7. AOP代理（AOP Proxy）"></a>7. AOP代理（AOP Proxy）</h4><p>AOP代理是在AOP框架中实现切面协议的对象。Spring AOP支持两种代理方式：</p>
+<ul>
+<li><strong>JDK动态代理</strong>：适用于代理实现了接口的对象。Spring会使用JDK的<code>Proxy</code>类生成代理对象。</li>
+<li><strong>CGLIB动态代理</strong>：适用于代理没有实现接口的对象。Spring会使用CGLIB生成一个被代理对象的子类来进行代理。</li>
+</ul>
+<h4 id="8-目标对象（Target-Object）"><a href="#8-目标对象（Target-Object）" class="headerlink" title="8. 目标对象（Target Object）"></a>8. 目标对象（Target Object）</h4><p>目标对象是被代理的对象，即切面逻辑将要应用的对象。</p>
+<h3 id="AOP的应用场景"><a href="#AOP的应用场景" class="headerlink" title="AOP的应用场景"></a>AOP的应用场景</h3><p>AOP能够将那些与业务无关、却为业务进行服务的通用公共功能封装起来，以便减少系统的代码量，使得系统更加模块化、降低系统耦合度，有利于未来系统的扩展与维护。常见的应用场景包括：</p>
+<ul>
+<li><strong>事务管理</strong>：通过AOP实现声明式事务管理，简化事务控制代码。</li>
+<li><strong>日志记录</strong>：通过AOP实现日志记录，避免在业务代码中嵌入日志逻辑。</li>
+<li><strong>安全性检查</strong>：通过AOP实现权限验证，确保只有授权用户才能访问特定资源。</li>
+<li><strong>性能监控</strong>：通过AOP实现性能监控，记录方法的执行时间和调用次数。</li>
+</ul>
+<h3 id="AOP的实现机制"><a href="#AOP的实现机制" class="headerlink" title="AOP的实现机制"></a>AOP的实现机制</h3><p>Spring AOP通过代理机制实现切面的应用。具体来说，Spring AOP会在运行时生成代理对象，并将切面逻辑织入到目标方法中。</p>
+<h4 id="JDK动态代理"><a href="#JDK动态代理" class="headerlink" title="JDK动态代理"></a>JDK动态代理</h4><p>JDK动态代理适用于代理实现了接口的对象。Spring会使用JDK的<code>Proxy</code>类生成代理对象。JDK动态代理的优点是性能较高，但要求目标对象必须实现至少一个接口。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">UserService</span> &#123;</span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">saveUser</span><span class="params">(User user)</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UserServiceImpl</span> <span class="keyword">implements</span> <span class="title class_">UserService</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">saveUser</span><span class="params">(User user)</span> &#123;</span><br><span class="line">        <span class="comment">// 业务逻辑</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="CGLIB动态代理"><a href="#CGLIB动态代理" class="headerlink" title="CGLIB动态代理"></a>CGLIB动态代理</h4><p>CGLIB动态代理适用于代理没有实现接口的对象。Spring会使用CGLIB生成一个被代理对象的子类来进行代理。CGLIB动态代理的优点是不要求目标对象实现接口，但性能略低于JDK动态代理。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UserService</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">saveUser</span><span class="params">(User user)</span> &#123;</span><br><span class="line">        <span class="comment">// 业务逻辑</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="示例-1"><a href="#示例-1" class="headerlink" title="示例"></a>示例</h3><p>以下是一个简单的AOP示例，展示了如何使用Spring AOP实现日志记录功能。 </p>
+<p><strong>1. 定义切面</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LoggingAspect</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Pointcut(&quot;execution(* com.example.service.*.*(..))&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">serviceMethods</span><span class="params">()</span> &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Before(&quot;serviceMethods()&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">logBefore</span><span class="params">(JoinPoint joinPoint)</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Before method: &quot;</span> + joinPoint.getSignature().getName());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@AfterReturning(pointcut = &quot;serviceMethods()&quot;, returning = &quot;result&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">logAfterReturning</span><span class="params">(JoinPoint joinPoint, Object result)</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;After method: &quot;</span> + joinPoint.getSignature().getName() + <span class="string">&quot;, result: &quot;</span> + result);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>注释解释</strong></p>
+<ul>
+<li>**<code>@Aspect</code>**：将 <code>LoggingAspect</code> 类标记为一个切面类。</li>
+<li>**<code>@Component</code>**：将 <code>LoggingAspect</code> 类标记为一个Spring组件，使其可以被Spring容器管理。</li>
+</ul>
+<p><strong>方法解释</strong></p>
+<ul>
+<li><p>**<code>@Pointcut(&quot;execution(* com.example.service.*.*(..))&quot;)</code>**：定义一个切入点 <code>serviceMethods</code>，匹配 <code>com.example.service</code> 包下所有类的所有方法。</p>
+<ul>
+<li><code>execution(* com.example.service.*.*(..))</code>：<ul>
+<li><code>*</code>：匹配任意返回类型。</li>
+<li><code>com.example.service.*.*</code>：匹配 <code>com.example.service</code> 包下的所有类和所有方法。</li>
+<li><code>(..)</code>：匹配任意数量和类型的参数。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>**<code>@Before(&quot;serviceMethods()&quot;)</code>**：定义一个前置通知 <code>logBefore</code>，在 <code>serviceMethods</code> 切入点匹配的方法执行前执行。</p>
+<ul>
+<li><code>JoinPoint joinPoint</code>：<code>JoinPoint</code> 对象包含被通知方法的详细信息，如方法签名、参数等。</li>
+<li><code>joinPoint.getSignature().getName()</code>：获取被通知方法的名称。</li>
+</ul>
+</li>
+<li><p>**<code>@AfterReturning(pointcut = &quot;serviceMethods()&quot;, returning = &quot;result&quot;)</code>**：定义一个返回通知 <code>logAfterReturning</code>，在 <code>serviceMethods</code> 切入点匹配的方法成功返回后执行。</p>
+<ul>
+<li><code>returning = &quot;result&quot;</code>：指定返回值的参数名称为 <code>result</code>。</li>
+<li><code>Object result</code>：接收方法的返回值。</li>
+</ul>
+</li>
+</ul>
+<p><strong>2. 定义服务类</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UserService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">saveUser</span><span class="params">(User user)</span> &#123;</span><br><span class="line">        <span class="comment">// 业务逻辑</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;User saved successfully&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>注释解释</strong></p>
+<ul>
+<li>**<code>@Service</code>**：将 <code>UserService</code> 类标记为一个Spring服务组件，使其可以被Spring容器管理。</li>
+</ul>
+<p><strong>方法解释</strong></p>
+<ul>
+<li>**<code>public String saveUser(User user)</code>**：定义一个服务方法 <code>saveUser</code>，接收一个 <code>User</code> 对象作为参数，并返回一个字符串。</li>
+</ul>
+<p><strong>3. 配置Spring上下文</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@ComponentScan(&quot;com.example&quot;)</span></span><br><span class="line"><span class="meta">@EnableAspectJAutoProxy</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AppConfig</span> &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>注释解释</strong></p>
+<ul>
+<li>**<code>@Configuration</code>**：将 <code>AppConfig</code> 类标记为一个Spring配置类。</li>
+<li>**<code>@ComponentScan(&quot;com.example&quot;)</code>**：启用组件扫描，扫描 <code>com.example</code> 包及其子包中的Spring组件。</li>
+<li>**<code>@EnableAspectJAutoProxy</code>**：启用Spring AOP的自动代理功能，支持基于AspectJ的切面。</li>
+</ul>
+<h2 id="为何要有Spring-AOP"><a href="#为何要有Spring-AOP" class="headerlink" title="为何要有Spring AOP"></a>为何要有Spring AOP</h2><p>Spring AOP（Aspect-Oriented Programming，面向切面编程）的设计初衷确实是为了补充和增强面向对象编程（OOP）的不足，而不是作为一种独立的编程范式来替代现有的开发模式。AOP 的核心思想是将横切关注点（Cross-Cutting Concerns）从业务逻辑中分离出来，从而提高代码的模块化、可维护性和可重用性。</p>
+<h2 id="Spring-AOP-原理：动态代理技术的应用"><a href="#Spring-AOP-原理：动态代理技术的应用" class="headerlink" title="Spring AOP 原理：动态代理技术的应用"></a>Spring AOP 原理：动态代理技术的应用</h2><p>Spring AOP（Aspect-Oriented Programming，面向切面编程）的核心原理是基于动态代理技术。动态代理允许在程序运行时生成代理对象，从而在不修改原有代码的情况下，插入额外的逻辑（如日志记录、事务管理等）。Spring AOP 主要使用了两种动态代理技术：JDK Proxy 和 CGLIB。</p>
+<h3 id="JDK-Proxy"><a href="#JDK-Proxy" class="headerlink" title="JDK Proxy"></a>JDK Proxy</h3><p>JDK Proxy 是 Java 标准库提供的一种<strong>基于接口</strong>的动态代理实现方式，适用于被代理对象实现了接口的情况。JDK Proxy 的工作原理如下：</p>
+<ul>
+<li><p><strong>接口实现</strong>：JDK Proxy 要求被代理对象必须实现一个或多个接口。代理对象会实现相同的接口，并在运行时生成具体的实现类。</p>
+</li>
+<li><p><strong>InvocationHandler</strong>：JDK Proxy 通过 <code>InvocationHandler</code> 接口来定义代理对象的行为。<code>InvocationHandler</code> 接口包含一个 <code>invoke</code> 方法，该方法会在代理对象的每个方法调用时被触发。</p>
+</li>
+<li><p><strong>生成代理对象</strong>：通过 <code>Proxy.newProxyInstance</code> 方法，可以在运行时生成代理对象。该方法需要传入类加载器、接口数组和 <code>InvocationHandler</code> 实例。</p>
+</li>
+</ul>
+<p>示例代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.lang.reflect.InvocationHandler;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Method;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Proxy;</span><br><span class="line"></span><br><span class="line"><span class="keyword">interface</span> <span class="title class_">MyInterface</span> &#123;</span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">doSomething</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyInterfaceImpl</span> <span class="keyword">implements</span> <span class="title class_">MyInterface</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">doSomething</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Doing something...&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyInvocationHandler</span> <span class="keyword">implements</span> <span class="title class_">InvocationHandler</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Object target;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">MyInvocationHandler</span><span class="params">(Object target)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.target = target;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Object <span class="title function_">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span> <span class="keyword">throws</span> Throwable &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Before method call&quot;</span>);</span><br><span class="line">        <span class="type">Object</span> <span class="variable">result</span> <span class="operator">=</span> method.invoke(target, args);</span><br><span class="line">        System.out.println(<span class="string">&quot;After method call&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">JDKProxyExample</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">MyInterface</span> <span class="variable">target</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MyInterfaceImpl</span>();</span><br><span class="line">        <span class="type">MyInterface</span> <span class="variable">proxy</span> <span class="operator">=</span> (MyInterface) Proxy.newProxyInstance(</span><br><span class="line">            target.getClass().getClassLoader(),</span><br><span class="line">            target.getClass().getInterfaces(),</span><br><span class="line">            <span class="keyword">new</span> <span class="title class_">MyInvocationHandler</span>(target)</span><br><span class="line">        );</span><br><span class="line">        proxy.doSomething();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="CGLIB"><a href="#CGLIB" class="headerlink" title="CGLIB"></a>CGLIB</h3><p>CGLIB（Code Generation Library）是一种<strong>基于字节码</strong>生成的动态代理技术，适用于被代理对象没有实现接口的情况。CGLIB 的工作原理如下：</p>
+<ul>
+<li><p><strong>字节码生成</strong>：CGLIB 通过生成被代理类的子类来实现代理。生成的子类会覆盖被代理类的所有非 <code>final</code> 方法，并在方法调用前后插入额外的逻辑。</p>
+</li>
+<li><p><strong>MethodInterceptor</strong>：CGLIB 通过 <code>MethodInterceptor</code> 接口来定义代理对象的行为。<code>MethodInterceptor</code> 接口包含一个 <code>intercept</code> 方法，该方法会在代理对象的每个方法调用时被触发。</p>
+</li>
+<li><p><strong>生成代理对象</strong>：通过 <code>Enhancer</code> 类，可以在运行时生成代理对象。<code>Enhancer</code> 类需要传入被代理类的类型和 <code>MethodInterceptor</code> 实例。</p>
+</li>
+</ul>
+<p>示例代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> net.sf.cglib.proxy.Enhancer;</span><br><span class="line"><span class="keyword">import</span> net.sf.cglib.proxy.MethodInterceptor;</span><br><span class="line"><span class="keyword">import</span> net.sf.cglib.proxy.MethodProxy;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Method;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyClass</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">doSomething</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Doing something...&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyMethodInterceptor</span> <span class="keyword">implements</span> <span class="title class_">MethodInterceptor</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Object <span class="title function_">intercept</span><span class="params">(Object obj, Method method, Object[] args, MethodProxy proxy)</span> <span class="keyword">throws</span> Throwable &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Before method call&quot;</span>);</span><br><span class="line">        <span class="type">Object</span> <span class="variable">result</span> <span class="operator">=</span> proxy.invokeSuper(obj, args);</span><br><span class="line">        System.out.println(<span class="string">&quot;After method call&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">CGLIBProxyExample</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">Enhancer</span> <span class="variable">enhancer</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Enhancer</span>();</span><br><span class="line">        enhancer.setSuperclass(MyClass.class);</span><br><span class="line">        enhancer.setCallback(<span class="keyword">new</span> <span class="title class_">MyMethodInterceptor</span>());</span><br><span class="line">        <span class="type">MyClass</span> <span class="variable">proxy</span> <span class="operator">=</span> (MyClass) enhancer.create();</span><br><span class="line">        proxy.doSomething();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Spring-AOP-的选择策略"><a href="#Spring-AOP-的选择策略" class="headerlink" title="Spring AOP 的选择策略"></a>Spring AOP 的选择策略</h3><p>Spring AOP 在选择使用 JDK Proxy 还是 CGLIB 时，遵循以下策略：</p>
+<ul>
+<li><p><strong>JDK Proxy</strong>：如果被代理对象实现了接口，Spring AOP 默认使用 JDK Proxy。这是因为 JDK Proxy 是 Java 标准库的一部分，具有更好的兼容性和性能。</p>
+</li>
+<li><p><strong>CGLIB</strong>：如果被代理对象没有实现接口，或者在配置中显式指定了使用 CGLIB，Spring AOP 会使用 CGLIB。CGLIB 适用于需要代理具体类的情况，但需要注意的是，CGLIB 生成的代理类是目标类的子类，因此目标类不能是 <code>final</code> 的。</p>
+</li>
+</ul>
+<h2 id="动态代理与静态代理的区别"><a href="#动态代理与静态代理的区别" class="headerlink" title="动态代理与静态代理的区别"></a>动态代理与静态代理的区别</h2><p>代理模式是一种常用的设计模式，其目的是为其他类提供一个代理来控制对某个对象的访问，从而将两个类的关系解耦。代理类和实现类通常需要实现相同的接口，最终调用的方法是委托类的方法。代理模式可以分为静态代理和动态代理两种类型，它们在实现方式和应用场景上存在显著差异。</p>
+<h3 id="静态代理"><a href="#静态代理" class="headerlink" title="静态代理"></a>静态代理</h3><p>静态代理是指在代码编译时就已经确定好了被代理对象的代理方式。静态代理通常由程序员或特定工具手动创建，代理类和被代理类之间的关系在编译时就已经固定。</p>
+<ul>
+<li><strong>编译时确定</strong>：静态代理在编译时就已经确定了代理类和被代理类的关系，代理类和被代理类都需要实现相同的接口。</li>
+<li><strong>单一性</strong>：静态代理通常只代理一个具体的类，每个代理类都需要为每个被代理类单独编写。</li>
+<li><strong>代码冗余</strong>：由于每个代理类都需要为每个被代理类单独编写，静态代理可能会导致代码冗余，尤其是在需要代理多个类时。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> <span class="title class_">MyInterface</span> &#123;</span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">doSomething</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyInterfaceImpl</span> <span class="keyword">implements</span> <span class="title class_">MyInterface</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">doSomething</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Doing something...&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyStaticProxy</span> <span class="keyword">implements</span> <span class="title class_">MyInterface</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> MyInterface target;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">MyStaticProxy</span><span class="params">(MyInterface target)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.target = target;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">doSomething</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Before method call&quot;</span>);</span><br><span class="line">        target.doSomething();</span><br><span class="line">        System.out.println(<span class="string">&quot;After method call&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">StaticProxyExample</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">MyInterface</span> <span class="variable">target</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MyInterfaceImpl</span>();</span><br><span class="line">        <span class="type">MyInterface</span> <span class="variable">proxy</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MyStaticProxy</span>(target);</span><br><span class="line">        proxy.doSomething();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="动态代理"><a href="#动态代理" class="headerlink" title="动态代理"></a>动态代理</h3><p>动态代理是指在程序运行期间，通过反射机制动态生成的代理方式。动态代理的对象通常会有多个实现类，代理类和被代理类之间的关系在运行时才确定。</p>
+<ul>
+<li><strong>运行时生成</strong>：动态代理在运行时通过反射机制动态生成代理类，代理类和被代理类之间的关系在运行时才确定。</li>
+<li><strong>灵活性</strong>：动态代理可以代理多个类，甚至可以代理没有实现接口的类（如使用 CGLIB）。</li>
+<li><strong>减少代码冗余</strong>：由于动态代理在运行时生成代理类，可以减少代码冗余，尤其是在需要代理多个类时。</li>
+</ul>
+<p><strong>示例代码（JDK Proxy）</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.lang.reflect.InvocationHandler;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Method;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Proxy;</span><br><span class="line"></span><br><span class="line"><span class="keyword">interface</span> <span class="title class_">MyInterface</span> &#123;</span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">doSomething</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyInterfaceImpl</span> <span class="keyword">implements</span> <span class="title class_">MyInterface</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">doSomething</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Doing something...&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyInvocationHandler</span> <span class="keyword">implements</span> <span class="title class_">InvocationHandler</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Object target;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">MyInvocationHandler</span><span class="params">(Object target)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.target = target;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Object <span class="title function_">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span> <span class="keyword">throws</span> Throwable &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Before method call&quot;</span>);</span><br><span class="line">        <span class="type">Object</span> <span class="variable">result</span> <span class="operator">=</span> method.invoke(target, args);</span><br><span class="line">        System.out.println(<span class="string">&quot;After method call&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DynamicProxyExample</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">MyInterface</span> <span class="variable">target</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MyInterfaceImpl</span>();</span><br><span class="line">        <span class="type">MyInterface</span> <span class="variable">proxy</span> <span class="operator">=</span> (MyInterface) Proxy.newProxyInstance(</span><br><span class="line">            target.getClass().getClassLoader(),</span><br><span class="line">            target.getClass().getInterfaces(),</span><br><span class="line">            <span class="keyword">new</span> <span class="title class_">MyInvocationHandler</span>(target)</span><br><span class="line">        );</span><br><span class="line">        proxy.doSomething();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="区别总结"><a href="#区别总结" class="headerlink" title="区别总结"></a>区别总结</h3><table>
+<thead>
+<tr>
+<th>特性</th>
+<th>静态代理</th>
+<th>动态代理</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>生成时机</td>
+<td>编译时</td>
+<td>运行时</td>
+</tr>
+<tr>
+<td>代理对象数量</td>
+<td>通常只代理一个类</td>
+<td>可以代理多个类</td>
+</tr>
+<tr>
+<td>代码冗余</td>
+<td>较高，每个代理类都需要单独编写</td>
+<td>较低，动态生成代理类</td>
+</tr>
+<tr>
+<td>实现方式</td>
+<td>手动编写代理类</td>
+<td>通过反射机制动态生成代理类</td>
+</tr>
+<tr>
+<td>适用场景</td>
+<td>代理对象较少，且关系固定</td>
+<td>代理对象较多，且关系灵活</td>
+</tr>
+</tbody></table>
+<h2 id="AOP-实现常见注解"><a href="#AOP-实现常见注解" class="headerlink" title="AOP 实现常见注解"></a>AOP 实现常见注解</h2><p>在 Spring AOP 中，注解是定义切面（Aspect）和通知（Advice）的重要方式。通过注解，可以方便地指定切点（Pointcut）、通知类型以及通知的执行时机。以下是 Spring AOP 中常见的注解及其作用：</p>
+<p><strong>1. @Aspect</strong></p>
+<p><code>@Aspect</code> 注解用于定义一个切面类。切面类中包含了切点和通知的定义，Spring AOP 会根据这些定义在运行时生成代理对象。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Aspect;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Component;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyAspect</span> &#123;</span><br><span class="line">    <span class="comment">// 切点和通知定义</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><strong>@Pointcut</strong></li>
+</ol>
+<p><code>@Pointcut</code> 注解用于定义切点，即指定哪些连接点（Join Point）会被应用通知。切点表达式可以使用通配符、逻辑运算符等来匹配方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Pointcut;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Pointcut(&quot;execution(* com.example.service.*.*(..))&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">serviceMethods</span><span class="params">()</span> &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li><strong>@Before</strong></li>
+</ol>
+<p><code>@Before</code> 注解用于定义前置通知，即在目标方法执行之前执行的通知。前置通知通常用于在方法执行前进行一些准备工作，如日志记录、参数校验等。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Before;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Before(&quot;serviceMethods()&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">beforeServiceMethod</span><span class="params">()</span> &#123;</span><br><span class="line">    System.out.println(<span class="string">&quot;Before service method execution&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li><strong>@After</strong></li>
+</ol>
+<p><code>@After</code> 注解用于定义后置通知，即在目标方法执行之后（无论是否抛出异常）执行的通知。后置通知通常用于在方法执行后进行一些清理工作，如资源释放、日志记录等。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.After;</span><br><span class="line"></span><br><span class="line"><span class="meta">@After(&quot;serviceMethods()&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">afterServiceMethod</span><span class="params">()</span> &#123;</span><br><span class="line">    System.out.println(<span class="string">&quot;After service method execution&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li><strong>@Around</strong></li>
+</ol>
+<p><code>@Around</code> 注解用于定义环绕通知，即在目标方法执行前后都执行的通知。环绕通知可以完全控制目标方法的执行，包括是否执行目标方法、如何执行目标方法等。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.aspectj.lang.ProceedingJoinPoint;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Around;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Around(&quot;serviceMethods()&quot;)</span></span><br><span class="line"><span class="keyword">public</span> Object <span class="title function_">aroundServiceMethod</span><span class="params">(ProceedingJoinPoint joinPoint)</span> <span class="keyword">throws</span> Throwable &#123;</span><br><span class="line">    System.out.println(<span class="string">&quot;Before service method execution&quot;</span>);</span><br><span class="line">    <span class="type">Object</span> <span class="variable">result</span> <span class="operator">=</span> joinPoint.proceed();</span><br><span class="line">    System.out.println(<span class="string">&quot;After service method execution&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="6">
+<li><strong>@AfterReturning</strong></li>
+</ol>
+<p><code>@AfterReturning</code> 注解用于定义返回后通知，即在目标方法正常返回结果后执行的通知。返回后通知可以访问目标方法的返回值。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.AfterReturning;</span><br><span class="line"></span><br><span class="line"><span class="meta">@AfterReturning(pointcut = &quot;serviceMethods()&quot;, returning = &quot;result&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">afterReturningServiceMethod</span><span class="params">(Object result)</span> &#123;</span><br><span class="line">    System.out.println(<span class="string">&quot;Service method returned: &quot;</span> + result);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="7">
+<li><strong>@AfterThrowing</strong></li>
+</ol>
+<p><code>@AfterThrowing</code> 注解用于定义异常通知，即在目标方法抛出异常后执行的通知。异常通知可以访问抛出的异常对象。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.AfterThrowing;</span><br><span class="line"></span><br><span class="line"><span class="meta">@AfterThrowing(pointcut = &quot;serviceMethods()&quot;, throwing = &quot;ex&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">afterThrowingServiceMethod</span><span class="params">(Exception ex)</span> &#123;</span><br><span class="line">    System.out.println(<span class="string">&quot;Service method threw an exception: &quot;</span> + ex.getMessage());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="8">
+<li><strong>@Advice</strong></li>
+</ol>
+<p><code>@Advice</code> 注解是一个通用的通知类型注解，用于定义通知的类型。通常情况下，Spring AOP 提供了更具体的通知类型注解（如 <code>@Before</code>、<code>@After</code> 等），因此 <code>@Advice</code> 注解较少直接使用。</p>
+<p>通过使用这些注解，可以方便地在 Spring AOP 中定义切面和通知，实现横切关注点的分离。以下是这些注解的简要总结：</p>
+<table>
+<thead>
+<tr>
+<th>注解</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>@Aspect</code></td>
+<td>定义切面类</td>
+</tr>
+<tr>
+<td><code>@Pointcut</code></td>
+<td>定义切点，指定连接点</td>
+</tr>
+<tr>
+<td><code>@Before</code></td>
+<td>前置通知，在目标方法执行前执行</td>
+</tr>
+<tr>
+<td><code>@After</code></td>
+<td>后置通知，在目标方法执行后（无论是否异常）执行</td>
+</tr>
+<tr>
+<td><code>@Around</code></td>
+<td>环绕通知，在目标方法执行前后都执行</td>
+</tr>
+<tr>
+<td><code>@AfterReturning</code></td>
+<td>返回后通知，在目标方法正常返回后执行</td>
+</tr>
+<tr>
+<td><code>@AfterThrowing</code></td>
+<td>异常通知，在目标方法抛出异常后执行</td>
+</tr>
+<tr>
+<td><code>@Advice</code></td>
+<td>通用通知类型，较少直接使用</td>
+</tr>
+</tbody></table>
+<h1 id="反射的特性及其应用场景"><a href="#反射的特性及其应用场景" class="headerlink" title="反射的特性及其应用场景"></a>反射的特性及其应用场景</h1><h3 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h3><p>反射（Reflection）是 Java 语言提供的一种强大的机制，允许程序在运行时检查和操作类、方法、字段等结构信息。反射的主要特性包括：</p>
+<ol>
+<li><p><strong>运行时类信息访问</strong>：反射可以在运行时获取类的所有结构信息，包括类名、包名、父类、接口、属性、方法、构造器等。通过反射，可以动态地获取和操作这些信息。</p>
+</li>
+<li><p><strong>动态对象创建</strong>：反射允许在运行时动态地创建对象实例，即使不知道具体的类名。通过 <code>Class.forName()</code> 方法可以加载类，并通过 <code>newInstance()</code> 方法创建对象实例。</p>
+</li>
+<li><p><strong>方法调用</strong>：反射可以调用类的所有方法，包括私有方法。通过 <code>Method</code> 类的 <code>invoke()</code> 方法，可以在运行时调用任意方法。</p>
+</li>
+<li><p><strong>访问和修改字段值</strong>：反射可以访问和修改类的字段值，包括私有字段。通过 <code>Field</code> 类的 <code>get()</code> 和 <code>set()</code> 方法，可以在运行时获取和设置字段的值。</p>
+</li>
+</ol>
+<h3 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h3><p>反射在许多框架和库中得到了广泛应用，以下是一些常见的应用场景：</p>
+<h4 id="1-Spring-框架中的依赖注入（DI）和控制反转（IoC）"><a href="#1-Spring-框架中的依赖注入（DI）和控制反转（IoC）" class="headerlink" title="1. Spring 框架中的依赖注入（DI）和控制反转（IoC）"></a>1. Spring 框架中的依赖注入（DI）和控制反转（IoC）</h4><p>Spring 框架通过使用反射机制来实现其核心特性：依赖注入（Dependency Injection, DI）和控制反转（Inversion of Control, IoC）。</p>
+<ul>
+<li><p><strong>依赖注入</strong>：在 Spring 中，开发者可以通过配置 XML 文件或基于注解的方式声明组件之间的依赖关系。当应用启动时，Spring 容器会扫描这些配置文件和注解，然后利用反射机制来实例化 Bean 对象，并根据配置文件自动装配到依赖中。</p>
+</li>
+<li><p><strong>控制反转</strong>：Spring 通过反射机制实现控制反转，将对象的创建和依赖关系的管理交给容器，而不是由开发者手动管理。</p>
+</li>
+</ul>
+<h4 id="2-动态代理"><a href="#2-动态代理" class="headerlink" title="2. 动态代理"></a>2. 动态代理</h4><p>在需要对现有方法调用进行拦截、日志记录、权限控制或事务管理等应用场景中，反射结合动态代理技术被广泛应用。</p>
+<ul>
+<li><p><strong>动态代理</strong>：动态代理允许在运行时生成代理对象，从而在不修改原有代码的情况下，插入额外的逻辑。动态代理通常结合反射机制来实现。</p>
+</li>
+<li><p><strong>Spring AOP</strong>：Spring AOP 允许开发者定义切面（Aspect），将切面逻辑插入到原有的业务逻辑中进行增强，而不需要修改原有的代码。Spring AOP 通过动态代理和反射机制实现。</p>
+</li>
+</ul>
+</div>
+        </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+            
+            
+                <div class="post-actions text-center clearfix" id="post-actions">
+                
+                    <a class="donate" href="javascript:;" onclick="krOpenDonateModal()"><i class="fa fa-bitcoin"></i> 打赏</a>
+                
+                
+                    <a class="share" href="javascript:;" onclick="krOpenShareModal()"><i class="fa fa-share-alt"></i> 分享</a>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    <a class="tag-none-link" href="/tags/AOP/" rel="tag">AOP</a>, <a class="tag-none-link" href="/tags/IoC/" rel="tag">IoC</a>
+                </div>
+                <div class="pull-date">
+                    <time datetime="2024-10-03T13:10:57.630Z" itemprop="dateModified">最后编辑：2024-10-03</time>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" Redis-场景理解" href="/2024/09/27/Redis-场景理解/"><i class="fa fa-angle-left"></i> 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" Spring-基础（下）" href="/2024/09/30/Spring-基础（下）/">下一篇 <i class="fa fa-angle-right"></i></a>
+            </div>
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+            
+                
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/user.jpg" alt="xiaoyan" loading="lazy" decoding="auto" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">是一只时时翻垃圾吃的宅子。</p>
+    </div>
+    <div class="site-meta">
+        <a class="meta-item" href="/archives/">
+            <span class="title">
+                文章
+            </span>
+            <span class="count">
+                29
+            </span>
+        </a>
+        <a class="meta-item" href="/categories/">
+            <span class="title">
+                分类
+            </span>
+            <span class="count">
+                9
+            </span>
+        </a>
+        <a class="meta-item" href="/tags/">
+            <span class="title">
+                标签
+            </span>
+            <span class="count">
+                38
+            </span>
+        </a>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix toc-div-class" >
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar" role="progressbar" aria-label="阅读进度："></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%90%86%E8%A7%A3Spring%E6%A1%86%E6%9E%B6"><span class="toc-number">1.</span> <span class="toc-text">理解Spring框架</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#IoC"><span class="toc-number">2.</span> <span class="toc-text">IoC</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%A7%E5%88%B6%E5%8F%8D%E8%BD%AC%EF%BC%88IoC%EF%BC%89"><span class="toc-number">2.1.</span> <span class="toc-text">控制反转（IoC）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#IoC%E7%9A%84%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5"><span class="toc-number">2.1.1.</span> <span class="toc-text">IoC的核心概念</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E6%8E%A7%E5%88%B6%E5%8F%8D%E8%BD%AC%EF%BC%88Inversion-of-Control%EF%BC%89"><span class="toc-number">2.1.1.1.</span> <span class="toc-text">1. 控制反转（Inversion of Control）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%EF%BC%88Dependency-Injection-DI%EF%BC%89"><span class="toc-number">2.1.1.2.</span> <span class="toc-text">2. 依赖注入（Dependency Injection, DI）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IoC%E5%AE%B9%E5%99%A8%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="toc-number">2.1.2.</span> <span class="toc-text">IoC容器的优势</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IoC%E5%AE%B9%E5%99%A8%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.1.3.</span> <span class="toc-text">IoC容器的实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B"><span class="toc-number">2.1.4.</span> <span class="toc-text">示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BE%9D%E8%B5%96%E5%80%92%E7%BD%AE%E3%80%81%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%E3%80%81%E6%8E%A7%E5%88%B6%E5%8F%8D%E8%BD%AC"><span class="toc-number">2.2.</span> <span class="toc-text">依赖倒置、依赖注入、控制反转</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%A7%E5%88%B6%E5%8F%8D%E8%BD%AC%EF%BC%88Inversion-of-Control-IoC%EF%BC%89"><span class="toc-number">2.2.1.</span> <span class="toc-text">控制反转（Inversion of Control, IoC）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%EF%BC%88Dependency-Injection-DI%EF%BC%89"><span class="toc-number">2.2.2.</span> <span class="toc-text">依赖注入（Dependency Injection, DI）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%9D%E8%B5%96%E5%80%92%E7%BD%AE%E5%8E%9F%E5%88%99%EF%BC%88Dependency-Inversion-Principle-DIP%EF%BC%89"><span class="toc-number">2.2.3.</span> <span class="toc-text">依赖倒置原则（Dependency Inversion Principle, DIP）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-IoC-%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.3.</span> <span class="toc-text">Spring IoC 的设计与实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Bean-%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E7%AE%A1%E7%90%86"><span class="toc-number">2.3.1.</span> <span class="toc-text">Bean 生命周期管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%EF%BC%88Dependency-Injection%EF%BC%89"><span class="toc-number">2.3.2.</span> <span class="toc-text">依赖注入（Dependency Injection）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Bean-%E7%9A%84%E4%BD%9C%E7%94%A8%E5%9F%9F%E7%AE%A1%E7%90%86"><span class="toc-number">2.3.3.</span> <span class="toc-text">Bean 的作用域管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86"><span class="toc-number">2.3.4.</span> <span class="toc-text">异常处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%A2%E5%90%91%E5%88%87%E9%9D%A2%E7%BC%96%E7%A8%8B%EF%BC%88AOP%EF%BC%89%E6%94%AF%E6%8C%81"><span class="toc-number">2.3.5.</span> <span class="toc-text">面向切面编程（AOP）支持</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E8%BD%BD"><span class="toc-number">2.3.6.</span> <span class="toc-text">配置文件加载</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#AOP"><span class="toc-number">3.</span> <span class="toc-text">AOP</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9D%A2%E5%90%91%E5%88%87%E9%9D%A2%E7%BC%96%E7%A8%8B%EF%BC%88AOP%EF%BC%89"><span class="toc-number">3.1.</span> <span class="toc-text">面向切面编程（AOP）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#AOP%E7%9A%84%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5"><span class="toc-number">3.1.1.</span> <span class="toc-text">AOP的核心概念</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E5%88%87%E9%9D%A2%EF%BC%88Aspect%EF%BC%89"><span class="toc-number">3.1.1.1.</span> <span class="toc-text">1. 切面（Aspect）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E8%BF%9E%E6%8E%A5%E7%82%B9%EF%BC%88Join-Point%EF%BC%89"><span class="toc-number">3.1.1.2.</span> <span class="toc-text">2. 连接点（Join Point）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E9%80%9A%E7%9F%A5%EF%BC%88Advice%EF%BC%89"><span class="toc-number">3.1.1.3.</span> <span class="toc-text">3. 通知（Advice）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E5%88%87%E7%82%B9%EF%BC%88Pointcut%EF%BC%89"><span class="toc-number">3.1.1.4.</span> <span class="toc-text">4. 切点（Pointcut）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-%E5%BC%95%E4%BB%8B%EF%BC%88Introduction%EF%BC%89"><span class="toc-number">3.1.1.5.</span> <span class="toc-text">5. 引介（Introduction）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-%E7%BB%87%E5%85%A5%EF%BC%88Weaving%EF%BC%89"><span class="toc-number">3.1.1.6.</span> <span class="toc-text">6. 织入（Weaving）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-AOP%E4%BB%A3%E7%90%86%EF%BC%88AOP-Proxy%EF%BC%89"><span class="toc-number">3.1.1.7.</span> <span class="toc-text">7. AOP代理（AOP Proxy）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-%E7%9B%AE%E6%A0%87%E5%AF%B9%E8%B1%A1%EF%BC%88Target-Object%EF%BC%89"><span class="toc-number">3.1.1.8.</span> <span class="toc-text">8. 目标对象（Target Object）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AOP%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">3.1.2.</span> <span class="toc-text">AOP的应用场景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AOP%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%9C%BA%E5%88%B6"><span class="toc-number">3.1.3.</span> <span class="toc-text">AOP的实现机制</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#JDK%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86"><span class="toc-number">3.1.3.1.</span> <span class="toc-text">JDK动态代理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#CGLIB%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86"><span class="toc-number">3.1.3.2.</span> <span class="toc-text">CGLIB动态代理</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B-1"><span class="toc-number">3.1.4.</span> <span class="toc-text">示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BD%95%E8%A6%81%E6%9C%89Spring-AOP"><span class="toc-number">3.2.</span> <span class="toc-text">为何要有Spring AOP</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-AOP-%E5%8E%9F%E7%90%86%EF%BC%9A%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86%E6%8A%80%E6%9C%AF%E7%9A%84%E5%BA%94%E7%94%A8"><span class="toc-number">3.3.</span> <span class="toc-text">Spring AOP 原理：动态代理技术的应用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#JDK-Proxy"><span class="toc-number">3.3.1.</span> <span class="toc-text">JDK Proxy</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CGLIB"><span class="toc-number">3.3.2.</span> <span class="toc-text">CGLIB</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Spring-AOP-%E7%9A%84%E9%80%89%E6%8B%A9%E7%AD%96%E7%95%A5"><span class="toc-number">3.3.3.</span> <span class="toc-text">Spring AOP 的选择策略</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86%E4%B8%8E%E9%9D%99%E6%80%81%E4%BB%A3%E7%90%86%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">3.4.</span> <span class="toc-text">动态代理与静态代理的区别</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%99%E6%80%81%E4%BB%A3%E7%90%86"><span class="toc-number">3.4.1.</span> <span class="toc-text">静态代理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86"><span class="toc-number">3.4.2.</span> <span class="toc-text">动态代理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8C%BA%E5%88%AB%E6%80%BB%E7%BB%93"><span class="toc-number">3.4.3.</span> <span class="toc-text">区别总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#AOP-%E5%AE%9E%E7%8E%B0%E5%B8%B8%E8%A7%81%E6%B3%A8%E8%A7%A3"><span class="toc-number">3.5.</span> <span class="toc-text">AOP 实现常见注解</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%8D%E5%B0%84%E7%9A%84%E7%89%B9%E6%80%A7%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">4.</span> <span class="toc-text">反射的特性及其应用场景</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%B9%E6%80%A7"><span class="toc-number">4.0.1.</span> <span class="toc-text">特性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">4.0.2.</span> <span class="toc-text">应用场景</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-Spring-%E6%A1%86%E6%9E%B6%E4%B8%AD%E7%9A%84%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%EF%BC%88DI%EF%BC%89%E5%92%8C%E6%8E%A7%E5%88%B6%E5%8F%8D%E8%BD%AC%EF%BC%88IoC%EF%BC%89"><span class="toc-number">4.0.2.1.</span> <span class="toc-text">1. Spring 框架中的依赖注入（DI）和控制反转（IoC）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86"><span class="toc-number">4.0.2.2.</span> <span class="toc-text">2. 动态代理</span></a></li></ol></li></ol></li></ol></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类列表</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%9F%BA%E7%A1%80/">基础</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">并发编程</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E9%9B%86%E5%90%88/">集合</a><span class="category-list-count">5</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9E%B6%E6%9E%84/">架构</a><span class="category-list-count">1</span></li></ul>
+  </aside>
+
+
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/AOP/" style="font-size: 0.6em;">AOP</a> <a href="/tags/Bean/" style="font-size: 0.6em;">Bean</a> <a href="/tags/DDD/" style="font-size: 0.6em;">DDD</a> <a href="/tags/I-O/" style="font-size: 0.6em;">I/O</a> <a href="/tags/IoC/" style="font-size: 0.6em;">IoC</a> <a href="/tags/Java8%E6%96%B0%E7%89%B9%E6%80%A7/" style="font-size: 0.6em;">Java8新特性</a> <a href="/tags/Java%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" style="font-size: 0.6em;">Java基本概念</a> <a href="/tags/List/" style="font-size: 0.6em;">List</a> <a href="/tags/Map/" style="font-size: 0.8em;">Map</a> <a href="/tags/MyBatis/" style="font-size: 0.6em;">MyBatis</a> <a href="/tags/MySQL%E5%9F%BA%E7%A1%80/" style="font-size: 0.6em;">MySQL基础</a> <a href="/tags/Object/" style="font-size: 0.6em;">Object</a> <a href="/tags/SQL%E8%B0%83%E4%BC%98/" style="font-size: 0.6em;">SQL调优</a> <a href="/tags/Set/" style="font-size: 0.6em;">Set</a> <a href="/tags/SpringBoot/" style="font-size: 0.6em;">SpringBoot</a> <a href="/tags/SpringCloud/" style="font-size: 0.6em;">SpringCloud</a> <a href="/tags/%E4%BA%8B%E5%8A%A1/" style="font-size: 0.8em;">事务</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 0.6em;">其他</a>
+      </div>
+  </aside>
+
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/30/Spring-SpringCloud/"><i class="fa fa-book"></i> Spring Cloud</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/30/Spring-MyBatis/"><i class="fa fa-book"></i> MyBatis</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/30/Spring-SpringBoot/"><i class="fa fa-book"></i> Spring Boot</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/30/Spring-%E5%9F%BA%E7%A1%80%EF%BC%88%E4%B8%8B%EF%BC%89/"><i class="fa fa-book"></i> Spring-基础（下）</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/30/Spring-%E5%9F%BA%E7%A1%80%EF%BC%88%E4%B8%8A%EF%BC%89/"><i class="fa fa-book"></i> Spring-基础（上）</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+            
+
+        
+
+                </div>
+    </div>
+</div>
+
+<footer>
+    <div id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2024 XIAOYAN 版权所有.</li>
+                            <li>本站已运行<span id="kr-since">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>自豪地使用 <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a> 主题</li>
+                            <li>站点由 xiaoyan 用 <i class="fa fa-heart" style="color:#d43f57"></i> 搭建</li>
+                        </div>
+                        <!-- 额外的追加注入项 -->
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                <div class="box theme-box" id="theme-toggle">
+                    <span class="fa fa-adjust"></span>
+                </div>
+            </div>
+            <div id="gotop-box" class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+
+    <div id="kr-donate-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseDonateModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-bitcoin"></i>
+            </div>
+            <div class="kr-modal-title">打赏</div>
+            <button class="kr-modal-close" onclick="krCloseDonateModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-donate-message">请我喝一杯冰阔咯~</div>
+            <div class="kr-donate-qr" id="kr-donate-qr">
+                
+            </div>
+            <div class="kr-donate-platforms">
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #1677ff;" title="支付宝" onclick="krDonateModalShowPlatformQR('https://qr.alipay.com/fkx15009k7u0fqrj8auepdf', '#1677ff')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-alipay">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M19 3h-14a2 2 0 0 0 -2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2 -2v-14a2 2 0 0 0 -2 -2z" />
+  <path d="M7 7h10" />
+  <path d="M12 3v7" />
+  <path d="M21 17.314c-2.971 -1.923 -15 -8.779 -15 -1.864c0 1.716 1.52 2.55 2.985 2.55c3.512 0 6.814 -5.425 6.814 -8h-6.604" />
+</svg>
+
+                        </button>
+                    
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #38ad5a;" title="微信支付" onclick="krDonateModalShowPlatformQR('wxp://f2f0hR4eF9Ypa3tpzjWme9fQDyWW3PIGe3WG5oiIakWLmDs', '#38ad5a')">
+                            <i class="fa fa-wechat"></i>
+                        </button>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/donate.min.js"></script>
+
+
+
+
+    <div id="kr-share-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseShareModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-share-alt"></i>
+            </div>
+            <div class="kr-modal-title">分享</div>
+            <button class="kr-modal-close" onclick="krCloseShareModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-share-message">让兄弟萌也来瞅一瞅！</div>
+            <div class="kr-share-qr" id="kr-share-qr"></div>
+            <div class="kr-share-platforms">
+                
+                    <button class="kr-share-platform-button" style="color: #e6162d;" title="QQ" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-qq"></i>
+                    </button>
+                
+                    <button class="kr-share-platform-button" style="color: #25d366;" title="微信" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-weixin"></i>
+                    </button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/share.min.js"></script>
+
+
+
+<!-- 额外的追加注入项 -->
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
+<meting-js
+  server="netease"
+  type="playlist"
+  fixed="true"
+  order="random"
+  id="12613265870">
+</meting-js>
+
+
+
+        <script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
+</script>
+
+
+  <script defer src="/vendors/nprogress@0.2.0/nprogress.js"></script>
+
+
+
+  <script defer src="/vendors/viewerjs@1.11.6/dist/viewer.min.js"></script>
+
+
+<script defer src="/js/kr-core.min.js"></script>
+
+
+  <script defer src="/js/kr-pjax.min.js"></script>
+
+
+<!-- 额外的追加注入项 -->
+
+  <script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+
+
+
+    </body>
+</html>

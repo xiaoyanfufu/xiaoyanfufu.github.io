@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  
+    <link rel="icon" href="/images/earthstars.png">
+  
+  
+  <title>Spring Cloud | XIAOYAN</title>
+  <link rel="canonical" href="http://example.com/2024/09/30/Spring-SpringCloud/">
+  <meta name="author" content="xiaoyan" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="SpringCloud" />
+  
+  <meta name="description" content="Spring Cloud 与 Spring BootSpring Boot和Spring Cloud是Spring生态系统中的两个重要框架，它们各自专注于不同的领域，但在构建现代分布式系统时，它们通常结合使用。以下是对Spring Boot和Spring Cloud的详细解释及其结合使用的场景： Spring Boot 是一个用于构建单个Spring应用的框架，旨在简化Spring应用的初始搭建和">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring Cloud">
+<meta property="og:url" content="http://example.com/2024/09/30/Spring-SpringCloud/index.html">
+<meta property="og:site_name" content="XIAOYAN">
+<meta property="og:description" content="Spring Cloud 与 Spring BootSpring Boot和Spring Cloud是Spring生态系统中的两个重要框架，它们各自专注于不同的领域，但在构建现代分布式系统时，它们通常结合使用。以下是对Spring Boot和Spring Cloud的详细解释及其结合使用的场景： Spring Boot 是一个用于构建单个Spring应用的框架，旨在简化Spring应用的初始搭建和">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-09-30T03:49:12.000Z">
+<meta property="article:modified_time" content="2024-10-04T15:40:29.398Z">
+<meta property="article:author" content="xiaoyan">
+<meta property="article:tag" content="SpringCloud">
+<meta name="twitter:card" content="summary">
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kr-core.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/highlight.js/night-eighties.min.css" media="all"></link>
+  
+  <link rel="stylesheet" id="theme-light-css" href="/css/kr-theme/light.min.css" media="all"></link>
+  <link rel="stylesheet" id="theme-dark-css" href="/css/kr-theme/dark.min.css" media="(prefers-color-scheme: dark)"></link>
+  <script src="/js/kr-theme.min.js"></script>
+  <link rel="stylesheet" id="fontawe-css" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="nprogress-css" href="/vendors/nprogress@0.2.0/nprogress.css" media="all"></link>
+  
+  
+    <link rel="stylesheet" href="/vendors/viewerjs@1.11.6/dist/viewer.min.css"></link>
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  
+    <script src="/vendors/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+  
+  <!-- 自定义站点横幅和背景 -->
+  <style>
+    
+      .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_light.png');
+      }
+      html[data-theme="dark"] .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_dark.png');
+      }
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+        html[data-theme="dark"] body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+      }
+    
+    
+      .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+      html[data-theme="dark"] .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+    
+  </style>
+
+  <!-- 额外的追加注入项 -->
+  
+    <link rel="stylesheet" href="/css/custom.css">
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    <li>
+                                        
+                                            <a href="/">
+                                        
+                                            
+                                                <i class="fa fa-home"></i>
+                                            
+                                            首页
+                                        </a>
+                                        
+                                    </li>
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">XIAOYAN</a></div>
+                    <div id="kratos-nav-toggle-wrapper" class="nav-toggle">
+                        <a id="kratos-nav-toggle" class="kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>XIAOYAN</h2> <br />
+                        <span>山重水复疑无路，柳暗花明又一村。</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+
+
+        
+
+            
+
+            <section class="kr-main-col col-md-8">
+
+        
+
+            <article itemscope itemtype="https://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/30/Spring-SpringCloud/">
+    <div class="kratos-hentry kratos-page-inner clearfix">
+        <header class="kratos-page-header">
+            
+                <h1 class="kratos-page-title text-center" itemprop="name headline">Spring Cloud</h1>
+            
+            <ul class="kratos-page-meta text-center">
+                <li><time datetime="2024-09-30T03:49:12.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2024-09-30</time></li>
+                <li itemprop="author" itemscope itemtype="https://schema.org/Person">
+                    <i class="fa fa-user"></i> 作者 <span itemprop="name">xiaoyan</span>
+                </li>
+                
+                    <li>
+                        <i class="fa fa-edit"></i> 
+                        
+                        
+                            ~14.70K
+                        
+                        字
+                    </li>
+                
+                
+                
+            </ul>
+        </header>
+        <div class="kratos-page-content kr-post">
+            
+            
+            
+                <div class="kratos-post-inner-toc toc-div-class" >
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Spring-Cloud-%E4%B8%8E-Spring-Boot"><span class="toc-number">1.</span> <span class="toc-text">Spring Cloud 与 Spring Boot</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E5%BE%AE%E6%9C%8D%E5%8A%A1%E7%BB%84%E4%BB%B6"><span class="toc-number">2.</span> <span class="toc-text">常见微服务组件</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E7%AE%97%E6%B3%95"><span class="toc-number">3.</span> <span class="toc-text">负载均衡算法</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E9%99%8D%E7%BA%A7"><span class="toc-number">4.</span> <span class="toc-text">服务降级</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E9%99%8D%E7%BA%A7%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F"><span class="toc-number">4.1.</span> <span class="toc-text">服务降级的实现方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Hystrix%E5%AE%9E%E7%8E%B0%E6%9C%8D%E5%8A%A1%E9%99%8D%E7%BA%A7"><span class="toc-number">4.1.1.</span> <span class="toc-text">Hystrix实现服务降级</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BC%95%E5%85%A5%E4%BE%9D%E8%B5%96"><span class="toc-number">4.1.1.1.</span> <span class="toc-text">引入依赖</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%AF%E7%94%A8Hystrix"><span class="toc-number">4.1.1.2.</span> <span class="toc-text">启用Hystrix</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%E9%99%8D%E7%BA%A7%E6%96%B9%E6%B3%95"><span class="toc-number">4.1.1.3.</span> <span class="toc-text">定义降级方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%85%8D%E7%BD%AEHystrix"><span class="toc-number">4.1.1.4.</span> <span class="toc-text">配置Hystrix</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E7%86%94%E6%96%AD"><span class="toc-number">5.</span> <span class="toc-text">服务熔断</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E7%86%94%E6%96%AD%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="toc-number">5.1.</span> <span class="toc-text">服务熔断的工作原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E7%86%94%E6%96%AD%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F"><span class="toc-number">5.2.</span> <span class="toc-text">服务熔断的实现方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Hystrix"><span class="toc-number">5.2.1.</span> <span class="toc-text">Hystrix</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Resilience4j"><span class="toc-number">5.2.2.</span> <span class="toc-text">Resilience4j</span></a></li></ol></li></ol></li></ol>
+                </div>
+            
+            <hr />
+            <div itemprop="articleBody"><h1 id="Spring-Cloud-与-Spring-Boot"><a href="#Spring-Cloud-与-Spring-Boot" class="headerlink" title="Spring Cloud 与 Spring Boot"></a>Spring Cloud 与 Spring Boot</h1><p>Spring Boot和Spring Cloud是Spring生态系统中的两个重要框架，它们各自专注于不同的领域，但在构建现代分布式系统时，它们通常结合使用。以下是对Spring Boot和Spring Cloud的详细解释及其结合使用的场景：</p>
+<p><strong>Spring Boot</strong> 是一个用于构建单个Spring应用的框架，旨在简化Spring应用的初始搭建和开发过程。Spring Boot通过提供开箱即用的配置、自动配置和内嵌服务器等功能，极大地提高了开发效率。</p>
+<p><strong>Spring Cloud</strong> 是一个用于构建分布式系统中的微服务架构工具。Spring Cloud提供了一系列工具和库，用于实现微服务架构中的常见模式和功能，如服务注册与发现、负载均衡、断路器、网关等。</p>
+<p>Spring Boot和Spring Cloud可以结合使用，通过Spring Boot来构建微服务中的单个应用，再结合Spring Cloud来实现微服务中的各个功能。</p>
+<h1 id="常见微服务组件"><a href="#常见微服务组件" class="headerlink" title="常见微服务组件"></a>常见微服务组件</h1><p>在微服务架构中，常见的组件包括注册中心、负载均衡、服务通信、配置中心、集中式日志管理、分布式链路追踪和服务保护。这些组件共同协作，确保微服务架构的高可用性、可扩展性和可维护性。以下是对这些组件的详细解释及其在微服务架构中的作用：</p>
+<p><strong>1. 注册中心</strong></p>
+<p><strong>注册中心</strong>是微服务架构中最核心的组件。它负责新节点的注册和维护，解决了“如何发现新的节点以及检查各个节点运行状态”的问题。微服务节点在启动时会将自己的服务名称、IP、端口号等信息登记在注册中心，注册中心会定时检查该节点的运行状态。注册中心通常采用心跳机制，最大程度保证登记过的节点是可用的。</p>
+<p>常见实现：</p>
+<ul>
+<li><strong>Eureka</strong>：Netflix开源的注册中心组件。</li>
+<li><strong>Consul</strong>：HashiCorp开源的注册中心组件。</li>
+<li><strong>Zookeeper</strong>：Apache开源的分布式协调服务。</li>
+</ul>
+<p><strong>2. 负载均衡</strong></p>
+<p><strong>负载均衡</strong>解决了“如何发现服务及负载均衡如何实现”的问题。通常，微服务在相互调用时，并不是直接通过IP、端口进行访问调用，而是先通过服务名在注册中心查询该服务拥有哪些节点。注册中心将可用节点列表返回给服务调用者，这个过程叫服务发现。由于服务高可用的要求，服务调用者会收到多个节点，必须从中进行选择。因此，服务调用端必须内置负载均衡器，通过负载均衡策略选择适合的节点构建实质性的通信连接。</p>
+<p>常见实现：</p>
+<ul>
+<li><strong>Ribbon</strong>：Netflix开源的客户端负载均衡组件。</li>
+<li><strong>Feign</strong>：Netflix开源的声明式REST客户端，内置Ribbon。</li>
+</ul>
+<p><strong>3. 服务通信</strong></p>
+<p><strong>服务通信</strong>解决了“服务间如何实现消息通信”的问题。服务间通信采用轻量级协议，通常是HTTP RESTful风格。但由于HTTP RESTful风格过于灵活，必须加以约束，通常应用时对其封装。</p>
+<p>常见实现：</p>
+<ul>
+<li><strong>Spring Cloud OpenFeign</strong>：基于Feign的声明式REST客户端。</li>
+<li><strong>Spring Cloud Gateway</strong>：基于Spring WebFlux的API网关。</li>
+</ul>
+<p><strong>4. 配置中心</strong></p>
+<p><strong>配置中心</strong>解决了“如何集中管理各个服务节点的配置”问题。在微服务架构下，每个节点都会有自己的配置文件，如JDBC配置、环境配置等。有的服务可能会存在十几个节点，如果将配置文件分散地存储在各个节点中，一旦存在部分配置修改，所有的节点配置文件都需要进行配置修改，这样会徒增运维人员的工作量。配置中心便是用于解决该问题，其将配置从各个节点中剥离，集中转存到统一的配置中心。</p>
+<p>常见实现：</p>
+<ul>
+<li><strong>Spring Cloud Config</strong>：Spring Cloud提供的配置中心组件。</li>
+<li><strong>Apollo</strong>：携程开源的配置中心组件。</li>
+</ul>
+<p><strong>5. 集中式日志管理</strong></p>
+<p><strong>集中式日志管理</strong>主要解决了“如何收集各节点日志并统一管理”的问题。微服务架构默认将应用日志分别保存到部署节点上，当需要对日志进行统一收集分析时，必须收集所有节点的日志。业内常见的方案有ELK（Elasticsearch、Logstash、Kibana）和EFK（Elasticsearch、Fluentd、Kibana）。通过搭建独立的日志收集系统，定时抓取各个节点增量日志，形成有效的统计报表。</p>
+<p>常见实现：</p>
+<ul>
+<li><strong>ELK Stack</strong>：Elasticsearch、Logstash、Kibana。</li>
+<li><strong>EFK Stack</strong>：Elasticsearch、Fluentd、Kibana。</li>
+</ul>
+<p><strong>6. 分布式链路追踪</strong></p>
+<p><strong>分布式链路追踪</strong>解决了“如何直观地了解到各个节点间调用链路”的问题。系统中一个复杂的业务流程，可能会出现调用多个微服务的情况，我们需要了解整个业务具体的服务调用流程是怎么样的，以及业务涉及到的每个微服务的运行状态。通过链路可视化展现，可以帮助开发人员快速分析系统瓶颈以及出现的错误的服务。</p>
+<p>常见实现：</p>
+<ul>
+<li><strong>Spring Cloud Sleuth</strong>：Spring Cloud提供的分布式链路追踪组件。</li>
+<li><strong>Zipkin</strong>：Twitter开源的分布式链路追踪系统。</li>
+</ul>
+<p><strong>7. 服务保护</strong></p>
+<p><strong>服务保护</strong>主要是解决了“如何对服务链路进行保护，防止服务雪崩”的问题。在业务运行时，微服务相互调用支撑，如果某个微服务出现高延迟导致线程池满载，或是业务处理失败，这里就需要引入服务保护组件来实现高延迟服务的快速降级，避免系统崩溃。</p>
+<p>常见实现：</p>
+<ul>
+<li><strong>Hystrix</strong>：Netflix开源的断路器组件。</li>
+<li><strong>Resilience4j</strong>：轻量级的容错库，提供断路器、限流、重试等功能。</li>
+</ul>
+<p><strong>Spring Cloud Alibaba实现的微服务架构</strong></p>
+<p>Spring Cloud Alibaba是Spring Cloud的子项目，提供了丰富的微服务组件，帮助开发者快速构建微服务架构。以下是Spring Cloud Alibaba中常见的微服务组件：</p>
+<ul>
+<li><strong>Nacos</strong>：集注册中心、配置中心和命名服务于一体的组件。</li>
+<li><strong>Sentinel</strong>：服务保护组件，提供流量控制、熔断降级、系统负载保护等功能。</li>
+<li><strong>RocketMQ</strong>：分布式消息中间件，支持高吞吐量、低延迟的消息传递。</li>
+<li><strong>Seata</strong>：分布式事务解决方案，支持多种分布式事务模式。</li>
+</ul>
+<h1 id="负载均衡算法"><a href="#负载均衡算法" class="headerlink" title="负载均衡算法"></a>负载均衡算法</h1><p>负载均衡算法是分布式系统中用于将请求分发到多个后端服务器的关键技术。不同的负载均衡算法适用于不同的场景，以下是常见的负载均衡算法及其详细解释：</p>
+<p><strong>1. 简单轮询算法（Round Robin）</strong></p>
+<p><strong>简单轮询算法</strong>将请求按顺序分发给各个后端服务器，并不关心当前服务器的状态。每个请求依次分配给不同的服务器，循环往复。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RoundRobinLoadBalancer</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> <span class="variable">currentIndex</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">private</span> List&lt;String&gt; servers;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">RoundRobinLoadBalancer</span><span class="params">(List&lt;String&gt; servers)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.servers = servers;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getServer</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">server</span> <span class="operator">=</span> servers.get(currentIndex);</span><br><span class="line">        currentIndex = (currentIndex + <span class="number">1</span>) % servers.size();</span><br><span class="line">        <span class="keyword">return</span> server;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>2. 加权轮询算法（Weighted Round Robin）</strong></p>
+<p><strong>加权轮询算法</strong>根据服务器自身的性能设置权重，按权重和请求顺序分发给后端服务器，以此可以让性能高的服务器处理更多的请求。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">WeightedRoundRobinLoadBalancer</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> List&lt;Server&gt; servers;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> <span class="variable">currentIndex</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> <span class="variable">totalWeight</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">WeightedRoundRobinLoadBalancer</span><span class="params">(List&lt;Server&gt; servers)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.servers = servers;</span><br><span class="line">        <span class="keyword">for</span> (Server server : servers) &#123;</span><br><span class="line">            totalWeight += server.getWeight();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getServer</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">currentWeight</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="type">String</span> <span class="variable">selectedServer</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">        <span class="keyword">for</span> (Server server : servers) &#123;</span><br><span class="line">            currentWeight += server.getWeight();</span><br><span class="line">            <span class="keyword">if</span> (currentWeight &gt;= currentIndex) &#123;</span><br><span class="line">                selectedServer = server.getUrl();</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        currentIndex = (currentIndex + <span class="number">1</span>) % totalWeight;</span><br><span class="line">        <span class="keyword">return</span> selectedServer;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">Server</span> &#123;</span><br><span class="line">        <span class="keyword">private</span> String url;</span><br><span class="line">        <span class="keyword">private</span> <span class="type">int</span> weight;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="title function_">Server</span><span class="params">(String url, <span class="type">int</span> weight)</span> &#123;</span><br><span class="line">            <span class="built_in">this</span>.url = url;</span><br><span class="line">            <span class="built_in">this</span>.weight = weight;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> String <span class="title function_">getUrl</span><span class="params">()</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> url;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">getWeight</span><span class="params">()</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> weight;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>3. 简单随机算法（Random）</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"><span class="keyword">import</span> java.util.Random;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RandomLoadBalancer</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> List&lt;String&gt; servers;</span><br><span class="line">    <span class="keyword">private</span> Random random;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">RandomLoadBalancer</span><span class="params">(List&lt;String&gt; servers)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.servers = servers;</span><br><span class="line">        <span class="built_in">this</span>.random = <span class="keyword">new</span> <span class="title class_">Random</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getServer</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">index</span> <span class="operator">=</span> random.nextInt(servers.size());</span><br><span class="line">        <span class="keyword">return</span> servers.get(index);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>4. 加权随机算法（Weighted Random）</strong></p>
+<p><strong>加权随机算法</strong>根据服务器自身的状态设置权重，权重越高，随机分发到的概率越大。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"><span class="keyword">import</span> java.util.Random;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">WeightedRandomLoadBalancer</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> List&lt;Server&gt; servers;</span><br><span class="line">    <span class="keyword">private</span> Random random;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> <span class="variable">totalWeight</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">WeightedRandomLoadBalancer</span><span class="params">(List&lt;Server&gt; servers)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.servers = servers;</span><br><span class="line">        <span class="built_in">this</span>.random = <span class="keyword">new</span> <span class="title class_">Random</span>();</span><br><span class="line">        <span class="keyword">for</span> (Server server : servers) &#123;</span><br><span class="line">            totalWeight += server.getWeight();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getServer</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">randomWeight</span> <span class="operator">=</span> random.nextInt(totalWeight);</span><br><span class="line">        <span class="type">int</span> <span class="variable">currentWeight</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="type">String</span> <span class="variable">selectedServer</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">        <span class="keyword">for</span> (Server server : servers) &#123;</span><br><span class="line">            currentWeight += server.getWeight();</span><br><span class="line">            <span class="keyword">if</span> (randomWeight &lt; currentWeight) &#123;</span><br><span class="line">                selectedServer = server.getUrl();</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> selectedServer;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">Server</span> &#123;</span><br><span class="line">        <span class="keyword">private</span> String url;</span><br><span class="line">        <span class="keyword">private</span> <span class="type">int</span> weight;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="title function_">Server</span><span class="params">(String url, <span class="type">int</span> weight)</span> &#123;</span><br><span class="line">            <span class="built_in">this</span>.url = url;</span><br><span class="line">            <span class="built_in">this</span>.weight = weight;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> String <span class="title function_">getUrl</span><span class="params">()</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> url;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">getWeight</span><span class="params">()</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> weight;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>5. 一致性哈希算法（Consistent Hashing）</strong></p>
+<p><strong>一致性哈希算法</strong>根据请求的客户端的ID或者请求参数进行哈希计算，利用该哈希结果取模映射出对应的服务器，这样可以使得同一个客户端能够请求到相同的服务器。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.SortedMap;</span><br><span class="line"><span class="keyword">import</span> java.util.TreeMap;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ConsistentHashingLoadBalancer</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> SortedMap&lt;Integer, String&gt; hashRing;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> numberOfReplicas;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">ConsistentHashingLoadBalancer</span><span class="params">(List&lt;String&gt; servers, <span class="type">int</span> numberOfReplicas)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.hashRing = <span class="keyword">new</span> <span class="title class_">TreeMap</span>&lt;&gt;();</span><br><span class="line">        <span class="built_in">this</span>.numberOfReplicas = numberOfReplicas;</span><br><span class="line">        <span class="keyword">for</span> (String server : servers) &#123;</span><br><span class="line">            addServer(server);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">addServer</span><span class="params">(String server)</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; numberOfReplicas; i++) &#123;</span><br><span class="line">            <span class="type">int</span> <span class="variable">hash</span> <span class="operator">=</span> getHash(server + i);</span><br><span class="line">            hashRing.put(hash, server);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">removeServer</span><span class="params">(String server)</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; numberOfReplicas; i++) &#123;</span><br><span class="line">            <span class="type">int</span> <span class="variable">hash</span> <span class="operator">=</span> getHash(server + i);</span><br><span class="line">            hashRing.remove(hash);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getServer</span><span class="params">(String key)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (hashRing.isEmpty()) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">int</span> <span class="variable">hash</span> <span class="operator">=</span> getHash(key);</span><br><span class="line">        <span class="keyword">if</span> (!hashRing.containsKey(hash)) &#123;</span><br><span class="line">            SortedMap&lt;Integer, String&gt; tailMap = hashRing.tailMap(hash);</span><br><span class="line">            hash = tailMap.isEmpty() ? hashRing.firstKey() : tailMap.firstKey();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> hashRing.get(hash);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> <span class="title function_">getHash</span><span class="params">(String key)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> key.hashCode();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>6. 最小活跃数算法（Least Connections）</strong></p>
+<p><strong>最小活跃数算法</strong>统计每台服务器正在处理的请求数，也就是请求活跃数，将请求分发给活跃数最小的后台服务器。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.HashMap;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LeastConnectionsLoadBalancer</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> List&lt;String&gt; servers;</span><br><span class="line">    <span class="keyword">private</span> Map&lt;String, Integer&gt; connections;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">LeastConnectionsLoadBalancer</span><span class="params">(List&lt;String&gt; servers)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.servers = servers;</span><br><span class="line">        <span class="built_in">this</span>.connections = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> (String server : servers) &#123;</span><br><span class="line">            connections.put(server, <span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">synchronized</span> String <span class="title function_">getServer</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">selectedServer</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">        <span class="type">int</span> <span class="variable">minConnections</span> <span class="operator">=</span> Integer.MAX_VALUE;</span><br><span class="line">        <span class="keyword">for</span> (String server : servers) &#123;</span><br><span class="line">            <span class="type">int</span> <span class="variable">currentConnections</span> <span class="operator">=</span> connections.get(server);</span><br><span class="line">            <span class="keyword">if</span> (currentConnections &lt; minConnections) &#123;</span><br><span class="line">                minConnections = currentConnections;</span><br><span class="line">                selectedServer = server;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        connections.put(selectedServer, connections.get(selectedServer) + <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">return</span> selectedServer;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title function_">releaseConnection</span><span class="params">(String server)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (connections.containsKey(server)) &#123;</span><br><span class="line">            connections.put(server, connections.get(server) - <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="服务降级"><a href="#服务降级" class="headerlink" title="服务降级"></a>服务降级</h1><p>服务降级是指当服务器压力剧增时，根据实际业务情况以及流量，对一些服务和页面进行有策略的不处理或者使用简单的方式进行处理，从而释放服务器资源以保证核心业务的正常运行。服务器的资源是有限的，而请求是无限的。在用户请求的高峰期，大量的请求会造成服务高延迟、不可用甚至是服务器宕机。相较于让整个服务器不可用，不如舍弃部分服务，让出服务器资源，“舍小保大”，保证核心业务的可用性。</p>
+<p>服务降级的常见策略</p>
+<ol>
+<li><strong>关闭非核心服务</strong>：在服务器压力剧增时，关闭一些非核心服务，减少服务器负载。</li>
+<li><strong>简化服务逻辑</strong>：对一些复杂的服务逻辑进行简化处理，减少计算和数据库操作。</li>
+<li><strong>返回缓存数据</strong>：对于一些读操作，直接返回缓存数据，减少数据库查询。</li>
+<li><strong>返回默认值或错误信息</strong>：对于一些无法处理的请求，返回默认值或错误信息，避免进一步的资源消耗。</li>
+<li><strong>限流</strong>：限制请求的速率，防止过多的请求涌入服务器。</li>
+<li><strong>熔断</strong>：当某个服务出现故障时，立即熔断该服务，避免故障扩散。</li>
+</ol>
+<h2 id="服务降级的实现方式"><a href="#服务降级的实现方式" class="headerlink" title="服务降级的实现方式"></a>服务降级的实现方式</h2><p><strong>1. 手动降级</strong></p>
+<p>手动降级是指通过人工干预的方式，手动关闭或简化某些服务。这种方式适用于一些简单的场景，但不适用于大规模的分布式系统。</p>
+<p><strong>2. 自动降级</strong></p>
+<p>自动降级是指通过自动化工具或框架，根据预设的策略自动进行服务降级。常见的自动降级框架包括Hystrix、Resilience4j等。</p>
+<h3 id="Hystrix实现服务降级"><a href="#Hystrix实现服务降级" class="headerlink" title="Hystrix实现服务降级"></a>Hystrix实现服务降级</h3><p>Hystrix是Netflix开源的断路器组件，提供了服务降级、熔断、限流等功能。以下是使用Hystrix实现服务降级的示例代码：</p>
+<h4 id="引入依赖"><a href="#引入依赖" class="headerlink" title="引入依赖"></a>引入依赖</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-hystrix<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="启用Hystrix"><a href="#启用Hystrix" class="headerlink" title="启用Hystrix"></a>启用Hystrix</h4><p>在Spring Boot应用中启用Hystrix：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.springframework.boot.SpringApplication;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.autoconfigure.SpringBootApplication;</span><br><span class="line"><span class="keyword">import</span> org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;</span><br><span class="line"></span><br><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="meta">@EnableCircuitBreaker</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyApplication</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        SpringApplication.run(MyApplication.class, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="定义降级方法"><a href="#定义降级方法" class="headerlink" title="定义降级方法"></a>定义降级方法</h4><p>在服务方法上使用<code>@HystrixCommand</code>注解，并指定降级方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Service;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@HystrixCommand(fallbackMethod = &quot;fallbackMethod&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">doSomething</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// 核心业务逻辑</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Success&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">fallbackMethod</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// 降级处理逻辑</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Fallback&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="配置Hystrix"><a href="#配置Hystrix" class="headerlink" title="配置Hystrix"></a>配置Hystrix</h4><p>在<code>application.yml</code>中配置Hystrix：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">hystrix:</span></span><br><span class="line">  <span class="attr">command:</span></span><br><span class="line">    <span class="attr">default:</span></span><br><span class="line">      <span class="attr">execution:</span></span><br><span class="line">        <span class="attr">isolation:</span></span><br><span class="line">          <span class="attr">thread:</span></span><br><span class="line">            <span class="attr">timeoutInMilliseconds:</span> <span class="number">1000</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="服务熔断"><a href="#服务熔断" class="headerlink" title="服务熔断"></a>服务熔断</h1><p>服务熔断是应对微服务雪崩的一种链路保护机制。在微服务架构中，服务之间的调用是通过服务间调用实现的，例如服务A调用服务B，服务B调用服务C。如果服务C某次处理业务时间过长或者服务C暂时不可用，那么随着时间的推移，对服务C的调用会越来越多，最终导致服务C崩溃。由于服务链路的调用还在继续，对服务B的调用也会持续增加，最终服务B也会垮掉，导致雪崩效应。</p>
+<p>服务熔断是应对服务雪崩的一种链路保护机制。当调用服务链路中的某个服务不可用或者响应时间过长时，会进行服务熔断，不再有对该服务的调用，快速返回错误信息。当检测到该节点恢复正常后，恢复链路调用。</p>
+<h2 id="服务熔断的工作原理"><a href="#服务熔断的工作原理" class="headerlink" title="服务熔断的工作原理"></a>服务熔断的工作原理</h2><p>服务熔断通常包括以下几个状态：</p>
+<ol>
+<li><strong>关闭状态（Closed）</strong>：正常情况下，熔断器处于关闭状态，服务调用正常进行。</li>
+<li><strong>打开状态（Open）</strong>：当服务调用失败次数达到一定阈值或响应时间超过设定值时，熔断器进入打开状态。此时，所有对该服务的调用都会立即失败，返回错误信息。</li>
+<li><strong>半开状态（Half-Open）</strong>：在打开状态持续一段时间后，熔断器会进入半开状态。此时，允许部分请求通过，如果这些请求成功，则认为服务恢复正常，熔断器回到关闭状态；如果请求仍然失败，则熔断器回到打开状态。</li>
+</ol>
+<h2 id="服务熔断的实现方式"><a href="#服务熔断的实现方式" class="headerlink" title="服务熔断的实现方式"></a>服务熔断的实现方式</h2><h3 id="Hystrix"><a href="#Hystrix" class="headerlink" title="Hystrix"></a>Hystrix</h3><p>Hystrix是Netflix开源的断路器组件，提供了服务熔断、降级、限流等功能。以下是使用Hystrix实现服务熔断的示例代码：</p>
+<p><strong>引入依赖</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-hystrix<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>启用Hystrix</strong></p>
+<p>在Spring Boot应用中启用Hystrix：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.springframework.boot.SpringApplication;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.autoconfigure.SpringBootApplication;</span><br><span class="line"><span class="keyword">import</span> org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;</span><br><span class="line"></span><br><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="meta">@EnableCircuitBreaker</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyApplication</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        SpringApplication.run(MyApplication.class, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>定义熔断方法</strong></p>
+<p>在服务方法上使用<code>@HystrixCommand</code>注解，并指定熔断方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Service;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@HystrixCommand(fallbackMethod = &quot;fallbackMethod&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">doSomething</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// 核心业务逻辑</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Success&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">fallbackMethod</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// 熔断处理逻辑</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Fallback&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>配置Hystrix</strong></p>
+<p>在<code>application.yml</code>中配置Hystrix：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">hystrix:</span></span><br><span class="line">  <span class="attr">command:</span></span><br><span class="line">    <span class="attr">default:</span></span><br><span class="line">      <span class="attr">execution:</span></span><br><span class="line">        <span class="attr">isolation:</span></span><br><span class="line">          <span class="attr">thread:</span></span><br><span class="line">            <span class="attr">timeoutInMilliseconds:</span> <span class="number">1000</span></span><br><span class="line">      <span class="attr">circuitBreaker:</span></span><br><span class="line">        <span class="attr">requestVolumeThreshold:</span> <span class="number">20</span></span><br><span class="line">        <span class="attr">sleepWindowInMilliseconds:</span> <span class="number">5000</span></span><br><span class="line">        <span class="attr">errorThresholdPercentage:</span> <span class="number">50</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Resilience4j"><a href="#Resilience4j" class="headerlink" title="Resilience4j"></a>Resilience4j</h3><p>Resilience4j是另一个轻量级的容错库，提供了服务熔断、限流、重试等功能。以下是使用Resilience4j实现服务熔断的示例代码：</p>
+<p><strong>引入依赖</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.github.resilience4j<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>resilience4j-circuitbreaker<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.github.resilience4j<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>resilience4j-spring-boot2<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>配置Resilience4j</strong></p>
+<p>在<code>application.yml</code>中配置Resilience4j：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">resilience4j:</span></span><br><span class="line">  <span class="attr">circuitbreaker:</span></span><br><span class="line">    <span class="attr">instances:</span></span><br><span class="line">      <span class="attr">myCircuitBreaker:</span></span><br><span class="line">        <span class="attr">registerHealthIndicator:</span> <span class="literal">true</span></span><br><span class="line">        <span class="attr">slidingWindowSize:</span> <span class="number">10</span></span><br><span class="line">        <span class="attr">minimumNumberOfCalls:</span> <span class="number">5</span></span><br><span class="line">        <span class="attr">permittedNumberOfCallsInHalfOpenState:</span> <span class="number">3</span></span><br><span class="line">        <span class="attr">automaticTransitionFromOpenToHalfOpenEnabled:</span> <span class="literal">true</span></span><br><span class="line">        <span class="attr">waitDurationInOpenState:</span> <span class="string">10s</span></span><br><span class="line">        <span class="attr">failureRateThreshold:</span> <span class="number">50</span></span><br><span class="line">        <span class="attr">eventConsumerBufferSize:</span> <span class="number">10</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>定义熔断方法</strong></p>
+<p>在服务方法上使用<code>@CircuitBreaker</code>注解，并指定熔断方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Service;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@CircuitBreaker(name = &quot;myCircuitBreaker&quot;, fallbackMethod = &quot;fallbackMethod&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">doSomething</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// 核心业务逻辑</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Success&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">fallbackMethod</span><span class="params">(Exception e)</span> &#123;</span><br><span class="line">        <span class="comment">// 熔断处理逻辑</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Fallback&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</div>
+        </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+            
+            
+                <div class="post-actions text-center clearfix" id="post-actions">
+                
+                    <a class="donate" href="javascript:;" onclick="krOpenDonateModal()"><i class="fa fa-bitcoin"></i> 打赏</a>
+                
+                
+                    <a class="share" href="javascript:;" onclick="krOpenShareModal()"><i class="fa fa-share-alt"></i> 分享</a>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    <a class="tag-none-link" href="/tags/SpringCloud/" rel="tag">SpringCloud</a>
+                </div>
+                <div class="pull-date">
+                    <time datetime="2024-10-04T15:40:29.398Z" itemprop="dateModified">最后编辑：2024-10-04</time>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" MyBatis" href="/2024/09/30/Spring-MyBatis/"><i class="fa fa-angle-left"></i> 上一篇</a>
+            </div>
+            
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+            
+                
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/user.jpg" alt="xiaoyan" loading="lazy" decoding="auto" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">是一只时时翻垃圾吃的宅子。</p>
+    </div>
+    <div class="site-meta">
+        <a class="meta-item" href="/archives/">
+            <span class="title">
+                文章
+            </span>
+            <span class="count">
+                29
+            </span>
+        </a>
+        <a class="meta-item" href="/categories/">
+            <span class="title">
+                分类
+            </span>
+            <span class="count">
+                9
+            </span>
+        </a>
+        <a class="meta-item" href="/tags/">
+            <span class="title">
+                标签
+            </span>
+            <span class="count">
+                38
+            </span>
+        </a>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix toc-div-class" >
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar" role="progressbar" aria-label="阅读进度："></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Spring-Cloud-%E4%B8%8E-Spring-Boot"><span class="toc-number">1.</span> <span class="toc-text">Spring Cloud 与 Spring Boot</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E5%BE%AE%E6%9C%8D%E5%8A%A1%E7%BB%84%E4%BB%B6"><span class="toc-number">2.</span> <span class="toc-text">常见微服务组件</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E7%AE%97%E6%B3%95"><span class="toc-number">3.</span> <span class="toc-text">负载均衡算法</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E9%99%8D%E7%BA%A7"><span class="toc-number">4.</span> <span class="toc-text">服务降级</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E9%99%8D%E7%BA%A7%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F"><span class="toc-number">4.1.</span> <span class="toc-text">服务降级的实现方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Hystrix%E5%AE%9E%E7%8E%B0%E6%9C%8D%E5%8A%A1%E9%99%8D%E7%BA%A7"><span class="toc-number">4.1.1.</span> <span class="toc-text">Hystrix实现服务降级</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BC%95%E5%85%A5%E4%BE%9D%E8%B5%96"><span class="toc-number">4.1.1.1.</span> <span class="toc-text">引入依赖</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%AF%E7%94%A8Hystrix"><span class="toc-number">4.1.1.2.</span> <span class="toc-text">启用Hystrix</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%E9%99%8D%E7%BA%A7%E6%96%B9%E6%B3%95"><span class="toc-number">4.1.1.3.</span> <span class="toc-text">定义降级方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%85%8D%E7%BD%AEHystrix"><span class="toc-number">4.1.1.4.</span> <span class="toc-text">配置Hystrix</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E7%86%94%E6%96%AD"><span class="toc-number">5.</span> <span class="toc-text">服务熔断</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E7%86%94%E6%96%AD%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="toc-number">5.1.</span> <span class="toc-text">服务熔断的工作原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E7%86%94%E6%96%AD%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F"><span class="toc-number">5.2.</span> <span class="toc-text">服务熔断的实现方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Hystrix"><span class="toc-number">5.2.1.</span> <span class="toc-text">Hystrix</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Resilience4j"><span class="toc-number">5.2.2.</span> <span class="toc-text">Resilience4j</span></a></li></ol></li></ol></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类列表</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%9F%BA%E7%A1%80/">基础</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">并发编程</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E9%9B%86%E5%90%88/">集合</a><span class="category-list-count">5</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9E%B6%E6%9E%84/">架构</a><span class="category-list-count">1</span></li></ul>
+  </aside>
+
+
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/AOP/" style="font-size: 0.6em;">AOP</a> <a href="/tags/Bean/" style="font-size: 0.6em;">Bean</a> <a href="/tags/DDD/" style="font-size: 0.6em;">DDD</a> <a href="/tags/I-O/" style="font-size: 0.6em;">I/O</a> <a href="/tags/IoC/" style="font-size: 0.6em;">IoC</a> <a href="/tags/Java8%E6%96%B0%E7%89%B9%E6%80%A7/" style="font-size: 0.6em;">Java8新特性</a> <a href="/tags/Java%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" style="font-size: 0.6em;">Java基本概念</a> <a href="/tags/List/" style="font-size: 0.6em;">List</a> <a href="/tags/Map/" style="font-size: 0.8em;">Map</a> <a href="/tags/MyBatis/" style="font-size: 0.6em;">MyBatis</a> <a href="/tags/MySQL%E5%9F%BA%E7%A1%80/" style="font-size: 0.6em;">MySQL基础</a> <a href="/tags/Object/" style="font-size: 0.6em;">Object</a> <a href="/tags/SQL%E8%B0%83%E4%BC%98/" style="font-size: 0.6em;">SQL调优</a> <a href="/tags/Set/" style="font-size: 0.6em;">Set</a> <a href="/tags/SpringBoot/" style="font-size: 0.6em;">SpringBoot</a> <a href="/tags/SpringCloud/" style="font-size: 0.6em;">SpringCloud</a> <a href="/tags/%E4%BA%8B%E5%8A%A1/" style="font-size: 0.8em;">事务</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 0.6em;">其他</a>
+      </div>
+  </aside>
+
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/30/Spring-SpringCloud/"><i class="fa fa-book"></i> Spring Cloud</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/30/Spring-MyBatis/"><i class="fa fa-book"></i> MyBatis</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/30/Spring-SpringBoot/"><i class="fa fa-book"></i> Spring Boot</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/30/Spring-%E5%9F%BA%E7%A1%80%EF%BC%88%E4%B8%8B%EF%BC%89/"><i class="fa fa-book"></i> Spring-基础（下）</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/30/Spring-%E5%9F%BA%E7%A1%80%EF%BC%88%E4%B8%8A%EF%BC%89/"><i class="fa fa-book"></i> Spring-基础（上）</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+            
+
+        
+
+                </div>
+    </div>
+</div>
+
+<footer>
+    <div id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2024 XIAOYAN 版权所有.</li>
+                            <li>本站已运行<span id="kr-since">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>自豪地使用 <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a> 主题</li>
+                            <li>站点由 xiaoyan 用 <i class="fa fa-heart" style="color:#d43f57"></i> 搭建</li>
+                        </div>
+                        <!-- 额外的追加注入项 -->
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                <div class="box theme-box" id="theme-toggle">
+                    <span class="fa fa-adjust"></span>
+                </div>
+            </div>
+            <div id="gotop-box" class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+
+    <div id="kr-donate-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseDonateModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-bitcoin"></i>
+            </div>
+            <div class="kr-modal-title">打赏</div>
+            <button class="kr-modal-close" onclick="krCloseDonateModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-donate-message">请我喝一杯冰阔咯~</div>
+            <div class="kr-donate-qr" id="kr-donate-qr">
+                
+            </div>
+            <div class="kr-donate-platforms">
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #1677ff;" title="支付宝" onclick="krDonateModalShowPlatformQR('https://qr.alipay.com/fkx15009k7u0fqrj8auepdf', '#1677ff')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-alipay">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M19 3h-14a2 2 0 0 0 -2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2 -2v-14a2 2 0 0 0 -2 -2z" />
+  <path d="M7 7h10" />
+  <path d="M12 3v7" />
+  <path d="M21 17.314c-2.971 -1.923 -15 -8.779 -15 -1.864c0 1.716 1.52 2.55 2.985 2.55c3.512 0 6.814 -5.425 6.814 -8h-6.604" />
+</svg>
+
+                        </button>
+                    
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #38ad5a;" title="微信支付" onclick="krDonateModalShowPlatformQR('wxp://f2f0hR4eF9Ypa3tpzjWme9fQDyWW3PIGe3WG5oiIakWLmDs', '#38ad5a')">
+                            <i class="fa fa-wechat"></i>
+                        </button>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/donate.min.js"></script>
+
+
+
+
+    <div id="kr-share-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseShareModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-share-alt"></i>
+            </div>
+            <div class="kr-modal-title">分享</div>
+            <button class="kr-modal-close" onclick="krCloseShareModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-share-message">让兄弟萌也来瞅一瞅！</div>
+            <div class="kr-share-qr" id="kr-share-qr"></div>
+            <div class="kr-share-platforms">
+                
+                    <button class="kr-share-platform-button" style="color: #e6162d;" title="QQ" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-qq"></i>
+                    </button>
+                
+                    <button class="kr-share-platform-button" style="color: #25d366;" title="微信" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-weixin"></i>
+                    </button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/share.min.js"></script>
+
+
+
+<!-- 额外的追加注入项 -->
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
+<meting-js
+  server="netease"
+  type="playlist"
+  fixed="true"
+  order="random"
+  id="12613265870">
+</meting-js>
+
+
+
+        <script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
+</script>
+
+
+  <script defer src="/vendors/nprogress@0.2.0/nprogress.js"></script>
+
+
+
+  <script defer src="/vendors/viewerjs@1.11.6/dist/viewer.min.js"></script>
+
+
+<script defer src="/js/kr-core.min.js"></script>
+
+
+  <script defer src="/js/kr-pjax.min.js"></script>
+
+
+<!-- 额外的追加注入项 -->
+
+  <script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+
+
+
+    </body>
+</html>
