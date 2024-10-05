@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  
+    <link rel="icon" href="/images/earthstars.png">
+  
+  
+  <title>JVM-类初始化与类加载 | XIAOYAN</title>
+  <link rel="canonical" href="http://example.com/2024/10/05/Java-JVM%E7%B1%BB%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%8E%E7%B1%BB%E5%8A%A0%E8%BD%BD/">
+  <meta name="author" content="xiaoyan" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="类初始化, 类加载" />
+  
+  <meta name="description" content="对象创建的详细过程 在Java中，对象的创建是一个复杂且多步骤的过程，涉及类加载、内存分配、初始化等多个环节。以下是创建对象的详细步骤及其背后的原理：  类加载检查  当Java虚拟机（JVM）遇到一个new指令时，首先会在常量池中查找该对象的符号引用，并检查该类是否已经被加载、解析和初始化。如果该类尚未被加载，JVM将触发类加载过程。类加载过程包括加载、验证、准备、解析和初始化五个阶段，确保类在">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JVM-类初始化与类加载">
+<meta property="og:url" content="http://example.com/2024/10/05/Java-JVM%E7%B1%BB%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%8E%E7%B1%BB%E5%8A%A0%E8%BD%BD/index.html">
+<meta property="og:site_name" content="XIAOYAN">
+<meta property="og:description" content="对象创建的详细过程 在Java中，对象的创建是一个复杂且多步骤的过程，涉及类加载、内存分配、初始化等多个环节。以下是创建对象的详细步骤及其背后的原理：  类加载检查  当Java虚拟机（JVM）遇到一个new指令时，首先会在常量池中查找该对象的符号引用，并检查该类是否已经被加载、解析和初始化。如果该类尚未被加载，JVM将触发类加载过程。类加载过程包括加载、验证、准备、解析和初始化五个阶段，确保类在">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://cdn.xiaolincoding.com//picgo/1713516384566-e820b967-73ce-49a4-a6e6-36af9a38ebc4.webp">
+<meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202410051621096.png">
+<meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202410051712703.png">
+<meta property="article:published_time" content="2024-10-05T00:29:17.000Z">
+<meta property="article:modified_time" content="2024-10-05T09:15:25.765Z">
+<meta property="article:author" content="xiaoyan">
+<meta property="article:tag" content="类加载">
+<meta property="article:tag" content="类初始化">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.xiaolincoding.com//picgo/1713516384566-e820b967-73ce-49a4-a6e6-36af9a38ebc4.webp">
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kr-core.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/highlight.js/night-eighties.min.css" media="all"></link>
+  
+  <link rel="stylesheet" id="theme-light-css" href="/css/kr-theme/light.min.css" media="all"></link>
+  <link rel="stylesheet" id="theme-dark-css" href="/css/kr-theme/dark.min.css" media="(prefers-color-scheme: dark)"></link>
+  <script src="/js/kr-theme.min.js"></script>
+  <link rel="stylesheet" id="fontawe-css" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="nprogress-css" href="/vendors/nprogress@0.2.0/nprogress.css" media="all"></link>
+  
+  
+    <link rel="stylesheet" href="/vendors/viewerjs@1.11.6/dist/viewer.min.css"></link>
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  
+    <script src="/vendors/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+  
+  <!-- 自定义站点横幅和背景 -->
+  <style>
+    
+      .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_light.png');
+      }
+      html[data-theme="dark"] .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_dark.png');
+      }
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+        html[data-theme="dark"] body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+      }
+    
+    
+      .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+      html[data-theme="dark"] .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+    
+  </style>
+
+  <!-- 额外的追加注入项 -->
+  
+    <link rel="stylesheet" href="/css/custom.css">
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    <li>
+                                        
+                                            <a href="/">
+                                        
+                                            
+                                                <i class="fa fa-home"></i>
+                                            
+                                            首页
+                                        </a>
+                                        
+                                    </li>
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">XIAOYAN</a></div>
+                    <div id="kratos-nav-toggle-wrapper" class="nav-toggle">
+                        <a id="kratos-nav-toggle" class="kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>XIAOYAN</h2> <br />
+                        <span>山重水复疑无路，柳暗花明又一村。</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+
+
+        
+
+            
+
+            <section class="kr-main-col col-md-8">
+
+        
+
+            <article itemscope itemtype="https://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/05/Java-JVM%E7%B1%BB%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%8E%E7%B1%BB%E5%8A%A0%E8%BD%BD/">
+    <div class="kratos-hentry kratos-page-inner clearfix">
+        <header class="kratos-page-header">
+            
+                <h1 class="kratos-page-title text-center" itemprop="name headline">JVM-类初始化与类加载</h1>
+            
+            <ul class="kratos-page-meta text-center">
+                <li><time datetime="2024-10-05T00:29:17.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2024-10-05</time></li>
+                <li itemprop="author" itemscope itemtype="https://schema.org/Person">
+                    <i class="fa fa-user"></i> 作者 <span itemprop="name">xiaoyan</span>
+                </li>
+                
+                    <li>
+                        <i class="fa fa-edit"></i> 
+                        
+                        
+                            ~5.39K
+                        
+                        字
+                    </li>
+                
+                
+                
+            </ul>
+        </header>
+        <div class="kratos-page-content kr-post">
+            
+            
+            
+                <div class="kratos-post-inner-toc toc-div-class" >
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E7%9A%84%E8%AF%A6%E7%BB%86%E8%BF%87%E7%A8%8B"><span class="toc-number">1.</span> <span class="toc-text">对象创建的详细过程</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AF%B9%E8%B1%A1%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="toc-number">2.</span> <span class="toc-text">对象的生命周期</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8%E6%A6%82%E8%BF%B0"><span class="toc-number">3.</span> <span class="toc-text">类加载器概述</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%90%AF%E5%8A%A8%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8%EF%BC%88Bootstrap-Class-Loader%EF%BC%89"><span class="toc-number">3.1.</span> <span class="toc-text">1. 启动类加载器（Bootstrap Class Loader）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E6%89%A9%E5%B1%95%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8%EF%BC%88Extension-Class-Loader%EF%BC%89"><span class="toc-number">3.2.</span> <span class="toc-text">2. 扩展类加载器（Extension Class Loader）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E7%B3%BB%E7%BB%9F%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8-%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8%EF%BC%88System-Class-Loader-Application-Class-Loader%EF%BC%89"><span class="toc-number">3.3.</span> <span class="toc-text">3. 系统类加载器&#x2F;应用程序类加载器（System Class Loader&#x2F;Application Class Loader）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8%EF%BC%88Custom-Class-Loader%EF%BC%89"><span class="toc-number">3.4.</span> <span class="toc-text">4. 自定义类加载器（Custom Class Loader）</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%A8%A1%E5%9E%8B"><span class="toc-number">4.</span> <span class="toc-text">双亲委派模型</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%A8%A1%E5%9E%8B%EF%BC%88Parent-Delegation-Model%EF%BC%89"><span class="toc-number">4.1.</span> <span class="toc-text">双亲委派模型（Parent Delegation Model）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%A8%A1%E5%9E%8B%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="toc-number">4.2.</span> <span class="toc-text">双亲委派模型的作用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%BF%9D%E8%AF%81%E7%B1%BB%E7%9A%84%E5%94%AF%E4%B8%80%E6%80%A7"><span class="toc-number">4.2.1.</span> <span class="toc-text">1. 保证类的唯一性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E4%BF%9D%E8%AF%81%E5%AE%89%E5%85%A8%E6%80%A7"><span class="toc-number">4.2.2.</span> <span class="toc-text">2. 保证安全性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%94%AF%E6%8C%81%E9%9A%94%E7%A6%BB%E5%92%8C%E5%B1%82%E6%AC%A1%E5%88%92%E5%88%86"><span class="toc-number">4.2.3.</span> <span class="toc-text">3. 支持隔离和层次划分</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E4%BE%BF%E4%BA%8E%E7%BB%B4%E6%8A%A4%E5%92%8C%E6%89%A9%E5%B1%95"><span class="toc-number">4.2.4.</span> <span class="toc-text">4. 便于维护和扩展</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%B1%BB%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B"><span class="toc-number">5.</span> <span class="toc-text">类加载过程</span></a></li></ol>
+                </div>
+            
+            <hr />
+            <div itemprop="articleBody"><h1 id="对象创建的详细过程"><a href="#对象创建的详细过程" class="headerlink" title="对象创建的详细过程"></a>对象创建的详细过程</h1><p><img src="https://cdn.xiaolincoding.com//picgo/1713516384566-e820b967-73ce-49a4-a6e6-36af9a38ebc4.webp"></p>
+<p>在Java中，对象的创建是一个复杂且多步骤的过程，涉及类加载、内存分配、初始化等多个环节。以下是创建对象的详细步骤及其背后的原理：</p>
+<ol>
+<li><strong>类加载检查</strong></li>
+</ol>
+<p>当Java虚拟机（JVM）遇到一个<code>new</code>指令时，首先会在常量池中查找该对象的符号引用，并检查该类是否已经被加载、解析和初始化。如果该类尚未被加载，JVM将触发类加载过程。类加载过程包括加载、验证、准备、解析和初始化五个阶段，确保类在内存中正确地表示和初始化。</p>
+<ol start="2">
+<li><strong>内存分配</strong></li>
+</ol>
+<p>类加载完成后，JVM将为新生对象分配内存。内存分配的大小在类加载阶段已经确定，这通常是通过类的元数据信息（如字段和方法的数量）计算得出。内存分配的方式取决于Java堆的内存模型，可能采用指针碰撞（Bump-the-Pointer）或空闲列表（Free List）等策略。分配内存的过程实际上是从Java堆中划分出一块固定大小的内存空间。</p>
+<ol start="3">
+<li><strong>初始化零值</strong></li>
+</ol>
+<p>内存分配完成后，JVM需要对对象分配到的所有内存空间进行初始化零值操作。这一步骤确保对象的字段在未显式赋值的情况下，也能访问到默认的零值（如<code>int</code>为0，<code>boolean</code>为<code>false</code>等）。初始化零值操作不包括对象头（Object Header），对象头中存储的是对象的元数据信息。</p>
+<ol start="4">
+<li><strong>对象头设置</strong></li>
+</ol>
+<p>初始化零值完成后，JVM需要对对象进行必要的设置，这些设置信息存储在对象头中。对象头包含以下关键信息：</p>
+<ul>
+<li><strong>类元数据指针</strong>：指向该对象所属类的元数据信息。</li>
+<li><strong>哈希码</strong>：用于唯一标识对象的哈希码。</li>
+<li><strong>GC分代信息</strong>：记录对象的分代年龄，用于垃圾回收（GC）策略。</li>
+<li><strong>锁状态</strong>：记录对象的锁状态，用于同步机制。</li>
+</ul>
+<p>这些信息对于对象的运行时行为和垃圾回收机制至关重要。</p>
+<ol start="5">
+<li><strong>执行<code>&lt;init&gt;</code>方法</strong></li>
+</ol>
+<p>完成上述步骤后，JVM已经创建了一个基本结构的对象，但尚未执行任何用户定义的初始化逻辑。接下来，JVM会调用对象的<code>&lt;init&gt;</code>方法（即构造方法），执行用户定义的初始化逻辑。<code>&lt;init&gt;</code>方法的执行包括：</p>
+<ul>
+<li><strong>调用父类的构造方法</strong>：如果当前类是子类，JVM会先调用父类的构造方法。</li>
+<li><strong>初始化字段</strong>：按照字段的声明顺序，初始化字段的值。</li>
+<li><strong>执行构造方法体</strong>：执行构造方法中的用户代码。</li>
+</ul>
+<p><code>&lt;init&gt;</code>方法的执行确保对象的状态符合用户的预期，从而完成对象的创建过程。</p>
+<h1 id="对象的生命周期"><a href="#对象的生命周期" class="headerlink" title="对象的生命周期"></a>对象的生命周期</h1><p>对象的生命周期是指对象从创建到销毁的整个过程，这一过程通常包括三个主要阶段：创建、使用和销毁。理解对象的生命周期对于掌握编程语言的内存管理和资源分配机制至关重要。</p>
+<p><strong>1. 创建阶段</strong></p>
+<p>在创建阶段，对象通过内存分配和初始化过程被引入到程序中。具体步骤如下：</p>
+<ul>
+<li><p><strong>内存分配</strong>：在Java中，对象的创建通常通过<code>new</code>关键字触发。<code>new</code>关键字会指示Java虚拟机（JVM）在堆内存中为对象分配必要的内存空间。</p>
+</li>
+<li><p><strong>实例化</strong>：内存分配完成后，JVM会调用对象的构造函数（Constructor）。构造函数负责执行对象的初始化操作，包括设置对象的初始状态、分配必要的资源等。这一过程确保对象在创建后处于一个有效且可用的状态。</p>
+</li>
+</ul>
+<p><strong>2. 使用阶段</strong></p>
+<p>在对象的使用阶段，对象被程序中的其他部分引用，并执行相应的操作。具体包括：</p>
+<ul>
+<li><p><strong>引用与操作</strong>：对象通过引用变量被程序的其他部分访问。程序可以通过调用对象的方法（Methods）和访问对象的属性（Fields）来执行各种操作。这些操作可能涉及对象状态的修改、数据的处理、与其他对象的交互等。</p>
+</li>
+<li><p><strong>生命周期管理</strong>：在对象的使用过程中，程序需要确保对象的生命周期管理得当。例如，避免出现内存泄漏（Memory Leak），即对象不再被使用但仍占用内存空间。合理的生命周期管理有助于提高程序的性能和稳定性。</p>
+</li>
+</ul>
+<p><strong>3. 销毁阶段</strong></p>
+<p>当对象不再被引用时，JVM会通过垃圾回收机制（Garbage Collection, GC）自动回收对象所占用的内存空间。销毁阶段的具体过程如下：</p>
+<ul>
+<li><p><strong>垃圾回收</strong>：垃圾回收器是JVM的一部分，负责自动管理内存。它会定期检测堆内存中不再被引用的对象，并将其标记为可回收状态。垃圾回收器使用多种算法（如标记-清除、复制、标记-整理等）来确定哪些对象可以被回收。</p>
+</li>
+<li><p><strong>内存释放</strong>：一旦对象被标记为可回收，垃圾回收器会在适当的时候执行回收操作，释放对象所占用的内存空间。这一过程是自动进行的，程序员无需显式调用销毁方法。</p>
+</li>
+<li><p><strong>资源回收</strong>：除了内存回收，对象的销毁还可能涉及其他资源的释放，如文件句柄、数据库连接等。在某些情况下，程序员需要通过显式调用<code>close()</code>或<code>dispose()</code>等方法来确保资源的正确释放。</p>
+</li>
+</ul>
+<h1 id="类加载器概述"><a href="#类加载器概述" class="headerlink" title="类加载器概述"></a>类加载器概述</h1><p><img src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202410051621096.png" alt="类加载器"></p>
+<p>在Java虚拟机（JVM）中，类加载器（Class Loader）是负责将类的字节码加载到内存中的组件。类加载器按照层次结构组织，形成了所谓的“双亲委派模型”（Parent Delegation Model）。以下是Java中常见的类加载器及其功能：</p>
+<h2 id="1-启动类加载器（Bootstrap-Class-Loader）"><a href="#1-启动类加载器（Bootstrap-Class-Loader）" class="headerlink" title="1. 启动类加载器（Bootstrap Class Loader）"></a>1. 启动类加载器（Bootstrap Class Loader）</h2><ul>
+<li><p><strong>职责</strong>：启动类加载器是JVM中最顶层的类加载器，负责加载Java的核心库，如<code>rt.jar</code>中的类。这些类包括<code>java.lang.*</code>、<code>java.util.*</code>等。</p>
+</li>
+<li><p><strong>实现</strong>：启动类加载器通常由JVM的一部分通过C++语言实现，因此无法直接在Java程序中引用。</p>
+</li>
+<li><p><strong>特点</strong>：由于其特殊性，启动类加载器没有父加载器，它是所有其他类加载器的祖先。</p>
+</li>
+</ul>
+<h2 id="2-扩展类加载器（Extension-Class-Loader）"><a href="#2-扩展类加载器（Extension-Class-Loader）" class="headerlink" title="2. 扩展类加载器（Extension Class Loader）"></a>2. 扩展类加载器（Extension Class Loader）</h2><ul>
+<li><p><strong>职责</strong>：扩展类加载器负责加载Java扩展目录（如<code>$JAVA_HOME/lib/ext</code>）中的JAR包和类库。这些扩展类库提供了额外的功能，但不是Java核心库的一部分。</p>
+</li>
+<li><p><strong>实现</strong>：扩展类加载器是Java语言实现的，继承自<code>java.lang.ClassLoader</code>。它的父加载器是启动类加载器。</p>
+</li>
+<li><p><strong>特点</strong>：扩展类加载器允许Java平台在不修改核心库的情况下扩展功能。</p>
+</li>
+</ul>
+<h2 id="3-系统类加载器-应用程序类加载器（System-Class-Loader-Application-Class-Loader）"><a href="#3-系统类加载器-应用程序类加载器（System-Class-Loader-Application-Class-Loader）" class="headerlink" title="3. 系统类加载器&#x2F;应用程序类加载器（System Class Loader&#x2F;Application Class Loader）"></a>3. 系统类加载器&#x2F;应用程序类加载器（System Class Loader&#x2F;Application Class Loader）</h2><ul>
+<li><p><strong>职责</strong>：系统类加载器负责加载用户路径（如<code>CLASSPATH</code>环境变量指定的路径）上的类库。通常，我们编写的应用程序默认使用的就是该类加载器。</p>
+</li>
+<li><p><strong>实现</strong>：系统类加载器同样是Java语言实现的，继承自<code>java.lang.ClassLoader</code>。它的父加载器是扩展类加载器。</p>
+</li>
+<li><p><strong>特点</strong>：系统类加载器是大多数Java应用程序的默认类加载器，负责加载应用程序的类和依赖库。</p>
+</li>
+</ul>
+<h2 id="4-自定义类加载器（Custom-Class-Loader）"><a href="#4-自定义类加载器（Custom-Class-Loader）" class="headerlink" title="4. 自定义类加载器（Custom Class Loader）"></a>4. 自定义类加载器（Custom Class Loader）</h2><ul>
+<li><p><strong>职责</strong>：开发者可以根据需求定制类加载器，以实现特定的加载策略。例如，从网络、数据库或其他非标准位置加载类。</p>
+</li>
+<li><p><strong>实现</strong>：自定义类加载器通常继承自<code>java.lang.ClassLoader</code>，并重写<code>findClass()</code>或<code>loadClass()</code>方法。</p>
+</li>
+<li><p><strong>特点</strong>：自定义类加载器提供了灵活性，允许开发者根据具体需求实现个性化的类加载逻辑。</p>
+</li>
+</ul>
+<h1 id="双亲委派模型"><a href="#双亲委派模型" class="headerlink" title="双亲委派模型"></a>双亲委派模型</h1><h2 id="双亲委派模型（Parent-Delegation-Model）"><a href="#双亲委派模型（Parent-Delegation-Model）" class="headerlink" title="双亲委派模型（Parent Delegation Model）"></a>双亲委派模型（Parent Delegation Model）</h2><p>双亲委派模型是Java类加载器体系的核心机制，它定义了类加载器之间的层次关系和加载顺序。其核心思想如下：</p>
+<ul>
+<li><p><strong>委派机制</strong>：当一个类加载器收到类加载请求时，它不会立即尝试加载类，而是将请求委派给父类加载器。每一层次的类加载器都会遵循这一原则，直到请求到达顶层的启动类加载器。</p>
+</li>
+<li><p><strong>加载顺序</strong>：如果父类加载器无法加载该类（即在父类加载器的搜索路径中找不到该类），子类加载器才会尝试加载。这种机制确保了类的加载顺序和层次结构，避免了类的重复加载和潜在的冲突。</p>
+</li>
+<li><p><strong>安全性</strong>：双亲委派模型增强了Java平台的安全性，因为它确保了核心库的类只能由启动类加载器加载，防止了恶意代码替换核心类库的可能性。</p>
+</li>
+</ul>
+<h2 id="双亲委派模型的作用"><a href="#双亲委派模型的作用" class="headerlink" title="双亲委派模型的作用"></a>双亲委派模型的作用</h2><h3 id="1-保证类的唯一性"><a href="#1-保证类的唯一性" class="headerlink" title="1. 保证类的唯一性"></a>1. 保证类的唯一性</h3><p>通过委派机制，双亲委派模型确保了所有类加载请求都会传给启动类加载器。这一机制避免了不同类加载器重复加载相同类的情况，确保了Java核心类库的统一性。同时，它也防止了用户自定义的类覆盖Java核心类库的可能性，从而保证了类的唯一性。</p>
+<h3 id="2-保证安全性"><a href="#2-保证安全性" class="headerlink" title="2. 保证安全性"></a>2. 保证安全性</h3><p>由于Java核心类库被启动类加载器加载，而启动类加载器只加载信任的核心类库，双亲委派模型可以防止恶意代码类冒充核心类，增加系统的安全性。这种机制确保了核心类库的完整性和安全性，防止了潜在的安全漏洞。</p>
+<h3 id="3-支持隔离和层次划分"><a href="#3-支持隔离和层次划分" class="headerlink" title="3. 支持隔离和层次划分"></a>3. 支持隔离和层次划分</h3><p>双亲委派模型支持不同层次的类加载器服务于不同的类加载需求。例如：</p>
+<ul>
+<li><strong>启动类加载器</strong>：加载Java核心库类代码。</li>
+<li><strong>扩展类加载器</strong>：加载框架的扩展代码。</li>
+<li><strong>应用程序类加载器</strong>：加载用户的代码。</li>
+</ul>
+<p>这种层次划分可以实现沙盒安全机制，保证各个层级加载器的职责分明，也便于维护和扩展。每个层次的类加载器只负责加载特定范围内的类，从而实现了类加载的隔离和层次划分。</p>
+<h3 id="4-便于维护和扩展"><a href="#4-便于维护和扩展" class="headerlink" title="4. 便于维护和扩展"></a>4. 便于维护和扩展</h3><p>双亲委派模型的层次结构使得类加载器的职责清晰，便于维护和扩展。开发者可以根据需求定制自定义类加载器，并将其插入到现有的类加载器层次结构中。这种灵活性使得Java平台能够适应不同的应用场景和需求，增强了系统的可扩展性。</p>
+<h1 id="类加载过程"><a href="#类加载过程" class="headerlink" title="类加载过程"></a>类加载过程</h1><p><img src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202410051712703.png" alt="类加载过程"></p>
+<p>类从被虚拟机加载到内存开始，到卸载出内存为止，它的整个生命周期包括以下七个阶段：</p>
+<ol>
+<li><strong>加载（Loading）</strong></li>
+</ol>
+<p>加载阶段是类加载过程的第一个阶段，主要完成以下任务：</p>
+<ul>
+<li><p><strong>获取二进制字节流</strong>：通过类的全限定名（包名+类名），获取该类的<code>.class</code>文件的二进制字节流。这个过程可以通过文件系统、网络、动态生成等方式实现。</p>
+</li>
+<li><p><strong>转换为运行时数据结构</strong>：将二进制字节流所代表的静态存储结构，转化为方法区（Method Area）运行时的数据结构。方法区是JVM中的一块内存区域，用于存储类的结构信息。</p>
+</li>
+<li><p><strong>生成Class对象</strong>：在内存中生成一个代表该类的<code>java.lang.Class</code>对象，作为方法区该类的各种数据的访问入口。这个<code>Class</code>对象是反射机制的基础，通过它可以获取类的所有信息。</p>
+</li>
+</ul>
+<ol start="2">
+<li><strong>连接（Linking）</strong></li>
+</ol>
+<p>连接阶段包括验证、准备和解析三个子阶段，统称为连接。</p>
+<p>​	2.1 验证（Verification）</p>
+<p>验证阶段的目的是确保<code>.class</code>文件中的字节流包含的信息符合当前虚拟机的要求，保证这个被加载的类的正确性，不会危害到虚拟机的安全。验证阶段大致包括以下四个阶段的检验动作：</p>
+<ul>
+<li><p><strong>文件格式校验</strong>：检查字节流是否符合Class文件格式的规范，如魔数、版本号、常量池等。</p>
+</li>
+<li><p><strong>元数据验证</strong>：对类的元数据信息进行语义分析，确保其符合Java语言规范，如类是否有父类、是否继承了不允许继承的类等。</p>
+</li>
+<li><p><strong>字节码验证</strong>：通过数据流和控制流分析，确保方法体的字节码符合逻辑，如操作数栈的数据类型与指令代码序列是否匹配、跳转指令是否指向合理的位置等。</p>
+</li>
+<li><p><strong>符号引用验证</strong>：在解析阶段之前，确保符号引用能够正确解析为直接引用，如检查符号引用中的类、字段、方法是否存在且具有正确的访问权限。</p>
+</li>
+</ul>
+<p>​	2.2 准备（Preparation）</p>
+<p>准备阶段为类中的静态字段分配内存，并设置初始值。具体包括：</p>
+<ul>
+<li><p><strong>分配内存</strong>：为类的静态字段分配内存空间。</p>
+</li>
+<li><p><strong>设置初始值</strong>：为静态字段设置默认初始值，如<code>int</code>类型初始值为<code>0</code>，<code>boolean</code>类型初始值为<code>false</code>。被<code>final</code>修饰的<code>static</code>字段不会在此阶段设置，因为<code>final</code>在编译时就已经分配好了。</p>
+</li>
+</ul>
+<p>​	2.3 解析（Resolution）</p>
+<p>解析阶段是虚拟机将常量池中的“符号引用”替换为“直接引用”的过程。具体包括：</p>
+<ul>
+<li><p><strong>符号引用</strong>：符号引用是以一组符号来描述所引用的目标，符号可以是任何形式的字面量，只要使用时可以无歧义地定位到目标即可。</p>
+</li>
+<li><p><strong>直接引用</strong>：直接引用可以是直接指向目标的指针、相对偏移量或者是一个可以间接定位到目标的句柄。直接引用是和虚拟机实现的内存布局相关的。如果有了直接引用，那引用的目标必定是已存在于内存中的。</p>
+</li>
+</ul>
+<ol start="3">
+<li><strong>初始化（Initialization）</strong></li>
+</ol>
+<p>初始化阶段是类加载的最后一个阶段，主要任务是执行类的构造器方法（<code>&lt;clinit&gt;</code>方法）。具体包括：</p>
+<ul>
+<li><p><strong>执行<code>&lt;clinit&gt;</code>方法</strong>：<code>&lt;clinit&gt;</code>方法是编译器自动生成的，用于收集类中的静态字段赋值语句和静态代码块。初始化阶段会按照代码顺序执行这些赋值语句和静态代码块。</p>
+</li>
+<li><p><strong>线程安全</strong>：<code>&lt;clinit&gt;</code>方法在多线程环境中是线程安全的，虚拟机会保证在多线程环境下只有一个线程执行<code>&lt;clinit&gt;</code>方法，其他线程会被阻塞。</p>
+</li>
+</ul>
+<ol start="4">
+<li><strong>使用（Using）</strong></li>
+</ol>
+<p>使用阶段是指类或对象在程序中被实际使用的过程，包括创建对象实例、调用类的方法、访问类的字段等。</p>
+<ol start="5">
+<li><strong>卸载（Unloading）</strong></li>
+</ol>
+<p>卸载阶段是指类从内存中被移除的过程。类只有在以下情况下才会被卸载：</p>
+<ol>
+<li><p><strong>所有对象实例被回收</strong>：该类的所有对象实例都已被垃圾回收器回收。</p>
+</li>
+<li><p><strong>类加载器被回收</strong>：加载该类的类加载器已被回收。</p>
+</li>
+<li><p><strong>Class对象无引用</strong>：类对应的<code>java.lang.Class</code>对象没有在任何地方被引用，无法在任何地方通过反射访问该类的方法。</p>
+</li>
+</ol>
+</div>
+        </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+            
+            
+                <div class="post-actions text-center clearfix" id="post-actions">
+                
+                    <a class="donate" href="javascript:;" onclick="krOpenDonateModal()"><i class="fa fa-bitcoin"></i> 打赏</a>
+                
+                
+                    <a class="share" href="javascript:;" onclick="krOpenShareModal()"><i class="fa fa-share-alt"></i> 分享</a>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    <a class="tag-none-link" href="/tags/%E7%B1%BB%E5%88%9D%E5%A7%8B%E5%8C%96/" rel="tag">类初始化</a>, <a class="tag-none-link" href="/tags/%E7%B1%BB%E5%8A%A0%E8%BD%BD/" rel="tag">类加载</a>
+                </div>
+                <div class="pull-date">
+                    <time datetime="2024-10-05T09:15:25.765Z" itemprop="dateModified">最后编辑：2024-10-05</time>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" JVM-内存模型" href="/2024/10/05/Java-JVM内存模型/"><i class="fa fa-angle-left"></i> 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" JVM-垃圾回收" href="/2024/10/05/Java-JVM垃圾回收/">下一篇 <i class="fa fa-angle-right"></i></a>
+            </div>
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+            
+                
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/user.jpg" alt="xiaoyan" loading="lazy" decoding="auto" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">是一只时时翻垃圾吃的宅子。</p>
+    </div>
+    <div class="site-meta">
+        <a class="meta-item" href="/archives/">
+            <span class="title">
+                文章
+            </span>
+            <span class="count">
+                32
+            </span>
+        </a>
+        <a class="meta-item" href="/categories/">
+            <span class="title">
+                分类
+            </span>
+            <span class="count">
+                10
+            </span>
+        </a>
+        <a class="meta-item" href="/tags/">
+            <span class="title">
+                标签
+            </span>
+            <span class="count">
+                42
+            </span>
+        </a>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix toc-div-class" >
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar" role="progressbar" aria-label="阅读进度："></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E7%9A%84%E8%AF%A6%E7%BB%86%E8%BF%87%E7%A8%8B"><span class="toc-number">1.</span> <span class="toc-text">对象创建的详细过程</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AF%B9%E8%B1%A1%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="toc-number">2.</span> <span class="toc-text">对象的生命周期</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8%E6%A6%82%E8%BF%B0"><span class="toc-number">3.</span> <span class="toc-text">类加载器概述</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%90%AF%E5%8A%A8%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8%EF%BC%88Bootstrap-Class-Loader%EF%BC%89"><span class="toc-number">3.1.</span> <span class="toc-text">1. 启动类加载器（Bootstrap Class Loader）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E6%89%A9%E5%B1%95%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8%EF%BC%88Extension-Class-Loader%EF%BC%89"><span class="toc-number">3.2.</span> <span class="toc-text">2. 扩展类加载器（Extension Class Loader）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E7%B3%BB%E7%BB%9F%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8-%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8%EF%BC%88System-Class-Loader-Application-Class-Loader%EF%BC%89"><span class="toc-number">3.3.</span> <span class="toc-text">3. 系统类加载器&#x2F;应用程序类加载器（System Class Loader&#x2F;Application Class Loader）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8%EF%BC%88Custom-Class-Loader%EF%BC%89"><span class="toc-number">3.4.</span> <span class="toc-text">4. 自定义类加载器（Custom Class Loader）</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%A8%A1%E5%9E%8B"><span class="toc-number">4.</span> <span class="toc-text">双亲委派模型</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%A8%A1%E5%9E%8B%EF%BC%88Parent-Delegation-Model%EF%BC%89"><span class="toc-number">4.1.</span> <span class="toc-text">双亲委派模型（Parent Delegation Model）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%A8%A1%E5%9E%8B%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="toc-number">4.2.</span> <span class="toc-text">双亲委派模型的作用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%BF%9D%E8%AF%81%E7%B1%BB%E7%9A%84%E5%94%AF%E4%B8%80%E6%80%A7"><span class="toc-number">4.2.1.</span> <span class="toc-text">1. 保证类的唯一性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E4%BF%9D%E8%AF%81%E5%AE%89%E5%85%A8%E6%80%A7"><span class="toc-number">4.2.2.</span> <span class="toc-text">2. 保证安全性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%94%AF%E6%8C%81%E9%9A%94%E7%A6%BB%E5%92%8C%E5%B1%82%E6%AC%A1%E5%88%92%E5%88%86"><span class="toc-number">4.2.3.</span> <span class="toc-text">3. 支持隔离和层次划分</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E4%BE%BF%E4%BA%8E%E7%BB%B4%E6%8A%A4%E5%92%8C%E6%89%A9%E5%B1%95"><span class="toc-number">4.2.4.</span> <span class="toc-text">4. 便于维护和扩展</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%B1%BB%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B"><span class="toc-number">5.</span> <span class="toc-text">类加载过程</span></a></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类列表</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">15</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/JVM/">JVM</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%9F%BA%E7%A1%80/">基础</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">并发编程</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E9%9B%86%E5%90%88/">集合</a><span class="category-list-count">5</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9E%B6%E6%9E%84/">架构</a><span class="category-list-count">1</span></li></ul>
+  </aside>
+
+
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/AOP/" style="font-size: 0.6em;">AOP</a> <a href="/tags/Bean/" style="font-size: 0.6em;">Bean</a> <a href="/tags/DDD/" style="font-size: 0.6em;">DDD</a> <a href="/tags/I-O/" style="font-size: 0.6em;">I/O</a> <a href="/tags/IoC/" style="font-size: 0.6em;">IoC</a> <a href="/tags/Java8%E6%96%B0%E7%89%B9%E6%80%A7/" style="font-size: 0.6em;">Java8新特性</a> <a href="/tags/Java%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" style="font-size: 0.6em;">Java基本概念</a> <a href="/tags/List/" style="font-size: 0.6em;">List</a> <a href="/tags/Map/" style="font-size: 0.8em;">Map</a> <a href="/tags/MyBatis/" style="font-size: 0.6em;">MyBatis</a> <a href="/tags/MySQL%E5%9F%BA%E7%A1%80/" style="font-size: 0.6em;">MySQL基础</a> <a href="/tags/Object/" style="font-size: 0.6em;">Object</a> <a href="/tags/SQL%E8%B0%83%E4%BC%98/" style="font-size: 0.6em;">SQL调优</a> <a href="/tags/Set/" style="font-size: 0.6em;">Set</a> <a href="/tags/SpringBoot/" style="font-size: 0.6em;">SpringBoot</a> <a href="/tags/SpringCloud/" style="font-size: 0.6em;">SpringCloud</a> <a href="/tags/%E4%BA%8B%E5%8A%A1/" style="font-size: 0.8em;">事务</a> <a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 0.6em;">其他</a>
+      </div>
+  </aside>
+
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/2024/10/05/Java-JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/"><i class="fa fa-book"></i> JVM-垃圾回收</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/10/05/Java-JVM%E7%B1%BB%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%8E%E7%B1%BB%E5%8A%A0%E8%BD%BD/"><i class="fa fa-book"></i> JVM-类初始化与类加载</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/10/05/Java-JVM%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/"><i class="fa fa-book"></i> JVM-内存模型</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/30/Spring-SpringCloud/"><i class="fa fa-book"></i> Spring Cloud</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/09/30/Spring-MyBatis/"><i class="fa fa-book"></i> MyBatis</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+            
+
+        
+
+                </div>
+    </div>
+</div>
+
+<footer>
+    <div id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2024 XIAOYAN 版权所有.</li>
+                            <li>本站已运行<span id="kr-since">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>自豪地使用 <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a> 主题</li>
+                            <li>站点由 xiaoyan 用 <i class="fa fa-heart" style="color:#d43f57"></i> 搭建</li>
+                        </div>
+                        <!-- 额外的追加注入项 -->
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                <div class="box theme-box" id="theme-toggle">
+                    <span class="fa fa-adjust"></span>
+                </div>
+            </div>
+            <div id="gotop-box" class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+
+    <div id="kr-donate-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseDonateModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-bitcoin"></i>
+            </div>
+            <div class="kr-modal-title">打赏</div>
+            <button class="kr-modal-close" onclick="krCloseDonateModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-donate-message">请我喝一杯冰阔咯~</div>
+            <div class="kr-donate-qr" id="kr-donate-qr">
+                
+            </div>
+            <div class="kr-donate-platforms">
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #1677ff;" title="支付宝" onclick="krDonateModalShowPlatformQR('https://qr.alipay.com/fkx15009k7u0fqrj8auepdf', '#1677ff')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-alipay">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M19 3h-14a2 2 0 0 0 -2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2 -2v-14a2 2 0 0 0 -2 -2z" />
+  <path d="M7 7h10" />
+  <path d="M12 3v7" />
+  <path d="M21 17.314c-2.971 -1.923 -15 -8.779 -15 -1.864c0 1.716 1.52 2.55 2.985 2.55c3.512 0 6.814 -5.425 6.814 -8h-6.604" />
+</svg>
+
+                        </button>
+                    
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #38ad5a;" title="微信支付" onclick="krDonateModalShowPlatformQR('wxp://f2f0hR4eF9Ypa3tpzjWme9fQDyWW3PIGe3WG5oiIakWLmDs', '#38ad5a')">
+                            <i class="fa fa-wechat"></i>
+                        </button>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/donate.min.js"></script>
+
+
+
+
+    <div id="kr-share-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseShareModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-share-alt"></i>
+            </div>
+            <div class="kr-modal-title">分享</div>
+            <button class="kr-modal-close" onclick="krCloseShareModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-share-message">让兄弟萌也来瞅一瞅！</div>
+            <div class="kr-share-qr" id="kr-share-qr"></div>
+            <div class="kr-share-platforms">
+                
+                    <button class="kr-share-platform-button" style="color: #e6162d;" title="QQ" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-qq"></i>
+                    </button>
+                
+                    <button class="kr-share-platform-button" style="color: #25d366;" title="微信" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-weixin"></i>
+                    </button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/share.min.js"></script>
+
+
+
+<!-- 额外的追加注入项 -->
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
+<meting-js
+  server="netease"
+  type="playlist"
+  fixed="true"
+  order="random"
+  id="12613265870">
+</meting-js>
+
+
+
+        <script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
+</script>
+
+
+  <script defer src="/vendors/nprogress@0.2.0/nprogress.js"></script>
+
+
+
+  <script defer src="/vendors/viewerjs@1.11.6/dist/viewer.min.js"></script>
+
+
+<script defer src="/js/kr-core.min.js"></script>
+
+
+  <script defer src="/js/kr-pjax.min.js"></script>
+
+
+<!-- 额外的追加注入项 -->
+
+  <script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+
+
+
+    </body>
+</html>
