@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  
+    <link rel="icon" href="/images/earthstars.png">
+  
+  
+  <title>计算机网络-应用层(上) | XIAOYAN</title>
+  <link rel="canonical" href="http://example.com/2024/10/12/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E5%BA%94%E7%94%A8%E5%B1%82(%E4%B8%8A)/">
+  <meta name="author" content="xiaoyan" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="Cookie, DNS, HTTP, Session" />
+  
+  <meta name="description" content="HTTPHTTP报文 HTTP报文分为请求报文和响应报文，它们各自具有特定的结构和组成部分： 请求报文：  请求行：包含请求方法、请求目标(URL等)和请求协议版本。 请求头：包含请求的附加信息，如Host、User-Agent、Content-Type等。 空行：用于分割请求头和请求体 请求体：可选，包含请求的参数。  123456GET &#x2F;index.html HTTP&#x2F;1.1Host: ww">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计算机网络-应用层(上)">
+<meta property="og:url" content="http://example.com/2024/10/12/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E5%BA%94%E7%94%A8%E5%B1%82(%E4%B8%8A)/index.html">
+<meta property="og:site_name" content="XIAOYAN">
+<meta property="og:description" content="HTTPHTTP报文 HTTP报文分为请求报文和响应报文，它们各自具有特定的结构和组成部分： 请求报文：  请求行：包含请求方法、请求目标(URL等)和请求协议版本。 请求头：包含请求的附加信息，如Host、User-Agent、Content-Type等。 空行：用于分割请求头和请求体 请求体：可选，包含请求的参数。  123456GET &#x2F;index.html HTTP&#x2F;1.1Host: ww">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://cdn.xiaolincoding.com//picgo/1721710466863-78bf586d-a25c-4fe4-bf27-5dd576b998c8.png">
+<meta property="og:image" content="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E9%94%AE%E5%85%A5%E7%BD%91%E5%9D%80%E8%BF%87%E7%A8%8B/5.jpg">
+<meta property="article:published_time" content="2024-10-12T08:33:32.000Z">
+<meta property="article:modified_time" content="2024-10-13T04:22:35.058Z">
+<meta property="article:author" content="xiaoyan">
+<meta property="article:tag" content="HTTP">
+<meta property="article:tag" content="DNS">
+<meta property="article:tag" content="Cookie">
+<meta property="article:tag" content="Session">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.xiaolincoding.com//picgo/1721710466863-78bf586d-a25c-4fe4-bf27-5dd576b998c8.png">
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kr-core.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/highlight.js/night-eighties.min.css" media="all"></link>
+  
+  <link rel="stylesheet" id="theme-light-css" href="/css/kr-theme/light.min.css" media="all"></link>
+  <link rel="stylesheet" id="theme-dark-css" href="/css/kr-theme/dark.min.css" media="(prefers-color-scheme: dark)"></link>
+  <script src="/js/kr-theme.min.js"></script>
+  <link rel="stylesheet" id="fontawe-css" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="nprogress-css" href="/vendors/nprogress@0.2.0/nprogress.css" media="all"></link>
+  
+  
+    <link rel="stylesheet" href="/vendors/viewerjs@1.11.6/dist/viewer.min.css"></link>
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  
+    <script src="/vendors/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+  
+  <!-- 自定义站点横幅和背景 -->
+  <style>
+    
+      .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_light.png');
+      }
+      html[data-theme="dark"] .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_dark.png');
+      }
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+        html[data-theme="dark"] body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+      }
+    
+    
+      .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+      html[data-theme="dark"] .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+    
+  </style>
+
+  <!-- 额外的追加注入项 -->
+  
+    <link rel="stylesheet" href="/css/custom.css">
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    <li>
+                                        
+                                            <a href="/">
+                                        
+                                            
+                                                <i class="fa fa-home"></i>
+                                            
+                                            首页
+                                        </a>
+                                        
+                                    </li>
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">XIAOYAN</a></div>
+                    <div id="kratos-nav-toggle-wrapper" class="nav-toggle">
+                        <a id="kratos-nav-toggle" class="kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>XIAOYAN</h2> <br />
+                        <span>山重水复疑无路，柳暗花明又一村。</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+
+
+        
+
+            
+
+            <section class="kr-main-col col-md-8">
+
+        
+
+            <article itemscope itemtype="https://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/12/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E5%BA%94%E7%94%A8%E5%B1%82(%E4%B8%8A)/">
+    <div class="kratos-hentry kratos-page-inner clearfix">
+        <header class="kratos-page-header">
+            
+                <h1 class="kratos-page-title text-center" itemprop="name headline">计算机网络-应用层(上)</h1>
+            
+            <ul class="kratos-page-meta text-center">
+                <li><time datetime="2024-10-12T08:33:32.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2024-10-12</time></li>
+                <li itemprop="author" itemscope itemtype="https://schema.org/Person">
+                    <i class="fa fa-user"></i> 作者 <span itemprop="name">xiaoyan</span>
+                </li>
+                
+                    <li>
+                        <i class="fa fa-edit"></i> 
+                        
+                        
+                            ~13.00K
+                        
+                        字
+                    </li>
+                
+                
+                
+            </ul>
+        </header>
+        <div class="kratos-page-content kr-post">
+            
+            
+            
+                <div class="kratos-post-inner-toc toc-div-class" >
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#HTTP"><span class="toc-number">1.</span> <span class="toc-text">HTTP</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP%E6%8A%A5%E6%96%87"><span class="toc-number">1.1.</span> <span class="toc-text">HTTP报文</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP%E5%B8%B8%E7%94%A8%E7%8A%B6%E6%80%81%E7%A0%81"><span class="toc-number">1.2.</span> <span class="toc-text">HTTP常用状态码</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1xx%EF%BC%88%E4%BF%A1%E6%81%AF%E6%80%A7%E7%8A%B6%E6%80%81%E7%A0%81%EF%BC%89"><span class="toc-number">1.2.1.</span> <span class="toc-text">1xx（信息性状态码）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2xx%EF%BC%88%E6%88%90%E5%8A%9F%E7%8A%B6%E6%80%81%E7%A0%81%EF%BC%89"><span class="toc-number">1.2.2.</span> <span class="toc-text">2xx（成功状态码）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3xx%EF%BC%88%E9%87%8D%E5%AE%9A%E5%90%91%E7%8A%B6%E6%80%81%E7%A0%81%EF%BC%89"><span class="toc-number">1.2.3.</span> <span class="toc-text">3xx（重定向状态码）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4xx%EF%BC%88%E5%AE%A2%E6%88%B7%E7%AB%AF%E9%94%99%E8%AF%AF%E7%8A%B6%E6%80%81%E7%A0%81%EF%BC%89"><span class="toc-number">1.2.4.</span> <span class="toc-text">4xx（客户端错误状态码）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5xx%EF%BC%88%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%94%99%E8%AF%AF%E7%8A%B6%E6%80%81%E7%A0%81%EF%BC%89"><span class="toc-number">1.2.5.</span> <span class="toc-text">5xx（服务器错误状态码）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GET-%E5%92%8C-POST-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">1.3.</span> <span class="toc-text">GET 和 POST 的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP%E7%9A%84%E9%95%BF%E8%BF%9E%E6%8E%A5"><span class="toc-number">1.4.</span> <span class="toc-text">HTTP的长连接</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E5%AE%89%E5%85%A8"><span class="toc-number">1.5.</span> <span class="toc-text">HTTP为什么不安全</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTPS%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3HTTP%E7%9A%84%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98"><span class="toc-number">1.5.1.</span> <span class="toc-text">HTTPS如何解决HTTP的安全问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP%E4%B8%8EHTTPS%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">1.6.</span> <span class="toc-text">HTTP与HTTPS的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTPS%E6%8F%A1%E6%89%8B%E8%BF%87%E7%A8%8B"><span class="toc-number">1.7.</span> <span class="toc-text">HTTPS握手过程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP-1-0%E4%B8%8EHTTP-1-1%E5%8C%BA%E5%88%AB"><span class="toc-number">1.8.</span> <span class="toc-text">HTTP&#x2F;1.0与HTTP&#x2F;1.1区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP-1-1%E4%B8%8EHTTP-2-0%E5%8C%BA%E5%88%AB"><span class="toc-number">1.9.</span> <span class="toc-text">HTTP&#x2F;1.1与HTTP&#x2F;2.0区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP%E3%80%81SOCKET%E5%92%8CTCP%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">1.10.</span> <span class="toc-text">HTTP、SOCKET和TCP的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98%E7%94%A8%E6%88%B7%E7%8A%B6%E6%80%81"><span class="toc-number">1.11.</span> <span class="toc-text">HTTP如何保存用户状态</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Session%E6%9C%BA%E5%88%B6"><span class="toc-number">1.11.1.</span> <span class="toc-text">Session机制</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Session%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="toc-number">1.11.1.1.</span> <span class="toc-text">Session的工作原理</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Cookie%E8%A2%AB%E7%A6%81%E7%94%A8%E6%80%8E%E4%B9%88%E5%8A%9E%EF%BC%9F"><span class="toc-number">1.11.2.</span> <span class="toc-text">Cookie被禁用怎么办？</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#DNS"><span class="toc-number">2.</span> <span class="toc-text">DNS</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%86%E8%A7%A3DNS"><span class="toc-number">2.1.</span> <span class="toc-text">了解DNS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DNS%E8%A7%A3%E6%9E%90%E8%BF%87%E7%A8%8B%E8%AF%A6%E8%A7%A3"><span class="toc-number">2.2.</span> <span class="toc-text">DNS解析过程详解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%B1%E5%85%A5%E8%A7%A3%E6%9E%90"><span class="toc-number">2.2.1.</span> <span class="toc-text">深入解析</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DNS%E5%9F%BA%E4%BA%8EUDP%E5%8D%8F%E8%AE%AE"><span class="toc-number">2.3.</span> <span class="toc-text">DNS基于UDP协议</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Cookie-%E4%B8%8E-Session"><span class="toc-number">3.</span> <span class="toc-text">Cookie 与 Session</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP%E5%8D%8F%E8%AE%AE%E7%9A%84%E6%97%A0%E7%8A%B6%E6%80%81%E6%80%A7%E5%8F%8A%E5%85%B6%E7%8A%B6%E6%80%81%E4%BF%9D%E6%8C%81%E6%9C%BA%E5%88%B6"><span class="toc-number">3.1.</span> <span class="toc-text">HTTP协议的无状态性及其状态保持机制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP%E7%9A%84%E6%97%A0%E7%8A%B6%E6%80%81%E6%80%A7"><span class="toc-number">3.1.1.</span> <span class="toc-text">HTTP的无状态性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A0%E7%8A%B6%E6%80%81%E6%80%A7%E7%9A%84%E4%BC%98%E7%82%B9"><span class="toc-number">3.1.2.</span> <span class="toc-text">无状态性的优点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%8A%B6%E6%80%81%E4%BF%9D%E6%8C%81%E6%9C%BA%E5%88%B6"><span class="toc-number">3.1.3.</span> <span class="toc-text">状态保持机制</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Cookie"><span class="toc-number">3.1.3.1.</span> <span class="toc-text">Cookie</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Session"><span class="toc-number">3.1.3.2.</span> <span class="toc-text">Session</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88HTTP%E4%BB%8D%E7%84%B6%E6%98%AF%E6%97%A0%E7%8A%B6%E6%80%81%E7%9A%84%EF%BC%9F"><span class="toc-number">3.1.4.</span> <span class="toc-text">为什么HTTP仍然是无状态的？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Cookie-%E4%B8%8E-Session-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">3.2.</span> <span class="toc-text">Cookie 与 Session 的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Cookie%E3%80%81Session-%E5%92%8C-Token-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">3.3.</span> <span class="toc-text">Cookie、Session 和 Token 的区别</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E6%9C%BA%E5%88%B6"><span class="toc-number">3.3.1.</span> <span class="toc-text">实现机制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%98%E5%82%A8%E4%BD%8D%E7%BD%AE"><span class="toc-number">3.3.2.</span> <span class="toc-text">存储位置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E5%85%A8%E6%80%A7"><span class="toc-number">3.3.3.</span> <span class="toc-text">安全性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%AF%E6%89%A9%E5%B1%95%E6%80%A7"><span class="toc-number">3.3.4.</span> <span class="toc-text">可扩展性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E6%9E%9C%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%A6%81%E7%94%A8%E4%BA%86Cookie%EF%BC%8CSession%E8%BF%98%E8%83%BD%E7%94%A8%E5%90%97%EF%BC%9F"><span class="toc-number">3.4.</span> <span class="toc-text">如果客户端禁用了Cookie，Session还能用吗？</span></a></li></ol></li></ol>
+                </div>
+            
+            <hr />
+            <div itemprop="articleBody"><h1 id="HTTP"><a href="#HTTP" class="headerlink" title="HTTP"></a>HTTP</h1><h2 id="HTTP报文"><a href="#HTTP报文" class="headerlink" title="HTTP报文"></a>HTTP报文</h2><p><img src="https://cdn.xiaolincoding.com//picgo/1721710466863-78bf586d-a25c-4fe4-bf27-5dd576b998c8.png"></p>
+<p>HTTP报文分为请求报文和响应报文，它们各自具有特定的结构和组成部分：</p>
+<p><strong>请求报文：</strong></p>
+<ul>
+<li>请求行：包含请求方法、请求目标(URL等)和请求协议版本。</li>
+<li>请求头：包含请求的附加信息，如Host、User-Agent、Content-Type等。</li>
+<li>空行：用于分割请求头和请求体</li>
+<li>请求体：可选，包含请求的参数。</li>
+</ul>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">GET</span> <span class="string">/index.html</span> <span class="meta">HTTP/1.1</span></span><br><span class="line"><span class="attribute">Host</span><span class="punctuation">: </span>www.example.com</span><br><span class="line"><span class="attribute">User-Agent</span><span class="punctuation">: </span>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36</span><br><span class="line"><span class="attribute">Accept</span><span class="punctuation">: </span>text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9</span><br><span class="line"><span class="attribute">Accept-Language</span><span class="punctuation">: </span>en-US,en;q=0.9</span><br><span class="line"><span class="attribute">Connection</span><span class="punctuation">: </span>keep-alive</span><br></pre></td></tr></table></figure>
+
+<p><strong>响应报文：</strong></p>
+<ul>
+<li>响应行：包含HTTP协议版本、状态码和状态信息。</li>
+<li>响应头：包含响应的附加信息，如Content-Type、Content-Length等。</li>
+<li>空行：用于分割响应头部和响应体</li>
+<li>响应体：包含响应的数据。</li>
+</ul>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">HTTP/1.1</span> <span class="number">200</span> OK</span><br><span class="line"><span class="attribute">Date</span><span class="punctuation">: </span>Mon, 27 Jul 2023 12:28:53 GMT</span><br><span class="line"><span class="attribute">Server</span><span class="punctuation">: </span>Apache/2.4.41 (Ubuntu)</span><br><span class="line"><span class="attribute">Last-Modified</span><span class="punctuation">: </span>Wed, 22 Jul 2023 19:15:56 GMT</span><br><span class="line"><span class="attribute">ETag</span><span class="punctuation">: </span>&quot;34aa387-d-1568eb00&quot;</span><br><span class="line"><span class="attribute">Accept-Ranges</span><span class="punctuation">: </span>bytes</span><br><span class="line"><span class="attribute">Content-Length</span><span class="punctuation">: </span>51</span><br><span class="line"><span class="attribute">Vary</span><span class="punctuation">: </span>Accept-Encoding</span><br><span class="line"><span class="attribute">Content-Type</span><span class="punctuation">: </span>text/plain</span><br><span class="line"></span><br><span class="line"><span class="language-autohotkey"><span class="built_in">Hello,</span> World!</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="HTTP常用状态码"><a href="#HTTP常用状态码" class="headerlink" title="HTTP常用状态码"></a>HTTP常用状态码</h2><p>HTTP状态码是服务器对客户端请求的响应状态的标识，它们帮助客户端理解请求的处理结果。状态码分为五类，每一类都有特定的含义。以下是一些常用的HTTP状态码及其解释：</p>
+<h3 id="1xx（信息性状态码）"><a href="#1xx（信息性状态码）" class="headerlink" title="1xx（信息性状态码）"></a>1xx（信息性状态码）</h3><p>这类状态码表示请求已被接收，继续处理，是协议处理中的一种中间状态，使用的比较少。</p>
+<ul>
+<li><strong>100 Continue</strong>：服务器已接收到请求头，并且客户端应继续发送请求体。</li>
+<li><strong>101 Switching Protocols</strong>：服务器已理解客户端的请求，并将通过Upgrade消息头通知客户端采用不同的协议来完成这个请求。</li>
+</ul>
+<h3 id="2xx（成功状态码）"><a href="#2xx（成功状态码）" class="headerlink" title="2xx（成功状态码）"></a>2xx（成功状态码）</h3><p>这类状态码表示请求已<strong>成功</strong>被服务器接收、理解并接受。</p>
+<ul>
+<li><strong>200 OK</strong>：请求成功。一般用于GET与POST请求。</li>
+<li><strong>201 Created</strong>：请求已经被实现，而且有一个新的资源已经依据请求的需要而建立，且其URI已经随Location头信息返回。</li>
+<li><strong>202 Accepted</strong>：服务器已接受请求，但尚未处理。</li>
+<li><strong>204 No Content</strong>：服务器成功处理了请求，但没有返回任何内容。</li>
+<li><strong>206 Partial Content</strong>：服务器已经成功处理了部分GET请求。</li>
+</ul>
+<h3 id="3xx（重定向状态码）"><a href="#3xx（重定向状态码）" class="headerlink" title="3xx（重定向状态码）"></a>3xx（重定向状态码）</h3><p>这类状态码表示需要客户端采取进一步的操作才能完成请求。</p>
+<ul>
+<li><strong>300 Multiple Choices</strong>：被请求的资源有一系列可供选择的回馈信息，每个都有自己特定的地址和浏览器驱动的商议信息。</li>
+<li><strong>301 Moved Permanently</strong>：被请求的资源已永久移动到新位置，并且将来任何对此资源的引用都应该使用本响应返回的若干个URI之一。</li>
+<li><strong>302 Found</strong>：请求的资源现在临时从不同的URI响应请求。</li>
+<li><strong>304 Not Modified</strong>：客户端发送了一个带条件的GET请求且该请求已被允许，而文档的内容（自上次访问以来或者根据请求的条件）并没有改变。</li>
+<li><strong>307 Temporary Redirect</strong>：请求的资源现在临时从不同的URI响应请求。</li>
+</ul>
+<h3 id="4xx（客户端错误状态码）"><a href="#4xx（客户端错误状态码）" class="headerlink" title="4xx（客户端错误状态码）"></a>4xx（客户端错误状态码）</h3><p>这类状态码表示客户端可能发生了<strong>错误</strong>，妨碍了服务器的处理。</p>
+<ul>
+<li><strong>400 Bad Request</strong>：服务器无法理解请求的格式，客户端不应当尝试再次使用相同的内容发起请求。</li>
+<li><strong>401 Unauthorized</strong>：请求要求用户的身份认证。</li>
+<li><strong>403 Forbidden</strong>：服务器已经理解请求，但是拒绝执行它。</li>
+<li><strong>404 Not Found</strong>：请求失败，请求所希望得到的资源未被在服务器上发现。</li>
+<li><strong>405 Method Not Allowed</strong>：请求行中指定的请求方法不能被用于请求相应的资源。</li>
+<li><strong>408 Request Timeout</strong>：服务器等候请求时发生超时。</li>
+<li><strong>410 Gone</strong>：被请求的资源在服务器上已经不再可用，而且没有任何已知的转发地址。</li>
+<li><strong>429 Too Many Requests</strong>：用户在给定的时间内发送了太多的请求。</li>
+</ul>
+<h3 id="5xx（服务器错误状态码）"><a href="#5xx（服务器错误状态码）" class="headerlink" title="5xx（服务器错误状态码）"></a>5xx（服务器错误状态码）</h3><p>这类状态码表示<strong>服务器</strong>在处理请求的过程中发生了<strong>错误</strong>。</p>
+<ul>
+<li><strong>500 Internal Server Error</strong>：服务器遇到了一个未曾预料的状况，导致了它无法完成对请求的处理。</li>
+<li><strong>501 Not Implemented</strong>：服务器不支持当前请求所需要的某个功能。</li>
+<li><strong>502 Bad Gateway</strong>：作为网关或者代理工作的服务器尝试执行请求时，从上游服务器接收到无效的响应。</li>
+<li><strong>503 Service Unavailable</strong>：由于临时的服务器维护或者过载，服务器当前无法处理请求。</li>
+<li><strong>504 Gateway Timeout</strong>：作为网关或者代理工作的服务器尝试执行请求时，未能及时从上游服务器（URI标识出的服务器，例如HTTP、FTP、LDAP）或者辅助服务器（例如DNS）收到响应。</li>
+</ul>
+<h2 id="GET-和-POST-的区别"><a href="#GET-和-POST-的区别" class="headerlink" title="GET 和 POST 的区别"></a>GET 和 POST 的区别</h2><p><code>GET</code> 和 <code>POST</code> 是 HTTP 协议中两种常用的请求方法，它们在不同的场景和目的下有不同的特点和用法。一般来说，可以从以下几个方面来区分二者：</p>
+<ul>
+<li>语义(主要区别)：根据REF规范，GET通常用于获取或查询资源，而POST常用于创建或者修改资源。</li>
+<li>幂等：GET 请求是幂等的，即多次重复执行不会改变资源的状态，而 POST 请求是不幂等的，即每次执行可能会产生不同的结果或影响资源的状态。</li>
+<li>格式：GET请求的参数通常放在URL中，形成查询字符串，而POST请求参数通常放在请求体中，可以有多种编码格式。GET请求的URL长度会受到浏览器的限制，而POST的请求体大小并没有明确的限制。</li>
+<li>缓存：由于GET是幂等的，可以被浏览器或者其他中间节点缓存起来以提高i性能和效率；而POST请求则不适合缓存，因为每次请求可能都会对结果造成影响，需要实时的响应。</li>
+<li>安全性：</li>
+<li>GET 请求和 POST 请求如果使用 HTTP 协议的话，那都不安全，因为 HTTP 协议本身是明文传输的，必须使用 HTTPS 协议来加密传输数据。另外，GET 请求相比 POST 请求更容易泄露敏感数据，因为 GET 请求的参数通常放在 URL 中。</li>
+</ul>
+<h2 id="HTTP的长连接"><a href="#HTTP的长连接" class="headerlink" title="HTTP的长连接"></a>HTTP的长连接</h2><p>HTTP协议采用的是“请求”-&gt;“应答”的模式，客户端主动发起请求，服务端才会响应。</p>
+<p>由于HTTP是基于TCP协议实现的，客户端与服务器间进行HTTP通信，需要先建立TCP连接，然后客户端发起HTTP请求，服务端收到请求后进行处理、响应，随后释放TCP连接。</p>
+<p>但是如果每次都要进行这么一个流程：建立TCP连接 -&gt; 请求资源 -&gt; 响应 -&gt; 释放连接，那么这种方式就是<strong>HTTP短连接</strong>。</p>
+<p>一次连接只能请求一个资源，当多次请求时就会造成频繁的连接建立与释放过程，降低了性能，所以就有了长连接的方式。HTTP中的 Keep-Alive 实现在第一个HTTP请求完成之后，暂时不断开TCP连接以让后续的HTTP请求都沿用该连接的功能，避免了连接建立与销毁的额外开销，这个方法称为<strong>HTTP长连接</strong>。</p>
+<p>HTTP长连接的特点是，TCP连接双方有一方提出了断开连接才会释放，否则保持TCP连接状态。</p>
+<h2 id="HTTP为什么不安全"><a href="#HTTP为什么不安全" class="headerlink" title="HTTP为什么不安全"></a>HTTP为什么不安全</h2><p>HTTP（HyperText Transfer Protocol）是一种应用层协议，其本身存在一些安全问题，主要原因在于它是明文传输的。以下是HTTP不安全的几个主要原因：</p>
+<ol>
+<li>窃听风险</li>
+</ol>
+<ul>
+<li><strong>明文传输</strong>：HTTP协议在传输过程中不进行加密，数据以明文形式在网络上传输。这意味着任何在通信链路上的中间人都可以截获并读取通信内容。</li>
+<li><strong>敏感信息泄露</strong>：由于数据未加密，窃听者可以轻易获取到用户的敏感信息，如登录凭证、信用卡信息等。</li>
+</ul>
+<ol start="2">
+<li>篡改风险</li>
+</ol>
+<ul>
+<li><strong>数据完整性缺失</strong>：HTTP协议不提供数据完整性校验机制，攻击者可以在数据传输过程中篡改数据。例如，攻击者可以修改网页内容、注入恶意代码或篡改表单数据。</li>
+<li><strong>中间人攻击</strong>：攻击者可以拦截并修改HTTP请求和响应，导致用户接收到被篡改的信息。</li>
+</ul>
+<ol start="3">
+<li>冒充风险</li>
+</ol>
+<ul>
+<li><strong>身份验证缺失</strong>：HTTP协议不提供服务器或客户端的身份验证机制，攻击者可以冒充合法的服务器或客户端进行通信。</li>
+<li><strong>钓鱼攻击</strong>：攻击者可以创建一个与合法网站外观相似的虚假网站，诱使用户输入敏感信息，从而窃取用户的登录凭证或其他敏感数据。</li>
+</ul>
+<h3 id="HTTPS如何解决HTTP的安全问题"><a href="#HTTPS如何解决HTTP的安全问题" class="headerlink" title="HTTPS如何解决HTTP的安全问题"></a>HTTPS如何解决HTTP的安全问题</h3><p>HTTPS（HyperText Transfer Protocol Secure）通过在HTTP与TCP层之间加入SSL&#x2F;TLS协议，很好地解决了上述安全问题。</p>
+<ol>
+<li>信息加密</li>
+</ol>
+<ul>
+<li><strong>SSL&#x2F;TLS协议</strong>：HTTPS使用SSL（Secure Sockets Layer）或TLS（Transport Layer Security）协议对数据进行加密。SSL&#x2F;TLS协议通过公钥加密技术（如RSA）和会话密钥（对称加密）来保护数据的机密性。</li>
+<li><strong>加密传输</strong>：即使在通信链路上获取到通信内容，攻击者也无法直接读取信息，因为数据已经被加密。</li>
+</ul>
+<ol start="2">
+<li>校验机制</li>
+</ol>
+<ul>
+<li><strong>数据完整性校验</strong>：SSL&#x2F;TLS协议使用消息认证码（MAC）来确保数据的完整性。MAC通过在数据中添加一个校验值，确保数据在传输过程中未被篡改。</li>
+<li><strong>防止篡改</strong>：如果数据在传输过程中被篡改，接收方可以通过校验值检测到数据的完整性被破坏，从而拒绝接收被篡改的数据。</li>
+</ul>
+<ol start="3">
+<li>身份证书</li>
+</ol>
+<ul>
+<li><strong>数字证书</strong>：HTTPS使用数字证书来验证服务器的身份。数字证书由受信任的第三方证书颁发机构（CA）签发，包含服务器的公钥和身份信息。</li>
+<li><strong>身份验证</strong>：客户端在建立HTTPS连接时，会验证服务器的数字证书，确保连接到的是合法的服务器，而不是冒充的虚假服务器。</li>
+<li><strong>防止冒充</strong>：通过数字证书的身份验证机制，HTTPS可以有效防止中间人攻击和钓鱼攻击。</li>
+</ul>
+<h2 id="HTTP与HTTPS的区别"><a href="#HTTP与HTTPS的区别" class="headerlink" title="HTTP与HTTPS的区别"></a>HTTP与HTTPS的区别</h2><ul>
+<li>端口号：HTTP端口号默认是80；HTTPS端口号默认是443。</li>
+<li>URL前缀：HTTP的URL前缀是<code>http://</code>；HTTPS则是<code>https://</code>。</li>
+<li>安全性和资源消耗：HTTP基于TCP协议，采用明文传输的方式，故而存在安全风险；而HTTPS协议在与HTTP与TCP中间插入了SSL&#x2F;TSL安全协议，使得报文能够加密传输。但也因为多加了一层协议的缘故，HTTPS协议需要额外建立一次TSL四次握手，相较于HTTP多消耗了一些性能。</li>
+<li>SEO(搜索引擎优化)：搜索引擎通常更加青睐于使用HTTPS的网站，故而搜索结果中采用了HTTPS的网站会优先显示，对SEO产生影响。</li>
+</ul>
+<h2 id="HTTPS握手过程"><a href="#HTTPS握手过程" class="headerlink" title="HTTPS握手过程"></a>HTTPS握手过程</h2><p>HTTPS（HyperText Transfer Protocol Secure）通过在HTTP与TCP层之间加入SSL&#x2F;TLS协议，提供了安全的通信通道。SSL&#x2F;TLS协议的核心是握手过程，它确保了通信双方的身份验证、密钥交换和加密算法的协商。以下是HTTPS握手过程的详细步骤：</p>
+<ol>
+<li><strong>TSL第一次握手</strong>：客户端发起连接</li>
+</ol>
+<ul>
+<li><strong>Client Hello</strong>：客户端向服务器发送<code>Client Hello</code>消息，包含以下信息：<ul>
+<li><strong>支持的SSL&#x2F;TLS版本</strong>：客户端支持的最高SSL&#x2F;TLS版本。</li>
+<li><strong>加密套件列表</strong>：客户端支持的加密算法和密钥交换算法。</li>
+<li><strong>随机数（Client Random）</strong>：客户端生成的随机数，用于后续的密钥生成。</li>
+<li><strong>会话ID（可选）</strong>：如果客户端希望恢复之前的会话，会发送会话ID。</li>
+</ul>
+</li>
+</ul>
+<ol start="2">
+<li><strong>TSL第二次握手</strong>：服务器响应</li>
+</ol>
+<ul>
+<li><p><strong>Server Hello</strong>：服务器接收到<code>Client Hello</code>消息后，发送<code>Server Hello</code>消息，包含以下信息：</p>
+<ul>
+<li><strong>选择的SSL&#x2F;TLS版本</strong>：服务器选择的SSL&#x2F;TLS版本。</li>
+<li><strong>选择的加密套件</strong>：服务器从客户端提供的列表中选择一个加密套件。</li>
+<li><strong>随机数（Server Random）</strong>：服务器生成的随机数，用于后续的密钥生成。</li>
+<li><strong>会话ID（可选）</strong>：如果服务器同意恢复之前的会话，会发送会话ID。</li>
+</ul>
+</li>
+<li><p><strong>服务器证书</strong>：服务器发送自己的数字证书给客户端。证书包含服务器的公钥和身份信息，由受信任的第三方证书颁发机构（CA）签发。</p>
+</li>
+<li><p><strong>服务器密钥交换（可选）</strong>：如果选择的加密套件需要额外的密钥交换信息，服务器会发送<code>Server Key Exchange</code>消息。</p>
+</li>
+<li><p><strong>服务器Hello Done</strong>：服务器发送<code>Server Hello Done</code>消息，表示服务器已完成握手消息的发送。</p>
+</li>
+</ul>
+<ol start="3">
+<li><strong>TSL第三次握手</strong>：客户端验证证书与密钥生成</li>
+</ol>
+<p>​	验证证书</p>
+<ul>
+<li><p><strong>证书验证</strong>：客户端验证服务器的数字证书，确保证书是有效的、未过期的，并且由受信任的CA签发。客户端还会检查证书中的域名是否与服务器的域名匹配。</p>
+</li>
+<li><p><strong>生成预主密钥</strong>：如果证书验证通过，客户端生成一个预主密钥（Pre-Master Secret），并使用服务器的公钥加密后发送给服务器。</p>
+</li>
+</ul>
+<p>​	密钥生成</p>
+<ul>
+<li><strong>生成会话密钥</strong>：客户端和服务器使用预主密钥、客户端随机数和服务器随机数，通过伪随机函数（PRF）生成会话密钥（Session Key）。会话密钥用于后续的加密和解密通信内容。</li>
+</ul>
+<ol start="4">
+<li><p><strong>TSL第四次握手</strong></p>
+<p>客户端完成握手</p>
+</li>
+</ol>
+<ul>
+<li><p><strong>Client Key Exchange</strong>：客户端发送<code>Client Key Exchange</code>消息，包含加密后的预主密钥。</p>
+</li>
+<li><p><strong>Change Cipher Spec</strong>：客户端发送<code>Change Cipher Spec</code>消息，通知服务器后续的通信将使用协商好的加密算法和会话密钥。</p>
+</li>
+<li><p><strong>Finished</strong>：客户端发送<code>Finished</code>消息，包含使用会话密钥加密的握手消息摘要，用于验证握手过程的完整性。</p>
+</li>
+</ul>
+<p>​	服务器完成握手</p>
+<ul>
+<li><p><strong>Change Cipher Spec</strong>：服务器发送<code>Change Cipher Spec</code>消息，通知客户端后续的通信将使用协商好的加密算法和会话密钥。</p>
+</li>
+<li><p><strong>Finished</strong>：服务器发送<code>Finished</code>消息，包含使用会话密钥加密的握手消息摘要，用于验证握手过程的完整性。</p>
+</li>
+</ul>
+<p>​	安全通信</p>
+<ul>
+<li><strong>加密通信</strong>：握手完成后，客户端和服务器之间的所有通信都将使用会话密钥进行加密和解密，确保数据的机密性和完整性。</li>
+</ul>
+<h2 id="HTTP-1-0与HTTP-1-1区别"><a href="#HTTP-1-0与HTTP-1-1区别" class="headerlink" title="HTTP&#x2F;1.0与HTTP&#x2F;1.1区别"></a>HTTP&#x2F;1.0与HTTP&#x2F;1.1区别</h2><ul>
+<li><strong>连接方式</strong>：HTTP&#x2F;1.0采用短连接方式，HTTP&#x2F;1.1支持长连接。</li>
+<li><strong>状态响应码</strong>：HTTP&#x2F;1.1加入了大量的状态响应码。比如<code>100(Continue)</code>在请求大资源前的预热请求、<code>409(Conflict)</code>请求与当前资源的规定冲突等。</li>
+<li><strong>带宽</strong>：HTTP&#x2F;1.0中，存在一些带宽资源浪费现象，例如客户端只需要对象的某一部分，而服务器却将整个对象送过来了，并且不支持断点续传功能。</li>
+<li><strong>Host头处理</strong>：HTTP&#x2F;1.1引入了Host头，允许在一个IP地址上托管多个域名，从而支持虚拟主机的功能。</li>
+</ul>
+<h2 id="HTTP-1-1与HTTP-2-0区别"><a href="#HTTP-1-1与HTTP-2-0区别" class="headerlink" title="HTTP&#x2F;1.1与HTTP&#x2F;2.0区别"></a>HTTP&#x2F;1.1与HTTP&#x2F;2.0区别</h2><ul>
+<li><strong>多路复用（Multiplexing）</strong>：HTTP&#x2F;2.0 在同一连接上可以同时传输多个请求和响应（可以看作是 HTTP&#x2F;1.1 中长链接的升级版本），互不干扰。HTTP&#x2F;1.1 则使用串行方式，每个请求和响应都需要独立的连接，而浏览器为了控制资源会有 6-8 个 TCP 连接的限制。。这使得 HTTP&#x2F;2.0 在处理多个请求时更加高效，减少了网络延迟和提高了性能。</li>
+<li><strong>二进制帧（Binary Frames）</strong>：HTTP&#x2F;2.0 使用二进制帧进行数据传输，而 HTTP&#x2F;1.1 则使用文本格式的报文。二进制帧更加紧凑和高效，减少了传输的数据量和带宽消耗。</li>
+<li><strong>头部压缩（Header Compression）</strong>：HTTP&#x2F;1.1 支持<code>Body</code>压缩，<code>Header</code>不支持压缩。HTTP&#x2F;2.0 支持对<code>Header</code>压缩，使用了专门为<code>Header</code>压缩而设计的 HPACK 算法，减少了网络开销。</li>
+<li><strong>服务器推送（Server Push）</strong>：HTTP&#x2F;2.0 支持服务器推送，可以在客户端请求一个资源时，将其他相关资源一并推送给客户端，从而减少了客户端的请求次数和延迟。而 HTTP&#x2F;1.1 需要客户端自己发送请求来获取相关资源。</li>
+</ul>
+<h2 id="HTTP、SOCKET和TCP的区别"><a href="#HTTP、SOCKET和TCP的区别" class="headerlink" title="HTTP、SOCKET和TCP的区别"></a>HTTP、SOCKET和TCP的区别</h2><p>HTTP是应用层的协议，定义了客户端和服务器间数据的传输规范；Socket是通信的一端，提供了网路通信的接口；TCP是传输层协议，负责为端到端之间提供可靠的数据传输服务。它们在网络中充当不同的角色。</p>
+<h2 id="HTTP如何保存用户状态"><a href="#HTTP如何保存用户状态" class="headerlink" title="HTTP如何保存用户状态"></a>HTTP如何保存用户状态</h2><p>HTTP（HyperText Transfer Protocol）是一种无状态的协议，这意味着每次请求都是独立的，服务器不会保存客户端的状态信息。然而，在实际应用中，许多场景需要保存用户的状态，例如用户登录状态、购物车内容等。为了解决这个问题，引入了Session机制。</p>
+<h3 id="Session机制"><a href="#Session机制" class="headerlink" title="Session机制"></a>Session机制</h3><p>Session机制的主要作用是通过服务端记录用户的状态。典型的场景是购物车，当用户添加商品到购物车时，系统需要知道是哪个用户操作的，因为HTTP协议是无状态的。服务端为特定的用户创建特定的Session之后，就可以标识这个用户并且跟踪这个用户。</p>
+<h4 id="Session的工作原理"><a href="#Session的工作原理" class="headerlink" title="Session的工作原理"></a>Session的工作原理</h4><ol>
+<li><strong>创建Session</strong>：当用户首次访问服务器时，服务器会为该用户创建一个唯一的Session ID，并将该Session ID与用户的状态信息（如用户ID、购物车内容等）关联起来。服务器可以选择将Session信息保存在内存、数据库（如Redis）或其他持久化存储中。</li>
+<li><strong>传递Session ID</strong>：服务器将Session ID返回给客户端，通常通过在响应头中设置<code>Set-Cookie</code>字段，将Session ID存储在客户端的Cookie中。客户端在后续的请求中，会将Session ID通过请求头中的<code>Cookie</code>字段发送给服务器。</li>
+<li><strong>Session跟踪</strong>：服务器接收到客户端的请求时，会从请求头中提取Session ID，并根据Session ID查找对应的用户状态信息。服务器可以根据Session信息进行用户身份验证、状态管理等操作。</li>
+<li><strong>Session销毁</strong>：服务器会在一定时间内保存Session信息，过了时间限制，就会销毁这个Session。用户退出登录或关闭浏览器时，服务器也会销毁对应的Session。</li>
+</ol>
+<h3 id="Cookie被禁用怎么办？"><a href="#Cookie被禁用怎么办？" class="headerlink" title="Cookie被禁用怎么办？"></a>Cookie被禁用怎么办？</h3><p>如果客户端禁用了Cookie，服务器无法通过Cookie传递Session ID，此时可以使用URL重写技术，即把Session ID附加在URL路径后面。</p>
+<h1 id="DNS"><a href="#DNS" class="headerlink" title="DNS"></a>DNS</h1><h2 id="了解DNS"><a href="#了解DNS" class="headerlink" title="了解DNS"></a>了解DNS</h2><p>DNS(Domain Name System，域名系统)，它是互联网中用于将域名转化为对应的IP的分布式数据库系统。DNS扮演着一个重要的角色，使得人们不需要记得难记得IP地址而转向方便的域名，即可访问互联网资源。</p>
+<p>DNS中的域名采用<strong>句点</strong>分割，比如<code>www.example.com</code>，此处句点代表不同层次之间得界限。在域名中，越靠右的位置代表其层级越高。（毕竟域名是外国人搞得，外国人姓在右名在左）。实际上最右边还有一个点，代表根域名，根域在最顶层。</p>
+<p><img src="https://cdn.xiaolincoding.com/gh/xiaolincoder/ImageHost/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E9%94%AE%E5%85%A5%E7%BD%91%E5%9D%80%E8%BF%87%E7%A8%8B/5.jpg"></p>
+<p>因此，客户端只要找到任意DNS服务器，就可以回到其根域服务器，然后逐级找到目标DNS服务器。</p>
+<h2 id="DNS解析过程详解"><a href="#DNS解析过程详解" class="headerlink" title="DNS解析过程详解"></a>DNS解析过程详解</h2><p>域名系统（DNS）是互联网中用于将域名转换为IP地址的关键基础设施。以下是DNS解析过程的详细步骤：</p>
+<ol>
+<li><p><strong>客户端发起DNS查询</strong>：当用户在浏览器中输入“<a target="_blank" rel="noopener" href="http://www.example.com”时,客户端(通常是操作系统或浏览器)会向本地dns服务器发起dns查询请求,以获取该域名对应的ip地址./">www.example.com”时，客户端（通常是操作系统或浏览器）会向本地DNS服务器发起DNS查询请求，以获取该域名对应的IP地址。</a></p>
+</li>
+<li><p><strong>本地DNS服务器处理请求</strong>：本地DNS服务器接收到查询请求后，首先会检查其本地缓存。如果缓存中存在该域名的IP地址记录，则直接将该IP地址返回给客户端，从而避免了后续的递归查询过程。若缓存中不存在该记录，本地DNS服务器将启动递归查询。</p>
+</li>
+<li><p><strong>根域名服务器的角色</strong>：本地DNS服务器向根域名服务器发起查询。根域名服务器不直接解析具体的域名，而是指示本地DNS服务器向负责顶级域名（TLD）的DNS服务器进行进一步查询。例如，对于“<a target="_blank" rel="noopener" href="http://www.example.com”,根域名服务器会告知本地dns服务器“.com”顶级域名服务器的地址./">www.example.com”，根域名服务器会告知本地DNS服务器“.com”顶级域名服务器的地址。</a></p>
+</li>
+<li><p><strong>顶级域名服务器的参与</strong>：本地DNS服务器随后向“.com”顶级域名服务器发起查询。顶级域名服务器进一步指示本地DNS服务器向负责“example.com”区域的权威DNS服务器进行查询。</p>
+</li>
+<li><p><strong>权威DNS服务器的解析</strong>：权威DNS服务器是域名解析的最终来源，它存储了域名与IP地址的映射关系。本地DNS服务器向权威DNS服务器发起查询，权威DNS服务器返回“<a target="_blank" rel="noopener" href="http://www.example.com”对应的ip地址./">www.example.com”对应的IP地址。</a></p>
+</li>
+<li><p><strong>本地DNS服务器的响应</strong>：本地DNS服务器接收到权威DNS服务器的响应后，将IP地址返回给客户端，并在本地缓存中存储该记录，以便后续查询时能够快速响应。</p>
+</li>
+<li><p><strong>客户端发起HTTP请求</strong>：客户端接收到IP地址后，使用该IP地址发起HTTP请求，与目标服务器建立连接，从而完成域名解析的全过程。</p>
+</li>
+</ol>
+<h3 id="深入解析"><a href="#深入解析" class="headerlink" title="深入解析"></a>深入解析</h3><ul>
+<li><p><strong>递归查询与迭代查询</strong>：在上述过程中，本地DNS服务器执行的是递归查询，即它代表客户端完成整个查询过程。而根域名服务器、顶级域名服务器和权威DNS服务器执行的是迭代查询，它们仅提供下一步查询的指示，而不直接返回最终结果。</p>
+</li>
+<li><p><strong>DNS缓存机制</strong>：DNS缓存是提高解析效率的关键机制。本地DNS服务器、ISP的DNS服务器以及操作系统都可能缓存DNS记录。缓存的有效期由DNS记录的TTL（Time to Live）值决定，TTL值越小，缓存的有效期越短，DNS解析的实时性越高。</p>
+</li>
+<li><p><strong>权威DNS服务器</strong>：权威DNS服务器是域名解析的最终权威，它存储了域名的权威记录（如A记录、CNAME记录等）。权威DNS服务器通常由域名注册商或企业自行管理，确保域名解析的准确性和安全性。</p>
+</li>
+</ul>
+<h2 id="DNS基于UDP协议"><a href="#DNS基于UDP协议" class="headerlink" title="DNS基于UDP协议"></a>DNS基于UDP协议</h2><p>DNS底层基于UDP协议，而不是TCP协议。主要考虑的因素是基于UDP协议具有的低延迟、轻量级、简单快速的特性。其高性能更加适合于DNS对需要快速响应的域名解析要求。</p>
+<ul>
+<li>低延时：UDP是无连接的协议，不需要建立连接减少了等待时间。</li>
+<li>简单快速：UDP没有连接管理和流量控制，传输效率更高。</li>
+<li>轻量级：UDP头部较小，占用网络资源少，适合DNS这种小而且频繁的数据交换。</li>
+</ul>
+<h1 id="Cookie-与-Session"><a href="#Cookie-与-Session" class="headerlink" title="Cookie 与 Session"></a>Cookie 与 Session</h1><h2 id="HTTP协议的无状态性及其状态保持机制"><a href="#HTTP协议的无状态性及其状态保持机制" class="headerlink" title="HTTP协议的无状态性及其状态保持机制"></a>HTTP协议的无状态性及其状态保持机制</h2><h3 id="HTTP的无状态性"><a href="#HTTP的无状态性" class="headerlink" title="HTTP的无状态性"></a>HTTP的无状态性</h3><p>HTTP（Hypertext Transfer Protocol）被设计为一种无状态协议，这意味着每个HTTP请求都是独立的，服务器不会保存关于客户端的状态信息。具体来说，服务器在处理一个请求时，不会依赖于之前或之后的请求，每个请求都被视为一个全新的交互。</p>
+<h3 id="无状态性的优点"><a href="#无状态性的优点" class="headerlink" title="无状态性的优点"></a>无状态性的优点</h3><ol>
+<li><strong>简单性</strong>：无状态协议的设计相对简单，服务器不需要维护复杂的会话状态，从而简化了服务器的实现和维护。</li>
+<li><strong>可扩展性</strong>：无状态协议更容易实现负载均衡和高可用性，因为每个请求都可以独立处理，服务器之间不需要共享状态信息。</li>
+<li><strong>可靠性</strong>：由于每个请求都是独立的，服务器在处理请求时不会因为之前的请求失败而受到影响。</li>
+</ol>
+<h3 id="状态保持机制"><a href="#状态保持机制" class="headerlink" title="状态保持机制"></a>状态保持机制</h3><p>尽管HTTP本身是无状态的，但在实际应用中，许多场景需要服务器能够识别和跟踪客户端的状态。为了实现这一需求，HTTP引入了一些状态保持机制，其中最常见的是<strong>Cookie</strong>和<strong>Session</strong>。</p>
+<h4 id="Cookie"><a href="#Cookie" class="headerlink" title="Cookie"></a>Cookie</h4><p>Cookie是一种在客户端（通常是浏览器）存储的小型文本文件，用于在客户端和服务器之间传递状态信息。服务器可以在HTTP响应中设置Cookie，客户端在后续请求中自动携带这些Cookie，从而实现状态保持。</p>
+<h4 id="Session"><a href="#Session" class="headerlink" title="Session"></a>Session</h4><p>Session是一种在服务器端存储用户状态的机制。服务器为每个用户生成一个唯一的Session ID，并将其通过Cookie或其他方式传递给客户端。客户端在后续请求中携带Session ID，服务器根据Session ID查找对应的用户状态信息。</p>
+<h3 id="为什么HTTP仍然是无状态的？"><a href="#为什么HTTP仍然是无状态的？" class="headerlink" title="为什么HTTP仍然是无状态的？"></a>为什么HTTP仍然是无状态的？</h3><p>虽然Cookie和Session等机制能够在一定程度上实现状态保持，但HTTP协议本身仍然被认为是无状态的。这是因为：</p>
+<ol>
+<li><strong>独立请求</strong>：服务器对于每个HTTP请求都是独立的，服务器不会自动保存或关联请求之间的状态信息。每个请求都需要携带足够的信息来理解请求的意图。</li>
+<li><strong>无状态设计</strong>：HTTP协议的设计初衷是无状态的，Cookie和Session等机制只是为了弥补无状态协议在某些场景下的不足，而不是改变HTTP协议的无状态特性。</li>
+</ol>
+<h2 id="Cookie-与-Session-的区别"><a href="#Cookie-与-Session-的区别" class="headerlink" title="Cookie 与 Session 的区别"></a>Cookie 与 Session 的区别</h2><p>在Web开发中，Cookie和Session是两种常用的状态管理技术，它们在存储位置、数据容量、安全性以及生命周期等方面存在显著差异。以下是对这两种技术的详细比较：</p>
+<ol>
+<li>存储位置</li>
+</ol>
+<ul>
+<li><p><strong>Cookie</strong>：Cookie的数据存储在客户端（通常是浏览器）。当浏览器向服务器发起请求时，会自动附带Cookie中的数据。Cookie是HTTP协议的一部分，服务器可以通过HTTP响应头（Set-Cookie）设置Cookie，客户端在后续请求中通过HTTP请求头（Cookie）携带这些数据。</p>
+</li>
+<li><p><strong>Session</strong>：Session的数据存储在服务器端。服务器会为每一个用户分配一个唯一的Session ID，通过Cookie或URL重写的方式发送给客户端，后续客户端的请求都要附带Session ID。服务器根据Session ID找到之前会话保留的数据。</p>
+</li>
+</ul>
+<ol start="2">
+<li>数据容量</li>
+</ol>
+<ul>
+<li><p><strong>Cookie</strong>：单个Cookie文件的大小通常限制在4KB左右，并且大多数浏览器对单个域名下的Cookie数量也有一定的限制（通常为20个左右）。因此，Cookie的数据容量相对较小。</p>
+</li>
+<li><p><strong>Session</strong>：Session数据保存在服务器中，仅受限于服务器的存储容量。因此，Session可以存储更多的数据，适用于需要存储大量用户状态信息的场景。</p>
+</li>
+</ul>
+<ol start="3">
+<li>安全性</li>
+</ol>
+<ul>
+<li><p><strong>Cookie</strong>：Cookie相对不安全，因为数据存储在客户端，容易受到跨站脚本攻击（XSS）和跨站请求伪造（CSRF）的威胁。虽然可以通过设置HTTPOnly属性来防止JavaScript访问Cookie，但仍有可能受到CSRF攻击。</p>
+</li>
+<li><p><strong>Session</strong>：Session通常被认为比Cookie更安全，因为数据保存在服务器端，不易受到客户端攻击。然而，Session仍然可能存在Session劫持的风险，特别是在Session ID通过不安全的通道（如未加密的HTTP）传输时。</p>
+</li>
+</ul>
+<ol start="4">
+<li>生命周期</li>
+</ol>
+<ul>
+<li><p><strong>Cookie</strong>：Cookie可以设置过期时间，过期后自动删除；也可以设置为会话Cookie，浏览器关闭后自动删除。Cookie的生命周期可以通过服务器端的设置进行控制。</p>
+</li>
+<li><p><strong>Session</strong>：Session默认在浏览器关闭时关闭会话，Session数据被删除。服务器也可以设置Session的过期时间，当Session超过一定时间没有活动时，Session也会失效。Session的生命周期通常由服务器端的管理策略决定。</p>
+</li>
+</ul>
+<h2 id="Cookie、Session-和-Token-的区别"><a href="#Cookie、Session-和-Token-的区别" class="headerlink" title="Cookie、Session 和 Token 的区别"></a>Cookie、Session 和 Token 的区别</h2><p>在Web开发中，Cookie、Session和Token是三种常用的状态管理技术，它们在实现机制、存储位置、安全性、可扩展性等方面存在显著差异。以下是对这三种技术的详细比较：</p>
+<h3 id="实现机制"><a href="#实现机制" class="headerlink" title="实现机制"></a>实现机制</h3><ul>
+<li><strong>Cookie</strong>：Cookie是一种在客户端存储的小型文本文件，用于在客户端和服务器之间传递状态信息。服务器可以通过HTTP响应头（Set-Cookie）设置Cookie，客户端在后续请求中通过HTTP请求头（Cookie）携带这些数据。</li>
+<li><strong>Session</strong>：Session是一种在服务器端存储用户状态的机制。服务器为每个用户生成一个唯一的Session ID，并将其通过Cookie或其他方式传递给客户端。客户端在后续请求中携带Session ID，服务器根据Session ID查找对应的用户状态信息。</li>
+<li><strong>Token</strong>：Token是一种基于令牌的身份验证机制。服务器在用户登录成功后生成一个Token，并将其返回给客户端。客户端在后续请求中携带Token，服务器通过验证Token来确认用户身份。Token通常是无状态的，服务器不需要存储Token信息。</li>
+</ul>
+<h3 id="存储位置"><a href="#存储位置" class="headerlink" title="存储位置"></a>存储位置</h3><ul>
+<li><strong>Cookie</strong>：Cookie的数据存储在客户端（通常是浏览器）。</li>
+<li><strong>Session</strong>：Session的数据存储在服务器端。</li>
+<li><strong>Token</strong>：Token的数据通常存储在客户端（如浏览器、本地存储或移动设备），服务器不需要存储Token信息。</li>
+</ul>
+<h3 id="安全性"><a href="#安全性" class="headerlink" title="安全性"></a>安全性</h3><ul>
+<li><strong>Cookie</strong>：Cookie相对不安全，因为数据存储在客户端，容易受到跨站脚本攻击（XSS）和跨站请求伪造（CSRF）的威胁。虽然可以通过设置HTTPOnly和Secure属性来提高安全性，但仍有可能受到攻击。</li>
+<li><strong>Session</strong>：Session通常被认为比Cookie更安全，因为数据保存在服务器端，不易受到客户端攻击。然而，Session仍然可能存在Session劫持的风险，特别是在Session ID通过不安全的通道（如未加密的HTTP）传输时。</li>
+<li><strong>Token</strong>：Token通常被认为比Cookie和Session更安全，因为Token是无状态的，服务器不需要存储Token信息。Token通常使用加密算法生成，并且可以通过签名和加密来防止篡改和伪造。Token的安全性依赖于加密算法和传输通道的安全性。</li>
+</ul>
+<h3 id="可扩展性"><a href="#可扩展性" class="headerlink" title="可扩展性"></a>可扩展性</h3><ul>
+<li><strong>Cookie</strong>：Cookie的可扩展性较差，因为数据存储在客户端，受限于浏览器对Cookie数量和大小的限制。</li>
+<li><strong>Session</strong>：Session的可扩展性较好，因为数据存储在服务器端，可以通过分布式存储和负载均衡来提高系统的可扩展性。然而，Session需要服务器端存储和管理，可能会增加服务器的负担。</li>
+<li><strong>Token</strong>：Token的可扩展性非常好，因为Token是无状态的，服务器不需要存储Token信息。Token可以轻松地在分布式系统中使用，适用于大规模和高并发的应用场景。</li>
+</ul>
+<h2 id="如果客户端禁用了Cookie，Session还能用吗？"><a href="#如果客户端禁用了Cookie，Session还能用吗？" class="headerlink" title="如果客户端禁用了Cookie，Session还能用吗？"></a>如果客户端禁用了Cookie，Session还能用吗？</h2><p>默认情况下禁用了Cookie之后，Session无法正常使用，因为大多数Web服务都依赖于Cookie来传递Session ID。</p>
+<p>当然，针对该问题有以下方案：</p>
+<ol>
+<li>URL重写：将Session ID附加到URL中作为参数。缺点是容易泄漏Session ID。</li>
+<li>隐藏表单字段：在提交请求表单，单独划一个属性字段来存储Session ID。此方式只适合通过表单提交的交互方式。</li>
+</ol>
+</div>
+        </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+            
+            
+                <div class="post-actions text-center clearfix" id="post-actions">
+                
+                    <a class="donate" href="javascript:;" onclick="krOpenDonateModal()"><i class="fa fa-bitcoin"></i> 打赏</a>
+                
+                
+                    <a class="share" href="javascript:;" onclick="krOpenShareModal()"><i class="fa fa-share-alt"></i> 分享</a>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    <a class="tag-none-link" href="/tags/Cookie/" rel="tag">Cookie</a>, <a class="tag-none-link" href="/tags/DNS/" rel="tag">DNS</a>, <a class="tag-none-link" href="/tags/HTTP/" rel="tag">HTTP</a>, <a class="tag-none-link" href="/tags/Session/" rel="tag">Session</a>
+                </div>
+                <div class="pull-date">
+                    <time datetime="2024-10-13T04:22:35.058Z" itemprop="dateModified">最后编辑：2024-10-13</time>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" 计算机网络-网络模型" href="/2024/10/12/计算机网络-网络模型/"><i class="fa fa-angle-left"></i> 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" 计算机网络-应用层(下)" href="/2024/10/13/计算机网络-应用层(下)/">下一篇 <i class="fa fa-angle-right"></i></a>
+            </div>
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+            
+                
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/user.jpg" alt="xiaoyan" loading="lazy" decoding="auto" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">是一只时时翻垃圾吃的宅子。</p>
+    </div>
+    <div class="site-meta">
+        <a class="meta-item" href="/archives/">
+            <span class="title">
+                文章
+            </span>
+            <span class="count">
+                36
+            </span>
+        </a>
+        <a class="meta-item" href="/categories/">
+            <span class="title">
+                分类
+            </span>
+            <span class="count">
+                11
+            </span>
+        </a>
+        <a class="meta-item" href="/tags/">
+            <span class="title">
+                标签
+            </span>
+            <span class="count">
+                50
+            </span>
+        </a>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix toc-div-class" >
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar" role="progressbar" aria-label="阅读进度："></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#HTTP"><span class="toc-number">1.</span> <span class="toc-text">HTTP</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP%E6%8A%A5%E6%96%87"><span class="toc-number">1.1.</span> <span class="toc-text">HTTP报文</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP%E5%B8%B8%E7%94%A8%E7%8A%B6%E6%80%81%E7%A0%81"><span class="toc-number">1.2.</span> <span class="toc-text">HTTP常用状态码</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1xx%EF%BC%88%E4%BF%A1%E6%81%AF%E6%80%A7%E7%8A%B6%E6%80%81%E7%A0%81%EF%BC%89"><span class="toc-number">1.2.1.</span> <span class="toc-text">1xx（信息性状态码）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2xx%EF%BC%88%E6%88%90%E5%8A%9F%E7%8A%B6%E6%80%81%E7%A0%81%EF%BC%89"><span class="toc-number">1.2.2.</span> <span class="toc-text">2xx（成功状态码）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3xx%EF%BC%88%E9%87%8D%E5%AE%9A%E5%90%91%E7%8A%B6%E6%80%81%E7%A0%81%EF%BC%89"><span class="toc-number">1.2.3.</span> <span class="toc-text">3xx（重定向状态码）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4xx%EF%BC%88%E5%AE%A2%E6%88%B7%E7%AB%AF%E9%94%99%E8%AF%AF%E7%8A%B6%E6%80%81%E7%A0%81%EF%BC%89"><span class="toc-number">1.2.4.</span> <span class="toc-text">4xx（客户端错误状态码）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5xx%EF%BC%88%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%94%99%E8%AF%AF%E7%8A%B6%E6%80%81%E7%A0%81%EF%BC%89"><span class="toc-number">1.2.5.</span> <span class="toc-text">5xx（服务器错误状态码）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GET-%E5%92%8C-POST-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">1.3.</span> <span class="toc-text">GET 和 POST 的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP%E7%9A%84%E9%95%BF%E8%BF%9E%E6%8E%A5"><span class="toc-number">1.4.</span> <span class="toc-text">HTTP的长连接</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E5%AE%89%E5%85%A8"><span class="toc-number">1.5.</span> <span class="toc-text">HTTP为什么不安全</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTPS%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3HTTP%E7%9A%84%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98"><span class="toc-number">1.5.1.</span> <span class="toc-text">HTTPS如何解决HTTP的安全问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP%E4%B8%8EHTTPS%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">1.6.</span> <span class="toc-text">HTTP与HTTPS的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTPS%E6%8F%A1%E6%89%8B%E8%BF%87%E7%A8%8B"><span class="toc-number">1.7.</span> <span class="toc-text">HTTPS握手过程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP-1-0%E4%B8%8EHTTP-1-1%E5%8C%BA%E5%88%AB"><span class="toc-number">1.8.</span> <span class="toc-text">HTTP&#x2F;1.0与HTTP&#x2F;1.1区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP-1-1%E4%B8%8EHTTP-2-0%E5%8C%BA%E5%88%AB"><span class="toc-number">1.9.</span> <span class="toc-text">HTTP&#x2F;1.1与HTTP&#x2F;2.0区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP%E3%80%81SOCKET%E5%92%8CTCP%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">1.10.</span> <span class="toc-text">HTTP、SOCKET和TCP的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP%E5%A6%82%E4%BD%95%E4%BF%9D%E5%AD%98%E7%94%A8%E6%88%B7%E7%8A%B6%E6%80%81"><span class="toc-number">1.11.</span> <span class="toc-text">HTTP如何保存用户状态</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Session%E6%9C%BA%E5%88%B6"><span class="toc-number">1.11.1.</span> <span class="toc-text">Session机制</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Session%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="toc-number">1.11.1.1.</span> <span class="toc-text">Session的工作原理</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Cookie%E8%A2%AB%E7%A6%81%E7%94%A8%E6%80%8E%E4%B9%88%E5%8A%9E%EF%BC%9F"><span class="toc-number">1.11.2.</span> <span class="toc-text">Cookie被禁用怎么办？</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#DNS"><span class="toc-number">2.</span> <span class="toc-text">DNS</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%86%E8%A7%A3DNS"><span class="toc-number">2.1.</span> <span class="toc-text">了解DNS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DNS%E8%A7%A3%E6%9E%90%E8%BF%87%E7%A8%8B%E8%AF%A6%E8%A7%A3"><span class="toc-number">2.2.</span> <span class="toc-text">DNS解析过程详解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%B1%E5%85%A5%E8%A7%A3%E6%9E%90"><span class="toc-number">2.2.1.</span> <span class="toc-text">深入解析</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DNS%E5%9F%BA%E4%BA%8EUDP%E5%8D%8F%E8%AE%AE"><span class="toc-number">2.3.</span> <span class="toc-text">DNS基于UDP协议</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Cookie-%E4%B8%8E-Session"><span class="toc-number">3.</span> <span class="toc-text">Cookie 与 Session</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP%E5%8D%8F%E8%AE%AE%E7%9A%84%E6%97%A0%E7%8A%B6%E6%80%81%E6%80%A7%E5%8F%8A%E5%85%B6%E7%8A%B6%E6%80%81%E4%BF%9D%E6%8C%81%E6%9C%BA%E5%88%B6"><span class="toc-number">3.1.</span> <span class="toc-text">HTTP协议的无状态性及其状态保持机制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP%E7%9A%84%E6%97%A0%E7%8A%B6%E6%80%81%E6%80%A7"><span class="toc-number">3.1.1.</span> <span class="toc-text">HTTP的无状态性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A0%E7%8A%B6%E6%80%81%E6%80%A7%E7%9A%84%E4%BC%98%E7%82%B9"><span class="toc-number">3.1.2.</span> <span class="toc-text">无状态性的优点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%8A%B6%E6%80%81%E4%BF%9D%E6%8C%81%E6%9C%BA%E5%88%B6"><span class="toc-number">3.1.3.</span> <span class="toc-text">状态保持机制</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Cookie"><span class="toc-number">3.1.3.1.</span> <span class="toc-text">Cookie</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Session"><span class="toc-number">3.1.3.2.</span> <span class="toc-text">Session</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88HTTP%E4%BB%8D%E7%84%B6%E6%98%AF%E6%97%A0%E7%8A%B6%E6%80%81%E7%9A%84%EF%BC%9F"><span class="toc-number">3.1.4.</span> <span class="toc-text">为什么HTTP仍然是无状态的？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Cookie-%E4%B8%8E-Session-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">3.2.</span> <span class="toc-text">Cookie 与 Session 的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Cookie%E3%80%81Session-%E5%92%8C-Token-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">3.3.</span> <span class="toc-text">Cookie、Session 和 Token 的区别</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E6%9C%BA%E5%88%B6"><span class="toc-number">3.3.1.</span> <span class="toc-text">实现机制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%98%E5%82%A8%E4%BD%8D%E7%BD%AE"><span class="toc-number">3.3.2.</span> <span class="toc-text">存储位置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E5%85%A8%E6%80%A7"><span class="toc-number">3.3.3.</span> <span class="toc-text">安全性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%AF%E6%89%A9%E5%B1%95%E6%80%A7"><span class="toc-number">3.3.4.</span> <span class="toc-text">可扩展性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E6%9E%9C%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%A6%81%E7%94%A8%E4%BA%86Cookie%EF%BC%8CSession%E8%BF%98%E8%83%BD%E7%94%A8%E5%90%97%EF%BC%9F"><span class="toc-number">3.4.</span> <span class="toc-text">如果客户端禁用了Cookie，Session还能用吗？</span></a></li></ol></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类列表</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">15</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/JVM/">JVM</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%9F%BA%E7%A1%80/">基础</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">并发编程</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E9%9B%86%E5%90%88/">集合</a><span class="category-list-count">5</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9E%B6%E6%9E%84/">架构</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a><span class="category-list-count">4</span></li></ul>
+  </aside>
+
+
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/AOP/" style="font-size: 0.6em;">AOP</a> <a href="/tags/Bean/" style="font-size: 0.6em;">Bean</a> <a href="/tags/Cookie/" style="font-size: 0.6em;">Cookie</a> <a href="/tags/DDD/" style="font-size: 0.6em;">DDD</a> <a href="/tags/DNS/" style="font-size: 0.6em;">DNS</a> <a href="/tags/HTTP/" style="font-size: 0.6em;">HTTP</a> <a href="/tags/I-O/" style="font-size: 0.6em;">I/O</a> <a href="/tags/IoC/" style="font-size: 0.6em;">IoC</a> <a href="/tags/JWT/" style="font-size: 0.6em;">JWT</a> <a href="/tags/Java8%E6%96%B0%E7%89%B9%E6%80%A7/" style="font-size: 0.6em;">Java8新特性</a> <a href="/tags/Java%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" style="font-size: 0.6em;">Java基本概念</a> <a href="/tags/List/" style="font-size: 0.6em;">List</a> <a href="/tags/Map/" style="font-size: 0.8em;">Map</a> <a href="/tags/MyBatis/" style="font-size: 0.6em;">MyBatis</a> <a href="/tags/MySQL%E5%9F%BA%E7%A1%80/" style="font-size: 0.6em;">MySQL基础</a> <a href="/tags/Nginx/" style="font-size: 0.6em;">Nginx</a> <a href="/tags/Object/" style="font-size: 0.6em;">Object</a> <a href="/tags/SQL%E8%B0%83%E4%BC%98/" style="font-size: 0.6em;">SQL调优</a>
+      </div>
+  </aside>
+
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/2024/10/13/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%BD%91%E7%BB%9C%E5%9C%BA%E6%99%AF/"><i class="fa fa-book"></i> 计算机网络-网络场景</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/10/13/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E5%BA%94%E7%94%A8%E5%B1%82(%E4%B8%8B)/"><i class="fa fa-book"></i> 计算机网络-应用层(下)</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/10/12/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E5%BA%94%E7%94%A8%E5%B1%82(%E4%B8%8A)/"><i class="fa fa-book"></i> 计算机网络-应用层(上)</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/10/12/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B/"><i class="fa fa-book"></i> 计算机网络-网络模型</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/10/05/Java-JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/"><i class="fa fa-book"></i> JVM-垃圾回收</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+            
+
+        
+
+                </div>
+    </div>
+</div>
+
+<footer>
+    <div id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2024 XIAOYAN 版权所有.</li>
+                            <li>本站已运行<span id="kr-since">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>自豪地使用 <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a> 主题</li>
+                            <li>站点由 xiaoyan 用 <i class="fa fa-heart" style="color:#d43f57"></i> 搭建</li>
+                        </div>
+                        <!-- 额外的追加注入项 -->
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                <div class="box theme-box" id="theme-toggle">
+                    <span class="fa fa-adjust"></span>
+                </div>
+            </div>
+            <div id="gotop-box" class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+
+    <div id="kr-donate-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseDonateModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-bitcoin"></i>
+            </div>
+            <div class="kr-modal-title">打赏</div>
+            <button class="kr-modal-close" onclick="krCloseDonateModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-donate-message">请我喝一杯冰阔咯~</div>
+            <div class="kr-donate-qr" id="kr-donate-qr">
+                
+            </div>
+            <div class="kr-donate-platforms">
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #1677ff;" title="支付宝" onclick="krDonateModalShowPlatformQR('https://qr.alipay.com/fkx15009k7u0fqrj8auepdf', '#1677ff')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-alipay">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M19 3h-14a2 2 0 0 0 -2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2 -2v-14a2 2 0 0 0 -2 -2z" />
+  <path d="M7 7h10" />
+  <path d="M12 3v7" />
+  <path d="M21 17.314c-2.971 -1.923 -15 -8.779 -15 -1.864c0 1.716 1.52 2.55 2.985 2.55c3.512 0 6.814 -5.425 6.814 -8h-6.604" />
+</svg>
+
+                        </button>
+                    
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #38ad5a;" title="微信支付" onclick="krDonateModalShowPlatformQR('wxp://f2f0hR4eF9Ypa3tpzjWme9fQDyWW3PIGe3WG5oiIakWLmDs', '#38ad5a')">
+                            <i class="fa fa-wechat"></i>
+                        </button>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/donate.min.js"></script>
+
+
+
+
+    <div id="kr-share-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseShareModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-share-alt"></i>
+            </div>
+            <div class="kr-modal-title">分享</div>
+            <button class="kr-modal-close" onclick="krCloseShareModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-share-message">让兄弟萌也来瞅一瞅！</div>
+            <div class="kr-share-qr" id="kr-share-qr"></div>
+            <div class="kr-share-platforms">
+                
+                    <button class="kr-share-platform-button" style="color: #e6162d;" title="QQ" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-qq"></i>
+                    </button>
+                
+                    <button class="kr-share-platform-button" style="color: #25d366;" title="微信" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-weixin"></i>
+                    </button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/share.min.js"></script>
+
+
+
+<!-- 额外的追加注入项 -->
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
+<meting-js
+  server="netease"
+  type="playlist"
+  fixed="true"
+  order="random"
+  id="12613265870">
+</meting-js>
+
+
+
+        <script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
+</script>
+
+
+  <script defer src="/vendors/nprogress@0.2.0/nprogress.js"></script>
+
+
+
+  <script defer src="/vendors/viewerjs@1.11.6/dist/viewer.min.js"></script>
+
+
+<script defer src="/js/kr-core.min.js"></script>
+
+
+  <script defer src="/js/kr-pjax.min.js"></script>
+
+
+<!-- 额外的追加注入项 -->
+
+  <script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+
+
+
+    </body>
+</html>

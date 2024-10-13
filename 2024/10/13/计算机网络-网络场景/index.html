@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  
+    <link rel="icon" href="/images/earthstars.png">
+  
+  
+  <title>计算机网络-网络场景 | XIAOYAN</title>
+  <link rel="canonical" href="http://example.com/2024/10/13/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%BD%91%E7%BB%9C%E5%9C%BA%E6%99%AF/">
+  <meta name="author" content="xiaoyan" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="" />
+  
+  <meta name="description" content="输入URL到页面展示过程可以从网络结构五层模型一步步进行解析，便于理解：  简单梳理一下过程：      简要过程              1.在浏览器中输入指定的URL； 2.浏览器通过DNS协议，获得域名对应的IP； 3.浏览器根据IP地址和对应的端口号，向目标服务器发起TCP连接请求； 4.浏览器在TCP连接上，向服务器请求一个HTTP报文，请求获取网页内容； 5.服务器收到HTTP请求报">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计算机网络-网络场景">
+<meta property="og:url" content="http://example.com/2024/10/13/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%BD%91%E7%BB%9C%E5%9C%BA%E6%99%AF/index.html">
+<meta property="og:site_name" content="XIAOYAN">
+<meta property="og:description" content="输入URL到页面展示过程可以从网络结构五层模型一步步进行解析，便于理解：  简单梳理一下过程：      简要过程              1.在浏览器中输入指定的URL； 2.浏览器通过DNS协议，获得域名对应的IP； 3.浏览器根据IP地址和对应的端口号，向目标服务器发起TCP连接请求； 4.浏览器在TCP连接上，向服务器请求一个HTTP报文，请求获取网页内容； 5.服务器收到HTTP请求报">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202410121811385.png">
+<meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202410121811602.webp">
+<meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202410121811540.png">
+<meta property="article:published_time" content="2024-10-13T15:33:32.000Z">
+<meta property="article:modified_time" content="2024-10-13T09:15:03.989Z">
+<meta property="article:author" content="xiaoyan">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202410121811385.png">
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kr-core.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/highlight.js/night-eighties.min.css" media="all"></link>
+  
+  <link rel="stylesheet" id="theme-light-css" href="/css/kr-theme/light.min.css" media="all"></link>
+  <link rel="stylesheet" id="theme-dark-css" href="/css/kr-theme/dark.min.css" media="(prefers-color-scheme: dark)"></link>
+  <script src="/js/kr-theme.min.js"></script>
+  <link rel="stylesheet" id="fontawe-css" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="nprogress-css" href="/vendors/nprogress@0.2.0/nprogress.css" media="all"></link>
+  
+  
+    <link rel="stylesheet" href="/vendors/viewerjs@1.11.6/dist/viewer.min.css"></link>
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  
+    <script src="/vendors/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+  
+  <!-- 自定义站点横幅和背景 -->
+  <style>
+    
+      .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_light.png');
+      }
+      html[data-theme="dark"] .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_dark.png');
+      }
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+        html[data-theme="dark"] body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+      }
+    
+    
+      .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+      html[data-theme="dark"] .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+    
+  </style>
+
+  <!-- 额外的追加注入项 -->
+  
+    <link rel="stylesheet" href="/css/custom.css">
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    <li>
+                                        
+                                            <a href="/">
+                                        
+                                            
+                                                <i class="fa fa-home"></i>
+                                            
+                                            首页
+                                        </a>
+                                        
+                                    </li>
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">XIAOYAN</a></div>
+                    <div id="kratos-nav-toggle-wrapper" class="nav-toggle">
+                        <a id="kratos-nav-toggle" class="kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>XIAOYAN</h2> <br />
+                        <span>山重水复疑无路，柳暗花明又一村。</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+
+
+        
+
+            
+
+            <section class="kr-main-col col-md-8">
+
+        
+
+            <article itemscope itemtype="https://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/13/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%BD%91%E7%BB%9C%E5%9C%BA%E6%99%AF/">
+    <div class="kratos-hentry kratos-page-inner clearfix">
+        <header class="kratos-page-header">
+            
+                <h1 class="kratos-page-title text-center" itemprop="name headline">计算机网络-网络场景</h1>
+            
+            <ul class="kratos-page-meta text-center">
+                <li><time datetime="2024-10-13T15:33:32.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2024-10-13</time></li>
+                <li itemprop="author" itemscope itemtype="https://schema.org/Person">
+                    <i class="fa fa-user"></i> 作者 <span itemprop="name">xiaoyan</span>
+                </li>
+                
+                    <li>
+                        <i class="fa fa-edit"></i> 
+                        
+                        
+                            ~2.73K
+                        
+                        字
+                    </li>
+                
+                
+                
+            </ul>
+        </header>
+        <div class="kratos-page-content kr-post">
+            
+            
+            
+                <div class="kratos-post-inner-toc toc-div-class" >
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%B1%95%E7%A4%BA%E8%BF%87%E7%A8%8B"><span class="toc-number">1.</span> <span class="toc-text">输入URL到页面展示过程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%A6%E7%BB%86%E8%BF%87%E7%A8%8B"><span class="toc-number">1.1.</span> <span class="toc-text">详细过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E5%B1%82"><span class="toc-number">1.1.1.</span> <span class="toc-text">网络层</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#URL"><span class="toc-number">1.1.1.1.</span> <span class="toc-text">URL</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#URL%E7%9A%84%E7%BB%93%E6%9E%84"><span class="toc-number">1.1.1.1.1.</span> <span class="toc-text">URL的结构</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#DNS"><span class="toc-number">1.1.1.2.</span> <span class="toc-text">DNS</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#HTTP-HTTPS"><span class="toc-number">1.1.1.3.</span> <span class="toc-text">HTTP&#x2F;HTTPS</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%A0%E8%BE%93%E5%B1%82"><span class="toc-number">1.1.2.</span> <span class="toc-text">传输层</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E5%B1%82-1"><span class="toc-number">1.1.3.</span> <span class="toc-text">网络层</span></a></li></ol></li></ol></li></ol>
+                </div>
+            
+            <hr />
+            <div itemprop="articleBody"><h1 id="输入URL到页面展示过程"><a href="#输入URL到页面展示过程" class="headerlink" title="输入URL到页面展示过程"></a>输入URL到页面展示过程</h1><p>可以从网络结构五层模型一步步进行解析，便于理解：</p>
+<p><img src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202410121811385.png"></p>
+<p>简单梳理一下过程：</p>
+<div class="panel panel-info">
+    <div class="panel-title"><i class="fa fa-info"></i>简要过程</div>
+    <div class="panel-body">
+        <p>1.在浏览器中输入指定的URL；</p>
+<p>2.浏览器通过DNS协议，获得域名对应的IP；</p>
+<p>3.浏览器根据IP地址和对应的端口号，向目标服务器发起TCP连接请求；</p>
+<p>4.浏览器在TCP连接上，向服务器请求一个HTTP报文，请求获取网页内容；</p>
+<p>5.服务器收到HTTP请求报文后，处理请求，并返回一个HTTP报文给浏览器；</p>
+<p>6.浏览器收到HTTP报文后，解析响应体中的HTML代码，渲染网页的结构和样式，同时根据HTML中的其他资源(图片、CSS、JS等)，再次发起HTTP请求，获取资源的内容，知道网页渲染完毕。</p>
+<p>7.浏览器在不许不要和服务器进行通信时，可以关闭TCP连接，或者等待服务器关闭连接。</p>
+
+    </div>
+    </div>
+
+<h2 id="详细过程"><a href="#详细过程" class="headerlink" title="详细过程"></a>详细过程</h2><p><img src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202410121811602.webp"></p>
+<ol>
+<li><strong>解析URL</strong>：<ul>
+<li>浏览器分析URL所需要使用的传输协议和请求的资源路径。如果请求的协议或者主机名非法，浏览器会将输入的内容交由搜索引擎来进行下一步的搜索操作；如果没有问题，则进行下一个过程。</li>
+</ul>
+</li>
+<li><strong>缓存判断</strong>：<ul>
+<li>浏览器默认是开启了网页缓存的。若请求的资源在缓存中未失效则直接使用，否则向服务器发起新的请求。</li>
+</ul>
+</li>
+<li><strong>DNS解析</strong>：<ul>
+<li>如果资源不在本地缓存中，都先要进行DNS解析。浏览器会向本地DNS服务器发送域名解析请求，本地DNS服务器会逐级查询，最终找到对应的IP地址。</li>
+</ul>
+</li>
+<li><strong>获取MAC地址</strong>：<ul>
+<li>当浏览器获得目标IP后，数据传输还不知道具体的主机MAC地址。应用层下发数据到传输层，TCP协议会指定源端口号和目的端口号，然后再下发给网络层。</li>
+<li>网络层会将本地地址作为源地址，获取目的IP地址作为目的地址，然后下发给数据链路层。</li>
+<li>数据链路层的发送需要知道通信双方的MAC地址，本机的MAC地址作为源MAC地址，目的MAC地址需要分情况处理。</li>
+<li>通过IP地址与本机的子网掩码相结合，可以判断是否与请求的主机IP在同一个子网内。若在同一个子网内，可以使用ARP协议获取到目的主机的MAC地址；若不在同一个子网内，那么请求应该转发给网关，由它代为转发，此时同样采用ARP协议获取网关的MAC地址，目的主机MAC地址为网关的MAC地址。</li>
+</ul>
+</li>
+<li><strong>建立TCP连接</strong>：<ul>
+<li>接下来要进行TCP的三次握手。主机将使用目标IP和目标MAC地址发送一个<code>TCP SYN</code>包，请求建立一个TCP连接，然后交给路由器转发。</li>
+<li>等路由器转到目标服务器后，目标服务器回复一个<code>SYN-ACK</code>包，确认连接请求。</li>
+<li>然后主机继续发送一个<code>ACK</code>包，确认收到了服务器的确认，然后TCP连接建立完成。</li>
+</ul>
+</li>
+<li><strong>HTTPS和TLS四次握手</strong>：<ul>
+<li>如果使用的是HTTPS协议，在通信前还需要进行TLS四次握手。</li>
+<li>客户端发送<code>Client Hello</code>消息，包含支持的TLS版本、加密套件列表和随机数。</li>
+<li>服务器发送<code>Server Hello</code>消息，选择TLS版本和加密套件，并发送服务器证书和随机数。</li>
+<li>客户端验证服务器证书，生成预主密钥，并使用服务器公钥加密后发送给服务器。</li>
+<li>服务器解密预主密钥，双方生成会话密钥，完成握手。</li>
+</ul>
+</li>
+<li><strong>发送HTTP请求</strong>：<ul>
+<li>建立完TCP连接之后，可以正式开始请求资源了。浏览器向服务器发送HTTP请求，请求中包含了用户所需要的资源信息，如网页的结构样式、JS和文件等等。</li>
+<li>如果是第一次发起请求，通常要获取的内容是网页的URL，再根据渲染后的网页请求所需的内容。</li>
+</ul>
+</li>
+<li><strong>服务器处理请求并返回响应</strong>：<ul>
+<li>服务器收到请求之后，会根据请求的内容进行相应的处理，生成HTTP响应并返回结果。</li>
+<li>响应包括状态行、响应头和响应体。状态行包含HTTP版本、状态码和状态描述。响应头发送关于响应的附加信息，如内容类型、缓存控制等。响应体包含实际的资源内容，如HTML页面、图片等。</li>
+</ul>
+</li>
+</ol>
+<h3 id="网络层"><a href="#网络层" class="headerlink" title="网络层"></a>网络层</h3><p>最开始的起点：打开浏览器输入URL，点击确认。</p>
+<p>问题来了，啥是URL？URL有啥用？</p>
+<h4 id="URL"><a href="#URL" class="headerlink" title="URL"></a>URL</h4><p>URL（Union Resource locators），即统一资源定位器。网络上的所有资源都通过URL来定位，每一个文件对应着一个URL。理论上URL和文件一一对应，实际上也有一些URL会重定向到另一个位置，所以也可以是多对一的关系。</p>
+<h5 id="URL的结构"><a href="#URL的结构" class="headerlink" title="URL的结构"></a>URL的结构</h5><p><img src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202410121811540.png" alt="URL结构"></p>
+<ol>
+<li><p><strong>协议</strong>：URL 的前缀通常表示了该网址采用了何种应用层协议，通常有两种——HTTP 和 HTTPS。当然也有一些不太常见的前缀头，比如文件传输时用到的<code>ftp:</code>。</p>
+</li>
+<li><p><strong>域名</strong>：域名便是访问网址的通用名，这里也有可能是网址的 IP 地址，域名可以理解为 IP 地址的可读版本，毕竟绝大部分人都不会选择记住一个网址的 IP 地址。</p>
+</li>
+<li><p><strong>端口</strong>：如果指明了访问网址的端口的话，端口会紧跟在域名后面，并用一个冒号隔开。</p>
+</li>
+<li><p><strong>资源路径</strong>：域名（端口）后紧跟的就是资源路径，从第一个<code>/</code>开始，表示从服务器上根目录开始进行索引到的文件路径，上图中要访问的文件就是服务器根目录下<code>/path/to/myfile.html</code>。早先的设计是该文件通常物理存储于服务器主机上，但现在随着网络技术的进步，该文件不一定会物理存储在服务器主机上，有可能存放在云上，而文件路径也有可能是虚拟的（遵循某种规则）</p>
+</li>
+<li><p><strong>参数</strong>：参数是浏览器在向服务器提交请求时，在 URL 中附带的参数。服务器解析请求时，会提取这些参数。参数采用键值对的形式<code>key=value</code>，每一个键值对使用<code>&amp;</code>隔开。</p>
+</li>
+<li><p><strong>锚点</strong>：锚点是URL中的一部分，用于指定页面中的特定位置。锚点通常以<code>#</code>开头，紧跟在URL的末尾。例如，<code>#section1</code>表示页面加载后，浏览器应该滚动到页面中ID为<code>section1</code>的元素位置。</p>
+</li>
+</ol>
+<h4 id="DNS"><a href="#DNS" class="headerlink" title="DNS"></a>DNS</h4><p>键入了 URL 之后，第一个重头戏登场——DNS 服务器解析。DNS（Domain Name System）域名系统，要解决的是 <strong>域名和 IP 地址的映射问题</strong> 。毕竟，域名只是一个网址便于记住的名字，而网址真正存在的地址其实是 IP 地址。</p>
+<h4 id="HTTP-HTTPS"><a href="#HTTP-HTTPS" class="headerlink" title="HTTP&#x2F;HTTPS"></a>HTTP&#x2F;HTTPS</h4><p>利用DNS拿到目标主机的IP之后，浏览器便可以向目标IP发送HTTP请求报文，获取所需要的资源。根据请求的网站不同，可能采用的HTTP协议或安全性增强的HTTPS协议。</p>
+<h3 id="传输层"><a href="#传输层" class="headerlink" title="传输层"></a>传输层</h3><p>由于HTTP协议是基于TCP协议的，在应用层的数据封装好之后，交给传输层，经TCP协议继续封装。TCP协议保证了数据的可靠性，是数据包传输的主力协议。</p>
+<h3 id="网络层-1"><a href="#网络层-1" class="headerlink" title="网络层"></a>网络层</h3><p>在网络层，不再是端到端之间的通信，而是来到了主机与中间系统的交互。</p>
+<p>网络层的最核心功能是<strong>路由与转发</strong>。</p>
+<ul>
+<li>路由：将分组从路由器的输入端口转移到合适的输出端口</li>
+<li>转发：确定分组从源到目的端所经过的路径。</li>
+</ul>
+</div>
+        </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+            
+            
+                <div class="post-actions text-center clearfix" id="post-actions">
+                
+                    <a class="donate" href="javascript:;" onclick="krOpenDonateModal()"><i class="fa fa-bitcoin"></i> 打赏</a>
+                
+                
+                    <a class="share" href="javascript:;" onclick="krOpenShareModal()"><i class="fa fa-share-alt"></i> 分享</a>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    
+                </div>
+                <div class="pull-date">
+                    <time datetime="2024-10-13T09:15:03.989Z" itemprop="dateModified">最后编辑：2024-10-13</time>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" 计算机网络-应用层(下)" href="/2024/10/13/计算机网络-应用层(下)/"><i class="fa fa-angle-left"></i> 上一篇</a>
+            </div>
+            
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+            
+                
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/user.jpg" alt="xiaoyan" loading="lazy" decoding="auto" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">是一只时时翻垃圾吃的宅子。</p>
+    </div>
+    <div class="site-meta">
+        <a class="meta-item" href="/archives/">
+            <span class="title">
+                文章
+            </span>
+            <span class="count">
+                36
+            </span>
+        </a>
+        <a class="meta-item" href="/categories/">
+            <span class="title">
+                分类
+            </span>
+            <span class="count">
+                11
+            </span>
+        </a>
+        <a class="meta-item" href="/tags/">
+            <span class="title">
+                标签
+            </span>
+            <span class="count">
+                50
+            </span>
+        </a>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix toc-div-class" >
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar" role="progressbar" aria-label="阅读进度："></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%B1%95%E7%A4%BA%E8%BF%87%E7%A8%8B"><span class="toc-number">1.</span> <span class="toc-text">输入URL到页面展示过程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%A6%E7%BB%86%E8%BF%87%E7%A8%8B"><span class="toc-number">1.1.</span> <span class="toc-text">详细过程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E5%B1%82"><span class="toc-number">1.1.1.</span> <span class="toc-text">网络层</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#URL"><span class="toc-number">1.1.1.1.</span> <span class="toc-text">URL</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#URL%E7%9A%84%E7%BB%93%E6%9E%84"><span class="toc-number">1.1.1.1.1.</span> <span class="toc-text">URL的结构</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#DNS"><span class="toc-number">1.1.1.2.</span> <span class="toc-text">DNS</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#HTTP-HTTPS"><span class="toc-number">1.1.1.3.</span> <span class="toc-text">HTTP&#x2F;HTTPS</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%A0%E8%BE%93%E5%B1%82"><span class="toc-number">1.1.2.</span> <span class="toc-text">传输层</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E5%B1%82-1"><span class="toc-number">1.1.3.</span> <span class="toc-text">网络层</span></a></li></ol></li></ol></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类列表</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">15</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/JVM/">JVM</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%9F%BA%E7%A1%80/">基础</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">并发编程</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E9%9B%86%E5%90%88/">集合</a><span class="category-list-count">5</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9E%B6%E6%9E%84/">架构</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a><span class="category-list-count">4</span></li></ul>
+  </aside>
+
+
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/AOP/" style="font-size: 0.6em;">AOP</a> <a href="/tags/Bean/" style="font-size: 0.6em;">Bean</a> <a href="/tags/Cookie/" style="font-size: 0.6em;">Cookie</a> <a href="/tags/DDD/" style="font-size: 0.6em;">DDD</a> <a href="/tags/DNS/" style="font-size: 0.6em;">DNS</a> <a href="/tags/HTTP/" style="font-size: 0.6em;">HTTP</a> <a href="/tags/I-O/" style="font-size: 0.6em;">I/O</a> <a href="/tags/IoC/" style="font-size: 0.6em;">IoC</a> <a href="/tags/JWT/" style="font-size: 0.6em;">JWT</a> <a href="/tags/Java8%E6%96%B0%E7%89%B9%E6%80%A7/" style="font-size: 0.6em;">Java8新特性</a> <a href="/tags/Java%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" style="font-size: 0.6em;">Java基本概念</a> <a href="/tags/List/" style="font-size: 0.6em;">List</a> <a href="/tags/Map/" style="font-size: 0.8em;">Map</a> <a href="/tags/MyBatis/" style="font-size: 0.6em;">MyBatis</a> <a href="/tags/MySQL%E5%9F%BA%E7%A1%80/" style="font-size: 0.6em;">MySQL基础</a> <a href="/tags/Nginx/" style="font-size: 0.6em;">Nginx</a> <a href="/tags/Object/" style="font-size: 0.6em;">Object</a> <a href="/tags/SQL%E8%B0%83%E4%BC%98/" style="font-size: 0.6em;">SQL调优</a>
+      </div>
+  </aside>
+
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/2024/10/13/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%BD%91%E7%BB%9C%E5%9C%BA%E6%99%AF/"><i class="fa fa-book"></i> 计算机网络-网络场景</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/10/13/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E5%BA%94%E7%94%A8%E5%B1%82(%E4%B8%8B)/"><i class="fa fa-book"></i> 计算机网络-应用层(下)</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/10/12/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E5%BA%94%E7%94%A8%E5%B1%82(%E4%B8%8A)/"><i class="fa fa-book"></i> 计算机网络-应用层(上)</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/10/12/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B/"><i class="fa fa-book"></i> 计算机网络-网络模型</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/10/05/Java-JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/"><i class="fa fa-book"></i> JVM-垃圾回收</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+            
+
+        
+
+                </div>
+    </div>
+</div>
+
+<footer>
+    <div id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2024 XIAOYAN 版权所有.</li>
+                            <li>本站已运行<span id="kr-since">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>自豪地使用 <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a> 主题</li>
+                            <li>站点由 xiaoyan 用 <i class="fa fa-heart" style="color:#d43f57"></i> 搭建</li>
+                        </div>
+                        <!-- 额外的追加注入项 -->
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                <div class="box theme-box" id="theme-toggle">
+                    <span class="fa fa-adjust"></span>
+                </div>
+            </div>
+            <div id="gotop-box" class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+
+    <div id="kr-donate-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseDonateModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-bitcoin"></i>
+            </div>
+            <div class="kr-modal-title">打赏</div>
+            <button class="kr-modal-close" onclick="krCloseDonateModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-donate-message">请我喝一杯冰阔咯~</div>
+            <div class="kr-donate-qr" id="kr-donate-qr">
+                
+            </div>
+            <div class="kr-donate-platforms">
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #1677ff;" title="支付宝" onclick="krDonateModalShowPlatformQR('https://qr.alipay.com/fkx15009k7u0fqrj8auepdf', '#1677ff')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-alipay">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M19 3h-14a2 2 0 0 0 -2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2 -2v-14a2 2 0 0 0 -2 -2z" />
+  <path d="M7 7h10" />
+  <path d="M12 3v7" />
+  <path d="M21 17.314c-2.971 -1.923 -15 -8.779 -15 -1.864c0 1.716 1.52 2.55 2.985 2.55c3.512 0 6.814 -5.425 6.814 -8h-6.604" />
+</svg>
+
+                        </button>
+                    
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #38ad5a;" title="微信支付" onclick="krDonateModalShowPlatformQR('wxp://f2f0hR4eF9Ypa3tpzjWme9fQDyWW3PIGe3WG5oiIakWLmDs', '#38ad5a')">
+                            <i class="fa fa-wechat"></i>
+                        </button>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/donate.min.js"></script>
+
+
+
+
+    <div id="kr-share-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseShareModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-share-alt"></i>
+            </div>
+            <div class="kr-modal-title">分享</div>
+            <button class="kr-modal-close" onclick="krCloseShareModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-share-message">让兄弟萌也来瞅一瞅！</div>
+            <div class="kr-share-qr" id="kr-share-qr"></div>
+            <div class="kr-share-platforms">
+                
+                    <button class="kr-share-platform-button" style="color: #e6162d;" title="QQ" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-qq"></i>
+                    </button>
+                
+                    <button class="kr-share-platform-button" style="color: #25d366;" title="微信" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-weixin"></i>
+                    </button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/share.min.js"></script>
+
+
+
+<!-- 额外的追加注入项 -->
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
+<meting-js
+  server="netease"
+  type="playlist"
+  fixed="true"
+  order="random"
+  id="12613265870">
+</meting-js>
+
+
+
+        <script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
+</script>
+
+
+  <script defer src="/vendors/nprogress@0.2.0/nprogress.js"></script>
+
+
+
+  <script defer src="/vendors/viewerjs@1.11.6/dist/viewer.min.js"></script>
+
+
+<script defer src="/js/kr-core.min.js"></script>
+
+
+  <script defer src="/js/kr-pjax.min.js"></script>
+
+
+<!-- 额外的追加注入项 -->
+
+  <script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+
+
+
+    </body>
+</html>

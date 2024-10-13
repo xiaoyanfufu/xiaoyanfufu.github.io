@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  
+    <link rel="icon" href="/images/earthstars.png">
+  
+  
+  <title>计算机网络-应用层(下) | XIAOYAN</title>
+  <link rel="canonical" href="http://example.com/2024/10/13/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E5%BA%94%E7%94%A8%E5%B1%82(%E4%B8%8B)/">
+  <meta name="author" content="xiaoyan" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="JWT, Nginx, WebSoket" />
+  
+  <meta name="description" content="JWT 令牌JWT 令牌和传统方式有什么区别JWT（JSON Web Token）是一种基于令牌的身份验证机制，与传统的会话管理方式（如Cookie和Session）在多个方面存在显著差异。以下是对JWT令牌与传统方式的详细比较： 1.无状态性  JWT：JWT是无状态的令牌，服务器不需要在服务器端存储会话信息。JWT令牌本身包含了所有必要的信息，如用户身份、权限等。服务器在用户首次登录时获取用户">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计算机网络-应用层(下)">
+<meta property="og:url" content="http://example.com/2024/10/13/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E5%BA%94%E7%94%A8%E5%B1%82(%E4%B8%8B)/index.html">
+<meta property="og:site_name" content="XIAOYAN">
+<meta property="og:description" content="JWT 令牌JWT 令牌和传统方式有什么区别JWT（JSON Web Token）是一种基于令牌的身份验证机制，与传统的会话管理方式（如Cookie和Session）在多个方面存在显著差异。以下是对JWT令牌与传统方式的详细比较： 1.无状态性  JWT：JWT是无状态的令牌，服务器不需要在服务器端存储会话信息。JWT令牌本身包含了所有必要的信息，如用户身份、权限等。服务器在用户首次登录时获取用户">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://cdn.xiaolincoding.com//picgo/image-20240725231451188.png">
+<meta property="article:published_time" content="2024-10-13T04:18:49.000Z">
+<meta property="article:modified_time" content="2024-10-13T09:13:51.108Z">
+<meta property="article:author" content="xiaoyan">
+<meta property="article:tag" content="JWT">
+<meta property="article:tag" content="WebSoket">
+<meta property="article:tag" content="Nginx">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.xiaolincoding.com//picgo/image-20240725231451188.png">
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kr-core.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/highlight.js/night-eighties.min.css" media="all"></link>
+  
+  <link rel="stylesheet" id="theme-light-css" href="/css/kr-theme/light.min.css" media="all"></link>
+  <link rel="stylesheet" id="theme-dark-css" href="/css/kr-theme/dark.min.css" media="(prefers-color-scheme: dark)"></link>
+  <script src="/js/kr-theme.min.js"></script>
+  <link rel="stylesheet" id="fontawe-css" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="nprogress-css" href="/vendors/nprogress@0.2.0/nprogress.css" media="all"></link>
+  
+  
+    <link rel="stylesheet" href="/vendors/viewerjs@1.11.6/dist/viewer.min.css"></link>
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  
+    <script src="/vendors/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+  
+  <!-- 自定义站点横幅和背景 -->
+  <style>
+    
+      .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_light.png');
+      }
+      html[data-theme="dark"] .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_dark.png');
+      }
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+        html[data-theme="dark"] body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+      }
+    
+    
+      .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+      html[data-theme="dark"] .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+    
+  </style>
+
+  <!-- 额外的追加注入项 -->
+  
+    <link rel="stylesheet" href="/css/custom.css">
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    <li>
+                                        
+                                            <a href="/">
+                                        
+                                            
+                                                <i class="fa fa-home"></i>
+                                            
+                                            首页
+                                        </a>
+                                        
+                                    </li>
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">XIAOYAN</a></div>
+                    <div id="kratos-nav-toggle-wrapper" class="nav-toggle">
+                        <a id="kratos-nav-toggle" class="kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>XIAOYAN</h2> <br />
+                        <span>山重水复疑无路，柳暗花明又一村。</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+
+
+        
+
+            
+
+            <section class="kr-main-col col-md-8">
+
+        
+
+            <article itemscope itemtype="https://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/13/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E5%BA%94%E7%94%A8%E5%B1%82(%E4%B8%8B)/">
+    <div class="kratos-hentry kratos-page-inner clearfix">
+        <header class="kratos-page-header">
+            
+                <h1 class="kratos-page-title text-center" itemprop="name headline">计算机网络-应用层(下)</h1>
+            
+            <ul class="kratos-page-meta text-center">
+                <li><time datetime="2024-10-13T04:18:49.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2024-10-13</time></li>
+                <li itemprop="author" itemscope itemtype="https://schema.org/Person">
+                    <i class="fa fa-user"></i> 作者 <span itemprop="name">xiaoyan</span>
+                </li>
+                
+                    <li>
+                        <i class="fa fa-edit"></i> 
+                        
+                        
+                            ~6.67K
+                        
+                        字
+                    </li>
+                
+                
+                
+            </ul>
+        </header>
+        <div class="kratos-page-content kr-post">
+            
+            
+            
+                <div class="kratos-post-inner-toc toc-div-class" >
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#JWT-%E4%BB%A4%E7%89%8C"><span class="toc-number">1.</span> <span class="toc-text">JWT 令牌</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#JWT-%E4%BB%A4%E7%89%8C%E5%92%8C%E4%BC%A0%E7%BB%9F%E6%96%B9%E5%BC%8F%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB"><span class="toc-number">1.1.</span> <span class="toc-text">JWT 令牌和传统方式有什么区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JWT-%E4%BB%A4%E7%89%8C%E8%AF%A6%E8%A7%A3"><span class="toc-number">1.2.</span> <span class="toc-text">JWT 令牌详解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#JWT%E7%9A%84%E7%BB%93%E6%9E%84"><span class="toc-number">1.2.1.</span> <span class="toc-text">JWT的结构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E5%A4%B4%E9%83%A8%EF%BC%88Header%EF%BC%89"><span class="toc-number">1.2.1.1.</span> <span class="toc-text">1. 头部（Header）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E8%BD%BD%E8%8D%B7%EF%BC%88Payload%EF%BC%89"><span class="toc-number">1.2.1.2.</span> <span class="toc-text">2. 载荷（Payload）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E7%AD%BE%E5%90%8D%EF%BC%88Signature%EF%BC%89"><span class="toc-number">1.2.1.3.</span> <span class="toc-text">3. 签名（Signature）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JWT%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="toc-number">1.2.2.</span> <span class="toc-text">JWT的工作流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JWT%E7%9A%84%E4%BC%98%E7%82%B9"><span class="toc-number">1.2.3.</span> <span class="toc-text">JWT的优点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JWT%E7%9A%84%E7%BC%BA%E7%82%B9"><span class="toc-number">1.2.4.</span> <span class="toc-text">JWT的缺点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JWT-%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2%E9%97%AE%E9%A2%98"><span class="toc-number">1.3.</span> <span class="toc-text">JWT 如何解决集群部署问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JWT-%E7%BC%BA%E7%82%B9"><span class="toc-number">1.4.</span> <span class="toc-text">JWT 缺点</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#JWT%E7%9A%84%E7%BC%BA%E7%82%B9-1"><span class="toc-number">1.4.1.</span> <span class="toc-text">JWT的缺点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="toc-number">1.4.2.</span> <span class="toc-text">解决方案</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JWT-%E5%89%8D%E7%AB%AF%E5%AD%98%E5%82%A8%E6%96%B9%E6%A1%88"><span class="toc-number">1.5.</span> <span class="toc-text">JWT 前端存储方案</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#WebSocket"><span class="toc-number">2.</span> <span class="toc-text">WebSocket</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP%E9%95%BF%E8%BF%9E%E6%8E%A5%E4%B8%8EWebSocket%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">2.1.</span> <span class="toc-text">HTTP长连接与WebSocket的区别</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP%E9%95%BF%E8%BF%9E%E6%8E%A5"><span class="toc-number">2.1.1.</span> <span class="toc-text">HTTP长连接</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">2.1.1.1.</span> <span class="toc-text">适用场景</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%A7%E8%83%BD%E7%89%B9%E7%82%B9"><span class="toc-number">2.1.1.2.</span> <span class="toc-text">性能特点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#WebSocket-1"><span class="toc-number">2.1.2.</span> <span class="toc-text">WebSocket</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF-1"><span class="toc-number">2.1.2.1.</span> <span class="toc-text">适用场景</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%A7%E8%83%BD%E7%89%B9%E7%82%B9-1"><span class="toc-number">2.1.2.2.</span> <span class="toc-text">性能特点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8C%BA%E5%88%AB%E6%80%BB%E7%BB%93"><span class="toc-number">2.1.3.</span> <span class="toc-text">区别总结</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Nginx"><span class="toc-number">3.</span> <span class="toc-text">Nginx</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Nginx%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E7%AE%97%E6%B3%95"><span class="toc-number">3.1.</span> <span class="toc-text">Nginx负载均衡算法</span></a></li></ol></li></ol>
+                </div>
+            
+            <hr />
+            <div itemprop="articleBody"><h1 id="JWT-令牌"><a href="#JWT-令牌" class="headerlink" title="JWT 令牌"></a>JWT 令牌</h1><h2 id="JWT-令牌和传统方式有什么区别"><a href="#JWT-令牌和传统方式有什么区别" class="headerlink" title="JWT 令牌和传统方式有什么区别"></a>JWT 令牌和传统方式有什么区别</h2><p>JWT（JSON Web Token）是一种基于令牌的身份验证机制，与传统的会话管理方式（如Cookie和Session）在多个方面存在显著差异。以下是对JWT令牌与传统方式的详细比较：</p>
+<p>1.无状态性</p>
+<ul>
+<li><strong>JWT</strong>：JWT是无状态的令牌，服务器不需要在服务器端存储会话信息。JWT令牌本身包含了所有必要的信息，如用户身份、权限等。服务器在用户首次登录时获取用户信息并加密生成JWT令牌，返回给客户端。客户端在后续请求中携带JWT令牌，服务器通过验证令牌来确认用户身份。</li>
+<li><strong>传统方式（如Session）</strong>：传统方式通常需要在服务器端存储会话信息。服务器为每个用户生成一个唯一的Session ID，并将其通过Cookie或其他方式传递给客户端。客户端在后续请求中携带Session ID，服务器根据Session ID查找对应的用户状态信息。这种方式需要在服务器端维护会话状态，增加了服务器的负担。</li>
+</ul>
+<p>2.安全性</p>
+<ul>
+<li><strong>JWT</strong>：JWT使用密钥对令牌进行签名，确保令牌的完整性和真实性。即使令牌在传输过程中被截获，攻击者也无法篡改令牌内容而不被发现。JWT还可以使用加密算法对令牌进行加密，进一步提高安全性。</li>
+<li><strong>传统方式（如Session）</strong>：传统方式的安全性依赖于服务器端存储的会话信息。虽然Session数据存储在服务器端，不易受到客户端攻击，但仍然可能存在Session劫持的风险，特别是在Session ID通过不安全的通道（如未加密的HTTP）传输时。</li>
+</ul>
+<p>3.跨域支持</p>
+<ul>
+<li><strong>JWT</strong>：JWT可以在不同域之间传递，适用于跨域访问的场景。通过在请求头或参数中携带JWT令牌，可以实现无需Cookie的跨域身份验证。JWT的无状态性和自包含特性使其非常适合在分布式系统和微服务架构中使用。</li>
+<li><strong>传统方式（如Cookie）</strong>：<br>传统方式（如Cookie）在跨域访问时存在一定的限制。Cookie通常只能在同一域名下使用，跨域访问需要特殊处理（如CORS配置）。此外，Cookie还容易受到跨站请求伪造（CSRF）攻击，需要采取额外的安全措施。</li>
+</ul>
+<p>4。可扩展性</p>
+<ul>
+<li><strong>JWT</strong>：JWT的可扩展性非常好，因为JWT是无状态的，服务器不需要存储JWT信息。JWT可以轻松地在分布式系统中使用，适用于大规模和高并发的应用场景。</li>
+<li><strong>传统方式（如Session）</strong>：传统方式的可扩展性较差，因为需要在服务器端存储和管理会话信息。随着用户数量的增加，服务器需要维护大量的会话数据，可能会增加服务器的负担。</li>
+</ul>
+<p>5.适用场景</p>
+<ul>
+<li><strong>JWT</strong>：适用于需要无状态身份验证的场景，如单点登录（SSO）、API访问控制、微服务架构等。JWT的无状态性和自包含特性使其非常适合在分布式系统和微服务架构中使用。</li>
+<li><strong>传统方式（如Session）</strong>：适用于需要服务器端存储大量数据的场景，如用户登录状态、购物车信息等。传统方式在需要维护复杂会话状态的应用中仍然有其优势。</li>
+</ul>
+<h2 id="JWT-令牌详解"><a href="#JWT-令牌详解" class="headerlink" title="JWT 令牌详解"></a>JWT 令牌详解</h2><p>JWT（JSON Web Token）是一种基于令牌的身份验证机制，广泛应用于现代Web应用和API中。JWT令牌是一种紧凑且自包含的方式，用于在客户端和服务器之间安全地传输信息。以下是对JWT令牌的详细解析：</p>
+<h3 id="JWT的结构"><a href="#JWT的结构" class="headerlink" title="JWT的结构"></a>JWT的结构</h3><p><img src="https://cdn.xiaolincoding.com//picgo/image-20240725231451188.png" alt="JWT结构"></p>
+<p>JWT令牌由三部分组成，分别是头部（Header）、载荷（Payload）和签名（Signature），这三部分通过<code>.</code>分隔。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-头部（Header）"><a href="#1-头部（Header）" class="headerlink" title="1. 头部（Header）"></a>1. 头部（Header）</h4><p>头部通常包含两部分信息：令牌类型（typ）和使用的签名算法（alg）。例如：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;alg&quot;</span><span class="punctuation">:</span> <span class="string">&quot;HS256&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;typ&quot;</span><span class="punctuation">:</span> <span class="string">&quot;JWT&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>alg</code>：指定使用的签名算法，如HMAC SHA256（HS256）、RSA SHA256（RS256）等。</li>
+<li><code>typ</code>：指定令牌类型，通常为<code>JWT</code>。</li>
+</ul>
+<h4 id="2-载荷（Payload）"><a href="#2-载荷（Payload）" class="headerlink" title="2. 载荷（Payload）"></a>2. 载荷（Payload）</h4><p>载荷包含实际需要传输的数据，通常包括用户身份信息、权限信息等。载荷可以包含自定义的声明（Claims），也可以包含一些标准声明（Registered Claims）。例如：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;sub&quot;</span><span class="punctuation">:</span> <span class="string">&quot;1234567890&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;John Doe&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;iat&quot;</span><span class="punctuation">:</span> <span class="number">1516239022</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>sub</code>：主题（Subject），通常是用户的唯一标识。</li>
+<li><code>name</code>：用户名。</li>
+<li><code>iat</code>：签发时间（Issued At），表示令牌的创建时间。</li>
+</ul>
+<p>其他常见的标准声明包括：</p>
+<ul>
+<li><code>iss</code>：签发者（Issuer）。</li>
+<li><code>exp</code>：过期时间（Expiration Time）。</li>
+<li><code>nbf</code>：生效时间（Not Before）。</li>
+<li><code>jti</code>：JWT ID，唯一标识符。</li>
+</ul>
+<h4 id="3-签名（Signature）"><a href="#3-签名（Signature）" class="headerlink" title="3. 签名（Signature）"></a>3. 签名（Signature）</h4><p>签名用于验证令牌的完整性和真实性。签名是通过将头部和载荷进行Base64编码后，使用指定的算法和密钥生成的。例如，使用HMAC SHA256算法生成签名的过程如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">HMACSHA256(</span><br><span class="line">  base64UrlEncode(header) + &quot;.&quot; +</span><br><span class="line">  base64UrlEncode(payload),</span><br><span class="line">  secret</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h3 id="JWT的工作流程"><a href="#JWT的工作流程" class="headerlink" title="JWT的工作流程"></a>JWT的工作流程</h3><ol>
+<li><p><strong>用户登录</strong>：用户在客户端输入用户名和密码进行登录，客户端将登录请求发送到服务器。</p>
+</li>
+<li><p><strong>服务器验证</strong>：服务器验证用户的身份，如果验证成功，服务器生成JWT令牌。</p>
+</li>
+<li><p><strong>生成JWT</strong>：服务器将用户信息（如用户ID、权限等）放入JWT的载荷中，使用密钥对头部和载荷进行签名，生成JWT令牌。</p>
+</li>
+<li><p><strong>返回JWT</strong>：服务器将生成的JWT令牌返回给客户端。</p>
+</li>
+<li><p><strong>客户端存储JWT</strong>：客户端将JWT令牌存储在本地（如浏览器存储、本地存储或移动设备）。</p>
+</li>
+<li><p><strong>后续请求</strong>：客户端在后续请求中携带JWT令牌，通常通过HTTP请求头（Authorization: Bearer <token>）或URL参数传递。</token></p>
+</li>
+<li><p><strong>服务器验证JWT</strong>：服务器接收到请求后，验证JWT令牌的签名和有效性。如果验证通过，服务器处理请求；否则，拒绝请求。</p>
+</li>
+</ol>
+<h3 id="JWT的优点"><a href="#JWT的优点" class="headerlink" title="JWT的优点"></a>JWT的优点</h3><ul>
+<li><strong>无状态性</strong>：JWT是无状态的，服务器不需要存储JWT信息，适用于分布式系统和微服务架构。</li>
+<li><strong>安全性</strong>：JWT使用签名和加密算法确保令牌的完整性和真实性，防止篡改和伪造。</li>
+<li><strong>跨域支持</strong>：JWT可以在不同域之间传递，适用于跨域访问的场景。</li>
+<li><strong>可扩展性</strong>：JWT的可扩展性非常好，适用于大规模和高并发的应用场景。</li>
+</ul>
+<h3 id="JWT的缺点"><a href="#JWT的缺点" class="headerlink" title="JWT的缺点"></a>JWT的缺点</h3><ul>
+<li><strong>令牌大小</strong>：JWT令牌的大小可能会比较大，特别是当载荷中包含大量信息时。</li>
+<li><strong>无法撤销</strong>：JWT令牌一旦签发，除非过期，否则无法撤销。如果需要撤销令牌，通常需要额外的机制（如黑名单）。</li>
+<li><strong>安全性依赖密钥</strong>：JWT的安全性依赖于密钥的安全性，如果密钥泄露，攻击者可以伪造JWT令牌。</li>
+</ul>
+<h2 id="JWT-如何解决集群部署问题"><a href="#JWT-如何解决集群部署问题" class="headerlink" title="JWT 如何解决集群部署问题"></a>JWT 如何解决集群部署问题</h2><p>传统的请求方式基于Cookie和会话机制，数据信息保存在服务器或数据库中，而在集群部署情况下，每台服务器的数据是独立的，如要实现共享需要额外的共享操作，这就会消耗额外的性能和空间。</p>
+<p>而不同于传统方式，JWT令牌是无状态的，会话所需要的数据被加密到令牌当中，这样能够样用户即使切换到新的服务器也不需要再重新登陆，服务器只需要对令牌进行校验解析即可获取到用户的信息。</p>
+<p>由于JWT令牌是自包含的，服务器可以独立地对令牌进行校验，而不需要依赖于其他服务器或共享存储，使得集群中的每个服务器都能独立地处理请求，增加集群系统的可伸缩性和容错性。</p>
+<h2 id="JWT-缺点"><a href="#JWT-缺点" class="headerlink" title="JWT 缺点"></a>JWT 缺点</h2><h3 id="JWT的缺点-1"><a href="#JWT的缺点-1" class="headerlink" title="JWT的缺点"></a>JWT的缺点</h3><ol>
+<li><p>无法撤销令牌：JWT令牌一旦签发，除非过期，否则无法撤销。这意味着如果令牌被泄露或需要强制注销用户，服务器无法直接撤销令牌，只能等待令牌自然过期。</p>
+</li>
+<li><p>令牌大小：JWT令牌的大小可能会比较大，特别是当载荷中包含大量信息时。这可能会增加网络传输的开销，特别是在移动设备或低带宽环境下。</p>
+</li>
+<li><p>安全性依赖密钥：JWT的安全性依赖于密钥的安全性，如果密钥泄露，攻击者可以伪造JWT令牌。因此，密钥的管理和保护至关重要。</p>
+</li>
+</ol>
+<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><ol>
+<li>黑名单策略</li>
+</ol>
+<p>为了解决JWT令牌无法撤销的问题，可以采用黑名单策略。具体步骤如下：</p>
+<ul>
+<li><strong>维护黑名单</strong>：服务器维护一个黑名单数据结构（如Redis、内存数据库），用于存储已撤销的JWT令牌。</li>
+<li><strong>拦截过滤</strong>：在处理请求时，服务器首先检查JWT令牌是否在黑名单中。如果在黑名单中，服务器拒绝请求；否则，继续验证令牌的有效性。</li>
+<li><strong>定期清理</strong>：定期清理黑名单中的过期令牌，避免黑名单数据无限增长。</li>
+</ul>
+<ol start="2">
+<li>设置合理的过期时间</li>
+</ol>
+<p>为了减少令牌泄露的风险，可以设置合理的JWT令牌过期时间。较短的过期时间可以降低令牌被滥用的风险，但也会增加用户频繁登录的频率。</p>
+<ol start="3">
+<li>使用刷新令牌机制</li>
+</ol>
+<p>为了平衡安全性和用户体验，可以使用刷新令牌（Refresh Token）机制。具体步骤如下：</p>
+<ul>
+<li><strong>签发访问令牌和刷新令牌</strong>：在用户登录成功后，服务器签发一个短期有效的访问令牌（Access Token）和一个长期有效的刷新令牌（Refresh Token）。</li>
+<li><strong>使用访问令牌</strong>：客户端在后续请求中使用访问令牌进行身份验证。如果访问令牌过期，客户端可以使用刷新令牌向服务器请求新的访问令牌。</li>
+<li><strong>撤销刷新令牌</strong>：如果需要强制注销用户，服务器可以撤销刷新令牌，从而阻止用户获取新的访问令牌。</li>
+</ul>
+<ol start="4">
+<li>使用HTTPS加密传输</li>
+</ol>
+<p>为了防止令牌在传输过程中被截获，建议使用HTTPS加密传输JWT令牌。HTTPS可以确保令牌在传输过程中的安全性，防止中间人攻击。</p>
+<ol start="5">
+<li>密钥管理</li>
+</ol>
+<p>为了提高JWT的安全性，需要采取以下密钥管理措施：</p>
+<ul>
+<li><strong>使用强加密算法</strong>：使用强加密算法（如HS256、RS256）生成JWT，确保令牌的不可伪造性。</li>
+<li><strong>密钥轮换</strong>：定期轮换密钥，避免密钥长时间使用带来的安全风险。</li>
+<li><strong>密钥保护</strong>：确保密钥的安全存储，避免密钥泄露。</li>
+</ul>
+<h2 id="JWT-前端存储方案"><a href="#JWT-前端存储方案" class="headerlink" title="JWT 前端存储方案"></a>JWT 前端存储方案</h2><p>JWT（JSON Web Token）是目前最流行的跨域认证解决方案之一。客户端收到服务器返回的JWT令牌后，通常需要将其存储在客户端本地。常见的存储方案包括Local Storage、Session Storage和Cookie。以下是对这三种存储方案的详细解析：</p>
+<ol>
+<li>Local Storage</li>
+</ol>
+<ul>
+<li><p><strong>较大的存储空间</strong>：Local Storage提供了较大的存储空间（通常为5MB），可以存储较长的JWT令牌。</p>
+</li>
+<li><p><strong>不会随HTTP请求发送</strong>：Local Storage中的数据不会自动随HTTP请求发送到服务器，减少了网络传输的开销。</p>
+</li>
+<li><p><strong>XSS风险</strong>：Local Storage容易受到跨站脚本攻击（XSS）。攻击者可以通过注入恶意JavaScript代码读取存储在Local Storage中的JWT令牌，从而盗取用户身份凭证。</p>
+</li>
+</ul>
+<ol start="2">
+<li>Session Storage</li>
+</ol>
+<ul>
+<li><p><strong>较大的存储空间</strong>：Session Storage同样提供了较大的存储空间（通常为5MB），可以存储较长的JWT令牌。</p>
+</li>
+<li><p><strong>仅限于当前浏览器窗口</strong>：Session Storage中的数据仅限于当前浏览器窗口，关闭窗口后数据会被清除，适合短期存储。</p>
+</li>
+<li><p><strong>用户体验问题</strong>：Session Storage中的数据在刷新网页或关闭窗口后会被清除，导致用户需要重新验证身份，影响用户体验。</p>
+</li>
+<li><p><strong>XSS风险</strong>：Session Storage同样容易受到XSS攻击，攻击者可以通过注入恶意JavaScript代码读取存储在Session Storage中的JWT令牌。</p>
+</li>
+</ul>
+<ol start="3">
+<li>Cookie</li>
+</ol>
+<ul>
+<li><p><strong>自动发送</strong>：Cookie中的数据会自动随HTTP请求发送到服务器，服务器可以方便地验证JWT令牌。</p>
+</li>
+<li><p><strong>安全性增强</strong>：可以通过设置HTTPOnly和Secure属性来提高Cookie的安全性。HTTPOnly属性可以防止JavaScript访问Cookie，减少XSS攻击的风险；Secure属性可以确保Cookie只在HTTPS连接中传输，防止中间人攻击。</p>
+</li>
+<li><p><strong>存储空间限制</strong>：单个Cookie的大小通常限制在4KB左右，并且大多数浏览器对单个域名下的Cookie数量也有一定的限制（通常为20个左右）。</p>
+</li>
+<li><p><strong>跨域问题</strong>：Cookie在跨域访问时存在一定的限制，需要特殊处理（如CORS配置）。</p>
+</li>
+</ul>
+<h1 id="WebSocket"><a href="#WebSocket" class="headerlink" title="WebSocket"></a>WebSocket</h1><h2 id="HTTP长连接与WebSocket的区别"><a href="#HTTP长连接与WebSocket的区别" class="headerlink" title="HTTP长连接与WebSocket的区别"></a>HTTP长连接与WebSocket的区别</h2><p>HTTP长连接和WebSocket是两种不同的网络通信技术，它们在实现机制、适用场景和性能特点上存在显著差异。以下是对这两种技术的详细比较：</p>
+<h3 id="HTTP长连接"><a href="#HTTP长连接" class="headerlink" title="HTTP长连接"></a>HTTP长连接</h3><p>HTTP长连接（也称为持久连接或Keep-Alive连接）是基于HTTP协议的一种连接复用技术。在HTTP&#x2F;1.1中，默认情况下连接是持久的，即客户端和服务器之间的连接在完成一次请求后不会立即关闭，而是保持打开状态，以便后续请求可以复用该连接。</p>
+<h4 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h4><ul>
+<li><strong>静态资源请求</strong>：适用于频繁请求静态资源的场景，如网页中的图片、CSS、JavaScript文件等。</li>
+<li><strong>短时间内的多次请求</strong>：适用于客户端在短时间内需要多次请求服务器资源的场景。</li>
+</ul>
+<h4 id="性能特点"><a href="#性能特点" class="headerlink" title="性能特点"></a>性能特点</h4><ul>
+<li><strong>减少连接建立开销</strong>：通过复用连接，减少了每次请求的TCP连接建立和关闭的开销，提高了网络传输效率。</li>
+<li><strong>减少延迟</strong>：减少了每次请求的往返时间（RTT），降低了网络延迟。</li>
+<li><strong>适用范围有限</strong>：HTTP长连接主要适用于短时间内的多次请求，对于需要长时间保持连接的场景（如实时通信），HTTP长连接并不适用。</li>
+</ul>
+<h3 id="WebSocket-1"><a href="#WebSocket-1" class="headerlink" title="WebSocket"></a>WebSocket</h3><p>WebSocket是一种<strong>全双工</strong>通信协议，允许客户端和服务器之间进行双向实时通信（TCP协议本身是全双工的，但我们常用的HTTP&#x2F;1.1虽然基于TCP协议，却是<strong>半双工</strong>的，因为HTTP是应答模式）。WebSocket协议在HTTP协议的基础上进行升级，通过一次握手过程建立持久连接，之后双方可以通过该连接进行实时数据传输。</p>
+<h4 id="适用场景-1"><a href="#适用场景-1" class="headerlink" title="适用场景"></a>适用场景</h4><ul>
+<li><strong>实时通信</strong>：适用于需要实时通信的场景，如在线聊天、实时游戏、股票行情等。</li>
+<li><strong>实时数据推送</strong>：适用于服务器需要主动向客户端推送数据的场景，如实时通知、实时监控等。</li>
+</ul>
+<h4 id="性能特点-1"><a href="#性能特点-1" class="headerlink" title="性能特点"></a>性能特点</h4><ul>
+<li><strong>全双工通信</strong>：WebSocket支持全双工通信，客户端和服务器可以同时发送和接收数据，实现实时双向通信。</li>
+<li><strong>低延迟</strong>：WebSocket连接建立后，数据传输的延迟较低，适合实时通信场景。</li>
+<li><strong>轻量级协议</strong>：WebSocket协议本身较为轻量，数据传输的开销较小，适合高频数据传输。</li>
+</ul>
+<h3 id="区别总结"><a href="#区别总结" class="headerlink" title="区别总结"></a>区别总结</h3><table>
+<thead>
+<tr>
+<th>特性</th>
+<th>HTTP长连接</th>
+<th>WebSocket</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>实现机制</td>
+<td>基于HTTP协议的连接复用技术</td>
+<td>基于HTTP协议升级的全双工通信协议</td>
+</tr>
+<tr>
+<td>适用场景</td>
+<td>静态资源请求、短时间内的多次请求</td>
+<td>实时通信、实时数据推送</td>
+</tr>
+<tr>
+<td>通信方式</td>
+<td>半双工（请求-响应模式）</td>
+<td>全双工（双向实时通信）</td>
+</tr>
+<tr>
+<td>连接保持</td>
+<td>连接保持时间有限，适用于短时间请求</td>
+<td>持久连接，适用于长时间实时通信</td>
+</tr>
+<tr>
+<td>协议开销</td>
+<td>每次请求需要携带HTTP头信息</td>
+<td>协议开销较小，适合高频数据传输</td>
+</tr>
+<tr>
+<td>数据传输延迟</td>
+<td>每次请求的往返时间（RTT）较高</td>
+<td>数据传输延迟较低，适合实时通信</td>
+</tr>
+</tbody></table>
+<h1 id="Nginx"><a href="#Nginx" class="headerlink" title="Nginx"></a>Nginx</h1><h2 id="Nginx负载均衡算法"><a href="#Nginx负载均衡算法" class="headerlink" title="Nginx负载均衡算法"></a>Nginx负载均衡算法</h2><ul>
+<li>轮询：按照请求顺序依次分配给后端请求。这种算法最简单，但无法应对单点缓慢以及用户连续请求情况。</li>
+<li>IP哈希：根据客户端IP地址来计算哈希值，分配到对应的后端服务器，能够保证客户端总能请求到同一台服务器。</li>
+<li>URL哈希：按访问的URL哈希结果来分配后端服务器，可以进一步增加后端服务器缓存的使用率。</li>
+<li>最短响应时间：根据后端服务器的响应时间来进行分配，响应速度越快的服务器会收到的请求越多，能够充分利用后端服务器的性能，实现负载均衡。</li>
+<li>加权轮询：按照权重分配请求给后端服务器，权重越高的服务器会收到更多的请求，适用于后端服务器性能不同的情况，提高高性能服务器利用率，实现负载均衡。</li>
+</ul>
+</div>
+        </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+            
+            
+                <div class="post-actions text-center clearfix" id="post-actions">
+                
+                    <a class="donate" href="javascript:;" onclick="krOpenDonateModal()"><i class="fa fa-bitcoin"></i> 打赏</a>
+                
+                
+                    <a class="share" href="javascript:;" onclick="krOpenShareModal()"><i class="fa fa-share-alt"></i> 分享</a>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    <a class="tag-none-link" href="/tags/JWT/" rel="tag">JWT</a>, <a class="tag-none-link" href="/tags/Nginx/" rel="tag">Nginx</a>, <a class="tag-none-link" href="/tags/WebSoket/" rel="tag">WebSoket</a>
+                </div>
+                <div class="pull-date">
+                    <time datetime="2024-10-13T09:13:51.108Z" itemprop="dateModified">最后编辑：2024-10-13</time>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" 计算机网络-应用层(上)" href="/2024/10/12/计算机网络-应用层(上)/"><i class="fa fa-angle-left"></i> 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" 计算机网络-网络场景" href="/2024/10/13/计算机网络-网络场景/">下一篇 <i class="fa fa-angle-right"></i></a>
+            </div>
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+            
+                
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/user.jpg" alt="xiaoyan" loading="lazy" decoding="auto" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">是一只时时翻垃圾吃的宅子。</p>
+    </div>
+    <div class="site-meta">
+        <a class="meta-item" href="/archives/">
+            <span class="title">
+                文章
+            </span>
+            <span class="count">
+                36
+            </span>
+        </a>
+        <a class="meta-item" href="/categories/">
+            <span class="title">
+                分类
+            </span>
+            <span class="count">
+                11
+            </span>
+        </a>
+        <a class="meta-item" href="/tags/">
+            <span class="title">
+                标签
+            </span>
+            <span class="count">
+                50
+            </span>
+        </a>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix toc-div-class" >
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar" role="progressbar" aria-label="阅读进度："></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#JWT-%E4%BB%A4%E7%89%8C"><span class="toc-number">1.</span> <span class="toc-text">JWT 令牌</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#JWT-%E4%BB%A4%E7%89%8C%E5%92%8C%E4%BC%A0%E7%BB%9F%E6%96%B9%E5%BC%8F%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB"><span class="toc-number">1.1.</span> <span class="toc-text">JWT 令牌和传统方式有什么区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JWT-%E4%BB%A4%E7%89%8C%E8%AF%A6%E8%A7%A3"><span class="toc-number">1.2.</span> <span class="toc-text">JWT 令牌详解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#JWT%E7%9A%84%E7%BB%93%E6%9E%84"><span class="toc-number">1.2.1.</span> <span class="toc-text">JWT的结构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E5%A4%B4%E9%83%A8%EF%BC%88Header%EF%BC%89"><span class="toc-number">1.2.1.1.</span> <span class="toc-text">1. 头部（Header）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E8%BD%BD%E8%8D%B7%EF%BC%88Payload%EF%BC%89"><span class="toc-number">1.2.1.2.</span> <span class="toc-text">2. 载荷（Payload）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E7%AD%BE%E5%90%8D%EF%BC%88Signature%EF%BC%89"><span class="toc-number">1.2.1.3.</span> <span class="toc-text">3. 签名（Signature）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JWT%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="toc-number">1.2.2.</span> <span class="toc-text">JWT的工作流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JWT%E7%9A%84%E4%BC%98%E7%82%B9"><span class="toc-number">1.2.3.</span> <span class="toc-text">JWT的优点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#JWT%E7%9A%84%E7%BC%BA%E7%82%B9"><span class="toc-number">1.2.4.</span> <span class="toc-text">JWT的缺点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JWT-%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E9%9B%86%E7%BE%A4%E9%83%A8%E7%BD%B2%E9%97%AE%E9%A2%98"><span class="toc-number">1.3.</span> <span class="toc-text">JWT 如何解决集群部署问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JWT-%E7%BC%BA%E7%82%B9"><span class="toc-number">1.4.</span> <span class="toc-text">JWT 缺点</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#JWT%E7%9A%84%E7%BC%BA%E7%82%B9-1"><span class="toc-number">1.4.1.</span> <span class="toc-text">JWT的缺点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="toc-number">1.4.2.</span> <span class="toc-text">解决方案</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JWT-%E5%89%8D%E7%AB%AF%E5%AD%98%E5%82%A8%E6%96%B9%E6%A1%88"><span class="toc-number">1.5.</span> <span class="toc-text">JWT 前端存储方案</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#WebSocket"><span class="toc-number">2.</span> <span class="toc-text">WebSocket</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP%E9%95%BF%E8%BF%9E%E6%8E%A5%E4%B8%8EWebSocket%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">2.1.</span> <span class="toc-text">HTTP长连接与WebSocket的区别</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#HTTP%E9%95%BF%E8%BF%9E%E6%8E%A5"><span class="toc-number">2.1.1.</span> <span class="toc-text">HTTP长连接</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">2.1.1.1.</span> <span class="toc-text">适用场景</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%A7%E8%83%BD%E7%89%B9%E7%82%B9"><span class="toc-number">2.1.1.2.</span> <span class="toc-text">性能特点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#WebSocket-1"><span class="toc-number">2.1.2.</span> <span class="toc-text">WebSocket</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF-1"><span class="toc-number">2.1.2.1.</span> <span class="toc-text">适用场景</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%A7%E8%83%BD%E7%89%B9%E7%82%B9-1"><span class="toc-number">2.1.2.2.</span> <span class="toc-text">性能特点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8C%BA%E5%88%AB%E6%80%BB%E7%BB%93"><span class="toc-number">2.1.3.</span> <span class="toc-text">区别总结</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Nginx"><span class="toc-number">3.</span> <span class="toc-text">Nginx</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Nginx%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E7%AE%97%E6%B3%95"><span class="toc-number">3.1.</span> <span class="toc-text">Nginx负载均衡算法</span></a></li></ol></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类列表</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">15</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/JVM/">JVM</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%9F%BA%E7%A1%80/">基础</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">并发编程</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E9%9B%86%E5%90%88/">集合</a><span class="category-list-count">5</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9E%B6%E6%9E%84/">架构</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a><span class="category-list-count">4</span></li></ul>
+  </aside>
+
+
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/AOP/" style="font-size: 0.6em;">AOP</a> <a href="/tags/Bean/" style="font-size: 0.6em;">Bean</a> <a href="/tags/Cookie/" style="font-size: 0.6em;">Cookie</a> <a href="/tags/DDD/" style="font-size: 0.6em;">DDD</a> <a href="/tags/DNS/" style="font-size: 0.6em;">DNS</a> <a href="/tags/HTTP/" style="font-size: 0.6em;">HTTP</a> <a href="/tags/I-O/" style="font-size: 0.6em;">I/O</a> <a href="/tags/IoC/" style="font-size: 0.6em;">IoC</a> <a href="/tags/JWT/" style="font-size: 0.6em;">JWT</a> <a href="/tags/Java8%E6%96%B0%E7%89%B9%E6%80%A7/" style="font-size: 0.6em;">Java8新特性</a> <a href="/tags/Java%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" style="font-size: 0.6em;">Java基本概念</a> <a href="/tags/List/" style="font-size: 0.6em;">List</a> <a href="/tags/Map/" style="font-size: 0.8em;">Map</a> <a href="/tags/MyBatis/" style="font-size: 0.6em;">MyBatis</a> <a href="/tags/MySQL%E5%9F%BA%E7%A1%80/" style="font-size: 0.6em;">MySQL基础</a> <a href="/tags/Nginx/" style="font-size: 0.6em;">Nginx</a> <a href="/tags/Object/" style="font-size: 0.6em;">Object</a> <a href="/tags/SQL%E8%B0%83%E4%BC%98/" style="font-size: 0.6em;">SQL调优</a>
+      </div>
+  </aside>
+
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/2024/10/13/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%BD%91%E7%BB%9C%E5%9C%BA%E6%99%AF/"><i class="fa fa-book"></i> 计算机网络-网络场景</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/10/13/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E5%BA%94%E7%94%A8%E5%B1%82(%E4%B8%8B)/"><i class="fa fa-book"></i> 计算机网络-应用层(下)</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/10/12/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E5%BA%94%E7%94%A8%E5%B1%82(%E4%B8%8A)/"><i class="fa fa-book"></i> 计算机网络-应用层(上)</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/10/12/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B/"><i class="fa fa-book"></i> 计算机网络-网络模型</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/10/05/Java-JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/"><i class="fa fa-book"></i> JVM-垃圾回收</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+            
+
+        
+
+                </div>
+    </div>
+</div>
+
+<footer>
+    <div id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2024 XIAOYAN 版权所有.</li>
+                            <li>本站已运行<span id="kr-since">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>自豪地使用 <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a> 主题</li>
+                            <li>站点由 xiaoyan 用 <i class="fa fa-heart" style="color:#d43f57"></i> 搭建</li>
+                        </div>
+                        <!-- 额外的追加注入项 -->
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                <div class="box theme-box" id="theme-toggle">
+                    <span class="fa fa-adjust"></span>
+                </div>
+            </div>
+            <div id="gotop-box" class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+
+    <div id="kr-donate-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseDonateModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-bitcoin"></i>
+            </div>
+            <div class="kr-modal-title">打赏</div>
+            <button class="kr-modal-close" onclick="krCloseDonateModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-donate-message">请我喝一杯冰阔咯~</div>
+            <div class="kr-donate-qr" id="kr-donate-qr">
+                
+            </div>
+            <div class="kr-donate-platforms">
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #1677ff;" title="支付宝" onclick="krDonateModalShowPlatformQR('https://qr.alipay.com/fkx15009k7u0fqrj8auepdf', '#1677ff')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-alipay">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M19 3h-14a2 2 0 0 0 -2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2 -2v-14a2 2 0 0 0 -2 -2z" />
+  <path d="M7 7h10" />
+  <path d="M12 3v7" />
+  <path d="M21 17.314c-2.971 -1.923 -15 -8.779 -15 -1.864c0 1.716 1.52 2.55 2.985 2.55c3.512 0 6.814 -5.425 6.814 -8h-6.604" />
+</svg>
+
+                        </button>
+                    
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #38ad5a;" title="微信支付" onclick="krDonateModalShowPlatformQR('wxp://f2f0hR4eF9Ypa3tpzjWme9fQDyWW3PIGe3WG5oiIakWLmDs', '#38ad5a')">
+                            <i class="fa fa-wechat"></i>
+                        </button>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/donate.min.js"></script>
+
+
+
+
+    <div id="kr-share-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseShareModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-share-alt"></i>
+            </div>
+            <div class="kr-modal-title">分享</div>
+            <button class="kr-modal-close" onclick="krCloseShareModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-share-message">让兄弟萌也来瞅一瞅！</div>
+            <div class="kr-share-qr" id="kr-share-qr"></div>
+            <div class="kr-share-platforms">
+                
+                    <button class="kr-share-platform-button" style="color: #e6162d;" title="QQ" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-qq"></i>
+                    </button>
+                
+                    <button class="kr-share-platform-button" style="color: #25d366;" title="微信" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-weixin"></i>
+                    </button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/share.min.js"></script>
+
+
+
+<!-- 额外的追加注入项 -->
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
+<meting-js
+  server="netease"
+  type="playlist"
+  fixed="true"
+  order="random"
+  id="12613265870">
+</meting-js>
+
+
+
+        <script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
+</script>
+
+
+  <script defer src="/vendors/nprogress@0.2.0/nprogress.js"></script>
+
+
+
+  <script defer src="/vendors/viewerjs@1.11.6/dist/viewer.min.js"></script>
+
+
+<script defer src="/js/kr-core.min.js"></script>
+
+
+  <script defer src="/js/kr-pjax.min.js"></script>
+
+
+<!-- 额外的追加注入项 -->
+
+  <script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+
+
+
+    </body>
+</html>
