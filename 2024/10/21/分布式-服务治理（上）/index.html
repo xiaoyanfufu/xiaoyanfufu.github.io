@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  
+    <link rel="icon" href="/images/earthstars.png">
+  
+  
+  <title>分布式-服务治理（上） | XIAOYAN</title>
+  <link rel="canonical" href="http://example.com/2024/10/21/%E5%88%86%E5%B8%83%E5%BC%8F-%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%EF%BC%88%E4%B8%8A%EF%BC%89/">
+  <meta name="author" content="xiaoyan" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="服务注册与发现, 配置管理" />
+  
+  <meta name="description" content="服务注册与发现微服务架构的核心机制在微服务架构下，一个分布式系统通常由多个微服务组成。当用户发起一个请求时，可能需要多个服务协同工作，以此相互配合来维持系统的正常运行。然而，随着业务需求的不断变化，微服务的节点数量可能会动态调整，这就带来了一系列的挑战。 试想一下，一个微服务可能存在多个节点，在需要的时候我们会临时增加或减少该微服务的节点数量。传统的做法是将这些节点的配置信息写死在微服务的配置代码">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分布式-服务治理（上）">
+<meta property="og:url" content="http://example.com/2024/10/21/%E5%88%86%E5%B8%83%E5%BC%8F-%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%EF%BC%88%E4%B8%8A%EF%BC%89/index.html">
+<meta property="og:site_name" content="XIAOYAN">
+<meta property="og:description" content="服务注册与发现微服务架构的核心机制在微服务架构下，一个分布式系统通常由多个微服务组成。当用户发起一个请求时，可能需要多个服务协同工作，以此相互配合来维持系统的正常运行。然而，随着业务需求的不断变化，微服务的节点数量可能会动态调整，这就带来了一系列的挑战。 试想一下，一个微服务可能存在多个节点，在需要的时候我们会临时增加或减少该微服务的节点数量。传统的做法是将这些节点的配置信息写死在微服务的配置代码">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202410211602427.png">
+<meta property="article:published_time" content="2024-10-21T07:24:40.000Z">
+<meta property="article:modified_time" content="2024-10-27T13:05:56.918Z">
+<meta property="article:author" content="xiaoyan">
+<meta property="article:tag" content="服务注册与发现">
+<meta property="article:tag" content="配置管理">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202410211602427.png">
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kr-core.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/highlight.js/night-eighties.min.css" media="all"></link>
+  
+  <link rel="stylesheet" id="theme-light-css" href="/css/kr-theme/light.min.css" media="all"></link>
+  <link rel="stylesheet" id="theme-dark-css" href="/css/kr-theme/dark.min.css" media="(prefers-color-scheme: dark)"></link>
+  <script src="/js/kr-theme.min.js"></script>
+  <link rel="stylesheet" id="fontawe-css" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="nprogress-css" href="/vendors/nprogress@0.2.0/nprogress.css" media="all"></link>
+  
+  
+    <link rel="stylesheet" href="/vendors/viewerjs@1.11.6/dist/viewer.min.css"></link>
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  
+    <script src="/vendors/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+  
+  <!-- 自定义站点横幅和背景 -->
+  <style>
+    
+      .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_light.png');
+      }
+      html[data-theme="dark"] .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_dark.png');
+      }
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+        html[data-theme="dark"] body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+      }
+    
+    
+      .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+      html[data-theme="dark"] .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+    
+  </style>
+
+  <!-- 额外的追加注入项 -->
+  
+    <link rel="stylesheet" href="/css/custom.css">
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    <li>
+                                        
+                                            <a href="/">
+                                        
+                                            
+                                                <i class="fa fa-home"></i>
+                                            
+                                            首页
+                                        </a>
+                                        
+                                    </li>
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">XIAOYAN</a></div>
+                    <div id="kratos-nav-toggle-wrapper" class="nav-toggle">
+                        <a id="kratos-nav-toggle" class="kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>XIAOYAN</h2> <br />
+                        <span>山重水复疑无路，柳暗花明又一村。</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+
+
+        
+
+            
+
+            <section class="kr-main-col col-md-8">
+
+        
+
+            <article itemscope itemtype="https://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/21/%E5%88%86%E5%B8%83%E5%BC%8F-%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%EF%BC%88%E4%B8%8A%EF%BC%89/">
+    <div class="kratos-hentry kratos-page-inner clearfix">
+        <header class="kratos-page-header">
+            
+                <h1 class="kratos-page-title text-center" itemprop="name headline">分布式-服务治理（上）</h1>
+            
+            <ul class="kratos-page-meta text-center">
+                <li><time datetime="2024-10-21T07:24:40.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2024-10-21</time></li>
+                <li itemprop="author" itemscope itemtype="https://schema.org/Person">
+                    <i class="fa fa-user"></i> 作者 <span itemprop="name">xiaoyan</span>
+                </li>
+                
+                    <li>
+                        <i class="fa fa-edit"></i> 
+                        
+                        
+                            ~2.71K
+                        
+                        字
+                    </li>
+                
+                
+                
+            </ul>
+        </header>
+        <div class="kratos-page-content kr-post">
+            
+            
+            
+                <div class="kratos-post-inner-toc toc-div-class" >
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%8F%91%E7%8E%B0"><span class="toc-number">1.</span> <span class="toc-text">服务注册与发现</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%E7%9A%84%E6%A0%B8%E5%BF%83%E6%9C%BA%E5%88%B6"><span class="toc-number">1.1.</span> <span class="toc-text">微服务架构的核心机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%8F%91%E7%8E%B0%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B"><span class="toc-number">1.2.</span> <span class="toc-text">服务注册与发现基本流程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C"><span class="toc-number">1.2.1.</span> <span class="toc-text">服务注册</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">1.2.2.</span> <span class="toc-text">服务发现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%81%A5%E5%BA%B7%E6%A3%80%E6%B5%8B"><span class="toc-number">1.2.3.</span> <span class="toc-text">健康检测</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86"><span class="toc-number">2.</span> <span class="toc-text">配置管理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83%E7%9A%84%E6%A0%B8%E5%BF%83%E5%8A%9F%E8%83%BD"><span class="toc-number">2.0.1.</span> <span class="toc-text">配置中心的核心功能</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83"><span class="toc-number">2.1.</span> <span class="toc-text">常见配置中心</span></a></li></ol></li></ol>
+                </div>
+            
+            <hr />
+            <div itemprop="articleBody"><h1 id="服务注册与发现"><a href="#服务注册与发现" class="headerlink" title="服务注册与发现"></a>服务注册与发现</h1><h2 id="微服务架构的核心机制"><a href="#微服务架构的核心机制" class="headerlink" title="微服务架构的核心机制"></a>微服务架构的核心机制</h2><p>在微服务架构下，一个分布式系统通常由多个微服务组成。当用户发起一个请求时，可能需要多个服务协同工作，以此相互配合来维持系统的正常运行。然而，随着业务需求的不断变化，微服务的节点数量可能会动态调整，这就带来了一系列的挑战。</p>
+<p>试想一下，一个微服务可能存在多个节点，在需要的时候我们会临时增加或减少该微服务的节点数量。传统的做法是将这些节点的配置信息写死在微服务的配置代码中。当我们动态调整微服务时，就需要手动地去更新配置信息，并且重新启动服务，这样一来就增加了维护成本。</p>
+<p>为了解决上述问题，我们需要一个统一管理的平台，让微服务间自动地完成协调治理。当有新增的节点时，能够自动识别并增加到自己的配置；当有挂掉的节点时，微服务能够自动识别并将其从可用列表中删除。服务注册与发现机制就是为此而设计的，微服务的可用列表统一由注册中心维护。通过注册中心，微服务可以动态地获取可用的服务列表。当服务配置更新时，注册中心会将变更推送给相关调用的微服务，无需手动更新，从而降低了维护成本，实现了服务的优雅上下线。</p>
+<p>一个完善的服务注册与发现中心应具备以下功能：</p>
+<ol>
+<li><p>服务的注册与服务查询（最基本）</p>
+</li>
+<li><p>服务状态变更通知、服务健康检查、不可用服务剔除</p>
+</li>
+<li><p>服务权重配置</p>
+</li>
+</ol>
+<h2 id="服务注册与发现基本流程"><a href="#服务注册与发现基本流程" class="headerlink" title="服务注册与发现基本流程"></a>服务注册与发现基本流程</h2><p><img src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202410211602427.png" alt="服务注册与发现"></p>
+<h3 id="服务注册"><a href="#服务注册" class="headerlink" title="服务注册"></a>服务注册</h3><p>当启动一个服务时，该服务会向注册中心发送自己的服务信息（地址、端口、服务名称等），注册中心将这些信息保存起来，这就是服务注册。</p>
+<p><strong>流程步骤</strong>：</p>
+<ol>
+<li><strong>服务启动</strong>：微服务启动时，初始化并配置服务信息。</li>
+<li><strong>注册请求</strong>：微服务向注册中心发送注册请求，包含服务名称、IP地址、端口号等信息。</li>
+<li><strong>注册中心处理</strong>：注册中心接收到注册请求后，将服务信息存储在服务注册表中。</li>
+</ol>
+<h3 id="服务发现"><a href="#服务发现" class="headerlink" title="服务发现"></a>服务发现</h3><p>一个服务要调用另外一个服务的节点，于是向注册中心请求所需服务的可用节点信息，这就是服务发现。当服务获取到调用服务的可用节点信息后，通常会将该信息缓存到本地，方便下次使用，同时也能够保证当注册中心挂掉时，不影响当前服务正常调用被调用的服务。</p>
+<p><strong>流程步骤</strong>：</p>
+<ol>
+<li><strong>服务调用请求</strong>：调用方服务向注册中心发送服务发现请求，请求所需服务的可用节点信息。</li>
+<li><strong>注册中心响应</strong>：注册中心返回可用的服务节点列表，包含服务名称、IP地址、端口号等信息。</li>
+<li><strong>本地缓存</strong>：调用方服务将获取到的服务节点信息缓存到本地，方便下次使用。</li>
+</ol>
+<h3 id="健康检测"><a href="#健康检测" class="headerlink" title="健康检测"></a>健康检测</h3><p>为了保证服务的可用性，注册中心还会通过“心跳机制”来检测服务是否可用。如果服务不可用，注册中心会主动剔除该服务并通知相关服务，更新服务地址信息。</p>
+<p><strong>流程步骤</strong>：</p>
+<ol>
+<li><strong>心跳检测</strong>：注册中心定期向微服务发送心跳检测包，微服务在规定时间内响应心跳包。</li>
+<li><strong>服务状态更新</strong>：如果注册中心在一定时间内未收到微服务的响应，则认为该服务不可用，并将其从可用列表中剔除。</li>
+<li><strong>状态变更通知</strong>：注册中心将服务状态变更通知推送给相关调用的微服务，调用方更新被调用服务地址信息。</li>
+</ol>
+<p>总结：服务注册与发现机制通过服务注册、服务发现和健康检测三个核心流程，实现了微服务架构中的动态服务管理和优雅上下线。通过服务注册，微服务向注册中心注册自己的信息；通过服务发现，调用方服务获取被调用服务的可用节点信息；通过健康检测，注册中心确保服务的可用性，并在服务状态变更时通知相关调用方。</p>
+<h1 id="配置管理"><a href="#配置管理" class="headerlink" title="配置管理"></a>配置管理</h1><p>在微服务架构中，随着业务规模的扩展，服务器节点数量不断增加，导致程序配置的复杂性和管理难度显著提升。传统的配置管理方式逐渐暴露出以下问题：</p>
+<ol>
+<li><strong>配置文件碎片化</strong>：随着服务数量的增加，配置文件数量急剧增长，导致配置管理的复杂性增加，难以进行统一管理。</li>
+<li><strong>配置更新效率低下</strong>：传统方式下，配置修改后通常需要重启服务器才能生效，这不仅增加了运维成本，还可能导致服务中断。</li>
+<li><strong>配置安全性不足</strong>：配置信息通常硬编码在代码库中，容易暴露敏感信息，且难以进行权限控制和审计。</li>
+</ol>
+<p>为了应对这些挑战，配置中心（Configuration Center）应运而生。配置中心通过集中化管理微服务的配置信息，提供了一系列高级功能，以提升配置管理的效率和安全性。</p>
+<h3 id="配置中心的核心功能"><a href="#配置中心的核心功能" class="headerlink" title="配置中心的核心功能"></a>配置中心的核心功能</h3><p>一个完善的配置中心应具备以下核心功能：</p>
+<ol>
+<li><strong>权限控制</strong>：配置的修改和发布应设置严格的权限控制机制，确保只有授权人员才能进行相关操作，从而保障配置的安全性和合规性。</li>
+<li><strong>日志记录与审计</strong>：配置中心应详细记录所有配置操作的日志，包括修改、发布、回滚等操作，以便于后续的问题排查和审计。</li>
+<li><strong>配置推送机制</strong>：<ul>
+<li><strong>推送模式</strong>：配置中心主动将配置变更推送给应用服务器，要求服务器与配置中心保持长连接。虽然实现复杂度较高，但能够实现配置的实时更新，适用于对实时性要求较高的场景。</li>
+<li><strong>拉取模式</strong>：应用服务器主动从配置中心获取最新的配置信息。这种方式实现简单，但实时性较差，适用于对配置更新频率要求不高的场景。</li>
+</ul>
+</li>
+<li><strong>灰度发布</strong>：配置中心应支持配置的灰度发布功能，即只将配置变更推送给部分服务器，以便在不影响整体服务的情况下进行配置验证和测试。</li>
+<li><strong>版本管理与回滚</strong>：配置中心应记录所有发布的配置版本，并支持一键回滚到指定版本。这不仅有助于快速恢复配置，还能提供配置变更的历史记录，便于问题追溯和分析。</li>
+</ol>
+<h2 id="常见配置中心"><a href="#常见配置中心" class="headerlink" title="常见配置中心"></a>常见配置中心</h2><p>在微服务架构中，选择合适的配置中心对于提升系统的可维护性和扩展性至关重要。目前市场上存在多种配置中心解决方案，包括Apollo、Nacos、Kubernetes ConfigMap、Disconf和Spring Cloud Config等。</p>
+<table>
+<thead>
+<tr>
+<th>功能</th>
+<th>Apollo</th>
+<th>Nacos</th>
+<th>Spring Cloud Config</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>UI配置界面</td>
+<td>有</td>
+<td>有</td>
+<td>无（通过Git操作）</td>
+</tr>
+<tr>
+<td>配置实时生效</td>
+<td>支持（HTTP长轮询1s内）</td>
+<td>支持（HTTP长轮询1s内）</td>
+<td>不支持（重启生效，或手动refresh）</td>
+</tr>
+<tr>
+<td>版本控制</td>
+<td>支持</td>
+<td>支持</td>
+<td>支持（Git实现）</td>
+</tr>
+<tr>
+<td>权限控制</td>
+<td>支持</td>
+<td>支持</td>
+<td>支持（Git实现）</td>
+</tr>
+<tr>
+<td>灰度发布</td>
+<td>支持</td>
+<td>支持</td>
+<td>不支持</td>
+</tr>
+<tr>
+<td>告警通知</td>
+<td>支持</td>
+<td>支持</td>
+<td>不支持</td>
+</tr>
+<tr>
+<td>监听查询</td>
+<td>支持</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>多语言</td>
+<td>主流语言，Open API</td>
+<td>主流语言，Open API</td>
+<td>仅支持Spring应用</td>
+</tr>
+<tr>
+<td>多环境</td>
+<td>支持</td>
+<td>支持</td>
+<td>不支持</td>
+</tr>
+</tbody></table>
+<p>Apollo和Nacos都是国内公司开源的知名项目，Apollo是携程开源的，Nacos则是阿里开源的。Apollo的配置中心功能更加齐全，而Nacos在一些细微的功能上则略显简单，比如说在Nacos1.1.0版本才支持的灰度发布，但是Nacos可以作为服务注册中心。Spring Cloud Config作为Spring生态组件，可以方便与Spring Cloud体系无缝衔接，但整体的设计比较简单。</p>
+</div>
+        </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+            
+            
+                <div class="post-actions text-center clearfix" id="post-actions">
+                
+                    <a class="donate" href="javascript:;" onclick="krOpenDonateModal()"><i class="fa fa-bitcoin"></i> 打赏</a>
+                
+                
+                    <a class="share" href="javascript:;" onclick="krOpenShareModal()"><i class="fa fa-share-alt"></i> 分享</a>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    <a class="tag-none-link" href="/tags/%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%8F%91%E7%8E%B0/" rel="tag">服务注册与发现</a>, <a class="tag-none-link" href="/tags/%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86/" rel="tag">配置管理</a>
+                </div>
+                <div class="pull-date">
+                    <time datetime="2024-10-27T13:05:56.918Z" itemprop="dateModified">最后编辑：2024-10-27</time>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" 分布式-基础理论&amp;算法" href="/2024/10/21/分布式-基础理论/"><i class="fa fa-angle-left"></i> 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" 分布式-服务治理（下）" href="/2024/10/21/分布式-服务治理（下）/">下一篇 <i class="fa fa-angle-right"></i></a>
+            </div>
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+            
+                
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/user.jpg" alt="xiaoyan" loading="lazy" decoding="auto" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">是一只时时翻垃圾吃的宅子。</p>
+    </div>
+    <div class="site-meta">
+        <a class="meta-item" href="/archives/">
+            <span class="title">
+                文章
+            </span>
+            <span class="count">
+                41
+            </span>
+        </a>
+        <a class="meta-item" href="/categories/">
+            <span class="title">
+                分类
+            </span>
+            <span class="count">
+                12
+            </span>
+        </a>
+        <a class="meta-item" href="/tags/">
+            <span class="title">
+                标签
+            </span>
+            <span class="count">
+                60
+            </span>
+        </a>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix toc-div-class" >
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar" role="progressbar" aria-label="阅读进度："></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%8F%91%E7%8E%B0"><span class="toc-number">1.</span> <span class="toc-text">服务注册与发现</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84%E7%9A%84%E6%A0%B8%E5%BF%83%E6%9C%BA%E5%88%B6"><span class="toc-number">1.1.</span> <span class="toc-text">微服务架构的核心机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%8F%91%E7%8E%B0%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B"><span class="toc-number">1.2.</span> <span class="toc-text">服务注册与发现基本流程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C"><span class="toc-number">1.2.1.</span> <span class="toc-text">服务注册</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E5%8F%91%E7%8E%B0"><span class="toc-number">1.2.2.</span> <span class="toc-text">服务发现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%81%A5%E5%BA%B7%E6%A3%80%E6%B5%8B"><span class="toc-number">1.2.3.</span> <span class="toc-text">健康检测</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86"><span class="toc-number">2.</span> <span class="toc-text">配置管理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83%E7%9A%84%E6%A0%B8%E5%BF%83%E5%8A%9F%E8%83%BD"><span class="toc-number">2.0.1.</span> <span class="toc-text">配置中心的核心功能</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83"><span class="toc-number">2.1.</span> <span class="toc-text">常见配置中心</span></a></li></ol></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类列表</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">15</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/JVM/">JVM</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%9F%BA%E7%A1%80/">基础</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">并发编程</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E9%9B%86%E5%90%88/">集合</a><span class="category-list-count">5</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9E%B6%E6%9E%84/">架构</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a><span class="category-list-count">5</span></li></ul>
+  </aside>
+
+
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/AOP/" style="font-size: 0.6em;">AOP</a> <a href="/tags/BASE/" style="font-size: 0.6em;">BASE</a> <a href="/tags/Bean/" style="font-size: 0.6em;">Bean</a> <a href="/tags/CAP/" style="font-size: 0.6em;">CAP</a> <a href="/tags/Cookie/" style="font-size: 0.6em;">Cookie</a> <a href="/tags/DDD/" style="font-size: 0.6em;">DDD</a> <a href="/tags/DNS/" style="font-size: 0.6em;">DNS</a> <a href="/tags/HTTP/" style="font-size: 0.6em;">HTTP</a> <a href="/tags/I-O/" style="font-size: 0.6em;">I/O</a> <a href="/tags/IoC/" style="font-size: 0.6em;">IoC</a> <a href="/tags/JWT/" style="font-size: 0.6em;">JWT</a> <a href="/tags/Java8%E6%96%B0%E7%89%B9%E6%80%A7/" style="font-size: 0.6em;">Java8新特性</a> <a href="/tags/Java%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" style="font-size: 0.6em;">Java基本概念</a> <a href="/tags/List/" style="font-size: 0.6em;">List</a> <a href="/tags/Map/" style="font-size: 0.8em;">Map</a> <a href="/tags/MyBatis/" style="font-size: 0.6em;">MyBatis</a> <a href="/tags/MySQL%E5%9F%BA%E7%A1%80/" style="font-size: 0.6em;">MySQL基础</a> <a href="/tags/Nginx/" style="font-size: 0.6em;">Nginx</a>
+      </div>
+  </aside>
+
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/2024/10/27/%E5%88%86%E5%B8%83%E5%BC%8F-%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/"><i class="fa fa-book"></i> 分布式-分布式事务</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/10/21/%E5%88%86%E5%B8%83%E5%BC%8F-%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%EF%BC%88%E4%B8%8B%EF%BC%89/"><i class="fa fa-book"></i> 分布式-服务治理（下）</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/10/21/%E5%88%86%E5%B8%83%E5%BC%8F-%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%EF%BC%88%E4%B8%8A%EF%BC%89/"><i class="fa fa-book"></i> 分布式-服务治理（上）</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/10/21/%E5%88%86%E5%B8%83%E5%BC%8F-%E5%9F%BA%E7%A1%80%E7%90%86%E8%AE%BA/"><i class="fa fa-book"></i> 分布式-基础理论&算法</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/10/13/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%BD%91%E7%BB%9C%E5%9C%BA%E6%99%AF/"><i class="fa fa-book"></i> 计算机网络-网络场景</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+            
+
+        
+
+                </div>
+    </div>
+</div>
+
+<footer>
+    <div id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2024 XIAOYAN 版权所有.</li>
+                            <li>本站已运行<span id="kr-since">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>自豪地使用 <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a> 主题</li>
+                            <li>站点由 xiaoyan 用 <i class="fa fa-heart" style="color:#d43f57"></i> 搭建</li>
+                        </div>
+                        <!-- 额外的追加注入项 -->
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                <div class="box theme-box" id="theme-toggle">
+                    <span class="fa fa-adjust"></span>
+                </div>
+            </div>
+            <div id="gotop-box" class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+
+    <div id="kr-donate-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseDonateModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-bitcoin"></i>
+            </div>
+            <div class="kr-modal-title">打赏</div>
+            <button class="kr-modal-close" onclick="krCloseDonateModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-donate-message">请我喝一杯冰阔咯~</div>
+            <div class="kr-donate-qr" id="kr-donate-qr">
+                
+            </div>
+            <div class="kr-donate-platforms">
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #1677ff;" title="支付宝" onclick="krDonateModalShowPlatformQR('https://qr.alipay.com/fkx15009k7u0fqrj8auepdf', '#1677ff')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-alipay">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M19 3h-14a2 2 0 0 0 -2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2 -2v-14a2 2 0 0 0 -2 -2z" />
+  <path d="M7 7h10" />
+  <path d="M12 3v7" />
+  <path d="M21 17.314c-2.971 -1.923 -15 -8.779 -15 -1.864c0 1.716 1.52 2.55 2.985 2.55c3.512 0 6.814 -5.425 6.814 -8h-6.604" />
+</svg>
+
+                        </button>
+                    
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #38ad5a;" title="微信支付" onclick="krDonateModalShowPlatformQR('wxp://f2f0hR4eF9Ypa3tpzjWme9fQDyWW3PIGe3WG5oiIakWLmDs', '#38ad5a')">
+                            <i class="fa fa-wechat"></i>
+                        </button>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/donate.min.js"></script>
+
+
+
+
+    <div id="kr-share-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseShareModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-share-alt"></i>
+            </div>
+            <div class="kr-modal-title">分享</div>
+            <button class="kr-modal-close" onclick="krCloseShareModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-share-message">让兄弟萌也来瞅一瞅！</div>
+            <div class="kr-share-qr" id="kr-share-qr"></div>
+            <div class="kr-share-platforms">
+                
+                    <button class="kr-share-platform-button" style="color: #e6162d;" title="QQ" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-qq"></i>
+                    </button>
+                
+                    <button class="kr-share-platform-button" style="color: #25d366;" title="微信" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-weixin"></i>
+                    </button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/share.min.js"></script>
+
+
+
+<!-- 额外的追加注入项 -->
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
+<meting-js
+  server="netease"
+  type="playlist"
+  fixed="true"
+  order="random"
+  id="12613265870">
+</meting-js>
+
+
+
+        <script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
+</script>
+
+
+  <script defer src="/vendors/nprogress@0.2.0/nprogress.js"></script>
+
+
+
+  <script defer src="/vendors/viewerjs@1.11.6/dist/viewer.min.js"></script>
+
+
+<script defer src="/js/kr-core.min.js"></script>
+
+
+  <script defer src="/js/kr-pjax.min.js"></script>
+
+
+<!-- 额外的追加注入项 -->
+
+  <script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+
+
+
+    </body>
+</html>

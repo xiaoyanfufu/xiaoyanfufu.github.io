@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  
+    <link rel="icon" href="/images/earthstars.png">
+  
+  
+  <title>分布式-服务治理（下） | XIAOYAN</title>
+  <link rel="canonical" href="http://example.com/2024/10/21/%E5%88%86%E5%B8%83%E5%BC%8F-%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%EF%BC%88%E4%B8%8B%EF%BC%89/">
+  <meta name="author" content="xiaoyan" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="日志管理, 监控系统" />
+  
+  <meta name="description" content="监控系统监控中心的作用建立完善的监控体系是确保系统稳定性和性能优化的关键。监控中心的主要作用包括：  数据可视化：通过可视化工具直观展示系统的运行状态、资源使用情况等关键指标，帮助运维人员快速了解系统健康状况。 长期趋势预测：通过对监控数据的持续收集和统计分析，预测系统指标的发展趋势，例如通过磁盘使用率的趋势分析，提前规划资源扩容，避免资源瓶颈。 故障预警与告警：当系统指标出现异常时，及时通知管理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分布式-服务治理（下）">
+<meta property="og:url" content="http://example.com/2024/10/21/%E5%88%86%E5%B8%83%E5%BC%8F-%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%EF%BC%88%E4%B8%8B%EF%BC%89/index.html">
+<meta property="og:site_name" content="XIAOYAN">
+<meta property="og:description" content="监控系统监控中心的作用建立完善的监控体系是确保系统稳定性和性能优化的关键。监控中心的主要作用包括：  数据可视化：通过可视化工具直观展示系统的运行状态、资源使用情况等关键指标，帮助运维人员快速了解系统健康状况。 长期趋势预测：通过对监控数据的持续收集和统计分析，预测系统指标的发展趋势，例如通过磁盘使用率的趋势分析，提前规划资源扩容，避免资源瓶颈。 故障预警与告警：当系统指标出现异常时，及时通知管理">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202410272103963.png">
+<meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202410272102239.png">
+<meta property="article:published_time" content="2024-10-21T07:24:49.000Z">
+<meta property="article:modified_time" content="2024-10-27T13:06:04.698Z">
+<meta property="article:author" content="xiaoyan">
+<meta property="article:tag" content="监控系统">
+<meta property="article:tag" content="日志管理">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202410272103963.png">
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kr-core.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/highlight.js/night-eighties.min.css" media="all"></link>
+  
+  <link rel="stylesheet" id="theme-light-css" href="/css/kr-theme/light.min.css" media="all"></link>
+  <link rel="stylesheet" id="theme-dark-css" href="/css/kr-theme/dark.min.css" media="(prefers-color-scheme: dark)"></link>
+  <script src="/js/kr-theme.min.js"></script>
+  <link rel="stylesheet" id="fontawe-css" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="nprogress-css" href="/vendors/nprogress@0.2.0/nprogress.css" media="all"></link>
+  
+  
+    <link rel="stylesheet" href="/vendors/viewerjs@1.11.6/dist/viewer.min.css"></link>
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  
+    <script src="/vendors/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+  
+  <!-- 自定义站点横幅和背景 -->
+  <style>
+    
+      .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_light.png');
+      }
+      html[data-theme="dark"] .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_dark.png');
+      }
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+        html[data-theme="dark"] body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+      }
+    
+    
+      .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+      html[data-theme="dark"] .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+    
+  </style>
+
+  <!-- 额外的追加注入项 -->
+  
+    <link rel="stylesheet" href="/css/custom.css">
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    <li>
+                                        
+                                            <a href="/">
+                                        
+                                            
+                                                <i class="fa fa-home"></i>
+                                            
+                                            首页
+                                        </a>
+                                        
+                                    </li>
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">XIAOYAN</a></div>
+                    <div id="kratos-nav-toggle-wrapper" class="nav-toggle">
+                        <a id="kratos-nav-toggle" class="kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>XIAOYAN</h2> <br />
+                        <span>山重水复疑无路，柳暗花明又一村。</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+
+
+        
+
+            
+
+            <section class="kr-main-col col-md-8">
+
+        
+
+            <article itemscope itemtype="https://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/21/%E5%88%86%E5%B8%83%E5%BC%8F-%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%EF%BC%88%E4%B8%8B%EF%BC%89/">
+    <div class="kratos-hentry kratos-page-inner clearfix">
+        <header class="kratos-page-header">
+            
+                <h1 class="kratos-page-title text-center" itemprop="name headline">分布式-服务治理（下）</h1>
+            
+            <ul class="kratos-page-meta text-center">
+                <li><time datetime="2024-10-21T07:24:49.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2024-10-21</time></li>
+                <li itemprop="author" itemscope itemtype="https://schema.org/Person">
+                    <i class="fa fa-user"></i> 作者 <span itemprop="name">xiaoyan</span>
+                </li>
+                
+                    <li>
+                        <i class="fa fa-edit"></i> 
+                        
+                        
+                            ~6.33K
+                        
+                        字
+                    </li>
+                
+                
+                
+            </ul>
+        </header>
+        <div class="kratos-page-content kr-post">
+            
+            
+            
+                <div class="kratos-post-inner-toc toc-div-class" >
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F"><span class="toc-number">1.</span> <span class="toc-text">监控系统</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%91%E6%8E%A7%E4%B8%AD%E5%BF%83%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="toc-number">1.1.</span> <span class="toc-text">监控中心的作用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E7%9B%91%E6%8E%A7%E5%AF%B9%E8%B1%A1%E4%B8%8E%E6%8C%87%E6%A0%87"><span class="toc-number">1.2.</span> <span class="toc-text">常见监控对象与指标</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B"><span class="toc-number">1.3.</span> <span class="toc-text">监控系统的基本流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F%E6%8A%80%E6%9C%AF%E9%80%89%E5%9E%8B"><span class="toc-number">1.4.</span> <span class="toc-text">监控系统技术选型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Prometheus%E7%9A%84%E7%89%B9%E6%80%A7"><span class="toc-number">1.4.0.1.</span> <span class="toc-text">Prometheus的特性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84"><span class="toc-number">1.4.0.2.</span> <span class="toc-text">基本架构</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%97%A5%E5%BF%97%E7%AE%A1%E7%90%86"><span class="toc-number">2.</span> <span class="toc-text">日志管理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%97%A5%E5%BF%97%E7%B3%BB%E7%BB%9F"><span class="toc-number">2.1.</span> <span class="toc-text">日志系统</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ELK"><span class="toc-number">2.2.</span> <span class="toc-text">ELK</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A7-ELK-%E6%9E%B6%E6%9E%84"><span class="toc-number">2.2.1.</span> <span class="toc-text">旧 ELK 架构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B0-ELK-%E6%9E%B6%E6%9E%84"><span class="toc-number">2.2.2.</span> <span class="toc-text">新 ELK 架构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Beats-%E7%BB%84%E4%BB%B6"><span class="toc-number">2.2.2.1.</span> <span class="toc-text">Beats 组件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%B0-ELK-%E6%9E%B6%E6%9E%84%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="toc-number">2.2.2.2.</span> <span class="toc-text">新 ELK 架构的优势</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%B0-ELK-%E6%9E%B6%E6%9E%84%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="toc-number">2.2.2.3.</span> <span class="toc-text">新 ELK 架构的工作流程</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#EFK"><span class="toc-number">2.2.3.</span> <span class="toc-text">EFK</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BD%BB%E9%87%8F%E7%BA%A7%E6%97%A5%E5%BF%97%E7%B3%BB%E7%BB%9F-Loki"><span class="toc-number">2.3.</span> <span class="toc-text">轻量级日志系统 Loki</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Loki-%E6%9E%B6%E6%9E%84"><span class="toc-number">2.3.1.</span> <span class="toc-text">Loki 架构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Loki-%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="toc-number">2.3.2.</span> <span class="toc-text">Loki 的优势</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Loki-%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="toc-number">2.3.3.</span> <span class="toc-text">Loki 的工作流程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ClickHouse-ClickVisual"><span class="toc-number">2.4.</span> <span class="toc-text">ClickHouse + ClickVisual</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ClickHouse-%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="toc-number">2.4.1.</span> <span class="toc-text">ClickHouse 的优势</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ClickVisual"><span class="toc-number">2.4.2.</span> <span class="toc-text">ClickVisual</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ClickVisual-%E7%9A%84%E6%94%B9%E8%BF%9B"><span class="toc-number">2.4.3.</span> <span class="toc-text">ClickVisual 的改进</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ClickHouse-ClickVisual-%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="toc-number">2.4.4.</span> <span class="toc-text">ClickHouse + ClickVisual 的工作流程</span></a></li></ol></li></ol></li></ol>
+                </div>
+            
+            <hr />
+            <div itemprop="articleBody"><h1 id="监控系统"><a href="#监控系统" class="headerlink" title="监控系统"></a>监控系统</h1><h2 id="监控中心的作用"><a href="#监控中心的作用" class="headerlink" title="监控中心的作用"></a>监控中心的作用</h2><p>建立完善的监控体系是确保系统稳定性和性能优化的关键。监控中心的主要作用包括：</p>
+<ul>
+<li><strong>数据可视化</strong>：通过可视化工具直观展示系统的运行状态、资源使用情况等关键指标，帮助运维人员快速了解系统健康状况。</li>
+<li><strong>长期趋势预测</strong>：通过对监控数据的持续收集和统计分析，预测系统指标的发展趋势，例如通过磁盘使用率的趋势分析，提前规划资源扩容，避免资源瓶颈。</li>
+<li><strong>故障预警与告警</strong>：当系统指标出现异常时，及时通知管理员，以便迅速采取措施处理故障，确保业务的连续性和稳定性。</li>
+</ul>
+<h2 id="常见监控对象与指标"><a href="#常见监控对象与指标" class="headerlink" title="常见监控对象与指标"></a>常见监控对象与指标</h2><ul>
+<li><strong>硬件监控</strong>：CPU状态、磁盘状态、电源状态、内存状态、宽带状态、机器温度等</li>
+<li><strong>服务器监控</strong>：CPU、内存、磁盘、网络</li>
+<li><strong>数据库监控</strong>：数据库连接数量、QPS（每秒查询次数）、TPS（每秒事务处理次数）、缓存命中率、主从延时、慢查询、锁状态等</li>
+<li><strong>中间件监控</strong>：<ul>
+<li>Nginx：活跃连接数、等待连接数、抛弃连接数、请求量、耗时、错误率</li>
+<li>Tomcat：最大线程数、当前线程数、请求量、耗时、堆内存使用情况、GC次数和耗时</li>
+<li>缓存：成功连接数、阻塞连接数、已使用内存、缓存命中率、内存碎片率、请求量、耗时</li>
+<li>详细队列：连接数、队列数、生产速率、消费速率、消息堆积量</li>
+</ul>
+</li>
+<li><strong>应用监控</strong>：<ul>
+<li>Http接口：URL存活、请求量、耗时、异常量</li>
+<li>RPC接口：请求量、耗时、超时量、拒绝量</li>
+<li>JVM：内存各分区大小、GC次数、GC耗时、当前线程数、线程死锁数</li>
+<li>线程池：活跃线程数、任务队列大小、任务执行耗时、拒绝任务数</li>
+<li>连接池：总连接数、活跃连接数</li>
+<li>日志监控：访问日志、错误日志</li>
+</ul>
+</li>
+</ul>
+<h2 id="监控系统的基本流程"><a href="#监控系统的基本流程" class="headerlink" title="监控系统的基本流程"></a>监控系统的基本流程</h2><p>市面上的监控系统虽然在具体实现上有所差异，但其基本流程大致相同，主要包括以下几个关键步骤：</p>
+<ol>
+<li>数据采集</li>
+</ol>
+<p>数据采集是监控系统的基础，其方式多种多样，主要包括：</p>
+<ul>
+<li>日志埋点采集：通过工具如Filebeat等进行日志的上报和解析，获取系统运行日志中的关键信息。</li>
+<li>JMX标准接口：利用Java Management Extensions (JMX)标准接口，获取Java应用的监控指标。</li>
+<li>REST API：被监控对象提供REST API接口，监控系统通过调用API获取数据，例如Elasticsearch (ES)。</li>
+<li>系统命令行：通过执行系统命令获取监控数据，如使用<code>top</code>、<code>vmstat</code>等命令获取系统资源使用情况。</li>
+<li>SDK埋点：通过统一的SDK进行侵入式的埋点和上报，适用于需要高精度监控的场景。</li>
+</ul>
+<ol start="2">
+<li>数据传输</li>
+</ol>
+<p>数据传输是将采集到的数据发送给监控系统的关键步骤，通常采用以下协议和模式：</p>
+<ul>
+<li>TCP&#x2F;UDP协议：数据通过TCP或UDP协议进行传输，适用于实时性要求较高的场景。</li>
+<li>HTTP协议：数据通过HTTP协议进行传输，适用于需要跨网络传输的场景。</li>
+<li>Push模式：监控系统主动将数据推送到监控中心，适用于数据量较小且实时性要求高的场景。</li>
+<li>Pull模式：监控中心主动从被监控对象拉取数据，适用于数据量较大且实时性要求不高的场景。</li>
+</ul>
+<ol start="3">
+<li>数据存储</li>
+</ol>
+<p>数据存储是监控系统的核心环节，主要用于保存采集到的监控数据，以便后续的分析和展示。常见的存储方式包括：</p>
+<ul>
+<li>时序数据库：如InfluxDB、Prometheus等，适用于存储时间序列数据，支持高效的时间查询和聚合操作。</li>
+<li>关系型数据库：如MySQL、PostgreSQL等，适用于存储结构化数据，支持复杂的查询和分析。</li>
+<li>分布式文件系统：如HDFS、Ceph等，适用于存储大规模的日志数据，支持高吞吐量的读写操作。</li>
+</ul>
+<ol start="4">
+<li>监控展示</li>
+</ol>
+<p>监控展示是将存储的监控数据以图形化方式展示出来，帮助运维人员直观了解系统状态。</p>
+<ol start="5">
+<li>监控告警</li>
+</ol>
+<p>监控告警是监控系统的重要功能，通过预设的阈值和规则，及时通知运维人员处理异常情况。常见的告警方式包括：</p>
+<ul>
+<li>邮件通知：通过邮件发送告警信息，适用于日常监控和通知。</li>
+<li>短信通知：通过短信发送告警信息，适用于紧急情况下的快速响应。</li>
+<li>电话通知：通过电话语音通知，适用于需要立即处理的严重故障。</li>
+<li>Webhook：通过Webhook将告警信息推送到其他系统，如Slack、钉钉等，实现自动化处理。</li>
+</ul>
+<h2 id="监控系统技术选型"><a href="#监控系统技术选型" class="headerlink" title="监控系统技术选型"></a>监控系统技术选型</h2><p>Prometheus是一款由Go语言开发的开源监控和告警工具，以其强大的时序数据库和灵活的查询语言而著称。Prometheus的基本原理是通过HTTP长连接以Pull（监控服务器主动拉取被监控组件数据）的方式进行监控，被监控组件只需提供HTTP接口即可接入监控系统。</p>
+<h4 id="Prometheus的特性"><a href="#Prometheus的特性" class="headerlink" title="Prometheus的特性"></a>Prometheus的特性</h4><ul>
+<li><strong>服务发现机制</strong>：Prometheus提供了开箱即用的服务发现机制，能够自动发现监控端点，支持多种服务发现方式，如静态配置、DNS、Kubernetes、Consul等。</li>
+<li><strong>时序数据库TSDB</strong>：Prometheus自研的时序型数据库TSDB（Time Series Database），专门用于存储时间序列数据，支持高效的查询和聚合操作。</li>
+<li><strong>查询语言PromQL</strong>：Prometheus提供了强大的查询语言PromQL（Prometheus Query Language），支持丰富的聚合函数和表达式，能够灵活地进行数据分析和处理。</li>
+<li><strong>告警规则</strong>：Prometheus支持灵活的告警规则配置，包括告警收敛（分组、抑制、静默）、多级路由等高级功能，确保告警的准确性和及时性。</li>
+<li><strong>生态完善</strong>：Prometheus拥有丰富的生态系统，包括各种Exporter、Alertmanager、Grafana等组件，能够满足不同场景的监控需求。</li>
+</ul>
+<h4 id="基本架构"><a href="#基本架构" class="headerlink" title="基本架构"></a>基本架构</h4><p><img src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202410272103963.png" alt="Prometheus基本架构"></p>
+<ul>
+<li><strong>Prometheus Server</strong>：核心组件，负责收集、存储监控信息。支持静态配置和动态服务发现，从监控对象获取数据并存储到本地磁盘。Prometheus Server本身也是一个时序型数据库，通过自定义的PromQL对数据进行查询分析。</li>
+<li><strong>Exporter</strong>：用于采集数据的组件，负责从被监控对象获取数据并暴露HTTP接口供Prometheus Server拉取。常见的Exporter包括Node Exporter（监控主机）、MySQL Exporter（监控MySQL数据库）等。</li>
+<li><strong>Pushgateway</strong>：主要用于瞬时任务的场景，防止Prometheus Server在任务执行完毕前未能及时拉取监控数据。Pushgateway作为数据中转站，接收瞬时任务的监控数据并缓存，供Prometheus Server后续拉取。</li>
+</ul>
+<h1 id="日志管理"><a href="#日志管理" class="headerlink" title="日志管理"></a>日志管理</h1><h2 id="日志系统"><a href="#日志系统" class="headerlink" title="日志系统"></a>日志系统</h2><p>在分布式架构中，日志分散在不同的服务器节点上，传统的日志查看方式需要登录到各个服务器，使用Linux命令逐个排查，效率低下且耗时耗力。为了解决这一问题，集中式日志管理系统应运而生。日志系统本质上是一个集中管理日志的系统，旨在提供高效、便捷的日志采集、处理、存储、展示、查询和告警功能。</p>
+<p>一个完善的日志系统应具备以下核心功能：</p>
+<ul>
+<li>日志采集：支持多种日志格式以及数据源的采集。</li>
+<li>日志数据清洗&#x2F;处理：采集到的原始日志数据通常包含噪声和冗余信息，需要进行清洗，去除无效数据和重复数据。对清洗后的日志数据进行进一步处理，如格式转换、字段提取、数据聚合等，以便于后续的存储和分析。</li>
+<li>存储日志：支持对接多种存储方式，如Elasticsearch（ES）、Hadoop、关系型数据库等，根据日志数据的特点选择合适的存储方案。</li>
+<li>展示日志：支持可视化展示日志。</li>
+<li>查询和分析日志：提供友好的查询接口，支持多种条件进行查询和统计分析，以帮助用户快速排除问题。</li>
+<li>告警：支持内置告警功能，根据预设的规则和阈值，自动触发告警通知。</li>
+</ul>
+<h2 id="ELK"><a href="#ELK" class="headerlink" title="ELK"></a>ELK</h2><p>ELK是最原始的日志系统架构，由三个项目的首字母组成，即Elasticsearch、Logstash和Kibana。随着技术的发展，ELK架构也在不断演进，引入了新的组件以提升性能和功能。</p>
+<h3 id="旧-ELK-架构"><a href="#旧-ELK-架构" class="headerlink" title="旧 ELK 架构"></a>旧 ELK 架构</h3><p>旧的ELK架构按功能顺序如下：</p>
+<ol>
+<li><p><strong>Logstash</strong>：用于日志的收集和处理，支持多种日志格式。Logstash主要负责日志的采集、清洗和格式化。</p>
+</li>
+<li><p><strong>Elasticsearch</strong>：这是一个使用Java开发的分布式搜索引擎，能够解决模糊查询等存在的性能问题。在ELK系统中，Elasticsearch主要用于日志的存储和搜索。</p>
+</li>
+<li><p><strong>Kibana</strong>：Kibana是专门用来与Elasticsearch配合使用的，可以自定义表格对Elasticsearch中的数据进行挖掘分析和可视化。在ELK系统中，Kibana主要用于对Elasticsearch中搜索出来的日志进行可视化展示。</p>
+</li>
+</ol>
+<h3 id="新-ELK-架构"><a href="#新-ELK-架构" class="headerlink" title="新 ELK 架构"></a>新 ELK 架构</h3><p>原始ELK架构存在一个问题：Logstash资源占用过高，尤其是在大规模日志采集场景下，Logstash的性能瓶颈较为明显。</p>
+<p>为了解决这一问题，Elastic推出了Beats。Beats基于名为libbeat的Go语言框架，包含多个成员，每个成员负责不同的数据采集任务。</p>
+<h4 id="Beats-组件"><a href="#Beats-组件" class="headerlink" title="Beats 组件"></a>Beats 组件</h4><ul>
+<li><strong>Filebeat</strong>：用于采集日志文件，支持多种日志格式，能够高效地采集和传输日志数据。</li>
+<li><strong>Metricbeat</strong>：用于采集服务器的各种指标数据，如CPU、内存、磁盘、网络等，支持多种操作系统和应用程序。</li>
+<li><strong>Packetbeat</strong>：用于采集网络数据包，支持多种网络协议，能够分析网络流量和性能。</li>
+<li><strong>Heartbeat</strong>：用于监控服务的可用性，通过定期发送心跳包检测服务的健康状态。</li>
+<li><strong>Winlogbeat</strong>：用于采集Windows事件日志，支持多种Windows事件日志格式。</li>
+<li><strong>Auditbeat</strong>：用于采集系统审计数据，支持Linux和macOS系统的审计日志。</li>
+<li><strong>Functionbeat</strong>：用于在无服务器环境中采集数据，支持AWS Lambda等无服务器平台。</li>
+<li><strong>Journalbeat</strong>：用于采集Linux系统日志，支持systemd journal日志格式。</li>
+</ul>
+<p>Beats采集的数据可以直接发送到Elasticsearch，或者在Logstash进一步处理之后再发送到Elasticsearch。Beats的引入大大扩展了ELK架构的功能，使其不仅限于日志采集，还能支持各种指标和网络数据的采集。</p>
+<h4 id="新-ELK-架构的优势"><a href="#新-ELK-架构的优势" class="headerlink" title="新 ELK 架构的优势"></a>新 ELK 架构的优势</h4><ol>
+<li><strong>资源占用低</strong>：Beats组件资源占用较低，适合大规模日志采集场景，减轻了Logstash的负担。</li>
+<li><strong>功能扩展</strong>：Beats组件不仅支持日志采集，还支持各种指标和网络数据的采集，扩展了ELK架构的应用场景。</li>
+<li><strong>灵活性高</strong>：Beats组件可以根据需求选择使用，灵活配置，满足不同场景的监控需求。</li>
+</ol>
+<h4 id="新-ELK-架构的工作流程"><a href="#新-ELK-架构的工作流程" class="headerlink" title="新 ELK 架构的工作流程"></a>新 ELK 架构的工作流程</h4><p><img src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202410272102239.png" alt="新ELK架构的工作流程"></p>
+<ol>
+<li><strong>数据采集</strong>：Filebeat等Beats组件负责采集日志、指标和网络数据，并将其发送到Logstash或直接发送到Elasticsearch。</li>
+<li><strong>数据处理</strong>：Logstash负责对采集到的数据进行清洗、格式化和处理，然后发送到Elasticsearch。</li>
+<li><strong>数据存储</strong>：Elasticsearch负责存储处理后的数据，并提供高效的搜索和分析功能。</li>
+<li><strong>数据展示</strong>：Kibana负责对Elasticsearch中的数据进行可视化展示，生成仪表盘、图表和报表，帮助用户快速了解系统状态。</li>
+</ol>
+<p>通过引入Beats组件，新ELK架构在性能和功能上得到了显著提升，能够更好地满足现代分布式系统的监控需求。</p>
+<h3 id="EFK"><a href="#EFK" class="headerlink" title="EFK"></a>EFK</h3><p>EFK中的F指的是Fluentd。EFK日志系统架构与原始ELK架构类似，只不过日志的收集和处理角色变成了Fluentd。</p>
+<p>Fluentd是一款开源的日志收集器，使用Ruby编写，相较于Logstash更加的轻量化，性能也更加优越，内存占用低。</p>
+<h2 id="轻量级日志系统-Loki"><a href="#轻量级日志系统-Loki" class="headerlink" title="轻量级日志系统 Loki"></a>轻量级日志系统 Loki</h2><p>ELK（Elasticsearch、Logstash、Kibana）日志系统虽然功能丰富、稳定可靠，但其资源消耗较大，成本较高。对于许多用户来说，ELK的许多功能可能并不常用。因此，Grafana Labs团队开源了Loki，这是一个小巧易用的日志系统，原生支持Grafana，并且特别适合Prometheus和Kubernetes用户。</p>
+<h3 id="Loki-架构"><a href="#Loki-架构" class="headerlink" title="Loki 架构"></a>Loki 架构</h3><p>Loki的架构非常简单，主要由三个组件组成：</p>
+<ul>
+<li><strong>Loki</strong>：主服务器，负责存储日志和处理查询。</li>
+<li><strong>Promtail</strong>：代理，负责收集日志并将其发送给Loki。</li>
+<li><strong>Grafana</strong>：用于日志数据的可视化展示。</li>
+</ul>
+<p>Loki的设计理念类似于Prometheus，但主要为日志服务。Loki特别适合存储Kubernetes Pod日志，能够高效地处理大规模日志数据。</p>
+<h3 id="Loki-的优势"><a href="#Loki-的优势" class="headerlink" title="Loki 的优势"></a>Loki 的优势</h3><ul>
+<li><strong>轻量级</strong>：Loki的资源消耗较低，适合中小型企业或对资源敏感的场景。</li>
+<li><strong>原生支持Grafana</strong>：Loki与Grafana无缝集成，提供强大的可视化功能。</li>
+<li><strong>适合Kubernetes</strong>：Loki特别优化了Kubernetes日志的存储和查询，适合云原生环境。</li>
+</ul>
+<h3 id="Loki-的工作流程"><a href="#Loki-的工作流程" class="headerlink" title="Loki 的工作流程"></a>Loki 的工作流程</h3><ol>
+<li><strong>日志采集</strong>：Promtail负责从各种数据源（如文件、容器日志等）采集日志数据。</li>
+<li><strong>日志传输</strong>：Promtail将采集到的日志数据发送到Loki服务器。</li>
+<li><strong>日志存储</strong>：Loki将日志数据存储在本地或分布式存储系统中。</li>
+<li><strong>日志查询</strong>：用户通过Grafana查询和分析Loki中的日志数据，生成可视化图表和报表。</li>
+</ol>
+<h2 id="ClickHouse-ClickVisual"><a href="#ClickHouse-ClickVisual" class="headerlink" title="ClickHouse + ClickVisual"></a>ClickHouse + ClickVisual</h2><p>越来越多的互联网公司开始尝试使用ClickHouse存储日志，以替代传统的Elasticsearch。ClickHouse是一种高性能的OLAP数据库，适合大规模日志数据的存储和查询。相比Elasticsearch，ClickHouse更加节省资源，能够无压力地全量写入日志数据。</p>
+<h3 id="ClickHouse-的优势"><a href="#ClickHouse-的优势" class="headerlink" title="ClickHouse 的优势"></a>ClickHouse 的优势</h3><ul>
+<li><strong>节省资源</strong>：ClickHouse的资源消耗较低，适合大规模日志数据的存储。</li>
+<li><strong>高性能</strong>：ClickHouse在处理大规模数据时表现出色，虽然查询性能相比Elasticsearch可能稍慢，但仍能满足大多数需求。</li>
+<li><strong>灵活性</strong>：ClickHouse支持多种数据类型和查询方式，适合不同场景的日志存储需求。</li>
+</ul>
+<h3 id="ClickVisual"><a href="#ClickVisual" class="headerlink" title="ClickVisual"></a>ClickVisual</h3><p>ClickVisual是一个基于ClickHouse构建的轻量级日志分析和数据可视化平台，由石墨文档开源。ClickVisual提供了日志采集、存储、查询和可视化功能，适合中小型企业使用。</p>
+<h3 id="ClickVisual-的改进"><a href="#ClickVisual-的改进" class="headerlink" title="ClickVisual 的改进"></a>ClickVisual 的改进</h3><p>尽管ClickVisual在日志存储和分析方面表现出色，但仍存在一些问题，如全文检索效率低、强依赖Kafka等。为了解决这些问题，ClickVisual进行了以下改进：</p>
+<ol>
+<li><strong>使用Vector替代Kafka引擎</strong>：提高了日志摄入的灵活性和稳定性，降低了运维成本，并支持流量控制，避免ClickHouse内存爆满。</li>
+<li><strong>引入Null表引擎</strong>：实现原始日志（从Vector写入的）转换成按照日志解析格式解析之后的真实日志表。</li>
+<li><strong>支持高效全文检索</strong>：在真实日志表中存储原始日志并构建跳数索引，实现了高效的近似全文检索。</li>
+</ol>
+<h3 id="ClickHouse-ClickVisual-的工作流程"><a href="#ClickHouse-ClickVisual-的工作流程" class="headerlink" title="ClickHouse + ClickVisual 的工作流程"></a>ClickHouse + ClickVisual 的工作流程</h3><ol>
+<li><strong>日志采集</strong>：使用Vector等工具从各种数据源采集日志数据。</li>
+<li><strong>日志传输</strong>：Vector将采集到的日志数据发送到ClickHouse。</li>
+<li><strong>日志存储</strong>：ClickHouse将日志数据存储在本地或分布式存储系统中。</li>
+<li><strong>日志查询</strong>：用户通过ClickVisual查询和分析ClickHouse中的日志数据，生成可视化图表和报表。</li>
+</ol>
+<p>通过引入ClickHouse和ClickVisual，企业可以构建一个高效、灵活且节省资源的日志管理系统，满足不同规模的日志存储和分析需求。</p>
+</div>
+        </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+            
+            
+                <div class="post-actions text-center clearfix" id="post-actions">
+                
+                    <a class="donate" href="javascript:;" onclick="krOpenDonateModal()"><i class="fa fa-bitcoin"></i> 打赏</a>
+                
+                
+                    <a class="share" href="javascript:;" onclick="krOpenShareModal()"><i class="fa fa-share-alt"></i> 分享</a>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    <a class="tag-none-link" href="/tags/%E6%97%A5%E5%BF%97%E7%AE%A1%E7%90%86/" rel="tag">日志管理</a>, <a class="tag-none-link" href="/tags/%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F/" rel="tag">监控系统</a>
+                </div>
+                <div class="pull-date">
+                    <time datetime="2024-10-27T13:06:04.698Z" itemprop="dateModified">最后编辑：2024-10-27</time>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" 分布式-服务治理（上）" href="/2024/10/21/分布式-服务治理（上）/"><i class="fa fa-angle-left"></i> 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" 分布式-分布式事务" href="/2024/10/27/分布式-分布式事务/">下一篇 <i class="fa fa-angle-right"></i></a>
+            </div>
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+            
+                
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/user.jpg" alt="xiaoyan" loading="lazy" decoding="auto" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">是一只时时翻垃圾吃的宅子。</p>
+    </div>
+    <div class="site-meta">
+        <a class="meta-item" href="/archives/">
+            <span class="title">
+                文章
+            </span>
+            <span class="count">
+                41
+            </span>
+        </a>
+        <a class="meta-item" href="/categories/">
+            <span class="title">
+                分类
+            </span>
+            <span class="count">
+                12
+            </span>
+        </a>
+        <a class="meta-item" href="/tags/">
+            <span class="title">
+                标签
+            </span>
+            <span class="count">
+                60
+            </span>
+        </a>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix toc-div-class" >
+    <div class="photo-background"></div>
+    <h4 class="widget-title no-after">
+        <i class="fa fa-compass"></i>
+        文章目录
+        <span class="toc-progress-bar" role="progressbar" aria-label="阅读进度："></span>
+    </h4>
+    <div class="textwidget">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F"><span class="toc-number">1.</span> <span class="toc-text">监控系统</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%91%E6%8E%A7%E4%B8%AD%E5%BF%83%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="toc-number">1.1.</span> <span class="toc-text">监控中心的作用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E7%9B%91%E6%8E%A7%E5%AF%B9%E8%B1%A1%E4%B8%8E%E6%8C%87%E6%A0%87"><span class="toc-number">1.2.</span> <span class="toc-text">常见监控对象与指标</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B"><span class="toc-number">1.3.</span> <span class="toc-text">监控系统的基本流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%91%E6%8E%A7%E7%B3%BB%E7%BB%9F%E6%8A%80%E6%9C%AF%E9%80%89%E5%9E%8B"><span class="toc-number">1.4.</span> <span class="toc-text">监控系统技术选型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Prometheus%E7%9A%84%E7%89%B9%E6%80%A7"><span class="toc-number">1.4.0.1.</span> <span class="toc-text">Prometheus的特性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84"><span class="toc-number">1.4.0.2.</span> <span class="toc-text">基本架构</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%97%A5%E5%BF%97%E7%AE%A1%E7%90%86"><span class="toc-number">2.</span> <span class="toc-text">日志管理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%97%A5%E5%BF%97%E7%B3%BB%E7%BB%9F"><span class="toc-number">2.1.</span> <span class="toc-text">日志系统</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ELK"><span class="toc-number">2.2.</span> <span class="toc-text">ELK</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A7-ELK-%E6%9E%B6%E6%9E%84"><span class="toc-number">2.2.1.</span> <span class="toc-text">旧 ELK 架构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%B0-ELK-%E6%9E%B6%E6%9E%84"><span class="toc-number">2.2.2.</span> <span class="toc-text">新 ELK 架构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Beats-%E7%BB%84%E4%BB%B6"><span class="toc-number">2.2.2.1.</span> <span class="toc-text">Beats 组件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%B0-ELK-%E6%9E%B6%E6%9E%84%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="toc-number">2.2.2.2.</span> <span class="toc-text">新 ELK 架构的优势</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%B0-ELK-%E6%9E%B6%E6%9E%84%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="toc-number">2.2.2.3.</span> <span class="toc-text">新 ELK 架构的工作流程</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#EFK"><span class="toc-number">2.2.3.</span> <span class="toc-text">EFK</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BD%BB%E9%87%8F%E7%BA%A7%E6%97%A5%E5%BF%97%E7%B3%BB%E7%BB%9F-Loki"><span class="toc-number">2.3.</span> <span class="toc-text">轻量级日志系统 Loki</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Loki-%E6%9E%B6%E6%9E%84"><span class="toc-number">2.3.1.</span> <span class="toc-text">Loki 架构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Loki-%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="toc-number">2.3.2.</span> <span class="toc-text">Loki 的优势</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Loki-%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="toc-number">2.3.3.</span> <span class="toc-text">Loki 的工作流程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ClickHouse-ClickVisual"><span class="toc-number">2.4.</span> <span class="toc-text">ClickHouse + ClickVisual</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ClickHouse-%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="toc-number">2.4.1.</span> <span class="toc-text">ClickHouse 的优势</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ClickVisual"><span class="toc-number">2.4.2.</span> <span class="toc-text">ClickVisual</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ClickVisual-%E7%9A%84%E6%94%B9%E8%BF%9B"><span class="toc-number">2.4.3.</span> <span class="toc-text">ClickVisual 的改进</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ClickHouse-ClickVisual-%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="toc-number">2.4.4.</span> <span class="toc-text">ClickHouse + ClickVisual 的工作流程</span></a></li></ol></li></ol></li></ol>
+    </div>
+</aside>
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类列表</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">15</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/JVM/">JVM</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%9F%BA%E7%A1%80/">基础</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">并发编程</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E9%9B%86%E5%90%88/">集合</a><span class="category-list-count">5</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9E%B6%E6%9E%84/">架构</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a><span class="category-list-count">5</span></li></ul>
+  </aside>
+
+
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/AOP/" style="font-size: 0.6em;">AOP</a> <a href="/tags/BASE/" style="font-size: 0.6em;">BASE</a> <a href="/tags/Bean/" style="font-size: 0.6em;">Bean</a> <a href="/tags/CAP/" style="font-size: 0.6em;">CAP</a> <a href="/tags/Cookie/" style="font-size: 0.6em;">Cookie</a> <a href="/tags/DDD/" style="font-size: 0.6em;">DDD</a> <a href="/tags/DNS/" style="font-size: 0.6em;">DNS</a> <a href="/tags/HTTP/" style="font-size: 0.6em;">HTTP</a> <a href="/tags/I-O/" style="font-size: 0.6em;">I/O</a> <a href="/tags/IoC/" style="font-size: 0.6em;">IoC</a> <a href="/tags/JWT/" style="font-size: 0.6em;">JWT</a> <a href="/tags/Java8%E6%96%B0%E7%89%B9%E6%80%A7/" style="font-size: 0.6em;">Java8新特性</a> <a href="/tags/Java%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" style="font-size: 0.6em;">Java基本概念</a> <a href="/tags/List/" style="font-size: 0.6em;">List</a> <a href="/tags/Map/" style="font-size: 0.8em;">Map</a> <a href="/tags/MyBatis/" style="font-size: 0.6em;">MyBatis</a> <a href="/tags/MySQL%E5%9F%BA%E7%A1%80/" style="font-size: 0.6em;">MySQL基础</a> <a href="/tags/Nginx/" style="font-size: 0.6em;">Nginx</a>
+      </div>
+  </aside>
+
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/2024/10/27/%E5%88%86%E5%B8%83%E5%BC%8F-%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/"><i class="fa fa-book"></i> 分布式-分布式事务</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/10/21/%E5%88%86%E5%B8%83%E5%BC%8F-%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%EF%BC%88%E4%B8%8B%EF%BC%89/"><i class="fa fa-book"></i> 分布式-服务治理（下）</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/10/21/%E5%88%86%E5%B8%83%E5%BC%8F-%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%EF%BC%88%E4%B8%8A%EF%BC%89/"><i class="fa fa-book"></i> 分布式-服务治理（上）</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/10/21/%E5%88%86%E5%B8%83%E5%BC%8F-%E5%9F%BA%E7%A1%80%E7%90%86%E8%AE%BA/"><i class="fa fa-book"></i> 分布式-基础理论&算法</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/10/13/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%BD%91%E7%BB%9C%E5%9C%BA%E6%99%AF/"><i class="fa fa-book"></i> 计算机网络-网络场景</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+            
+
+        
+
+                </div>
+    </div>
+</div>
+
+<footer>
+    <div id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2024 XIAOYAN 版权所有.</li>
+                            <li>本站已运行<span id="kr-since">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>自豪地使用 <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a> 主题</li>
+                            <li>站点由 xiaoyan 用 <i class="fa fa-heart" style="color:#d43f57"></i> 搭建</li>
+                        </div>
+                        <!-- 额外的追加注入项 -->
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                <div class="box theme-box" id="theme-toggle">
+                    <span class="fa fa-adjust"></span>
+                </div>
+            </div>
+            <div id="gotop-box" class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+
+    <div id="kr-donate-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseDonateModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-bitcoin"></i>
+            </div>
+            <div class="kr-modal-title">打赏</div>
+            <button class="kr-modal-close" onclick="krCloseDonateModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-donate-message">请我喝一杯冰阔咯~</div>
+            <div class="kr-donate-qr" id="kr-donate-qr">
+                
+            </div>
+            <div class="kr-donate-platforms">
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #1677ff;" title="支付宝" onclick="krDonateModalShowPlatformQR('https://qr.alipay.com/fkx15009k7u0fqrj8auepdf', '#1677ff')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-alipay">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M19 3h-14a2 2 0 0 0 -2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2 -2v-14a2 2 0 0 0 -2 -2z" />
+  <path d="M7 7h10" />
+  <path d="M12 3v7" />
+  <path d="M21 17.314c-2.971 -1.923 -15 -8.779 -15 -1.864c0 1.716 1.52 2.55 2.985 2.55c3.512 0 6.814 -5.425 6.814 -8h-6.604" />
+</svg>
+
+                        </button>
+                    
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #38ad5a;" title="微信支付" onclick="krDonateModalShowPlatformQR('wxp://f2f0hR4eF9Ypa3tpzjWme9fQDyWW3PIGe3WG5oiIakWLmDs', '#38ad5a')">
+                            <i class="fa fa-wechat"></i>
+                        </button>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/donate.min.js"></script>
+
+
+
+
+    <div id="kr-share-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseShareModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-share-alt"></i>
+            </div>
+            <div class="kr-modal-title">分享</div>
+            <button class="kr-modal-close" onclick="krCloseShareModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-share-message">让兄弟萌也来瞅一瞅！</div>
+            <div class="kr-share-qr" id="kr-share-qr"></div>
+            <div class="kr-share-platforms">
+                
+                    <button class="kr-share-platform-button" style="color: #e6162d;" title="QQ" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-qq"></i>
+                    </button>
+                
+                    <button class="kr-share-platform-button" style="color: #25d366;" title="微信" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-weixin"></i>
+                    </button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/share.min.js"></script>
+
+
+
+<!-- 额外的追加注入项 -->
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
+<meting-js
+  server="netease"
+  type="playlist"
+  fixed="true"
+  order="random"
+  id="12613265870">
+</meting-js>
+
+
+
+        <script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
+</script>
+
+
+  <script defer src="/vendors/nprogress@0.2.0/nprogress.js"></script>
+
+
+
+  <script defer src="/vendors/viewerjs@1.11.6/dist/viewer.min.js"></script>
+
+
+<script defer src="/js/kr-core.min.js"></script>
+
+
+  <script defer src="/js/kr-pjax.min.js"></script>
+
+
+<!-- 额外的追加注入项 -->
+
+  <script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+
+
+
+    </body>
+</html>

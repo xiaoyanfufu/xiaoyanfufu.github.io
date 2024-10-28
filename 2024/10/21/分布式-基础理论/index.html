@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+  <!-- 元数据 -->
+  <meta charset="utf-8">
+  
+    <link rel="icon" href="/images/earthstars.png">
+  
+  
+  <title>分布式-基础理论&amp;算法 | XIAOYAN</title>
+  <link rel="canonical" href="http://example.com/2024/10/21/%E5%88%86%E5%B8%83%E5%BC%8F-%E5%9F%BA%E7%A1%80%E7%90%86%E8%AE%BA/">
+  <meta name="author" content="xiaoyan" />
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="format-detection" content="telphone=no, email=no" />
+  
+    <meta name="keywords" content="BASE, CAP, Raft" />
+  
+  <meta name="description" content="分布式理论CAP定理：深入理解与应用简介CAP定理，即Consistency（一致性）、Availability（可用性）和Partition Tolerance（分区容错性），是分布式系统设计中的一个基本理论。在计算机科学的分布式系统设计中，CAP定理提供了一个框架来理解系统在面对网络分区时的行为。   Consistency（一致性）：所有节点在同一时间点访问到的数据是一致的。这意味着任何读操">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分布式-基础理论&amp;算法">
+<meta property="og:url" content="http://example.com/2024/10/21/%E5%88%86%E5%B8%83%E5%BC%8F-%E5%9F%BA%E7%A1%80%E7%90%86%E8%AE%BA/index.html">
+<meta property="og:site_name" content="XIAOYAN">
+<meta property="og:description" content="分布式理论CAP定理：深入理解与应用简介CAP定理，即Consistency（一致性）、Availability（可用性）和Partition Tolerance（分区容错性），是分布式系统设计中的一个基本理论。在计算机科学的分布式系统设计中，CAP定理提供了一个框架来理解系统在面对网络分区时的行为。   Consistency（一致性）：所有节点在同一时间点访问到的数据是一致的。这意味着任何读操">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202410211113572.png">
+<meta property="article:published_time" content="2024-10-21T02:58:26.000Z">
+<meta property="article:modified_time" content="2024-10-21T05:10:07.359Z">
+<meta property="article:author" content="xiaoyan">
+<meta property="article:tag" content="CAP">
+<meta property="article:tag" content="BASE">
+<meta property="article:tag" content="Raft">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202410211113572.png">
+  
+  <!-- 样式表文件 -->
+  <link rel="stylesheet" id="kratos-css" href="/css/kr-core.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="highlight-css" href="/css/highlight/highlight.js/night-eighties.min.css" media="all"></link>
+  
+  <link rel="stylesheet" id="theme-light-css" href="/css/kr-theme/light.min.css" media="all"></link>
+  <link rel="stylesheet" id="theme-dark-css" href="/css/kr-theme/dark.min.css" media="(prefers-color-scheme: dark)"></link>
+  <script src="/js/kr-theme.min.js"></script>
+  <link rel="stylesheet" id="fontawe-css" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css" media="all"></link>
+  
+    <link rel="stylesheet" id="nprogress-css" href="/vendors/nprogress@0.2.0/nprogress.css" media="all"></link>
+  
+  
+    <link rel="stylesheet" href="/vendors/viewerjs@1.11.6/dist/viewer.min.css"></link>
+  
+  <!-- 不得不预先加载的一些JS文件 -->
+  
+    <script src="/vendors/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+  
+  <!-- 自定义站点横幅和背景 -->
+  <style>
+    
+      .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_light.png');
+      }
+      html[data-theme="dark"] .kratos-cover.kratos-cover-2 {
+        background-image: url('/images/wallpaper_dark.png');
+      }
+    
+    
+      @media(min-width:768px) {
+        body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+        html[data-theme="dark"] body.custom-background {
+          background-image: url('/images/bg.webp');
+        }
+      }
+    
+    
+      .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+      html[data-theme="dark"] .widget-kratos-about .photo-background {
+        background-image: url('/images/default.webp');
+      }
+    
+  </style>
+
+  <!-- 额外的追加注入项 -->
+  
+    <link rel="stylesheet" href="/css/custom.css">
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+    <body class="custom-background">
+        <div id="kratos-wrapper">
+    <div id="kratos-page">
+        <div id="kratos-header">
+            <header id="kratos-desktop-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="nav-header">
+                        <nav id="kratos-menu-wrap">
+                            <ul id="kratos-primary-menu" class="sf-menu">
+                                
+                                    <li>
+                                        
+                                            <a href="/">
+                                        
+                                            
+                                                <i class="fa fa-home"></i>
+                                            
+                                            首页
+                                        </a>
+                                        
+                                    </li>
+                                
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+            <header id="kratos-mobile-topnav" class="kratos-topnav">
+                <div class="container">
+                    <div class="color-logo"><a href="/">XIAOYAN</a></div>
+                    <div id="kratos-nav-toggle-wrapper" class="nav-toggle">
+                        <a id="kratos-nav-toggle" class="kratos-nav-toggle">
+                            <i></i>
+                        </a>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="kratos-start kratos-hero-2">
+            <!-- <div class="kratos-overlay"></div> -->
+            <div class="kratos-cover kratos-cover-2 text-center">
+                <div class="desc desc2 animate-box">
+                    <a href="/">
+                        <h2>XIAOYAN</h2> <br />
+                        <span>山重水复疑无路，柳暗花明又一村。</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="kratos-blog-post">
+            <div class="container">
+                <div id="main" class="row">
+
+
+        
+
+            
+
+            <section class="kr-main-col col-md-8">
+
+        
+
+            <article itemscope itemtype="https://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/21/%E5%88%86%E5%B8%83%E5%BC%8F-%E5%9F%BA%E7%A1%80%E7%90%86%E8%AE%BA/">
+    <div class="kratos-hentry kratos-page-inner clearfix">
+        <header class="kratos-page-header">
+            
+                <h1 class="kratos-page-title text-center" itemprop="name headline">分布式-基础理论&算法</h1>
+            
+            <ul class="kratos-page-meta text-center">
+                <li><time datetime="2024-10-21T02:58:26.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2024-10-21</time></li>
+                <li itemprop="author" itemscope itemtype="https://schema.org/Person">
+                    <i class="fa fa-user"></i> 作者 <span itemprop="name">xiaoyan</span>
+                </li>
+                
+                    <li>
+                        <i class="fa fa-edit"></i> 
+                        
+                        
+                            ~5.67K
+                        
+                        字
+                    </li>
+                
+                
+                
+            </ul>
+        </header>
+        <div class="kratos-page-content kr-post">
+            
+            
+            
+            <hr />
+            <div itemprop="articleBody"><h1 id="分布式理论"><a href="#分布式理论" class="headerlink" title="分布式理论"></a>分布式理论</h1><h2 id="CAP定理：深入理解与应用"><a href="#CAP定理：深入理解与应用" class="headerlink" title="CAP定理：深入理解与应用"></a>CAP定理：深入理解与应用</h2><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>CAP定理，即Consistency（一致性）、Availability（可用性）和Partition Tolerance（分区容错性），是分布式系统设计中的一个基本理论。在计算机科学的分布式系统设计中，CAP定理提供了一个框架来理解系统在面对网络分区时的行为。</p>
+<p><img src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202410211113572.png" alt="CAP"></p>
+<ul>
+<li><strong>Consistency（一致性）</strong>：所有节点在同一时间点访问到的数据是一致的。这意味着任何读操作都能读取到最新的写操作结果。</li>
+<li><strong>Availability（可用性）</strong>：非故障节点在合理的时间内返回合理的响应。这意味着系统即使在部分节点故障的情况下，仍然能够对外提供服务。</li>
+<li><strong>Partition Tolerance（分区容错性）</strong>：系统在出现网络分区时，仍然能够继续运行。网络分区是指系统中的节点被分割成多个不连通的子集。</li>
+</ul>
+<div class="panel panel-info">
+    <div class="panel-title"><i class="fa fa-info"></i>补充</div>
+    <div class="panel-body">
+        <p><strong>什么是网络分区？</strong></p>
+<p>在分布式系统中，网络分区是指由于网络故障或其他原因，系统中的节点被分割成多个不连通的子集。每个子集内部的节点可以正常通信，但子集之间的通信被中断。</p>
+
+    </div>
+    </div>
+
+<h3 id="架构模型"><a href="#架构模型" class="headerlink" title="架构模型"></a>架构模型</h3><p>CAP定理通常被理解为“一个分布式系统最多只能同时满足两个特性”，但实际上存在一个重要的误解：<strong>Partition Tolerance（分区容错性）是必须的</strong>。因此，实际上只有CP（一致性和分区容错性）和AP（可用性和分区容错性）两种架构模型，而不存在CA（一致性和可用性）架构。</p>
+<p><strong>为什么分区容错性是必须的？</strong></p>
+<p>在实际的分布式系统中，网络分区是不可避免的。即使网络设计得再好，也无法完全避免网络故障。因此，系统必须能够在网络分区的情况下继续运行，这意味着分区容错性是必须的。</p>
+<p>接下来，我们深入了解CP和AP架构模型：</p>
+<h4 id="CP（一致性和分区容错性）"><a href="#CP（一致性和分区容错性）" class="headerlink" title="CP（一致性和分区容错性）"></a>CP（一致性和分区容错性）</h4><p>CP架构模型保证了系统的一致性和分区容错性。在这种架构下，系统在网络分区时仍然能够保持数据的一致性，但可能会牺牲可用性。例如，在银行系统中，所有节点的数据必须保持一致，即使出现网络分区，系统仍然需要确保数据的一致性。这意味着在数据同步期间，系统可能无法对外提供服务。</p>
+<p><strong>应用场景</strong>：</p>
+<ul>
+<li><strong>银行系统</strong>：所有交易记录必须保持一致，即使出现网络分区，系统仍然需要确保数据的一致性。</li>
+<li><strong>分布式数据库</strong>：如HBase、MongoDB等，这些系统通常采用CP架构来保证数据的一致性。</li>
+</ul>
+<h4 id="AP（可用性和分区容错性）"><a href="#AP（可用性和分区容错性）" class="headerlink" title="AP（可用性和分区容错性）"></a>AP（可用性和分区容错性）</h4><p>AP架构模型保证了系统的可用性和分区容错性。在这种架构下，系统在网络分区时仍然能够对外提供服务，但可能会牺牲一致性。例如，在聊天系统中，多个用户可以同时发送消息，但对方收到的消息可能不是最新的，存在一定的不一致性。</p>
+<p><strong>应用场景</strong>：</p>
+<ul>
+<li><strong>聊天系统</strong>：用户可以随时发送消息，即使消息的顺序可能不完全一致。</li>
+<li><strong>分布式缓存</strong>：如Redis、Memcached等，这些系统通常采用AP架构来保证高可用性。</li>
+</ul>
+<h3 id="CAP应用案例"><a href="#CAP应用案例" class="headerlink" title="CAP应用案例"></a>CAP应用案例</h3><h4 id="Zookeeper：CP架构"><a href="#Zookeeper：CP架构" class="headerlink" title="Zookeeper：CP架构"></a>Zookeeper：CP架构</h4><p>Zookeeper是一个分布式协调服务，广泛用于分布式系统中的配置管理、命名服务、分布式锁等场景。Zookeeper采用CP架构，主要原因如下：</p>
+<ol>
+<li><strong>强一致性</strong>：Zookeeper通过ZAB（Zookeeper Atomic Broadcast）协议来保证数据的一致性。ZAB协议确保所有节点在同一时间点看到的数据是一致的，即使在网络分区的情况下，Zookeeper也会选择牺牲可用性来保证一致性。</li>
+<li><strong>Leader选举</strong>：Zookeeper使用Leader选举机制来确保在网络分区时，只有一个Leader节点能够处理写操作。其他节点在Leader选举完成之前无法处理写操作，从而保证了数据的一致性。</li>
+</ol>
+<h4 id="Eureka：AP架构"><a href="#Eureka：AP架构" class="headerlink" title="Eureka：AP架构"></a>Eureka：AP架构</h4><p>Eureka是一个服务注册与发现系统，用于微服务架构中的服务注册与发现。Eureka采用AP架构，主要原因如下：</p>
+<ol>
+<li><strong>高可用性</strong>：Eureka的设计目标是高可用性。在网络分区的情况下，Eureka仍然能够对外提供服务，即使存在一定的不一致性。Eureka通过多个Eureka Server实例来实现高可用性，每个实例都可以独立处理服务注册与发现请求。</li>
+<li><strong>最终一致性</strong>：Eureka采用最终一致性模型。在网络分区的情况下，不同分区的Eureka Server实例可能会暂时不一致，但随着网络恢复，数据会最终达到一致状态。</li>
+</ol>
+<h4 id="Nacos：支持CP和AP架构"><a href="#Nacos：支持CP和AP架构" class="headerlink" title="Nacos：支持CP和AP架构"></a>Nacos：支持CP和AP架构</h4><p>Nacos是一个动态服务发现、配置管理和服务管理平台，支持CP和AP架构，主要原因如下：</p>
+<ol>
+<li><strong>Raft协议</strong>：Nacos的CP模式基于Raft协议，确保数据的一致性和分区容错性。Raft协议通过Leader选举和日志复制来保证数据的一致性，适用于需要强一致性的场景。</li>
+<li><strong>Distro协议</strong>：Nacos的AP模式基于Distro协议，确保系统的高可用性和分区容错性。Distro协议通过数据分片和异步复制来实现高可用性，适用于需要高可用性的场景。</li>
+</ol>
+<h2 id="BASE理论：深入解析与应用"><a href="#BASE理论：深入解析与应用" class="headerlink" title="BASE理论：深入解析与应用"></a>BASE理论：深入解析与应用</h2><h3 id="简介-1"><a href="#简介-1" class="headerlink" title="简介"></a>简介</h3><p>BASE理论，即Basically Available（基本可用）、Soft state（软状态）和Eventually Consistent（最终一致性），是对CAP理论的补充和扩展。BASE理论的核心思想是：即使无法做到强一致性，也可以根据每个应用的自身业务特点，采用适当的方式来保证最终一致性。</p>
+<p>BASE理论可以理解为CAP理论中AP架构模型的补充。在AP架构中，系统牺牲了一致性来保证可用性，但并不是完全放弃一致性。BASE理论提供了一种在保证系统可用性的同时，逐步实现数据一致性的方法。</p>
+<h3 id="详解"><a href="#详解" class="headerlink" title="详解"></a>详解</h3><h4 id="Basically-Available（基本可用）"><a href="#Basically-Available（基本可用）" class="headerlink" title="Basically Available（基本可用）"></a>Basically Available（基本可用）</h4><p>基本可用，是指在分布式系统出现故障时，允许损失部分可用性来保证整体系统的基本可用性。</p>
+<p><strong>什么叫允许损失部分可用性？</strong></p>
+<ul>
+<li><strong>响应时间上的损失</strong>：比如正常访问时间是0.3秒，但由于系统故障，允许响应时间延长到4秒。这种情况下，系统仍然能够对外提供服务，尽管响应时间有所延长。</li>
+<li><strong>系统功能上的损失</strong>：可以抛弃一些不必要的功能，来保证系统核心功能的可用。例如，在数据访问量巨大时，系统性能有限，可以通过服务降级（关闭不必要的活动）来腾出性能，以供核心业务正常工作。</li>
+</ul>
+<h4 id="Soft-state（软状态）"><a href="#Soft-state（软状态）" class="headerlink" title="Soft state（软状态）"></a>Soft state（软状态）</h4><p>软状态，即允许系统中的数据存在中间状态（此时系统数据不一致），但认为该状态并不会影响系统整体的可用性。即系统的数据在不同节点间的数据同步存在延迟。</p>
+<p><strong>软状态的应用场景</strong>：</p>
+<ul>
+<li><strong>分布式缓存</strong>：在分布式缓存系统中，不同节点的数据副本可能存在短暂的延迟，但系统仍然能够对外提供服务。</li>
+<li><strong>消息队列</strong>：在消息队列系统中，消息的传递可能存在延迟，但系统仍然能够保证消息的最终传递。</li>
+</ul>
+<h4 id="Eventually-Consistent（最终一致性）"><a href="#Eventually-Consistent（最终一致性）" class="headerlink" title="Eventually Consistent（最终一致性）"></a>Eventually Consistent（最终一致性）</h4><p>最终一致性，强调的是在系统不同节点中的数据副本，在一段时间后达成完全一致。也就是说，最终一致性可以允许数据不需要实时同步，而是保证最终数据能够达成一致。</p>
+<p><strong>最终一致性的实现方法</strong>：</p>
+<ul>
+<li><strong>读时修复</strong>：在读取数据的时候，检查数据的不一致，进行修复。例如，在读取数据时，如果发现数据不一致，可以通过读取其他节点的数据来进行修复。</li>
+<li><strong>写时修复</strong>：在写入数据时，检查数据的不一致，进行修复。例如，在写入数据时，如果发现数据不一致，可以通过写入其他节点的数据来进行修复。</li>
+<li><strong>异步修复</strong>：最常用的方式，定时检测数据副本的一致性，进行修复。例如，通过定时任务或事件触发机制，定期检查数据副本的一致性，并进行修复。</li>
+</ul>
+<div class="panel panel-info">
+    <div class="panel-title"><i class="fa fa-info"></i>一致性3种级别</div>
+    <div class="panel-body">
+        <ol>
+<li><strong>强一致性</strong>：写了什么，读出来就是什么。例如，在单节点系统或采用强一致性协议的分布式系统中，数据在写入后立即对所有节点可见。</li>
+<li><strong>弱一致性</strong>：不一定读取到的就是最新写入的数据，也不能保证某个时刻能保持一致，只能保证在未来某个时刻达到一致。例如，在某些分布式缓存系统中，数据可能在一段时间内不一致。</li>
+<li><strong>最终一致性</strong>：弱一致性的升级，系统可以保证在一定时间内达到数据一致。例如，在采用最终一致性模型的分布式数据库中，数据在一段时间后会达到一致状态。</li>
+</ol>
+
+    </div>
+    </div>
+
+<h1 id="分布式算法"><a href="#分布式算法" class="headerlink" title="分布式算法"></a>分布式算法</h1><h2 id="Raft算法详解"><a href="#Raft算法详解" class="headerlink" title="Raft算法详解"></a>Raft算法详解</h2><h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>在当今高度动态的数据中心和应用服务环境中，系统的资源配置需要根据负载情况进行动态调整，以实现资源的高效利用。例如，在双十一期间，电商平台的访问量会大幅增加，而在淡季时，访问量则会显著减少。为了应对这种情况，我们需要能够动态地进行系统扩缩容，即在不影响客户正常使用的情况下，完成配置的升降级，使系统能够自适应地调整资源。</p>
+<p>分布式共识算法就是为了应对这些挑战而设计的。Raft算法是Paxos算法的一个具体实现，旨在提供一种易于理解和实现的分布式共识机制。</p>
+<h4 id="拜占庭将军问题"><a href="#拜占庭将军问题" class="headerlink" title="拜占庭将军问题"></a>拜占庭将军问题</h4><p>为了更好地理解分布式共识算法，我们可以先通过一个经典的例子——拜占庭将军问题来引入。</p>
+<p><strong>假设多位拜占庭将军中没有叛军，信使的信息可靠但有可能被暗杀的情况下，将军们如何达成是否要进攻的一致性决定？</strong></p>
+<p>解决方案大致可以理解为：先在所有的将军中选出一个大将军，用来做出所有的决定。</p>
+<p><strong>举例如下</strong>：假如现在一共有3个将军A、B和C，每个将军都有一个随机时间的倒计时器，倒计时一结束，这个将军就把自己当成大将军候选人，然后派信使传递选举投票的信息给将军B和C。如果将军B和C还没有把自己当作候选人（自己的倒计时还没有结束），并且没有把选举票投给其他人，它们就会把票投给将军A。信使回到将军A时，将军A知道自己收到了足够的票数，成为大将军。在有了大将军之后，是否需要进攻就由大将军A决定，然后再派信使通知另外两个将军，自己已经成为了大将军。如果一段时间还没收到将军B和C的回复（信使可能会被暗杀），那就再重派一个信使，直到收到回复。</p>
+<h4 id="共识算法"><a href="#共识算法" class="headerlink" title="共识算法"></a>共识算法</h4><p>共识是可容错系统中的一个基本问题：即使面对故障，服务器也可以在共享状态上达成一致。</p>
+<p>共识算法允许一组节点像一个整体一样进行工作，即使其中的某些节点发生了故障。其正确性来源于复制状态机的性质：一组服务器的状态机计算相同状态的副本，即使部分服务器状态机宕机了，它们依旧能够正常运行。</p>
+<h3 id="Raft算法基础"><a href="#Raft算法基础" class="headerlink" title="Raft算法基础"></a>Raft算法基础</h3><h4 id="节点类型"><a href="#节点类型" class="headerlink" title="节点类型"></a>节点类型</h4><p>在Raft算法中，节点可以分为三种类型：</p>
+<ol>
+<li><strong>Leader（领导者）</strong>：负责处理所有客户端请求，并将日志条目复制到其他节点。</li>
+<li><strong>Follower（跟随者）</strong>：被动地接收来自Leader的日志条目，并响应Leader的请求。</li>
+<li><strong>Candidate（候选者）</strong>：在Leader选举过程中，节点会暂时成为候选者，直到选举出新的Leader。</li>
+</ol>
+<h4 id="任期（Term）"><a href="#任期（Term）" class="headerlink" title="任期（Term）"></a>任期（Term）</h4><p>Raft算法将时间划分为任意长度的任期（Term），每个任期由一个单调递增的整数表示。任期可以理解为选举周期，每个任期开始时，节点会尝试选举出一个Leader。如果选举成功，Leader将管理整个任期；如果选举失败，任期将结束，新的任期将开始。</p>
+<h4 id="日志（Log）"><a href="#日志（Log）" class="headerlink" title="日志（Log）"></a>日志（Log）</h4><p>日志是Raft算法中用于存储状态机操作序列的数据结构。每个日志条目包含一个操作指令和一个任期号。Leader负责将日志条目复制到其他节点，并确保所有节点的日志一致。</p>
+<h3 id="Leader选举"><a href="#Leader选举" class="headerlink" title="Leader选举"></a>Leader选举</h3><p>Leader选举是Raft算法的核心过程之一。当系统启动或当前Leader失效时，节点会进入选举状态，尝试选举出一个新的Leader。</p>
+<ol>
+<li><strong>选举触发</strong>：当一个节点在一段时间内没有收到Leader的心跳消息时，它会认为当前Leader失效，并开始选举过程。</li>
+<li><strong>投票过程</strong>：节点将自己的任期号加1，并转换为候选者状态。然后，它向其他节点发送投票请求。如果一个节点在当前任期内没有投票给其他候选者，并且候选者的日志至少与自己的日志一样新，它就会投票给该候选者。</li>
+<li><strong>选举结果</strong>：如果一个候选者收到了大多数节点的投票，它就成为新的Leader。如果多个候选者同时发起选举，可能会导致选举失败，此时任期将结束，新的任期将开始。</li>
+</ol>
+<h3 id="日志复制"><a href="#日志复制" class="headerlink" title="日志复制"></a>日志复制</h3><p>日志复制是Raft算法中确保数据一致性的关键过程。Leader负责将客户端请求转换为日志条目，并将这些日志条目复制到其他节点。</p>
+<ol>
+<li><strong>日志条目添加</strong>：Leader接收到客户端请求后，将请求转换为日志条目，并将其添加到自己的日志中。</li>
+<li><strong>日志条目复制</strong>：Leader将新的日志条目发送给所有Follower，并等待大多数Follower确认接收。</li>
+<li><strong>日志条目提交</strong>：一旦大多数Follower确认接收了日志条目，Leader就会将该日志条目标记为已提交，并通知所有节点提交该日志条目。</li>
+</ol>
+<h3 id="安全性"><a href="#安全性" class="headerlink" title="安全性"></a>安全性</h3><p>Raft算法通过一系列机制确保系统的安全性，包括选举限制、节点崩溃处理和时间与可用性管理。</p>
+<h4 id="选举限制"><a href="#选举限制" class="headerlink" title="选举限制"></a>选举限制</h4><p>为了防止不一致的节点被选为Leader，Raft算法对选举过程进行了限制：</p>
+<ol>
+<li><strong>日志匹配</strong>：只有日志至少与大多数节点一样新的候选者才能被选为Leader。这样可以确保新Leader的日志是最新的，从而避免数据丢失或不一致。</li>
+</ol>
+<h4 id="节点崩溃"><a href="#节点崩溃" class="headerlink" title="节点崩溃"></a>节点崩溃</h4><p>Raft算法能够处理节点崩溃的情况，确保系统在部分节点失效时仍然能够正常运行：</p>
+<ol>
+<li><strong>Leader崩溃</strong>：如果Leader崩溃，系统会进入选举状态，选举出新的Leader。在此期间，客户端请求可能会被延迟，但系统最终会恢复一致性。</li>
+<li><strong>Follower崩溃</strong>：如果Follower崩溃，Leader会继续复制日志条目，并在Follower恢复后继续同步日志。</li>
+</ol>
+<h4 id="时间与可用性"><a href="#时间与可用性" class="headerlink" title="时间与可用性"></a>时间与可用性</h4><p>Raft算法通过合理的时间管理来确保系统的可用性：</p>
+<ol>
+<li><strong>心跳超时</strong>：Leader定期向Follower发送心跳消息，以维持其领导地位。如果Follower在一段时间内没有收到心跳消息，它会认为Leader失效，并开始选举过程。</li>
+<li><strong>选举超时</strong>：节点在选举过程中会设置一个随机的选举超时时间，以避免多个节点同时发起选举，导致选举失败。</li>
+</ol>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>Raft算法通过Leader选举、日志复制和安全性机制，提供了一种易于理解和实现的分布式共识解决方案。Raft算法的核心思想是通过Leader来管理系统的日志复制和状态一致性，确保即使在部分节点失效的情况下，系统仍然能够正常运行。</p>
+</div>
+        </div>
+        
+        <footer class="kratos-entry-footer clearfix">
+            
+            
+            
+                <div class="post-actions text-center clearfix" id="post-actions">
+                
+                    <a class="donate" href="javascript:;" onclick="krOpenDonateModal()"><i class="fa fa-bitcoin"></i> 打赏</a>
+                
+                
+                    <a class="share" href="javascript:;" onclick="krOpenShareModal()"><i class="fa fa-share-alt"></i> 分享</a>
+                
+                </div>
+            
+            <div class="footer-tag clearfix">
+                <div class="pull-left">
+                <i class="fa fa-tags"></i>
+                    <a class="tag-none-link" href="/tags/BASE/" rel="tag">BASE</a>, <a class="tag-none-link" href="/tags/CAP/" rel="tag">CAP</a>, <a class="tag-none-link" href="/tags/Raft/" rel="tag">Raft</a>
+                </div>
+                <div class="pull-date">
+                    <time datetime="2024-10-21T05:10:07.359Z" itemprop="dateModified">最后编辑：2024-10-21</time>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+        <nav class="navigation post-navigation clearfix" role="navigation">
+            
+            <div class="nav-previous clearfix">
+                <a title=" 计算机网络-网络场景" href="/2024/10/13/计算机网络-网络场景/"><i class="fa fa-angle-left"></i> 上一篇</a>
+            </div>
+            
+            
+            <div class="nav-next clearfix">
+                <a title=" 分布式-服务治理（上）" href="/2024/10/21/分布式-服务治理（上）/">下一篇 <i class="fa fa-angle-right"></i></a>
+            </div>
+            
+        </nav>
+    
+    
+</article>
+
+        
+
+            </section>
+
+            
+                
+
+<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
+    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
+    
+    
+                <aside id="krw-about" class="widget widget-kratos-about clearfix">
+    <div class="photo-background"></div>
+    <div class="photo-wrapper clearfix">
+        <div class="photo-wrapper-tip text-center">
+            <img class="about-photo" src="/images/user.jpg" alt="xiaoyan" loading="lazy" decoding="auto" />
+        </div>
+    </div>
+    <div class="textwidget">
+        <p class="text-center">是一只时时翻垃圾吃的宅子。</p>
+    </div>
+    <div class="site-meta">
+        <a class="meta-item" href="/archives/">
+            <span class="title">
+                文章
+            </span>
+            <span class="count">
+                41
+            </span>
+        </a>
+        <a class="meta-item" href="/categories/">
+            <span class="title">
+                分类
+            </span>
+            <span class="count">
+                12
+            </span>
+        </a>
+        <a class="meta-item" href="/tags/">
+            <span class="title">
+                标签
+            </span>
+            <span class="count">
+                60
+            </span>
+        </a>
+    </div>
+</aside>
+            
+                    <div class="sticky-area">
+                
+                
+  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
+    <h4 class="widget-title"><i class="fa fa-folder"></i>分类列表</h4>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a><span class="category-list-count">15</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/JVM/">JVM</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%9F%BA%E7%A1%80/">基础</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">并发编程</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/%E9%9B%86%E5%90%88/">集合</a><span class="category-list-count">5</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/MySQL/">MySQL</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Python/">Python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Redis/">Redis</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Spring/">Spring</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9E%B6%E6%9E%84/">架构</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a><span class="category-list-count">5</span></li></ul>
+  </aside>
+
+
+            
+                
+  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
+    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
+      <div class="tag-clouds">
+        <a href="/tags/AOP/" style="font-size: 0.6em;">AOP</a> <a href="/tags/BASE/" style="font-size: 0.6em;">BASE</a> <a href="/tags/Bean/" style="font-size: 0.6em;">Bean</a> <a href="/tags/CAP/" style="font-size: 0.6em;">CAP</a> <a href="/tags/Cookie/" style="font-size: 0.6em;">Cookie</a> <a href="/tags/DDD/" style="font-size: 0.6em;">DDD</a> <a href="/tags/DNS/" style="font-size: 0.6em;">DNS</a> <a href="/tags/HTTP/" style="font-size: 0.6em;">HTTP</a> <a href="/tags/I-O/" style="font-size: 0.6em;">I/O</a> <a href="/tags/IoC/" style="font-size: 0.6em;">IoC</a> <a href="/tags/JWT/" style="font-size: 0.6em;">JWT</a> <a href="/tags/Java8%E6%96%B0%E7%89%B9%E6%80%A7/" style="font-size: 0.6em;">Java8新特性</a> <a href="/tags/Java%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" style="font-size: 0.6em;">Java基本概念</a> <a href="/tags/List/" style="font-size: 0.6em;">List</a> <a href="/tags/Map/" style="font-size: 0.8em;">Map</a> <a href="/tags/MyBatis/" style="font-size: 0.6em;">MyBatis</a> <a href="/tags/MySQL%E5%9F%BA%E7%A1%80/" style="font-size: 0.6em;">MySQL基础</a> <a href="/tags/Nginx/" style="font-size: 0.6em;">Nginx</a>
+      </div>
+  </aside>
+
+            
+                
+  <aside id="krw-posts" class="widget widget-kratos-posts">
+  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
+  <div class="tab-content">
+      <ul class="list-group">
+        
+        
+          
+          
+            <a class="list-group-item" href="/2024/10/27/%E5%88%86%E5%B8%83%E5%BC%8F-%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/"><i class="fa fa-book"></i> 分布式-分布式事务</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/10/21/%E5%88%86%E5%B8%83%E5%BC%8F-%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%EF%BC%88%E4%B8%8B%EF%BC%89/"><i class="fa fa-book"></i> 分布式-服务治理（下）</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/10/21/%E5%88%86%E5%B8%83%E5%BC%8F-%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%EF%BC%88%E4%B8%8A%EF%BC%89/"><i class="fa fa-book"></i> 分布式-服务治理（上）</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/10/21/%E5%88%86%E5%B8%83%E5%BC%8F-%E5%9F%BA%E7%A1%80%E7%90%86%E8%AE%BA/"><i class="fa fa-book"></i> 分布式-基础理论&算法</a>
+            
+          
+        
+          
+          
+            <a class="list-group-item" href="/2024/10/13/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%BD%91%E7%BB%9C%E5%9C%BA%E6%99%AF/"><i class="fa fa-book"></i> 计算机网络-网络场景</a>
+            
+          
+        
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+          
+            
+      </ul>
+  </div>
+  </aside>
+
+            
+    </div>
+</section>
+            
+
+        
+
+                </div>
+    </div>
+</div>
+
+<footer>
+    <div id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 footer-list text-center">
+                    <ul class="kratos-social-icons">
+                        
+                    </ul>
+                    <ul class="kratos-copyright">
+                        <div>
+                            <li>&copy; 2024 XIAOYAN 版权所有.</li>
+                            <li>本站已运行<span id="kr-since">Loading...</span></li>
+                        </div>
+                        <div>
+                            <li>自豪地使用 <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a> 主题</li>
+                            <li>站点由 xiaoyan 用 <i class="fa fa-heart" style="color:#d43f57"></i> 搭建</li>
+                        </div>
+                        <!-- 额外的追加注入项 -->
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="kr-tool text-center">
+            <div class="tool">
+                
+                    <div class="box search-box">
+                        <a href="/search">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </div>
+                
+                <div class="box theme-box" id="theme-toggle">
+                    <span class="fa fa-adjust"></span>
+                </div>
+            </div>
+            <div id="gotop-box" class="box gotop-box">
+                <span class="fa fa-chevron-up"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+</div>
+
+
+    <div id="kr-donate-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseDonateModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-bitcoin"></i>
+            </div>
+            <div class="kr-modal-title">打赏</div>
+            <button class="kr-modal-close" onclick="krCloseDonateModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-donate-message">请我喝一杯冰阔咯~</div>
+            <div class="kr-donate-qr" id="kr-donate-qr">
+                
+            </div>
+            <div class="kr-donate-platforms">
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #1677ff;" title="支付宝" onclick="krDonateModalShowPlatformQR('https://qr.alipay.com/fkx15009k7u0fqrj8auepdf', '#1677ff')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-alipay">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+  <path d="M19 3h-14a2 2 0 0 0 -2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2 -2v-14a2 2 0 0 0 -2 -2z" />
+  <path d="M7 7h10" />
+  <path d="M12 3v7" />
+  <path d="M21 17.314c-2.971 -1.923 -15 -8.779 -15 -1.864c0 1.716 1.52 2.55 2.985 2.55c3.512 0 6.814 -5.425 6.814 -8h-6.604" />
+</svg>
+
+                        </button>
+                    
+                
+                    
+                        <button class="kr-donate-platform-button" style="color: #38ad5a;" title="微信支付" onclick="krDonateModalShowPlatformQR('wxp://f2f0hR4eF9Ypa3tpzjWme9fQDyWW3PIGe3WG5oiIakWLmDs', '#38ad5a')">
+                            <i class="fa fa-wechat"></i>
+                        </button>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/donate.min.js"></script>
+
+
+
+
+    <div id="kr-share-modal" class="kr-modal">
+    <div class="kr-modal-bg" onclick="krCloseShareModal()"></div>
+    <div class="kr-modal-content">
+        <div class="kr-modal-header">
+            <div class="kr-modal-icon">
+                <i class="fa fa-share-alt"></i>
+            </div>
+            <div class="kr-modal-title">分享</div>
+            <button class="kr-modal-close" onclick="krCloseShareModal()">
+                <i class="fa fa-times-circle"></i>
+            </button>
+        </div>
+        <div class="kr-modal-body">
+            <div class="kr-share-message">让兄弟萌也来瞅一瞅！</div>
+            <div class="kr-share-qr" id="kr-share-qr"></div>
+            <div class="kr-share-platforms">
+                
+                    <button class="kr-share-platform-button" style="color: #e6162d;" title="QQ" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-qq"></i>
+                    </button>
+                
+                    <button class="kr-share-platform-button" style="color: #25d366;" title="微信" onclick="krShareModalOpenPlatform('')">
+                        <i class="fa fa-weixin"></i>
+                    </button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script defer src="/js/kr-modal/share.min.js"></script>
+
+
+
+<!-- 额外的追加注入项 -->
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
+<meting-js
+  server="netease"
+  type="playlist"
+  fixed="true"
+  order="random"
+  id="12613265870">
+</meting-js>
+
+
+
+        <script>
+    if (!window.kr) {
+        window.kr = {};
+    }
+    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
+    window.kr.siteRoot = "/";
+</script>
+
+
+  <script defer src="/vendors/nprogress@0.2.0/nprogress.js"></script>
+
+
+
+  <script defer src="/vendors/viewerjs@1.11.6/dist/viewer.min.js"></script>
+
+
+<script defer src="/js/kr-core.min.js"></script>
+
+
+  <script defer src="/js/kr-pjax.min.js"></script>
+
+
+<!-- 额外的追加注入项 -->
+
+  <script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+
+
+
+    </body>
+</html>
