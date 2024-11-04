@@ -1,195 +1,209 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-  <!-- 元数据 -->
-  <meta charset="utf-8">
-  
-    <link rel="icon" href="/images/earthstars.png">
-  
-  
-  <title>Java并发编程-多线程篇 | XIAOYAN</title>
-  <link rel="canonical" href="http://example.com/2024/09/10/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%AF%87/">
-  <meta name="author" content="xiaoyan" />
-  <meta http-equiv="Cache-Control" content="no-transform" />
-  <meta http-equiv="Cache-Control" content="no-siteapp" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="robots" content="index,follow" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <meta name="format-detection" content="telphone=no, email=no" />
-  
-    <meta name="keywords" content="多线程" />
-  
-  <meta name="description" content="Java作为一门广泛使用的编程语言，提供了丰富的多线程编程接口和工具，使得开发者能够轻松地创建和管理线程。然而，多线程编程并非易事，它涉及到线程的创建、启动、关闭、同步等多个复杂问题。本文将深入探讨Java中的多线程编程，涵盖线程的基本概念、线程与操作系统的关系、线程的创建和管理方法。">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Java并发编程-多线程篇">
-<meta property="og:url" content="http://example.com/2024/09/10/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%AF%87/index.html">
-<meta property="og:site_name" content="XIAOYAN">
-<meta property="og:description" content="Java作为一门广泛使用的编程语言，提供了丰富的多线程编程接口和工具，使得开发者能够轻松地创建和管理线程。然而，多线程编程并非易事，它涉及到线程的创建、启动、关闭、同步等多个复杂问题。本文将深入探讨Java中的多线程编程，涵盖线程的基本概念、线程与操作系统的关系、线程的创建和管理方法。">
-<meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409221039968.png">
-<meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409221110284.png">
-<meta property="article:published_time" content="2024-09-10T00:08:08.000Z">
-<meta property="article:modified_time" content="2024-11-02T11:03:38.516Z">
-<meta property="article:author" content="xiaoyan">
-<meta property="article:tag" content="多线程">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409221039968.png">
-  
-  <!-- 样式表文件 -->
-  <link rel="stylesheet" id="kratos-css" href="/css/kr-core.min.css" media="all"></link>
-  
-    <link rel="stylesheet" id="highlight-css" href="/css/highlight/highlight.js/night-eighties.min.css" media="all"></link>
-  
-  <link rel="stylesheet" id="theme-light-css" href="/css/kr-theme/light.min.css" media="all"></link>
-  <link rel="stylesheet" id="theme-dark-css" href="/css/kr-theme/dark.min.css" media="(prefers-color-scheme: dark)"></link>
-  <script src="/js/kr-theme.min.js"></script>
-  <link rel="stylesheet" id="fontawe-css" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css" media="all"></link>
-  
-    <link rel="stylesheet" id="nprogress-css" href="/vendors/nprogress@0.2.0/nprogress.css" media="all"></link>
-  
-  
-    <link rel="stylesheet" href="/vendors/viewerjs@1.11.6/dist/viewer.min.css"></link>
-  
-  <!-- 不得不预先加载的一些JS文件 -->
-  
-    <script src="/vendors/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
-  
-  <!-- 自定义站点横幅和背景 -->
-  <style>
-    
-      .kratos-cover.kratos-cover-2 {
-        background-image: url('/images/wallpaper_light.png');
-      }
-      html[data-theme="dark"] .kratos-cover.kratos-cover-2 {
-        background-image: url('/images/wallpaper_dark.png');
-      }
-    
-    
-      @media(min-width:768px) {
-        body.custom-background {
-          background-image: url('/images/bg.webp');
+<!DOCTYPE html><html lang="zn-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><title>Java并发编程-多线程篇 | XIAOYAN</title><meta name="keywords" content="多线程"><meta name="author" content="xiaoyan"><meta name="copyright" content="xiaoyan"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#f7f9fe"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-touch-fullscreen" content="yes"><meta name="apple-mobile-web-app-title" content="Java并发编程-多线程篇"><meta name="application-name" content="Java并发编程-多线程篇"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f7f9fe"><meta property="og:type" content="article"><meta property="og:title" content="Java并发编程-多线程篇"><meta property="og:url" content="http://example.com/2024/09/10/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%AF%87/index.html"><meta property="og:site_name" content="XIAOYAN"><meta property="og:description" content="Java作为一门广泛使用的编程语言，提供了丰富的多线程编程接口和工具，使得开发者能够轻松地创建和管理线程。然而，多线程编程并非易事，它涉及到线程的创建、启动、关闭、同步等多个复杂问题。本文将深入探讨Java中的多线程编程，涵盖线程的基本概念、线程与操作系统的关系、线程的创建和管理方法。   Java"><meta property="og:locale" content="zn-CN"><meta property="og:image" content="http://example.com/2024/09/10/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%AF%87/cover.png"><meta property="article:author" content="xiaoyan"><meta property="article:tag"><meta name="twitter:card" content="summary"><meta name="twitter:image" content="http://example.com/2024/09/10/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%AF%87/cover.png"><meta name="description" content="Java作为一门广泛使用的编程语言，提供了丰富的多线程编程接口和工具，使得开发者能够轻松地创建和管理线程。然而，多线程编程并非易事，它涉及到线程的创建、启动、关闭、同步等多个复杂问题。本文将深入探讨Java中的多线程编程，涵盖线程的基本概念、线程与操作系统的关系、线程的创建和管理方法。   Java"><link rel="shortcut icon" href="/images/favicon.ico"><link rel="canonical" href="http://example.com/2024/09/10/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%AF%87/"><link rel="preconnect" href="//cdn.cbd.int"/><meta name="google-site-verification" content="xxx"/><meta name="baidu-site-verification" content="code-xxx"/><meta name="msvalidate.01" content="xxx"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  linkPageTop: undefined,
+  peoplecanvas: {"enable":true,"img":"https://upload-bbs.miyoushe.com/upload/2024/07/27/125766904/ba62475f396df9de3316a08ed9e65d86_5680958632268053399..png"},
+  postHeadAiDescription: undefined,
+  diytitle: undefined,
+  LA51: undefined,
+  greetingBox: undefined,
+  twikooEnvId: '',
+  commentBarrageConfig:undefined,
+  music_page_default: "nav_music",
+  root: '/',
+  preloader: {"source":3},
+  friends_vue_info: undefined,
+  navMusic: true,
+  mainTone: undefined,
+  authorStatus: undefined,
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简","rightMenuMsgToTraditionalChinese":"转为繁体","rightMenuMsgToSimplifiedChinese":"转为简体"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":330},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    simplehomepage: true,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"copy":true,"copyrightEbable":false,"limitCount":50,"languages":{"author":"作者: xiaoyan","link":"链接: ","source":"来源: XIAOYAN","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。","copySuccess":"复制成功，复制和转载请标注本文地址"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#425AEF","bgDark":"#1f1f1f","position":"top-center"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.min.js',
+      css: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false,
+  shortcutKey: undefined,
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  configTitle: 'XIAOYAN',
+  title: 'Java并发编程-多线程篇',
+  postAI: '',
+  pageFillDescription: 'Java中的多线程与操作系统中的多线程, 使用多线程需要注意的问题, Java中保证数据一致性的科学方案, 事务管理, 锁机制, 版本控制, 如何创建线程, 如何启动x2F关闭线程？, 调用 interrupt 如何让线程抛出异常, 中断机制的工作原理, 关键点解析, Java 线程状态详解, 状态, notify 和 notifyAll 的区别, notify, notifyAll, wait 和 sleep 的区别, wait, sleep, notify会唤醒哪个线程？作为一门广泛使用的编程语言提供了丰富的多线程编程接口和工具使得开发者能够轻松地创建和管理线程然而多线程编程并非易事它涉及到线程的创建启动关闭同步等多个复杂问题本文将深入探讨中的多线程编程涵盖线程的基本概念线程与操作系统的关系线程的创建和管理方法中的多线程与操作系统中的多线程在探讨中的多线程与操作系统中的多线程之间的关系时我们首先需要理解两者在底层实现上的联系尽管语言本身提供了丰富的多线程编程接口但其底层实现依赖于操作系统的线程机制语言通过类提供了多线程编程的支持然而虚拟机在实现这些线程时依赖于操作系统的线程机制具体来说在大多数操作系统上使用线程库来创建和管理线程在系统中通过调用函数来创建线程是线程库中的一个函数用于在操作系统级别创建一个新的线程因此从底层实现的角度来看中的线程实际上是操作系统线程的封装线程与操作系统线程之间的关系通常被称为对线程模型在这种模型中每个线程都直接映射到一个操作系统线程这意味着资源管理操作系统负责管理线程的资源分配如时间内存等调度操作系统的调度器负责决定哪个线程在何时执行上下文切换线程的上下文切换由操作系统内核完成由于线程直接映射到操作系统线程因此线程的行为和性能特征在很大程度上受到操作系统线程机制的影响使用多线程需要注意的问题在多线程编程中确保线程安全是至关重要的线程安全指的是在多线程环境下程序能够正确地处理共享数据避免数据竞争和不一致性问题提供了多种机制来保证线程安全主要包括原子性可见性和有序性原子性原子性是指一个操作要么全部执行要么全部不执行不存在中间状态在多线程环境中原子性确保了同一时间只有一个线程能够对共享数据进行操作从而避免了数据竞争实现包提供了多种原子类如等这些类通过操作实现原子性关键字通过监视器锁确保方法或代码块在同一时间只能被一个线程执行可见性可见性确保一个线程对数据的修改对其他线程是可见的在多线程环境中由于缓存和编译器优化可能会导致一个线程的修改对其他线程不可见实现关键字确保变量的修改立即对所有线程可见禁止缓存和编译器优化关键字在进入和退出同步块时确保变量的可见性有序性有序性确保指令按照程序的顺序执行在多线程环境中由于编译器和的指令重排序优化可能会导致指令的执行顺序与程序代码的顺序不一致实现关键字禁止指令重排序确保变量的读写操作按顺序执行关键字确保同步块内的代码按顺序执行使用了原则来确保有序性中保证数据一致性的科学方案在应用中确保数据一致性是关键任务之一以下是几种科学且专业的方案旨在帮助读者理解并实施有效的数据一致性策略事务管理事务管理是保证数据一致性的基础手段通过数据库事务可以确保一系列数据操作要么全部成功提交要么全部失败回滚这一机制依赖于事务的属性原子性事务中的所有操作要么全部完成要么全部不完成不存在部分执行的情况一致性事务执行前后数据库从一个一致状态转变到另一个一致状态隔离性并发执行的事务之间相互隔离一个事务的执行不会影响其他事务持久性一旦事务提交其结果将永久保存在数据库中即使系统发生故障锁机制锁机制是另一种重要的数据一致性保障手段通过锁可以实现对数据的互斥访问确保同一时间只有一个事务能够对特定数据进行操作常见的锁类型包括共享锁允许多个事务同时读取同一数据但阻止写操作排他锁阻止其他事务读取或写入同一数据确保数据修改的独占性版本控制版本控制是一种乐观的并发控制策略通过记录数据的版本信息来保证数据一致性具体实现方式如下乐观锁在更新数据时检查数据的版本号如果版本号与预期一致则允许更新并递增版本号否则拒绝更新操作这种策略适用于读多写少的场景能够减少锁竞争提高系统并发性能如何创建线程在中创建线程主要有以下几种方式继承类通过继承类并重写方法来创建线程编写线程执行逻辑优点简单直接易于理解和实现缺点由于不支持多重继承继承类后无法再继承其他类线程管理和复用性较差实现接口通过实现接口并重写方法来创建线程编写线程执行逻辑优点避免了单继承的限制可以继承其他类代码更加灵活适用于需要实现多线程的场景缺点编程稍微复杂如果需要访问当前线程必须使用方法实现和通过实现接口并使用来创建线程接口允许线程返回结果并且可以抛出异常要执行任务需将它包装进一个因为类的构造器只接受参数而实现了接囗获取线程执行结果优点允许线程返回结果并且可以抛出异常适用于需要获取线程执行结果的场景缺点代码相对复杂需要处理和使用线程池通过使用框架来创建和管理线程池框架提供了多种线程池实现如等规定线程池容量此处可以是实现了接口的类优点提高线程的复用性和管理性减少线程创建和销毁的开销适用于需要管理多个线程的场景缺点代码相对复杂需要理解线程池的概念和配置如何启动关闭线程启动线程启动线程通过类的方法关闭线程关闭线程主要有以下几种方法异常停止通过抛出异常来停止线程中断线程优点优雅地停止线程避免资源泄漏缺点需要在线程代码中处理异常在沉睡中停止通过在方法中抛出来停止线程中断线程优点适用于线程在沉睡中停止的场景缺点需要在线程代码中处理异常暴力停止使用类的方法来暴力停止线程暴力停止线程优点简单直接易于使用缺点不安全可能导致资源泄漏或数据不一致方法已被弃用不推荐使用使用停止通过在方法中使用语句来停止线程检查中断状态退出方法停止线程停止线程优点优雅地停止线程避免资源泄漏适用于需要控制线程停止的场景缺点需要在线程代码中添加停止标志调用如何让线程抛出异常在中线程的中断机制是通过一个布尔属性来表示线程的中断状态初始状态下线程的中断状态为当一个线程被其他线程调用方法中断时会根据线程当前的执行状态做出不同的响应中断机制的工作原理中断状态的设置当调用方法时目标线程的中断状态会被设置为响应中断如果目标线程当前正在执行低级别的可中断方法如或这些方法会检查线程的中断状态如果发现中断状态为这些方法会立即解除阻塞并抛出异常轮询中断状态如果目标线程当前没有执行可中断方法方法仅会设置线程的中断状态为被中断的线程可以通过轮询中断状态使用方法来决定是否停止当前正在执行的任务示例代码以下是一个示例展示了如何通过方法让线程抛出异常模拟耗时操作重新设置中断状态主线程等待秒中断线程关键点解析可中断方法和等方法是可中断的当线程在这些方法中被中断时会立即抛出异常中断状态的轮询如果线程没有执行可中断方法可以通过方法轮询中断状态以决定是否停止当前任务重新设置中断状态在捕获异常后通常需要重新设置中断状态使用以确保中断状态不会丢失通过调用方法可以设置线程的中断状态并根据线程当前的执行状态做出不同的响应如果线程正在执行可中断方法会立即抛出异常否则线程可以通过轮询中断状态来决定是否停止当前任务这种机制确保了线程能够优雅地响应中断请求避免资源泄露和不一致状态线程状态详解状态在中线程的生命周期可以通过其状态来描述线程的状态反映了线程当前的执行情况和行为线程的状态由枚举类定义主要包括以下几种状态新建描述线程对象已经被创建但尚未调用方法启动状态转换从状态调用方法后线程进入状态可运行描述线程正在虚拟机中执行但它可能正在等待操作系统的其他资源如时间片状态转换从状态调用方法后进入状态刚调用等待系统调度时是状态当执行任务时为状态从状态恢复后进入状态阻塞描述线程正在等待获取监视器锁以进入同步代码块或方法状态转换当线程尝试进入同步代码块或方法但锁已被其他线程占用时进入状态当获取到锁后线程从状态进入状态等待描述线程正在无限期地等待另一个线程执行特定操作如或状态转换通过调用或方法进入状态当其他线程调用或方法时线程从状态进入状态计时等待描述线程正在等待另一个线程执行特定操作但有一个超时时间如或状态转换通过调用或方法进入状态当超时时间到达或被其他线程唤醒时线程从状态进入状态终止描述线程已经执行完毕方法正常退出或抛出未捕获的异常状态转换当线程的方法执行完毕或抛出未捕获的异常时线程进入状态和的区别在中和都是用于唤醒等待在对象监视器上的线程但它们的行为有所不同功能方法会随机唤醒一个正在等待该对象监视器的线程特点只唤醒一个线程其他线程仍处于状态如果其他线程没有被再次调用或它们可能会一直等待直到超时或被中断功能方法会唤醒所有正在等待该对象监视器的线程特点所有线程都会被唤醒但只有一个线程能获得锁其他线程会继续竞争锁所有线程都会从状态进入状态开始竞争锁以下是一个示例代码展示了和的区别主线程等待秒只唤醒一个线程唤醒所有线程和的区别和都是用于线程的等待操作但它们的行为和使用场景有所不同所属类类的方法功能使当前线程进入等待状态直到被唤醒通过或或超时特点必须在同步代码块中调用调用方法会释放对象的监视器锁线程进入或状态所属类类的方法功能使当前线程暂停执行指定的时间特点可以在任何地方调用不需要在同步代码块中调用方法不会释放对象的监视器锁线程进入状态以下是一个示例代码展示了和的区别进入状态释放锁进入状态不释放锁主线程等待秒唤醒会唤醒哪个线程查看源码注释大致的意思是唤醒一个正在等待该对象监视器的单个线程如果有任何线程正在等待该对象其中一个线程将被选择并唤醒选择是任意的并由实现自行决定线程通过调用其中一个方法来等待对象的监视器也就是说依赖于的具体实现有很多实现比较流行的就是对的实现并不是我们以为的随机唤醒而是先进先出的顺序唤醒',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-11-04 11:40:02',
+  postMainColor: '',
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
         }
-        html[data-theme="dark"] body.custom-background {
-          background-image: url('/images/bg.webp');
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#18171d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f7f9fe')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(e => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
         }
       }
     
-    
-      .widget-kratos-about .photo-background {
-        background-image: url('/images/default.webp');
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
       }
-      html[data-theme="dark"] .widget-kratos-about .photo-background {
-        background-image: url('/images/default.webp');
-      }
-    
-  </style>
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.3.0"></head><body data-type="anzhiyu"><div id="web_bg"></div><div id="an_music_bg"></div><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><img class="loading-img nolazyload" alt="加载头像" src="/images/star.png"/><div class="loading-image-dot"></div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.getElementById('loading-box').classList.add("loaded");
+  },
+  initLoading: () => {
+    document.getElementById('loading-box').classList.remove("loaded")
+  }
+}
+window.addEventListener('load',()=> { preloader.endLoading() })
+setTimeout(function(){preloader.endLoading();},10000)
 
-  <!-- 额外的追加注入项 -->
-  
-    <link rel="stylesheet" href="/css/custom.css">
-
-  
-<meta name="generator" content="Hexo 7.3.0"></head>
-
-    <body class="custom-background">
-        <div id="kratos-wrapper">
-    <div id="kratos-page">
-        <div id="kratos-header">
-            <header id="kratos-desktop-topnav" class="kratos-topnav">
-                <div class="container">
-                    <div class="nav-header">
-                        <nav id="kratos-menu-wrap">
-                            <ul id="kratos-primary-menu" class="sf-menu">
-                                
-                                    <li>
-                                        
-                                            <a href="/">
-                                        
-                                            
-                                                <i class="fa fa-home"></i>
-                                            
-                                            首页
-                                        </a>
-                                        
-                                    </li>
-                                
-                            </ul>
-                        </nav>
-                    </div>
-                </div>
-            </header>
-            <header id="kratos-mobile-topnav" class="kratos-topnav">
-                <div class="container">
-                    <div class="color-logo"><a href="/">XIAOYAN</a></div>
-                    <div id="kratos-nav-toggle-wrapper" class="nav-toggle">
-                        <a id="kratos-nav-toggle" class="kratos-nav-toggle">
-                            <i></i>
-                        </a>
-                    </div>
-                </div>
-            </header>
-        </div>
-        <div class="kratos-start kratos-hero-2">
-            <!-- <div class="kratos-overlay"></div> -->
-            <div class="kratos-cover kratos-cover-2 text-center">
-                <div class="desc desc2 animate-box">
-                    <a href="/">
-                        <h2>XIAOYAN</h2> <br />
-                        <span>山重水复疑无路，柳暗花明又一村。</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <div id="kratos-blog-post">
-            <div class="container">
-                <div id="main" class="row">
-
-
-        
-
-            
-
-            <section class="kr-main-col col-md-8">
-
-        
-
-            <article itemscope itemtype="https://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/10/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%AF%87/">
-    <div class="kratos-hentry kratos-page-inner clearfix">
-        <header class="kratos-page-header">
-            
-                <h1 class="kratos-page-title text-center" itemprop="name headline">Java并发编程-多线程篇</h1>
-            
-            <ul class="kratos-page-meta text-center">
-                <li><time datetime="2024-09-10T00:08:08.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2024-09-10</time></li>
-                <li itemprop="author" itemscope itemtype="https://schema.org/Person">
-                    <i class="fa fa-user"></i> 作者 <span itemprop="name">xiaoyan</span>
-                </li>
-                
-                    <li>
-                        <i class="fa fa-edit"></i> 
-                        
-                        
-                            ~15.95K
-                        
-                        字
-                    </li>
-                
-                
-                
-            </ul>
-        </header>
-        <div class="kratos-page-content kr-post">
-            
-            
-            
-                <div class="kratos-post-inner-toc toc-div-class" >
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Java%E4%B8%AD%E7%9A%84%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%8E%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%B8%AD%E7%9A%84%E5%A4%9A%E7%BA%BF%E7%A8%8B"><span class="toc-number">1.</span> <span class="toc-text">Java中的多线程与操作系统中的多线程</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%A4%9A%E7%BA%BF%E7%A8%8B%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">2.</span> <span class="toc-text">使用多线程需要注意的问题</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Java%E4%B8%AD%E4%BF%9D%E8%AF%81%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7%E7%9A%84%E7%A7%91%E5%AD%A6%E6%96%B9%E6%A1%88"><span class="toc-number">3.</span> <span class="toc-text">Java中保证数据一致性的科学方案</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8B%E5%8A%A1%E7%AE%A1%E7%90%86"><span class="toc-number">3.1.</span> <span class="toc-text">事务管理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%94%81%E6%9C%BA%E5%88%B6"><span class="toc-number">3.2.</span> <span class="toc-text">锁机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6"><span class="toc-number">3.3.</span> <span class="toc-text">版本控制</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B"><span class="toc-number">4.</span> <span class="toc-text">如何创建线程</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E5%90%AF%E5%8A%A8-%E5%85%B3%E9%97%AD%E7%BA%BF%E7%A8%8B%EF%BC%9F"><span class="toc-number">5.</span> <span class="toc-text">如何启动&#x2F;关闭线程？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%B0%83%E7%94%A8-interrupt-%E5%A6%82%E4%BD%95%E8%AE%A9%E7%BA%BF%E7%A8%8B%E6%8A%9B%E5%87%BA%E5%BC%82%E5%B8%B8"><span class="toc-number">6.</span> <span class="toc-text">调用 interrupt 如何让线程抛出异常</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%AD%E6%96%AD%E6%9C%BA%E5%88%B6%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="toc-number">6.1.</span> <span class="toc-text">中断机制的工作原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B3%E9%94%AE%E7%82%B9%E8%A7%A3%E6%9E%90"><span class="toc-number">6.2.</span> <span class="toc-text">关键点解析</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Java-%E7%BA%BF%E7%A8%8B%E7%8A%B6%E6%80%81%E8%AF%A6%E8%A7%A3"><span class="toc-number">7.</span> <span class="toc-text">Java 线程状态详解</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8A%B6%E6%80%81"><span class="toc-number">7.1.</span> <span class="toc-text">状态</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#notify-%E5%92%8C-notifyAll-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">7.2.</span> <span class="toc-text">notify 和 notifyAll 的区别</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#notify"><span class="toc-number">7.2.1.</span> <span class="toc-text">notify</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#notifyAll"><span class="toc-number">7.2.2.</span> <span class="toc-text">notifyAll</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#wait-%E5%92%8C-sleep-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">7.3.</span> <span class="toc-text">wait 和 sleep 的区别</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#wait"><span class="toc-number">7.3.1.</span> <span class="toc-text">wait</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sleep"><span class="toc-number">7.3.2.</span> <span class="toc-text">sleep</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#notify%E4%BC%9A%E5%94%A4%E9%86%92%E5%93%AA%E4%B8%AA%E7%BA%BF%E7%A8%8B%EF%BC%9F"><span class="toc-number">7.4.</span> <span class="toc-text">notify会唤醒哪个线程？</span></a></li></ol></li></ol>
-                </div>
-            
-            <hr />
-            <div itemprop="articleBody"><p>Java作为一门广泛使用的编程语言，提供了丰富的多线程编程接口和工具，使得开发者能够轻松地创建和管理线程。然而，多线程编程并非易事，它涉及到线程的创建、启动、关闭、同步等多个复杂问题。本文将深入探讨Java中的多线程编程，涵盖线程的基本概念、线程与操作系统的关系、线程的创建和管理方法。</p>
+if (true) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.10/progress_bar/progress_bar.css"/><script async="async" src="https://cdn.cbd.int/pace-js@1.2.4/pace.min.js" data-pace-options="{ &quot;restartOnRequestAfter&quot;:false,&quot;eventLag&quot;:false}"></script><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><div id="nav-group"><span id="blog_name"><a id="site-name" href="/" accesskey="h"><div class="title">XIAOYAN</div><i class="anzhiyufont anzhiyu-icon-house-chimney"></i></a></span><div class="mask-name-container"><div id="name-container"><a id="page-name" href="javascript:anzhiyu.scrollToDest(0, 500)">PAGE_NAME</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 隧道</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/music/?id=12613265870&amp;server=netease"><i class="anzhiyufont anzhiyu-icon-music faa-tada" style="font-size: 0.9em;"></i><span> 音乐馆</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li></ul></div></div></div><div id="nav-right"><div class="nav-button" id="randomPost_button"><a class="site-page" onclick="toRandomPost()" title="随机前往一个文章" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-dice"></i></a></div><input id="center-console" type="checkbox"/><label class="widget" for="center-console" title="中控台" onclick="anzhiyu.switchConsole();"><i class="left"></i><i class="widget center"></i><i class="widget right"></i></label><div id="console"><div class="console-card-group-reward"><ul class="reward-all console-card"><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png" target="_blank"><img class="post-qr-code-img" alt="微信" src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png" target="_blank"><img class="post-qr-code-img" alt="支付宝" src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div><div class="console-card-group"><div class="console-card-group-left"><div class="console-card" id="card-newest-comments"><div class="card-content"><div class="author-content-item-tips">互动</div><span class="author-content-item-title"> 最新评论</span></div><div class="aside-list"><span>正在加载中...</span></div></div></div><div class="console-card-group-right"><div class="console-card tags"><div class="card-content"><div class="author-content-item-tips">兴趣点</div><span class="author-content-item-title">寻找你感兴趣的领域</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/AOP/" style="font-size: 1.05rem;">AOP<sup>1</sup></a><a href="/tags/Bean/" style="font-size: 1.05rem;">Bean<sup>1</sup></a><a href="/tags/DDD/" style="font-size: 1.05rem;">DDD<sup>1</sup></a><a href="/tags/IoC/" style="font-size: 1.05rem;">IoC<sup>1</sup></a><a href="/tags/Java8%E6%96%B0%E7%89%B9%E6%80%A7/" style="font-size: 1.05rem;">Java8新特性<sup>1</sup></a><a href="/tags/Java%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" style="font-size: 1.05rem;">Java基本概念<sup>1</sup></a><a href="/tags/List/" style="font-size: 1.05rem;">List<sup>1</sup></a><a href="/tags/Map/" style="font-size: 1.05rem;">Map<sup>2</sup></a><a href="/tags/MyBatis/" style="font-size: 1.05rem;">MyBatis<sup>1</sup></a><a href="/tags/MySQL%E5%9F%BA%E7%A1%80/" style="font-size: 1.05rem;">MySQL基础<sup>1</sup></a><a href="/tags/Object/" style="font-size: 1.05rem;">Object<sup>1</sup></a><a href="/tags/SQL%E8%B0%83%E4%BC%98/" style="font-size: 1.05rem;">SQL调优<sup>1</sup></a><a href="/tags/Set/" style="font-size: 1.05rem;">Set<sup>1</sup></a><a href="/tags/SpringBoot/" style="font-size: 1.05rem;">SpringBoot<sup>1</sup></a><a href="/tags/SpringCloud/" style="font-size: 1.05rem;">SpringCloud<sup>1</sup></a><a href="/tags/%E4%BA%8B%E5%8A%A1/" style="font-size: 1.05rem;">事务<sup>2</sup></a><a href="/tags/%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/" style="font-size: 1.05rem;">内存模型<sup>1</sup></a><a href="/tags/%E5%8F%8D%E5%B0%84/" style="font-size: 1.05rem;">反射<sup>1</sup></a><a href="/tags/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/" style="font-size: 1.05rem;">垃圾回收<sup>1</sup></a><a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 1.05rem;">多线程<sup>1</sup></a><a href="/tags/%E5%AF%B9%E8%B1%A1/" style="font-size: 1.05rem;">对象<sup>1</sup></a><a href="/tags/%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8/" style="font-size: 1.05rem;">并发安全<sup>1</sup></a><a href="/tags/%E5%BA%8F%E5%88%97%E5%8C%96/" style="font-size: 1.05rem;">序列化<sup>1</sup></a><a href="/tags/%E5%BC%82%E5%B8%B8/" style="font-size: 1.05rem;">异常<sup>1</sup></a><a href="/tags/%E6%8B%B7%E8%B4%9D/" style="font-size: 1.05rem;">拷贝<sup>1</sup></a><a href="/tags/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" style="font-size: 1.05rem;">数据类型<sup>1</sup></a><a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 1.05rem;">数据结构<sup>1</sup></a><a href="/tags/%E6%97%A5%E5%BF%97/" style="font-size: 1.05rem;">日志<sup>2</sup></a><a href="/tags/%E6%9F%A5%E8%AF%A2/" style="font-size: 1.05rem;">查询<sup>1</sup></a><a href="/tags/%E6%B3%9B%E5%9E%8B/" style="font-size: 1.05rem;">泛型<sup>1</sup></a><a href="/tags/%E6%B3%A8%E8%A7%A3/" style="font-size: 1.05rem;">注解<sup>1</sup></a><a href="/tags/%E7%AD%96%E7%95%A5/" style="font-size: 1.05rem;">策略<sup>1</sup></a><a href="/tags/%E7%B1%BB%E5%88%9D%E5%A7%8B%E5%8C%96/" style="font-size: 1.05rem;">类初始化<sup>1</sup></a><a href="/tags/%E7%B1%BB%E5%8A%A0%E8%BD%BD/" style="font-size: 1.05rem;">类加载<sup>1</sup></a><a href="/tags/%E7%B4%A2%E5%BC%95/" style="font-size: 1.05rem;">索引<sup>2</sup></a><a href="/tags/%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B/" style="font-size: 1.05rem;">线程模型<sup>1</sup></a><a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 1.05rem;">线程池<sup>1</sup></a><a href="/tags/%E9%94%81/" style="font-size: 1.05rem;">锁<sup>2</sup></a><a href="/tags/%E9%9B%86%E7%BE%A4/" style="font-size: 1.05rem;">集群<sup>1</sup></a><a href="/tags/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/" style="font-size: 1.05rem;">面向对象<sup>1</sup></a></div></div><hr/></div></div><div class="console-card history"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-box-archiv"></i><span>文章</span></div><div class="card-archives"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-archive"></i><span>归档</span></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/11/"><span class="card-archive-list-date">November 2024</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">2</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/10/"><span class="card-archive-list-date">October 2024</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">13</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/09/"><span class="card-archive-list-date">September 2024</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">25</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/07/"><span class="card-archive-list-date">July 2024</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">4</span><span>篇</span></div></a></li></ul></div><hr/></div></div></div><div class="button-group"><div class="console-btn-item"><a class="darkmode_switchbutton" title="显示模式切换" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-moon"></i></a></div><div class="console-btn-item" id="consoleHideAside" onclick="anzhiyu.hideAsideBtn()" title="边栏显示控制"><a class="asideSwitch"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></a></div><div class="console-btn-item" id="consoleMusic" onclick="anzhiyu.musicToggle()" title="音乐开关"><a class="music-switch"><i class="anzhiyufont anzhiyu-icon-music"></i></a></div></div><div class="console-mask" onclick="anzhiyu.hideConsole()" href="javascript:void(0);"></div></div><div class="nav-button" id="nav-totop"><a class="totopbtn" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i><span id="percent" onclick="anzhiyu.scrollToDest(0,500)">0</span></a></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" title="切换"><i class="anzhiyufont anzhiyu-icon-bars"></i></a></div></div></div></nav><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original">原创</a><span class="post-meta-categories"><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-inbox post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/" itemprop="url">编程语言</a><i class="anzhiyufont anzhiyu-icon-angle-right post-meta-separator"></i><i class="anzhiyufont anzhiyu-icon-inbox post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/" itemprop="url">Java</a><i class="anzhiyufont anzhiyu-icon-angle-right post-meta-separator"></i><i class="anzhiyufont anzhiyu-icon-inbox post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" itemprop="url">并发编程</a></span><span class="article-meta tags"><a class="article-meta__tags" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>多线程</span></a></span></div></div><h1 class="post-title" itemprop="name headline">Java并发编程-多线程篇</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="anzhiyufont anzhiyu-icon-calendar-days post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" itemprop="dateCreated datePublished" datetime="2024-09-10T00:08:08.000Z" title="发表于 2024-09-10 08:08:08">2024-09-10</time><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-history post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" itemprop="dateCreated datePublished" datetime="2024-11-04T03:40:02.420Z" title="更新于 2024-11-04 11:40:02">2024-11-04</time></span></div><div class="meta-secondline"><span class="post-meta-separator">       </span><span class="post-meta-position" title="作者IP属地为桂林"><i class="anzhiyufont anzhiyu-icon-location-dot"></i>桂林</span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section><div id="post-top-cover"><img class="nolazyload" id="post-top-bg" src="/2024/09/10/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%AF%87/cover.png"></div></header><main id="blog-container"><div class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container" itemscope itemtype="http://example.com/2024/09/10/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%AF%87/"><header><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/" itemprop="url">编程语言</a><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/" itemprop="url">Java</a><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" itemprop="url">并发编程</a><a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" tabindex="-1" itemprop="url">多线程</a><h1 id="CrawlerTitle" itemprop="name headline">Java并发编程-多线程篇</h1><span itemprop="author" itemscope itemtype="http://schema.org/Person">xiaoyan</span><time itemprop="dateCreated datePublished" datetime="2024-09-10T00:08:08.000Z" title="发表于 2024-09-10 08:08:08">2024-09-10</time><time itemprop="dateCreated datePublished" datetime="2024-11-04T03:40:02.420Z" title="更新于 2024-11-04 11:40:02">2024-11-04</time></header><p>Java作为一门广泛使用的编程语言，提供了丰富的多线程编程接口和工具，使得开发者能够轻松地创建和管理线程。然而，多线程编程并非易事，它涉及到线程的创建、启动、关闭、同步等多个复杂问题。本文将深入探讨Java中的多线程编程，涵盖线程的基本概念、线程与操作系统的关系、线程的创建和管理方法。</p>
 <span id="more"></span>
 
 <h1 id="Java中的多线程与操作系统中的多线程"><a href="#Java中的多线程与操作系统中的多线程" class="headerlink" title="Java中的多线程与操作系统中的多线程"></a>Java中的多线程与操作系统中的多线程</h1><p>在探讨Java中的多线程与操作系统中的多线程之间的关系时，我们首先需要理解两者在底层实现上的联系。尽管Java语言本身提供了丰富的多线程编程接口，但其底层实现依赖于操作系统的线程机制。</p>
@@ -280,19 +294,6 @@
 
 <p><strong>优点</strong>：提高线程的复用性和管理性，减少线程创建和销毁的开销。适用于需要管理多个线程的场景。</p>
 <p><strong>缺点</strong>：代码相对复杂，需要理解线程池的概念和配置。</p>
-<div class="panel panel-info">
-    <div class="panel-title"><i class="fa fa-info"></i>总结</div>
-    <div class="panel-body">
-        <ul>
-<li><strong>继承 <code>Thread</code> 类</strong>：适用于简单的线程创建，但无法继承其他类。</li>
-<li><strong>实现 <code>Runnable</code> 接口</strong>：适用于需要实现多线程的场景，并且可以继承其他类。</li>
-<li>**实现 <code>Callable</code> 和 <code>FutureTask</code>**：适用于需要返回结果或抛出异常的线程。</li>
-<li><strong>使用线程池（Executor）</strong>：适用于需要管理多个线程的场景，提高线程的复用性和管理性。</li>
-</ul>
-
-    </div>
-    </div>
-
 <h1 id="如何启动-关闭线程？"><a href="#如何启动-关闭线程？" class="headerlink" title="如何启动&#x2F;关闭线程？"></a>如何启动&#x2F;关闭线程？</h1><ol>
 <li><strong>启动线程</strong></li>
 </ol>
@@ -359,7 +360,7 @@
 </ul>
 <p>通过调用 <code>Thread.interrupt()</code> 方法，可以设置线程的中断状态，并根据线程当前的执行状态做出不同的响应。如果线程正在执行可中断方法，会立即抛出 <code>InterruptedException</code> 异常；否则，线程可以通过轮询中断状态来决定是否停止当前任务。这种机制确保了线程能够优雅地响应中断请求，避免资源泄露和不一致状态。</p>
 <h1 id="Java-线程状态详解"><a href="#Java-线程状态详解" class="headerlink" title="Java 线程状态详解"></a>Java 线程状态详解</h1><h2 id="状态"><a href="#状态" class="headerlink" title="状态"></a>状态</h2><p>在Java中，线程的生命周期可以通过其状态来描述。线程的状态反映了线程当前的执行情况和行为。Java线程的状态由 <code>Thread.State</code> 枚举类定义，主要包括以下几种状态：</p>
-<img src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409221039968.png" alt="Java线程状态" style="zoom:80%;">
+<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409221039968.png" alt="Java线程状态" style="zoom:80%;">
 
 <ol>
 <li><strong>NEW（新建）</strong></li>
@@ -434,16 +435,6 @@
 <p>以下是一个示例代码，展示了 <code>notify</code> 和 <code>notifyAll</code> 的区别：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">NotifyExample</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">        <span class="type">Object</span> <span class="variable">lock</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Object</span>();</span><br><span class="line"></span><br><span class="line">        <span class="type">Thread</span> <span class="variable">thread1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    System.out.println(<span class="string">&quot;Thread 1 is waiting...&quot;</span>);</span><br><span class="line">                    lock.wait();</span><br><span class="line">                    System.out.println(<span class="string">&quot;Thread 1 is awake.&quot;</span>);</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="type">Thread</span> <span class="variable">thread2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    System.out.println(<span class="string">&quot;Thread 2 is waiting...&quot;</span>);</span><br><span class="line">                    lock.wait();</span><br><span class="line">                    System.out.println(<span class="string">&quot;Thread 2 is awake.&quot;</span>);</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        thread1.start();</span><br><span class="line">        thread2.start();</span><br><span class="line"></span><br><span class="line">        Thread.sleep(<span class="number">1000</span>); <span class="comment">// 主线程等待 1 秒</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">            <span class="comment">// lock.notify(); // 只唤醒一个线程</span></span><br><span class="line">            lock.notifyAll(); <span class="comment">// 唤醒所有线程</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<div class="panel panel-info">
-    <div class="panel-title"><i class="fa fa-info"></i>总结</div>
-    <div class="panel-body">
-        <ul>
-<li>**<code>notify</code>**：适用于只需要唤醒一个线程的场景，但需要注意其他线程可能会一直等待。</li>
-<li>**<code>notifyAll</code>**：适用于需要唤醒所有线程的场景，确保所有线程都有机会竞争锁。</li>
-</ul>
-
-    </div>
-    </div>
 
 <h2 id="wait-和-sleep-的区别"><a href="#wait-和-sleep-的区别" class="headerlink" title="wait 和 sleep 的区别"></a>wait 和 sleep 的区别</h2><p><code>wait</code> 和 <code>sleep</code> 都是用于线程的等待操作，但它们的行为和使用场景有所不同。</p>
 <h3 id="wait"><a href="#wait" class="headerlink" title="wait"></a>wait</h3><ul>
@@ -469,444 +460,83 @@
 <p>以下是一个示例代码，展示了 <code>wait</code> 和 <code>sleep</code> 的区别：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">WaitSleepExample</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">        <span class="type">Object</span> <span class="variable">lock</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Object</span>();</span><br><span class="line"></span><br><span class="line">        <span class="type">Thread</span> <span class="variable">waitThread</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    System.out.println(<span class="string">&quot;Wait thread is waiting...&quot;</span>);</span><br><span class="line">                    lock.wait(<span class="number">2000</span>); <span class="comment">// 进入 WAITING 状态，释放锁</span></span><br><span class="line">                    System.out.println(<span class="string">&quot;Wait thread is awake.&quot;</span>);</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="type">Thread</span> <span class="variable">sleepThread</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    System.out.println(<span class="string">&quot;Sleep thread is sleeping...&quot;</span>);</span><br><span class="line">                    Thread.sleep(<span class="number">2000</span>); <span class="comment">// 进入 TIMED_WAITING 状态，不释放锁</span></span><br><span class="line">                    System.out.println(<span class="string">&quot;Sleep thread is awake.&quot;</span>);</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        waitThread.start();</span><br><span class="line">        sleepThread.start();</span><br><span class="line"></span><br><span class="line">        Thread.sleep(<span class="number">1000</span>); <span class="comment">// 主线程等待 1 秒</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">synchronized</span> (lock) &#123;</span><br><span class="line">            lock.notify(); <span class="comment">// 唤醒 waitThread</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<div class="panel panel-info">
-    <div class="panel-title"><i class="fa fa-info"></i>总结</div>
-    <div class="panel-body">
-        <ul>
-<li>**<code>wait</code>**：适用于需要在同步代码块中等待并释放锁的场景，通常用于线程间的协调和通信。</li>
-<li>**<code>sleep</code>**：适用于需要暂停线程执行一段时间的场景，不会释放锁，通常用于简单的延迟操作。</li>
-</ul>
-
-    </div>
-    </div>
 
 <h2 id="notify会唤醒哪个线程？"><a href="#notify会唤醒哪个线程？" class="headerlink" title="notify会唤醒哪个线程？"></a>notify会唤醒哪个线程？</h2><p>查看源码注释：</p>
-<img src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409221110284.png" alt="notify()" style="zoom:67%;">
+<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409221110284.png" alt="notify()" style="zoom:67%;">
 
 <p>大致的意思是：</p>
 <p>唤醒一个正在等待该对象监视器的单个线程。如果有任何线程正在等待该对象，其中一个线程将被选择并唤醒。<strong>选择是任意的，并由实现自行决定</strong>。线程通过调用其中一个 <code>wait</code> 方法来等待对象的监视器。</p>
 <p>也就是说，依赖于JVM的具体实现。JVM有很多实现，比较流行的就是hotspot，hotspot对notofy0的实现并不是我们以为的随机唤醒，而是“先进先出”的顺序唤醒。</p>
-</div>
-        </div>
-        
-        <footer class="kratos-entry-footer clearfix">
-            
-            
-            
-                <div class="post-actions text-center clearfix" id="post-actions">
-                
-                    <a class="donate" href="javascript:;" onclick="krOpenDonateModal()"><i class="fa fa-bitcoin"></i> 打赏</a>
-                
-                
-                    <a class="share" href="javascript:;" onclick="krOpenShareModal()"><i class="fa fa-share-alt"></i> 分享</a>
-                
-                </div>
-            
-            <div class="footer-tag clearfix">
-                <div class="pull-left">
-                <i class="fa fa-tags"></i>
-                    <a class="tag-none-link" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" rel="tag">多线程</a>
-                </div>
-                <div class="pull-date">
-                    <time datetime="2024-11-02T11:03:38.516Z" itemprop="dateModified">最后编辑：2024-11-02</time>
-                </div>
-            </div>
-        </footer>
-    </div>
-    
-        <nav class="navigation post-navigation clearfix" role="navigation">
-            
-            <div class="nav-previous clearfix">
-                <a title=" Java集合-Set篇" href="/2024/09/09/Java集合-Set篇/"><i class="fa fa-angle-left"></i> 上一篇</a>
-            </div>
-            
-            
-            <div class="nav-next clearfix">
-                <a title=" Java并发编程-并发安全篇" href="/2024/09/10/Java并发编程-并发安全篇/">下一篇 <i class="fa fa-angle-right"></i></a>
-            </div>
-            
-        </nav>
-    
-    
-</article>
+</article><div class="post-copyright"><div class="copyright-cc-box"><i class="anzhiyufont anzhiyu-icon-copyright"></i></div><div class="post-copyright__author_box"><a class="post-copyright__author_img" href="/" title="头像"><img class="post-copyright__author_img_back" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/images/user.jpg" title="头像" alt="头像"><img class="post-copyright__author_img_front" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/images/user.jpg" title="头像" alt="头像"></a><div class="post-copyright__author_name">xiaoyan</div><div class="post-copyright__author_desc">无限进步。</div></div><div class="post-copyright__post__info"><a class="post-copyright__original" title="该文章为原创文章，注意版权协议" href="http://example.com/2024/09/10/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%AF%87/">原创</a><a class="post-copyright-title"><span onclick="rm.copyPageUrl('http://example.com/2024/09/10/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%AF%87/')">Java并发编程-多线程篇</span></a></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div class="rewardLeftButton"></div><div class="shareRight"><div class="share-link mobile"><div class="share-qrcode"><div class="share-button" title="使用手机访问这篇文章"><i class="anzhiyufont anzhiyu-icon-qrcode"></i></div><div class="share-main"><div class="share-main-all"><div id="qrcode" title="http://example.com/2024/09/10/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%AF%87/"></div><div class="reward-dec">使用手机访问这篇文章</div></div></div></div></div><div class="share-link weibo"><a class="share-button" target="_blank" href="https://service.weibo.com/share/share.php?title=Java并发编程-多线程篇&amp;url=http://example.com/2024/09/10/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%AF%87/&amp;pic=/2024/09/10/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%AF%87/cover.png" rel="external nofollow noreferrer noopener"><i class="anzhiyufont anzhiyu-icon-weibo"></i></a></div><script>function copyCurrentPageUrl() {
+  var currentPageUrl = window.location.href;
+  var input = document.createElement("input");
+  input.setAttribute("value", currentPageUrl);
+  document.body.appendChild(input);
+  input.select();
+  input.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+  document.body.removeChild(input);
+}</script><div class="share-link copyurl"><div class="share-button" id="post-share-url" title="复制链接" onclick="copyCurrentPageUrl()"><i class="anzhiyufont anzhiyu-icon-link"></i></div></div></div></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">XIAOYAN</a>！</span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__box"><div class="post-meta__box__category-list"><a class="post-meta__box__categoryes" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/"><span class="categoryes-punctuation"> <i class="anzhiyufont anzhiyu-icon-inbox"></i></span>编程语言<span class="categoryesPageCount">21</span></a><a class="post-meta__box__categoryes" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/"><span class="categoryes-punctuation"> <i class="anzhiyufont anzhiyu-icon-inbox"></i></span>Java<span class="categoryesPageCount">20</span></a><a class="post-meta__box__categoryes" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"><span class="categoryes-punctuation"> <i class="anzhiyufont anzhiyu-icon-inbox"></i></span>并发编程<span class="categoryesPageCount">3</span></a></div><div class="post-meta__box__tag-list"><a class="post-meta__box__tags" href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>多线程<span class="tagsPageCount">1</span></a></div></div><div class="post_share"><div class="social-share" data-image="https://pic1.zhimg.com/v2-b76d79b11c3e8dd25f3c6abae8889a88_720w.jpg?source=172ae18b" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"/><script src="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer="defer"></script></div></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2024/09/09/Java%E9%9B%86%E5%90%88-Set%E7%AF%87/"><img class="prev-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/2024/09/09/Java%E9%9B%86%E5%90%88-Set%E7%AF%87/cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Java集合-Set篇</div></div></a></div><div class="next-post pull-right"><a href="/2024/09/10/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8%E7%AF%87/"><img class="next-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/2024/09/10/Java%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8%E7%AF%87/cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Java并发编程-并发安全篇</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="author-info-avatar"><img class="avatar-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/images/user.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__description">是一只时时翻垃圾吃的宅子。</div><div class="author-info__bottom-group"><a class="author-info__bottom-group-left" href="/"><h1 class="author-info__name">xiaoyan</h1><div class="author-info__desc">无限进步。</div></a><div class="card-info-social-icons is-center"><a class="social-icon faa-parent animated-hover" href="https://github.com/xiaoyanfufu" target="_blank" title="Github"><i class="anzhiyufont anzhiyu-icon-github"></i></a><a class="social-icon faa-parent animated-hover" href="https://space.bilibili.com/483597064" target="_blank" title="BiliBili"><i class="anzhiyufont anzhiyu-icon-bilibili"></i></a></div></div></div></div><div class="card-widget anzhiyu-right-widget" id="card-wechat" onclick="null"><div id="flip-wrapper"><div id="flip-content"><div class="face" style="background: url(https://bu.dusays.com/2023/01/13/63c02edf44033.png) center center / 100% no-repeat"></div><div class="back face" style="background: url(https://bu.dusays.com/2023/05/13/645fa415e8694.png) center center / 100% no-repeat"></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-bars"></i><span>文章目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Java%E4%B8%AD%E7%9A%84%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%8E%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%B8%AD%E7%9A%84%E5%A4%9A%E7%BA%BF%E7%A8%8B"><span class="toc-number">1.</span> <span class="toc-text">Java中的多线程与操作系统中的多线程</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%A4%9A%E7%BA%BF%E7%A8%8B%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">2.</span> <span class="toc-text">使用多线程需要注意的问题</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Java%E4%B8%AD%E4%BF%9D%E8%AF%81%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7%E7%9A%84%E7%A7%91%E5%AD%A6%E6%96%B9%E6%A1%88"><span class="toc-number">3.</span> <span class="toc-text">Java中保证数据一致性的科学方案</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8B%E5%8A%A1%E7%AE%A1%E7%90%86"><span class="toc-number">3.1.</span> <span class="toc-text">事务管理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%94%81%E6%9C%BA%E5%88%B6"><span class="toc-number">3.2.</span> <span class="toc-text">锁机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6"><span class="toc-number">3.3.</span> <span class="toc-text">版本控制</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B"><span class="toc-number">4.</span> <span class="toc-text">如何创建线程</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E5%90%AF%E5%8A%A8-%E5%85%B3%E9%97%AD%E7%BA%BF%E7%A8%8B%EF%BC%9F"><span class="toc-number">5.</span> <span class="toc-text">如何启动&#x2F;关闭线程？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%B0%83%E7%94%A8-interrupt-%E5%A6%82%E4%BD%95%E8%AE%A9%E7%BA%BF%E7%A8%8B%E6%8A%9B%E5%87%BA%E5%BC%82%E5%B8%B8"><span class="toc-number">6.</span> <span class="toc-text">调用 interrupt 如何让线程抛出异常</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%AD%E6%96%AD%E6%9C%BA%E5%88%B6%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="toc-number">6.1.</span> <span class="toc-text">中断机制的工作原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B3%E9%94%AE%E7%82%B9%E8%A7%A3%E6%9E%90"><span class="toc-number">6.2.</span> <span class="toc-text">关键点解析</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Java-%E7%BA%BF%E7%A8%8B%E7%8A%B6%E6%80%81%E8%AF%A6%E8%A7%A3"><span class="toc-number">7.</span> <span class="toc-text">Java 线程状态详解</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8A%B6%E6%80%81"><span class="toc-number">7.1.</span> <span class="toc-text">状态</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#notify-%E5%92%8C-notifyAll-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">7.2.</span> <span class="toc-text">notify 和 notifyAll 的区别</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#notify"><span class="toc-number">7.2.1.</span> <span class="toc-text">notify</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#notifyAll"><span class="toc-number">7.2.2.</span> <span class="toc-text">notifyAll</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#wait-%E5%92%8C-sleep-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">7.3.</span> <span class="toc-text">wait 和 sleep 的区别</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#wait"><span class="toc-number">7.3.1.</span> <span class="toc-text">wait</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sleep"><span class="toc-number">7.3.2.</span> <span class="toc-text">sleep</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#notify%E4%BC%9A%E5%94%A4%E9%86%92%E5%93%AA%E4%B8%AA%E7%BA%BF%E7%A8%8B%EF%BC%9F"><span class="toc-number">7.4.</span> <span class="toc-text">notify会唤醒哪个线程？</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-history"></i><span>最近发布</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/11/03/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BC%98%E5%8C%96-%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/" title="数据库优化-分库分表"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://pic1.zhimg.com/v2-b76d79b11c3e8dd25f3c6abae8889a88_720w.jpg?source=172ae18b" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="数据库优化-分库分表"/></a><div class="content"><a class="title" href="/2024/11/03/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BC%98%E5%8C%96-%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/" title="数据库优化-分库分表">数据库优化-分库分表</a><time datetime="2024-11-03T08:20:54.000Z" title="发表于 2024-11-03 16:20:54">2024-11-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/11/03/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BC%98%E5%8C%96-%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB%E4%B8%8E%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB/" title="数据库优化-读写分离与冷热分离"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202411041125092.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="数据库优化-读写分离与冷热分离"/></a><div class="content"><a class="title" href="/2024/11/03/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BC%98%E5%8C%96-%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB%E4%B8%8E%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB/" title="数据库优化-读写分离与冷热分离">数据库优化-读写分离与冷热分离</a><time datetime="2024-11-03T08:18:25.000Z" title="发表于 2024-11-03 16:18:25">2024-11-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/10/28/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86/" title="操作系统-进程管理"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202410282316960.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="操作系统-进程管理"/></a><div class="content"><a class="title" href="/2024/10/28/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86/" title="操作系统-进程管理">操作系统-进程管理</a><time datetime="2024-10-28T14:52:35.000Z" title="发表于 2024-10-28 22:52:35">2024-10-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/10/27/%E5%88%86%E5%B8%83%E5%BC%8F-%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" title="分布式-分布式事务"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202410281041645.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="分布式-分布式事务"/></a><div class="content"><a class="title" href="/2024/10/27/%E5%88%86%E5%B8%83%E5%BC%8F-%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" title="分布式-分布式事务">分布式-分布式事务</a><time datetime="2024-10-27T13:08:20.000Z" title="发表于 2024-10-27 21:08:20">2024-10-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/10/21/%E5%88%86%E5%B8%83%E5%BC%8F-%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%EF%BC%88%E4%B8%8B%EF%BC%89/" title="分布式-服务治理（下）"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202410272103963.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="分布式-服务治理（下）"/></a><div class="content"><a class="title" href="/2024/10/21/%E5%88%86%E5%B8%83%E5%BC%8F-%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%EF%BC%88%E4%B8%8B%EF%BC%89/" title="分布式-服务治理（下）">分布式-服务治理（下）</a><time datetime="2024-10-21T07:24:49.000Z" title="发表于 2024-10-21 15:24:49">2024-10-21</time></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div id="footer-bar-tips"><div class="copyright">&copy;2024 By <a class="footer-bar-link" href="/" title="xiaoyan" target="_blank">xiaoyan</a></div></div><div id="footer-type-tips"></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/anzhiyu-c/hexo-theme-anzhiyu" title="主题">主题</a></div></div></div></footer></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="sidebar-site-data site-data is-center"><a href="/archives/" title="archive"><div class="headline">文章</div><div class="length-num">44</div></a><a href="/tags/" title="tag"><div class="headline">标签</div><div class="length-num">65</div></a><a href="/categories/" title="category"><div class="headline">分类</div><div class="length-num">17</div></a></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><a class="darkmode_switchbutton menu-child" href="javascript:void(0);" title="显示模式"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span>显示模式</span></a></div><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">网页</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://blog.anheyu.com/" title="博客"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/favicon.ico" alt="博客"/><span class="back-menu-item-text">博客</span></a></div></div><div class="back-menu-list-group"><div class="back-menu-list-title">项目</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://image.anheyu.com/" title="安知鱼图床"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://image.anheyu.com/favicon.ico" alt="安知鱼图床"/><span class="back-menu-item-text">安知鱼图床</span></a></div></div></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 隧道</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/music/?id=12613265870&amp;server=netease"><i class="anzhiyufont anzhiyu-icon-music faa-tada" style="font-size: 0.9em;"></i><span> 音乐馆</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li></ul></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/AOP/" style="font-size: 0.88rem;">AOP<sup>1</sup></a><a href="/tags/Bean/" style="font-size: 0.88rem;">Bean<sup>1</sup></a><a href="/tags/DDD/" style="font-size: 0.88rem;">DDD<sup>1</sup></a><a href="/tags/IoC/" style="font-size: 0.88rem;">IoC<sup>1</sup></a><a href="/tags/Java8%E6%96%B0%E7%89%B9%E6%80%A7/" style="font-size: 0.88rem;">Java8新特性<sup>1</sup></a><a href="/tags/Java%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" style="font-size: 0.88rem;">Java基本概念<sup>1</sup></a><a href="/tags/List/" style="font-size: 0.88rem;">List<sup>1</sup></a><a href="/tags/Map/" style="font-size: 0.88rem;">Map<sup>2</sup></a><a href="/tags/MyBatis/" style="font-size: 0.88rem;">MyBatis<sup>1</sup></a><a href="/tags/MySQL%E5%9F%BA%E7%A1%80/" style="font-size: 0.88rem;">MySQL基础<sup>1</sup></a><a href="/tags/Object/" style="font-size: 0.88rem;">Object<sup>1</sup></a><a href="/tags/SQL%E8%B0%83%E4%BC%98/" style="font-size: 0.88rem;">SQL调优<sup>1</sup></a><a href="/tags/Set/" style="font-size: 0.88rem;">Set<sup>1</sup></a><a href="/tags/SpringBoot/" style="font-size: 0.88rem;">SpringBoot<sup>1</sup></a><a href="/tags/SpringCloud/" style="font-size: 0.88rem;">SpringCloud<sup>1</sup></a><a href="/tags/%E4%BA%8B%E5%8A%A1/" style="font-size: 0.88rem;">事务<sup>2</sup></a><a href="/tags/%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/" style="font-size: 0.88rem;">内存模型<sup>1</sup></a><a href="/tags/%E5%8F%8D%E5%B0%84/" style="font-size: 0.88rem;">反射<sup>1</sup></a><a href="/tags/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/" style="font-size: 0.88rem;">垃圾回收<sup>1</sup></a><a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 0.88rem;">多线程<sup>1</sup></a><a href="/tags/%E5%AF%B9%E8%B1%A1/" style="font-size: 0.88rem;">对象<sup>1</sup></a><a href="/tags/%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8/" style="font-size: 0.88rem;">并发安全<sup>1</sup></a><a href="/tags/%E5%BA%8F%E5%88%97%E5%8C%96/" style="font-size: 0.88rem;">序列化<sup>1</sup></a><a href="/tags/%E5%BC%82%E5%B8%B8/" style="font-size: 0.88rem;">异常<sup>1</sup></a><a href="/tags/%E6%8B%B7%E8%B4%9D/" style="font-size: 0.88rem;">拷贝<sup>1</sup></a><a href="/tags/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" style="font-size: 0.88rem;">数据类型<sup>1</sup></a><a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 0.88rem;">数据结构<sup>1</sup></a><a href="/tags/%E6%97%A5%E5%BF%97/" style="font-size: 0.88rem;">日志<sup>2</sup></a><a href="/tags/%E6%9F%A5%E8%AF%A2/" style="font-size: 0.88rem;">查询<sup>1</sup></a><a href="/tags/%E6%B3%9B%E5%9E%8B/" style="font-size: 0.88rem;">泛型<sup>1</sup></a><a href="/tags/%E6%B3%A8%E8%A7%A3/" style="font-size: 0.88rem;">注解<sup>1</sup></a><a href="/tags/%E7%AD%96%E7%95%A5/" style="font-size: 0.88rem;">策略<sup>1</sup></a><a href="/tags/%E7%B1%BB%E5%88%9D%E5%A7%8B%E5%8C%96/" style="font-size: 0.88rem;">类初始化<sup>1</sup></a><a href="/tags/%E7%B1%BB%E5%8A%A0%E8%BD%BD/" style="font-size: 0.88rem;">类加载<sup>1</sup></a><a href="/tags/%E7%B4%A2%E5%BC%95/" style="font-size: 0.88rem;">索引<sup>2</sup></a><a href="/tags/%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B/" style="font-size: 0.88rem;">线程模型<sup>1</sup></a><a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 0.88rem;">线程池<sup>1</sup></a><a href="/tags/%E9%94%81/" style="font-size: 0.88rem;">锁<sup>2</sup></a><a href="/tags/%E9%9B%86%E7%BE%A4/" style="font-size: 0.88rem;">集群<sup>1</sup></a><a href="/tags/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/" style="font-size: 0.88rem;">面向对象<sup>1</sup></a></div></div><hr/></div></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="anzhiyufont anzhiyu-icon-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="anzhiyufont anzhiyu-icon-gear"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="anzhiyufont anzhiyu-icon-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></button></div></div><div id="nav-music"><a id="nav-music-hoverTips" onclick="anzhiyu.musicToggle()" accesskey="m">播放音乐</a><div id="console-music-bg"></div><meting-js id="8152976493" server="netease" type="playlist" mutex="true" preload="none" theme="var(--anzhiyu-main)" data-lrctype="0" order="random" volume="0.7"></meting-js></div><div id="rightMenu"><div class="rightMenu-group rightMenu-small"><div class="rightMenu-item" id="menu-backward"><i class="anzhiyufont anzhiyu-icon-arrow-left"></i></div><div class="rightMenu-item" id="menu-forward"><i class="anzhiyufont anzhiyu-icon-arrow-right"></i></div><div class="rightMenu-item" id="menu-refresh"><i class="anzhiyufont anzhiyu-icon-arrow-rotate-right" style="font-size: 1rem;"></i></div><div class="rightMenu-item" id="menu-top"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></div></div><div class="rightMenu-group rightMenu-line rightMenuPlugin"><div class="rightMenu-item" id="menu-copytext"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制选中文本</span></div><div class="rightMenu-item" id="menu-pastetext"><i class="anzhiyufont anzhiyu-icon-paste"></i><span>粘贴文本</span></div><a class="rightMenu-item" id="menu-commenttext"><i class="anzhiyufont anzhiyu-icon-comment-medical"></i><span>引用到评论</span></a><div class="rightMenu-item" id="menu-newwindow"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开</span></div><div class="rightMenu-item" id="menu-copylink"><i class="anzhiyufont anzhiyu-icon-link"></i><span>复制链接地址</span></div><div class="rightMenu-item" id="menu-copyimg"><i class="anzhiyufont anzhiyu-icon-images"></i><span>复制此图片</span></div><div class="rightMenu-item" id="menu-downloadimg"><i class="anzhiyufont anzhiyu-icon-download"></i><span>下载此图片</span></div><div class="rightMenu-item" id="menu-newwindowimg"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开图片</span></div><div class="rightMenu-item" id="menu-search"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>站内搜索</span></div><div class="rightMenu-item" id="menu-searchBaidu"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>百度搜索</span></div><div class="rightMenu-item" id="menu-music-toggle"><i class="anzhiyufont anzhiyu-icon-play"></i><span>播放音乐</span></div><div class="rightMenu-item" id="menu-music-back"><i class="anzhiyufont anzhiyu-icon-backward"></i><span>切换到上一首</span></div><div class="rightMenu-item" id="menu-music-forward"><i class="anzhiyufont anzhiyu-icon-forward"></i><span>切换到下一首</span></div><div class="rightMenu-item" id="menu-music-playlist" onclick="window.open(&quot;https://y.qq.com/n/ryqq/playlist/8802438608&quot;, &quot;_blank&quot;);" style="display: none;"><i class="anzhiyufont anzhiyu-icon-radio"></i><span>查看所有歌曲</span></div><div class="rightMenu-item" id="menu-music-copyMusicName"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制歌名</span></div></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item menu-link" id="menu-randomPost"><i class="anzhiyufont anzhiyu-icon-shuffle"></i><span>随便逛逛</span></a><a class="rightMenu-item menu-link" href="/categories/"><i class="anzhiyufont anzhiyu-icon-cube"></i><span>博客分类</span></a><a class="rightMenu-item menu-link" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags"></i><span>文章标签</span></a></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item" id="menu-copy" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制地址</span></a><a class="rightMenu-item" id="menu-commentBarrage" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-message"></i><span class="menu-commentBarrage-text">关闭热评</span></a><a class="rightMenu-item" id="menu-darkmode" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span class="menu-darkmode-text">深色模式</span></a><a class="rightMenu-item" id="menu-translate" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-language"></i><span>轉為繁體</span></a></div></div><div id="rightmenu-mask"></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.umd.js"></script><script src="https://cdn.cbd.int/instant.page@5.2.0/instantpage.js" type="module"></script><script src="https://cdn.cbd.int/vanilla-lazyload@17.8.5/dist/lazyload.iife.min.js"></script><script src="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.js"></script><canvas id="universe"></canvas><script async src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/dark/dark.js"></script><script async src="/anzhiyu/random.js"></script><div class="js-pjax"><input type="hidden" name="page-type" id="page-type" value="post"></div><script>var visitorMail = "";
+</script><script async data-pjax src="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/waterfall/waterfall.js"></script><script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/qrcodejs/1.0.0/qrcode.min.js"></script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.9/icon/ali_iconfont_css.css"><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/aplayer/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.cbd.int/anzhiyu-blog-static@1.0.1/js/APlayer.min.js"></script><script src="https://cdn.cbd.int/hexo-anzhiyu-music@1.0.1/assets/js/Meting2.min.js"></script><script src="https://cdn.cbd.int/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
 
-        
+document.addEventListener('pjax:send', function () {
+  // removeEventListener scroll 
+  anzhiyu.removeGlobalFnEvent('pjax')
+  anzhiyu.removeGlobalFnEvent('themeChange')
 
-            </section>
-
-            
-                
-
-<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
-    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
-    
-    
-                <aside id="krw-about" class="widget widget-kratos-about clearfix">
-    <div class="photo-background"></div>
-    <div class="photo-wrapper clearfix">
-        <div class="photo-wrapper-tip text-center">
-            <img class="about-photo" src="/images/user.jpg" alt="xiaoyan" loading="lazy" decoding="auto" />
-        </div>
-    </div>
-    <div class="textwidget">
-        <p class="text-center">是一只时时翻垃圾吃的宅子。</p>
-    </div>
-    <div class="site-meta">
-        <a class="meta-item" href="/archives/">
-            <span class="title">
-                文章
-            </span>
-            <span class="count">
-                44
-            </span>
-        </a>
-        <a class="meta-item" href="/categories/">
-            <span class="title">
-                分类
-            </span>
-            <span class="count">
-                17
-            </span>
-        </a>
-        <a class="meta-item" href="/tags/">
-            <span class="title">
-                标签
-            </span>
-            <span class="count">
-                65
-            </span>
-        </a>
-    </div>
-</aside>
-            
-                    <div class="sticky-area">
-                
-                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix toc-div-class" >
-    <div class="photo-background"></div>
-    <h4 class="widget-title no-after">
-        <i class="fa fa-compass"></i>
-        文章目录
-        <span class="toc-progress-bar" role="progressbar" aria-label="阅读进度："></span>
-    </h4>
-    <div class="textwidget">
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Java%E4%B8%AD%E7%9A%84%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%8E%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%B8%AD%E7%9A%84%E5%A4%9A%E7%BA%BF%E7%A8%8B"><span class="toc-number">1.</span> <span class="toc-text">Java中的多线程与操作系统中的多线程</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%A4%9A%E7%BA%BF%E7%A8%8B%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">2.</span> <span class="toc-text">使用多线程需要注意的问题</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Java%E4%B8%AD%E4%BF%9D%E8%AF%81%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7%E7%9A%84%E7%A7%91%E5%AD%A6%E6%96%B9%E6%A1%88"><span class="toc-number">3.</span> <span class="toc-text">Java中保证数据一致性的科学方案</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8B%E5%8A%A1%E7%AE%A1%E7%90%86"><span class="toc-number">3.1.</span> <span class="toc-text">事务管理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%94%81%E6%9C%BA%E5%88%B6"><span class="toc-number">3.2.</span> <span class="toc-text">锁机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6"><span class="toc-number">3.3.</span> <span class="toc-text">版本控制</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B"><span class="toc-number">4.</span> <span class="toc-text">如何创建线程</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E5%90%AF%E5%8A%A8-%E5%85%B3%E9%97%AD%E7%BA%BF%E7%A8%8B%EF%BC%9F"><span class="toc-number">5.</span> <span class="toc-text">如何启动&#x2F;关闭线程？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%B0%83%E7%94%A8-interrupt-%E5%A6%82%E4%BD%95%E8%AE%A9%E7%BA%BF%E7%A8%8B%E6%8A%9B%E5%87%BA%E5%BC%82%E5%B8%B8"><span class="toc-number">6.</span> <span class="toc-text">调用 interrupt 如何让线程抛出异常</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%AD%E6%96%AD%E6%9C%BA%E5%88%B6%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="toc-number">6.1.</span> <span class="toc-text">中断机制的工作原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B3%E9%94%AE%E7%82%B9%E8%A7%A3%E6%9E%90"><span class="toc-number">6.2.</span> <span class="toc-text">关键点解析</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Java-%E7%BA%BF%E7%A8%8B%E7%8A%B6%E6%80%81%E8%AF%A6%E8%A7%A3"><span class="toc-number">7.</span> <span class="toc-text">Java 线程状态详解</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8A%B6%E6%80%81"><span class="toc-number">7.1.</span> <span class="toc-text">状态</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#notify-%E5%92%8C-notifyAll-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">7.2.</span> <span class="toc-text">notify 和 notifyAll 的区别</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#notify"><span class="toc-number">7.2.1.</span> <span class="toc-text">notify</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#notifyAll"><span class="toc-number">7.2.2.</span> <span class="toc-text">notifyAll</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#wait-%E5%92%8C-sleep-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">7.3.</span> <span class="toc-text">wait 和 sleep 的区别</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#wait"><span class="toc-number">7.3.1.</span> <span class="toc-text">wait</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sleep"><span class="toc-number">7.3.2.</span> <span class="toc-text">sleep</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#notify%E4%BC%9A%E5%94%A4%E9%86%92%E5%93%AA%E4%B8%AA%E7%BA%BF%E7%A8%8B%EF%BC%9F"><span class="toc-number">7.4.</span> <span class="toc-text">notify会唤醒哪个线程？</span></a></li></ol></li></ol>
-    </div>
-</aside>
-                
-                
-  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
-    <h4 class="widget-title"><i class="fa fa-folder"></i>分类列表</h4>
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93-%E7%BC%93%E5%AD%98/">数据库&缓存</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93-%E7%BC%93%E5%AD%98/MySQL/">MySQL</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93-%E7%BC%93%E5%AD%98/Redis/">Redis</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93-%E7%BC%93%E5%AD%98/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BC%98%E5%8C%96/">数据库优化</a><span class="category-list-count">2</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9E%B6%E6%9E%84/">架构</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/">编程语言</a><span class="category-list-count">21</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/">Java</a><span class="category-list-count">20</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/JVM/">JVM</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Spring/">Spring</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/%E5%9F%BA%E7%A1%80/">基础</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">并发编程</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/%E9%9B%86%E5%90%88/">集合</a><span class="category-list-count">5</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Python/">Python</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/">计算机基础</a><span class="category-list-count">6</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a><span class="category-list-count">5</span></li></ul></li></ul>
-  </aside>
-
-
-            
-                
-  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
-    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
-      <div class="tag-clouds">
-        <a href="/tags/AOP/" style="font-size: 0.6em;">AOP</a> <a href="/tags/BASE/" style="font-size: 0.6em;">BASE</a> <a href="/tags/Bean/" style="font-size: 0.6em;">Bean</a> <a href="/tags/CAP/" style="font-size: 0.6em;">CAP</a> <a href="/tags/Cookie/" style="font-size: 0.6em;">Cookie</a> <a href="/tags/DDD/" style="font-size: 0.6em;">DDD</a> <a href="/tags/DNS/" style="font-size: 0.6em;">DNS</a> <a href="/tags/HTTP/" style="font-size: 0.6em;">HTTP</a> <a href="/tags/I-O/" style="font-size: 0.6em;">I/O</a> <a href="/tags/IoC/" style="font-size: 0.6em;">IoC</a> <a href="/tags/JWT/" style="font-size: 0.6em;">JWT</a> <a href="/tags/Java8%E6%96%B0%E7%89%B9%E6%80%A7/" style="font-size: 0.6em;">Java8新特性</a> <a href="/tags/Java%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" style="font-size: 0.6em;">Java基本概念</a> <a href="/tags/List/" style="font-size: 0.6em;">List</a> <a href="/tags/Map/" style="font-size: 0.8em;">Map</a> <a href="/tags/MyBatis/" style="font-size: 0.6em;">MyBatis</a> <a href="/tags/MySQL%E5%9F%BA%E7%A1%80/" style="font-size: 0.6em;">MySQL基础</a> <a href="/tags/Nginx/" style="font-size: 0.6em;">Nginx</a>
-      </div>
-  </aside>
-
-            
-                
-  <aside id="krw-posts" class="widget widget-kratos-posts">
-  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
-  <div class="tab-content">
-      <ul class="list-group">
-        
-        
-          
-          
-            <a class="list-group-item" href="/2024/11/03/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BC%98%E5%8C%96-%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/"><i class="fa fa-book"></i> 数据库优化-分库分表</a>
-            
-          
-        
-          
-          
-            <a class="list-group-item" href="/2024/11/03/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BC%98%E5%8C%96-%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB%E4%B8%8E%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB/"><i class="fa fa-book"></i> 数据库优化-读写分离与冷热分离</a>
-            
-          
-        
-          
-          
-            <a class="list-group-item" href="/2024/10/28/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86/"><i class="fa fa-book"></i> 操作系统-进程管理</a>
-            
-          
-        
-          
-          
-            <a class="list-group-item" href="/2024/10/27/%E5%88%86%E5%B8%83%E5%BC%8F-%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/"><i class="fa fa-book"></i> 分布式-分布式事务</a>
-            
-          
-        
-          
-          
-            <a class="list-group-item" href="/2024/10/21/%E5%88%86%E5%B8%83%E5%BC%8F-%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%EF%BC%88%E4%B8%8B%EF%BC%89/"><i class="fa fa-book"></i> 分布式-服务治理（下）</a>
-            
-          
-        
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-      </ul>
-  </div>
-  </aside>
-
-            
-    </div>
-</section>
-            
-
-        
-
-                </div>
-    </div>
-</div>
-
-<footer>
-    <div id="footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 col-md-offset-3 footer-list text-center">
-                    <ul class="kratos-social-icons">
-                        
-                    </ul>
-                    <ul class="kratos-copyright">
-                        <div>
-                            <li>&copy; 2024 XIAOYAN 版权所有.</li>
-                            <li>本站已运行<span id="kr-since">Loading...</span></li>
-                        </div>
-                        <div>
-                            <li>自豪地使用 <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a> 主题</li>
-                            <li>站点由 xiaoyan 用 <i class="fa fa-heart" style="color:#d43f57"></i> 搭建</li>
-                        </div>
-                        <!-- 额外的追加注入项 -->
-                        
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="kr-tool text-center">
-            <div class="tool">
-                
-                    <div class="box search-box">
-                        <a href="/search">
-                            <span class="fa fa-search"></span>
-                        </a>
-                    </div>
-                
-                <div class="box theme-box" id="theme-toggle">
-                    <span class="fa fa-adjust"></span>
-                </div>
-            </div>
-            <div id="gotop-box" class="box gotop-box">
-                <span class="fa fa-chevron-up"></span>
-            </div>
-        </div>
-    </div>
-</footer>
-</div>
-</div>
-
-
-    <div id="kr-donate-modal" class="kr-modal">
-    <div class="kr-modal-bg" onclick="krCloseDonateModal()"></div>
-    <div class="kr-modal-content">
-        <div class="kr-modal-header">
-            <div class="kr-modal-icon">
-                <i class="fa fa-bitcoin"></i>
-            </div>
-            <div class="kr-modal-title">打赏</div>
-            <button class="kr-modal-close" onclick="krCloseDonateModal()">
-                <i class="fa fa-times-circle"></i>
-            </button>
-        </div>
-        <div class="kr-modal-body">
-            <div class="kr-donate-message">请我喝一杯冰阔咯~</div>
-            <div class="kr-donate-qr" id="kr-donate-qr">
-                
-            </div>
-            <div class="kr-donate-platforms">
-                
-                    
-                        <button class="kr-donate-platform-button" style="color: #1677ff;" title="支付宝" onclick="krDonateModalShowPlatformQR('https://qr.alipay.com/fkx15009k7u0fqrj8auepdf', '#1677ff')">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-alipay">
-  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-  <path d="M19 3h-14a2 2 0 0 0 -2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2 -2v-14a2 2 0 0 0 -2 -2z" />
-  <path d="M7 7h10" />
-  <path d="M12 3v7" />
-  <path d="M21 17.314c-2.971 -1.923 -15 -8.779 -15 -1.864c0 1.716 1.52 2.55 2.985 2.55c3.512 0 6.814 -5.425 6.814 -8h-6.604" />
-</svg>
-
-                        </button>
-                    
-                
-                    
-                        <button class="kr-donate-platform-button" style="color: #38ad5a;" title="微信支付" onclick="krDonateModalShowPlatformQR('wxp://f2f0hR4eF9Ypa3tpzjWme9fQDyWW3PIGe3WG5oiIakWLmDs', '#38ad5a')">
-                            <i class="fa fa-wechat"></i>
-                        </button>
-                    
-                
-            </div>
-        </div>
-    </div>
-</div>
-<script defer src="/js/kr-modal/donate.min.js"></script>
-
-
-
-
-    <div id="kr-share-modal" class="kr-modal">
-    <div class="kr-modal-bg" onclick="krCloseShareModal()"></div>
-    <div class="kr-modal-content">
-        <div class="kr-modal-header">
-            <div class="kr-modal-icon">
-                <i class="fa fa-share-alt"></i>
-            </div>
-            <div class="kr-modal-title">分享</div>
-            <button class="kr-modal-close" onclick="krCloseShareModal()">
-                <i class="fa fa-times-circle"></i>
-            </button>
-        </div>
-        <div class="kr-modal-body">
-            <div class="kr-share-message">让兄弟萌也来瞅一瞅！</div>
-            <div class="kr-share-qr" id="kr-share-qr"></div>
-            <div class="kr-share-platforms">
-                
-                    <button class="kr-share-platform-button" style="color: #e6162d;" title="QQ" onclick="krShareModalOpenPlatform('')">
-                        <i class="fa fa-qq"></i>
-                    </button>
-                
-                    <button class="kr-share-platform-button" style="color: #25d366;" title="微信" onclick="krShareModalOpenPlatform('')">
-                        <i class="fa fa-weixin"></i>
-                    </button>
-                
-            </div>
-        </div>
-    </div>
-</div>
-<script defer src="/js/kr-modal/share.min.js"></script>
-
-
-
-<!-- 额外的追加注入项 -->
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
-<meting-js
-  server="netease"
-  type="playlist"
-  fixed="true"
-  order="random"
-  id="12613265870">
-</meting-js>
-
-
-
-        <script>
-    if (!window.kr) {
-        window.kr = {};
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
     }
-    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
-    window.kr.siteRoot = "/";
-</script>
+  }
 
+  typeof typed === 'object' && typed.destroy()
 
-  <script defer src="/vendors/nprogress@0.2.0/nprogress.js"></script>
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+})
 
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
 
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
 
-  <script defer src="/vendors/viewerjs@1.11.6/dist/viewer.min.js"></script>
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
 
+  typeof panguInit === 'function' && panguInit()
 
-<script defer src="/js/kr-core.min.js"></script>
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
 
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
 
-  <script defer src="/js/kr-pjax.min.js"></script>
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
 
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
 
-<!-- 额外的追加注入项 -->
-
-  <script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
-
-
-
-    </body>
-</html>
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script charset="UTF-8" src="https://cdn.cbd.int/anzhiyu-theme-static@1.1.5/accesskey/accesskey.js"></script></div><div id="popup-window"><div class="popup-window-title">通知</div><div class="popup-window-divider"></div><div class="popup-window-content"><div class="popup-tip">你好呀</div><div class="popup-link"><i class="anzhiyufont anzhiyu-icon-arrow-circle-right"></i></div></div></div></body></html>

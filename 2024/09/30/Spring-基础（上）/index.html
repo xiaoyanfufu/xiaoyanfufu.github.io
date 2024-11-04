@@ -1,195 +1,209 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-  <!-- 元数据 -->
-  <meta charset="utf-8">
-  
-    <link rel="icon" href="/images/earthstars.png">
-  
-  
-  <title>Spring-基础（上） | XIAOYAN</title>
-  <link rel="canonical" href="http://example.com/2024/09/30/Spring-%E5%9F%BA%E7%A1%80%EF%BC%88%E4%B8%8A%EF%BC%89/">
-  <meta name="author" content="xiaoyan" />
-  <meta http-equiv="Cache-Control" content="no-transform" />
-  <meta http-equiv="Cache-Control" content="no-siteapp" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="robots" content="index,follow" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <meta name="format-detection" content="telphone=no, email=no" />
-  
-    <meta name="keywords" content="AOP, IoC" />
-  
-  <meta name="description" content="理解Spring框架Spring框架作为Java企业级应用开发的核心组件，其核心特性涵盖了多个关键领域，为开发者提供了强大的工具和抽象层，以简化复杂的企业级应用开发。以下Spring框架几个核心特性： 1.控制反转（IoC）容器 Spring的核心之一是其控制反转（Inversion of Control, IoC）容器。IoC容器通过反转对象的创建和管理职责，使得开发者能够专注于业务逻辑的实现，">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Spring-基础（上）">
-<meta property="og:url" content="http://example.com/2024/09/30/Spring-%E5%9F%BA%E7%A1%80%EF%BC%88%E4%B8%8A%EF%BC%89/index.html">
-<meta property="og:site_name" content="XIAOYAN">
-<meta property="og:description" content="理解Spring框架Spring框架作为Java企业级应用开发的核心组件，其核心特性涵盖了多个关键领域，为开发者提供了强大的工具和抽象层，以简化复杂的企业级应用开发。以下Spring框架几个核心特性： 1.控制反转（IoC）容器 Spring的核心之一是其控制反转（Inversion of Control, IoC）容器。IoC容器通过反转对象的创建和管理职责，使得开发者能够专注于业务逻辑的实现，">
-<meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://cdn.xiaolincoding.com//picgo/1716791217083-132fe2ba-706a-4d8d-aef3-1617a2046585.png">
-<meta property="article:published_time" content="2024-09-30T03:48:27.000Z">
-<meta property="article:modified_time" content="2024-11-02T11:06:42.087Z">
-<meta property="article:author" content="xiaoyan">
-<meta property="article:tag" content="IoC">
-<meta property="article:tag" content="AOP">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://cdn.xiaolincoding.com//picgo/1716791217083-132fe2ba-706a-4d8d-aef3-1617a2046585.png">
-  
-  <!-- 样式表文件 -->
-  <link rel="stylesheet" id="kratos-css" href="/css/kr-core.min.css" media="all"></link>
-  
-    <link rel="stylesheet" id="highlight-css" href="/css/highlight/highlight.js/night-eighties.min.css" media="all"></link>
-  
-  <link rel="stylesheet" id="theme-light-css" href="/css/kr-theme/light.min.css" media="all"></link>
-  <link rel="stylesheet" id="theme-dark-css" href="/css/kr-theme/dark.min.css" media="(prefers-color-scheme: dark)"></link>
-  <script src="/js/kr-theme.min.js"></script>
-  <link rel="stylesheet" id="fontawe-css" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css" media="all"></link>
-  
-    <link rel="stylesheet" id="nprogress-css" href="/vendors/nprogress@0.2.0/nprogress.css" media="all"></link>
-  
-  
-    <link rel="stylesheet" href="/vendors/viewerjs@1.11.6/dist/viewer.min.css"></link>
-  
-  <!-- 不得不预先加载的一些JS文件 -->
-  
-    <script src="/vendors/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
-  
-  <!-- 自定义站点横幅和背景 -->
-  <style>
-    
-      .kratos-cover.kratos-cover-2 {
-        background-image: url('/images/wallpaper_light.png');
-      }
-      html[data-theme="dark"] .kratos-cover.kratos-cover-2 {
-        background-image: url('/images/wallpaper_dark.png');
-      }
-    
-    
-      @media(min-width:768px) {
-        body.custom-background {
-          background-image: url('/images/bg.webp');
+<!DOCTYPE html><html lang="zn-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><title>Spring-基础（上） | XIAOYAN</title><meta name="keywords" content="IoC,AOP"><meta name="author" content="xiaoyan"><meta name="copyright" content="xiaoyan"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#f7f9fe"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-touch-fullscreen" content="yes"><meta name="apple-mobile-web-app-title" content="Spring-基础（上）"><meta name="application-name" content="Spring-基础（上）"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f7f9fe"><meta property="og:type" content="article"><meta property="og:title" content="Spring-基础（上）"><meta property="og:url" content="http://example.com/2024/09/30/Spring-%E5%9F%BA%E7%A1%80%EF%BC%88%E4%B8%8A%EF%BC%89/index.html"><meta property="og:site_name" content="XIAOYAN"><meta property="og:description" content="理解Spring框架Spring框架作为Java企业级应用开发的核心组件，其核心特性涵盖了多个关键领域，为开发者提供了强大的工具和抽象层，以简化复杂的企业级应用开发。以下Spring框架几个核心特性： 1.控制反转（IoC）容器 Spring的核心之一是其控制反转（Inversion of Cont"><meta property="og:locale" content="zn-CN"><meta property="og:image" content="https://spring.io/img/extra/why-spring.svg"><meta property="article:author" content="xiaoyan"><meta property="article:tag"><meta name="twitter:card" content="summary"><meta name="twitter:image" content="https://spring.io/img/extra/why-spring.svg"><meta name="description" content="理解Spring框架Spring框架作为Java企业级应用开发的核心组件，其核心特性涵盖了多个关键领域，为开发者提供了强大的工具和抽象层，以简化复杂的企业级应用开发。以下Spring框架几个核心特性： 1.控制反转（IoC）容器 Spring的核心之一是其控制反转（Inversion of Cont"><link rel="shortcut icon" href="/images/favicon.ico"><link rel="canonical" href="http://example.com/2024/09/30/Spring-%E5%9F%BA%E7%A1%80%EF%BC%88%E4%B8%8A%EF%BC%89/"><link rel="preconnect" href="//cdn.cbd.int"/><meta name="google-site-verification" content="xxx"/><meta name="baidu-site-verification" content="code-xxx"/><meta name="msvalidate.01" content="xxx"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  linkPageTop: undefined,
+  peoplecanvas: {"enable":true,"img":"https://upload-bbs.miyoushe.com/upload/2024/07/27/125766904/ba62475f396df9de3316a08ed9e65d86_5680958632268053399..png"},
+  postHeadAiDescription: undefined,
+  diytitle: undefined,
+  LA51: undefined,
+  greetingBox: undefined,
+  twikooEnvId: '',
+  commentBarrageConfig:undefined,
+  music_page_default: "nav_music",
+  root: '/',
+  preloader: {"source":3},
+  friends_vue_info: undefined,
+  navMusic: true,
+  mainTone: undefined,
+  authorStatus: undefined,
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简","rightMenuMsgToTraditionalChinese":"转为繁体","rightMenuMsgToSimplifiedChinese":"转为简体"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":330},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    simplehomepage: true,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"copy":true,"copyrightEbable":false,"limitCount":50,"languages":{"author":"作者: xiaoyan","link":"链接: ","source":"来源: XIAOYAN","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。","copySuccess":"复制成功，复制和转载请标注本文地址"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#425AEF","bgDark":"#1f1f1f","position":"top-center"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.min.js',
+      css: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false,
+  shortcutKey: undefined,
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  configTitle: 'XIAOYAN',
+  title: 'Spring-基础（上）',
+  postAI: '',
+  pageFillDescription: '理解Spring框架, IoC, 控制反转（IoC）, IoC的核心概念, 1. 控制反转（Inversion of Control）, 2. 依赖注入（Dependency Injection DI）, IoC容器的优势, IoC容器的实现, 示例, 依赖倒置、依赖注入、控制反转, 控制反转（Inversion of Control IoC）, 依赖注入（Dependency Injection DI）, 依赖倒置原则（Dependency Inversion Principle DIP）, Spring IoC 的设计与实现, Bean 生命周期管理, 依赖注入（Dependency Injection）, Bean 的作用域管理, 异常处理, 面向切面编程（AOP）支持, 配置文件加载, AOP, 面向切面编程（AOP）, AOP的核心概念, 1. 切面（Aspect）, 2. 连接点（Join Point）, 3. 通知（Advice）, 4. 切点（Pointcut）, 5. 引介（Introduction）, 6. 织入（Weaving）, 7. AOP代理（AOP Proxy）, 8. 目标对象（Target Object）, AOP的应用场景, AOP的实现机制, JDK动态代理, CGLIB动态代理, 示例, 为何要有Spring AOP, Spring AOP 原理：动态代理技术的应用, JDK Proxy, CGLIB, Spring AOP 的选择策略, 动态代理与静态代理的区别, 静态代理, 动态代理, 区别总结, AOP 实现常见注解, 反射的特性及其应用场景, 特性, 应用场景, 1. Spring 框架中的依赖注入（DI）和控制反转（IoC）, 2. 动态代理理解框架框架作为企业级应用开发的核心组件其核心特性涵盖了多个关键领域为开发者提供了强大的工具和抽象层以简化复杂的企业级应用开发以下框架几个核心特性控制反转容器的核心之一是其控制反转容器容器通过反转对象的创建和管理职责使得开发者能够专注于业务逻辑的实现而非对象的生命周期管理具体来说开发者只需定义及其依赖关系容器会自动负责这些对象的创建组装和管理依赖注入容器通过依赖注入机制将对象之间的依赖关系从代码中解耦使得对象的创建和依赖关系的管理更加灵活和可配置支持多种依赖注入方式包括构造器注入注入和字段注入生命周期管理容器不仅负责的创建还管理其生命周期包括初始化和销毁阶段开发者可以通过实现特定的接口或使用注解来定制的生命周期行为面向切面编程面向切面编程是框架的另一大核心特性允许开发者将横切关注点如事务管理日志记录安全性等模块化从而提高代码的模块化程度和可维护性切面切面是对横切关注点的模块化封装通常包括通知和切点通知定义了在切点处执行的行为而切点则定义了在何处应用这些行为连接点连接点是程序执行过程中的特定点如方法调用异常抛出等支持在方法调用和异常抛出处应用切面代理机制通过代理机制实现切面的应用支持两种代理方式基于动态代理和基于的代理前者适用于接口代理后者适用于类代理事务管理框架提供了一致且灵活的事务管理机制使得开发者能够以声明式或编程式的方式管理事务声明式事务管理通过使用注解或配置开发者可以声明事务边界和事务属性会自动管理事务的开始提交和回滚编程式事务管理对于需要更细粒度控制的事务场景提供了和等允许开发者以编程方式管理事务事务传播行为支持多种事务传播行为如等使得开发者能够灵活控制事务的传播和隔离级别框架是基于构建的框架采用了模型视图控制器架构模式为开发者提供了一种结构化的方式来构建应用模型模型层负责处理业务逻辑和数据访问通常由服务层和数据访问层组成视图视图层负责展示数据通常由等模板引擎实现控制器控制器层负责处理用户请求调用模型层处理业务逻辑并将结果传递给视图层进行展示通过和等注解简化了控制器的开发与控制反转控制反转是框架的核心设计原则之一它通过反转对象的创建和管理职责使得开发者能够专注于业务逻辑的实现而非对象的生命周期管理依赖注入是的一种具体实现方式在传统的开发模式中对象的创建和管理通常由开发者手动完成使用关键字来实例化对象这种方式会导致代码中各个对象之间的耦合度较高难以维护和扩展业务逻辑而在使用思想的开发中对象的创建和管理职责被反转给容器开发者只需定义及其依赖关系容器会自动负责这些对象的创建组装和管理业务逻辑的核心概念控制反转所谓控制就是对象的创建初始化销毁等生命周期管理在传统的开发模式中这些控制权由开发者掌握而在模式中这些控制权被反转给容器创建对象原来是一个对象现在是由容器创建初始化对象原来是使用构造器或者方法给依赖赋值现在由自动注入销毁对象原来是通过给对象赋值销毁现在由容器管理生命周期进行销毁所谓反转其实就是反转的控制权对象的生命周期已经由容器管理来进行控制开发者由对象的控制者变成了的被动控制者依赖注入依赖注入是的一种实现方式通过依赖注入对象之间的依赖关系从代码中解耦使得对象的创建和依赖关系的管理更加灵活和可配置支持多种依赖注入方式包括构造器注入注入和字段注入构造器注入通过构造器参数注入依赖注入通过方法注入依赖字段注入通过字段注解注入依赖容器的优势降低耦合度对象之间的依赖关系通过配置文件或注解进行管理减少了代码中的硬编码依赖提高可测试性通过依赖注入可以方便地使用对象进行单元测试增强可维护性对象的创建和管理由容器负责开发者只需关注业务逻辑的实现容器的实现框架通过容器来管理的生命周期和依赖关系容器的主要实现包括是容器的基本实现提供了最基本的功能是一个接口定义了获取检查类型检查作用域等方法是的子接口提供了更高级的功能如国际化支持事件发布资源加载等是应用上下文的核心接口通常在企业级应用中使用示例以下是一个简单的示例展示了如何使用容器管理及其依赖关系定义服务类定义数据访问类数据保存逻辑配置上下文使用容器控制反转是框架的核心设计原则之一通过反转对象的创建和管理职责使得开发者能够专注于业务逻辑的实现依赖注入是的一种具体实现方式通过依赖注入对象之间的依赖关系从代码中解耦使得对象的创建和依赖关系的管理更加灵活和可配置容器通过和实现的生命周期管理提供了强大的工具和抽象层以简化复杂的企业级应用开发深入理解的原理和应用能够帮助开发者更好地利用框架提升代码的质量和开发效率依赖倒置依赖注入控制反转控制反转控制反转是一种设计原则它将程序的执行流程控制权从开发者手中转移到了框架或容器中传统上开发者通过编写代码来控制程序的执行流程而在使用框架后框架接管了这一职责这种反转意味着开发者不再直接控制程序的执行顺序而是通过配置或声明的方式让框架来管理依赖注入依赖注入是一种实现控制反转的具体技术它通过将依赖对象的创建和管理从类内部转移到外部从而实现类之间的解耦依赖注入主要有三种方式构造函数注入通过类的构造函数传递依赖对象方法注入通过类的方法传递依赖对象字段注入通过字段注解直接注入依赖对象依赖注入的核心思想是类不应该负责创建和管理自己的依赖而是由外部容器或框架来负责依赖倒置原则依赖倒置原则是面向对象设计中的一个重要原则它指导我们如何设计模块之间的依赖关系具体来说依赖倒置原则包含两个关键点高层模块不应该依赖于低层模块传统的设计中高层模块通常直接依赖于低层模块的具体实现依赖倒置原则要求高层模块和低层模块都应该依赖于抽象接口或抽象类而不是具体的实现抽象不应该依赖于细节细节应该依赖于抽象这意味着接口或抽象类的设计应该独立于具体的实现细节而具体的实现类应该依赖于这些抽象依赖倒置原则通过引入抽象层使得系统更加灵活可扩展并且降低了模块之间的耦合度的设计与实现在深入探讨如何自行实现控制反转容器时我们需要关注以下几个关键方面以确保设计的科学性和专业性生命周期管理的生命周期管理是容器设计的核心为了实现这一功能可以采用以下策略工厂模式通过工厂模式来创建和管理实例确保的创建过程与业务逻辑解耦工厂模式可以进一步细分为简单工厂工厂方法和抽象工厂根据具体需求选择合适的模式单例模式对于需要全局共享的可以采用单例模式来确保系统中只有一个实例存在单例模式可以通过双重检查锁定或静态内部类等方式实现以保证线程安全生命周期回调除了基本的创建和销毁还可以引入生命周期回调机制如和注解以支持在初始化和销毁时的自定义逻辑依赖注入依赖注入是的核心特性之一其实现需要考虑以下几个方面注入方式支持多种注入方式包括字段注入构造器注入和注入构造器注入通常被认为是最佳实践因为它可以确保在创建时所有依赖都已满足反射机制利用的反射机制来动态地解析和注入依赖反射机制允许在运行时获取类的字段方法和构造器信息从而实现依赖的自动注入配置元数据依赖注入的实现依赖于配置元数据这些元数据可以通过配置文件注解如或配置类如来提供的作用域管理的作用域决定了实例的生命周期和可见性常见的作用域包括单例在整个应用中只存在一个实例原型每次请求时都会创建一个新的实例会话在应用中每个会话对应一个实例请求在应用中每个请求对应一个实例为了支持多种作用域可以使用或其他数据结构来存储不同作用域的实例例如可以使用来存储单例使用来存储线程作用域的异常处理在管理和依赖注入过程中可能会遇到各种异常情况如依赖注入失败未找到等为了确保系统的健壮性需要定义特定的异常类型并使用机制进行处理自定义异常定义如等自定义异常以便在发生错误时能够提供更详细的错误信息异常传播在异常处理过程中考虑异常的传播机制确保异常能够正确地传递到调用者以便进行适当的处理面向切面编程支持是框架的另一个重要特性它允许在不修改原有代码的情况下通过切面来增强功能动态代理使用的动态代理机制来实现动态代理可以在运行时生成代理类从而在不修改原有类的情况下插入额外的逻辑如日志记录事务管理等切面编程定义切面切点和通知通过这些元素来实现横切关注点的分离常见的通知类型包括前置通知后置通知环绕通知等配置文件加载配置文件的加载是容器启动的关键步骤之一它决定了容器如何初始化和管理配置文件格式支持多种配置文件格式如注解如和配置类如每种配置方式都有其优缺点可以根据具体需求选择合适的配置方式配置解析配置文件的解析是加载过程中的关键步骤可以使用解析器如来解析配置文件使用反射机制来解析注解配置使用反射来解析配置类配置合并在复杂的应用中可能需要从多个配置文件中加载信息为了确保配置的一致性和完整性可以实现配置的合并机制将多个配置文件中的信息合并为一个统一的配置对象通过以上几个方面的深入设计和实现可以构建一个功能完备性能优越的容器满足复杂应用场景的需求面向切面编程面向切面编程是框架的另一大核心特性它允许开发者将横切关注点如事务管理日志记录安全性等模块化从而提高代码的模块化程度和可维护性的核心思想是将核心业务逻辑与周边业务逻辑分离并通过切面将它们编织在一起的核心概念切面切面是对横切关注点的模块化封装通常包括通知和切点切面定义了在哪些连接点上应用哪些通知连接点连接点是程序执行过程中的一个特定点例如方法调用异常抛出等在中连接点仅支持方法级别的连接点通知通知定义了在切点处执行的行为支持多种类型的通知包括前置通知在目标方法执行前执行后置通知在目标方法执行后执行无论方法是否成功完成返回通知在目标方法成功执行后执行异常通知在目标方法抛出异常后执行环绕通知在目标方法执行前后执行可以控制方法的执行流程切点切点用于匹配连接点定义了在哪些连接点上应用通知切点通常通过表达式来匹配特定的连接点引介引介允许一个切面声明被通知对象未被实现的额外接口通过引介可以为一个对象代理多个目标类织入织入是将切面应用到目标对象的过程在织入过程中切面中的通知逻辑会被插入到目标方法上使得通知逻辑在方法调用时得到执行代理代理是在框架中实现切面协议的对象支持两种代理方式动态代理适用于代理实现了接口的对象会使用的类生成代理对象动态代理适用于代理没有实现接口的对象会使用生成一个被代理对象的子类来进行代理目标对象目标对象是被代理的对象即切面逻辑将要应用的对象的应用场景能够将那些与业务无关却为业务进行服务的通用公共功能封装起来以便减少系统的代码量使得系统更加模块化降低系统耦合度有利于未来系统的扩展与维护常见的应用场景包括事务管理通过实现声明式事务管理简化事务控制代码日志记录通过实现日志记录避免在业务代码中嵌入日志逻辑安全性检查通过实现权限验证确保只有授权用户才能访问特定资源性能监控通过实现性能监控记录方法的执行时间和调用次数的实现机制通过代理机制实现切面的应用具体来说会在运行时生成代理对象并将切面逻辑织入到目标方法中动态代理动态代理适用于代理实现了接口的对象会使用的类生成代理对象动态代理的优点是性能较高但要求目标对象必须实现至少一个接口业务逻辑动态代理动态代理适用于代理没有实现接口的对象会使用生成一个被代理对象的子类来进行代理动态代理的优点是不要求目标对象实现接口但性能略低于动态代理业务逻辑示例以下是一个简单的示例展示了如何使用实现日志记录功能定义切面注释解释将类标记为一个切面类将类标记为一个组件使其可以被容器管理方法解释定义一个切入点匹配包下所有类的所有方法匹配任意返回类型匹配包下的所有类和所有方法匹配任意数量和类型的参数定义一个前置通知在切入点匹配的方法执行前执行对象包含被通知方法的详细信息如方法签名参数等获取被通知方法的名称定义一个返回通知在切入点匹配的方法成功返回后执行指定返回值的参数名称为接收方法的返回值定义服务类业务逻辑注释解释将类标记为一个服务组件使其可以被容器管理方法解释定义一个服务方法接收一个对象作为参数并返回一个字符串配置上下文注释解释将类标记为一个配置类启用组件扫描扫描包及其子包中的组件启用的自动代理功能支持基于的切面为何要有面向切面编程的设计初衷确实是为了补充和增强面向对象编程的不足而不是作为一种独立的编程范式来替代现有的开发模式的核心思想是将横切关注点从业务逻辑中分离出来从而提高代码的模块化可维护性和可重用性原理动态代理技术的应用面向切面编程的核心原理是基于动态代理技术动态代理允许在程序运行时生成代理对象从而在不修改原有代码的情况下插入额外的逻辑如日志记录事务管理等主要使用了两种动态代理技术和是标准库提供的一种基于接口的动态代理实现方式适用于被代理对象实现了接口的情况的工作原理如下接口实现要求被代理对象必须实现一个或多个接口代理对象会实现相同的接口并在运行时生成具体的实现类通过接口来定义代理对象的行为接口包含一个方法该方法会在代理对象的每个方法调用时被触发生成代理对象通过方法可以在运行时生成代理对象该方法需要传入类加载器接口数组和实例示例代码是一种基于字节码生成的动态代理技术适用于被代理对象没有实现接口的情况的工作原理如下字节码生成通过生成被代理类的子类来实现代理生成的子类会覆盖被代理类的所有非方法并在方法调用前后插入额外的逻辑通过接口来定义代理对象的行为接口包含一个方法该方法会在代理对象的每个方法调用时被触发生成代理对象通过类可以在运行时生成代理对象类需要传入被代理类的类型和实例示例代码的选择策略在选择使用还是时遵循以下策略如果被代理对象实现了接口默认使用这是因为是标准库的一部分具有更好的兼容性和性能如果被代理对象没有实现接口或者在配置中显式指定了使用会使用适用于需要代理具体类的情况但需要注意的是生成的代理类是目标类的子类因此目标类不能是的动态代理与静态代理的区别代理模式是一种常用的设计模式其目的是为其他类提供一个代理来控制对某个对象的访问从而将两个类的关系解耦代理类和实现类通常需要实现相同的接口最终调用的方法是委托类的方法代理模式可以分为静态代理和动态代理两种类型它们在实现方式和应用场景上存在显著差异静态代理静态代理是指在代码编译时就已经确定好了被代理对象的代理方式静态代理通常由程序员或特定工具手动创建代理类和被代理类之间的关系在编译时就已经固定编译时确定静态代理在编译时就已经确定了代理类和被代理类的关系代理类和被代理类都需要实现相同的接口单一性静态代理通常只代理一个具体的类每个代理类都需要为每个被代理类单独编写代码冗余由于每个代理类都需要为每个被代理类单独编写静态代理可能会导致代码冗余尤其是在需要代理多个类时动态代理动态代理是指在程序运行期间通过反射机制动态生成的代理方式动态代理的对象通常会有多个实现类代理类和被代理类之间的关系在运行时才确定运行时生成动态代理在运行时通过反射机制动态生成代理类代理类和被代理类之间的关系在运行时才确定灵活性动态代理可以代理多个类甚至可以代理没有实现接口的类如使用减少代码冗余由于动态代理在运行时生成代理类可以减少代码冗余尤其是在需要代理多个类时示例代码区别总结特性静态代理动态代理生成时机编译时运行时代理对象数量通常只代理一个类可以代理多个类代码冗余较高每个代理类都需要单独编写较低动态生成代理类实现方式手动编写代理类通过反射机制动态生成代理类适用场景代理对象较少且关系固定代理对象较多且关系灵活实现常见注解在中注解是定义切面和通知的重要方式通过注解可以方便地指定切点通知类型以及通知的执行时机以下是中常见的注解及其作用注解用于定义一个切面类切面类中包含了切点和通知的定义会根据这些定义在运行时生成代理对象切点和通知定义注解用于定义切点即指定哪些连接点会被应用通知切点表达式可以使用通配符逻辑运算符等来匹配方法注解用于定义前置通知即在目标方法执行之前执行的通知前置通知通常用于在方法执行前进行一些准备工作如日志记录参数校验等注解用于定义后置通知即在目标方法执行之后无论是否抛出异常执行的通知后置通知通常用于在方法执行后进行一些清理工作如资源释放日志记录等注解用于定义环绕通知即在目标方法执行前后都执行的通知环绕通知可以完全控制目标方法的执行包括是否执行目标方法如何执行目标方法等注解用于定义返回后通知即在目标方法正常返回结果后执行的通知返回后通知可以访问目标方法的返回值注解用于定义异常通知即在目标方法抛出异常后执行的通知异常通知可以访问抛出的异常对象注解是一个通用的通知类型注解用于定义通知的类型通常情况下提供了更具体的通知类型注解如等因此注解较少直接使用通过使用这些注解可以方便地在中定义切面和通知实现横切关注点的分离以下是这些注解的简要总结注解作用定义切面类定义切点指定连接点前置通知在目标方法执行前执行后置通知在目标方法执行后无论是否异常执行环绕通知在目标方法执行前后都执行返回后通知在目标方法正常返回后执行异常通知在目标方法抛出异常后执行通用通知类型较少直接使用反射的特性及其应用场景特性反射是语言提供的一种强大的机制允许程序在运行时检查和操作类方法字段等结构信息反射的主要特性包括运行时类信息访问反射可以在运行时获取类的所有结构信息包括类名包名父类接口属性方法构造器等通过反射可以动态地获取和操作这些信息动态对象创建反射允许在运行时动态地创建对象实例即使不知道具体的类名通过方法可以加载类并通过方法创建对象实例方法调用反射可以调用类的所有方法包括私有方法通过类的方法可以在运行时调用任意方法访问和修改字段值反射可以访问和修改类的字段值包括私有字段通过类的和方法可以在运行时获取和设置字段的值应用场景反射在许多框架和库中得到了广泛应用以下是一些常见的应用场景框架中的依赖注入和控制反转框架通过使用反射机制来实现其核心特性依赖注入和控制反转依赖注入在中开发者可以通过配置文件或基于注解的方式声明组件之间的依赖关系当应用启动时容器会扫描这些配置文件和注解然后利用反射机制来实例化对象并根据配置文件自动装配到依赖中控制反转通过反射机制实现控制反转将对象的创建和依赖关系的管理交给容器而不是由开发者手动管理动态代理在需要对现有方法调用进行拦截日志记录权限控制或事务管理等应用场景中反射结合动态代理技术被广泛应用动态代理动态代理允许在运行时生成代理对象从而在不修改原有代码的情况下插入额外的逻辑动态代理通常结合反射机制来实现允许开发者定义切面将切面逻辑插入到原有的业务逻辑中进行增强而不需要修改原有的代码通过动态代理和反射机制实现',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-11-04 11:40:02',
+  postMainColor: '',
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
         }
-        html[data-theme="dark"] body.custom-background {
-          background-image: url('/images/bg.webp');
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#18171d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f7f9fe')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(e => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
         }
       }
     
-    
-      .widget-kratos-about .photo-background {
-        background-image: url('/images/default.webp');
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
       }
-      html[data-theme="dark"] .widget-kratos-about .photo-background {
-        background-image: url('/images/default.webp');
-      }
-    
-  </style>
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.3.0"></head><body data-type="anzhiyu"><div id="web_bg"></div><div id="an_music_bg"></div><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><img class="loading-img nolazyload" alt="加载头像" src="/images/star.png"/><div class="loading-image-dot"></div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.getElementById('loading-box').classList.add("loaded");
+  },
+  initLoading: () => {
+    document.getElementById('loading-box').classList.remove("loaded")
+  }
+}
+window.addEventListener('load',()=> { preloader.endLoading() })
+setTimeout(function(){preloader.endLoading();},10000)
 
-  <!-- 额外的追加注入项 -->
-  
-    <link rel="stylesheet" href="/css/custom.css">
-
-  
-<meta name="generator" content="Hexo 7.3.0"></head>
-
-    <body class="custom-background">
-        <div id="kratos-wrapper">
-    <div id="kratos-page">
-        <div id="kratos-header">
-            <header id="kratos-desktop-topnav" class="kratos-topnav">
-                <div class="container">
-                    <div class="nav-header">
-                        <nav id="kratos-menu-wrap">
-                            <ul id="kratos-primary-menu" class="sf-menu">
-                                
-                                    <li>
-                                        
-                                            <a href="/">
-                                        
-                                            
-                                                <i class="fa fa-home"></i>
-                                            
-                                            首页
-                                        </a>
-                                        
-                                    </li>
-                                
-                            </ul>
-                        </nav>
-                    </div>
-                </div>
-            </header>
-            <header id="kratos-mobile-topnav" class="kratos-topnav">
-                <div class="container">
-                    <div class="color-logo"><a href="/">XIAOYAN</a></div>
-                    <div id="kratos-nav-toggle-wrapper" class="nav-toggle">
-                        <a id="kratos-nav-toggle" class="kratos-nav-toggle">
-                            <i></i>
-                        </a>
-                    </div>
-                </div>
-            </header>
-        </div>
-        <div class="kratos-start kratos-hero-2">
-            <!-- <div class="kratos-overlay"></div> -->
-            <div class="kratos-cover kratos-cover-2 text-center">
-                <div class="desc desc2 animate-box">
-                    <a href="/">
-                        <h2>XIAOYAN</h2> <br />
-                        <span>山重水复疑无路，柳暗花明又一村。</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <div id="kratos-blog-post">
-            <div class="container">
-                <div id="main" class="row">
-
-
-        
-
-            
-
-            <section class="kr-main-col col-md-8">
-
-        
-
-            <article itemscope itemtype="https://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/30/Spring-%E5%9F%BA%E7%A1%80%EF%BC%88%E4%B8%8A%EF%BC%89/">
-    <div class="kratos-hentry kratos-page-inner clearfix">
-        <header class="kratos-page-header">
-            
-                <h1 class="kratos-page-title text-center" itemprop="name headline">Spring-基础（上）</h1>
-            
-            <ul class="kratos-page-meta text-center">
-                <li><time datetime="2024-09-30T03:48:27.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2024-09-30</time></li>
-                <li itemprop="author" itemscope itemtype="https://schema.org/Person">
-                    <i class="fa fa-user"></i> 作者 <span itemprop="name">xiaoyan</span>
-                </li>
-                
-                    <li>
-                        <i class="fa fa-edit"></i> 
-                        
-                        
-                            ~21.82K
-                        
-                        字
-                    </li>
-                
-                
-                
-            </ul>
-        </header>
-        <div class="kratos-page-content kr-post">
-            
-            
-            
-                <div class="kratos-post-inner-toc toc-div-class" >
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%90%86%E8%A7%A3Spring%E6%A1%86%E6%9E%B6"><span class="toc-number">1.</span> <span class="toc-text">理解Spring框架</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#IoC"><span class="toc-number">2.</span> <span class="toc-text">IoC</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%A7%E5%88%B6%E5%8F%8D%E8%BD%AC%EF%BC%88IoC%EF%BC%89"><span class="toc-number">2.1.</span> <span class="toc-text">控制反转（IoC）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#IoC%E7%9A%84%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5"><span class="toc-number">2.1.1.</span> <span class="toc-text">IoC的核心概念</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E6%8E%A7%E5%88%B6%E5%8F%8D%E8%BD%AC%EF%BC%88Inversion-of-Control%EF%BC%89"><span class="toc-number">2.1.1.1.</span> <span class="toc-text">1. 控制反转（Inversion of Control）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%EF%BC%88Dependency-Injection-DI%EF%BC%89"><span class="toc-number">2.1.1.2.</span> <span class="toc-text">2. 依赖注入（Dependency Injection, DI）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IoC%E5%AE%B9%E5%99%A8%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="toc-number">2.1.2.</span> <span class="toc-text">IoC容器的优势</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IoC%E5%AE%B9%E5%99%A8%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.1.3.</span> <span class="toc-text">IoC容器的实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B"><span class="toc-number">2.1.4.</span> <span class="toc-text">示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BE%9D%E8%B5%96%E5%80%92%E7%BD%AE%E3%80%81%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%E3%80%81%E6%8E%A7%E5%88%B6%E5%8F%8D%E8%BD%AC"><span class="toc-number">2.2.</span> <span class="toc-text">依赖倒置、依赖注入、控制反转</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%A7%E5%88%B6%E5%8F%8D%E8%BD%AC%EF%BC%88Inversion-of-Control-IoC%EF%BC%89"><span class="toc-number">2.2.1.</span> <span class="toc-text">控制反转（Inversion of Control, IoC）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%EF%BC%88Dependency-Injection-DI%EF%BC%89"><span class="toc-number">2.2.2.</span> <span class="toc-text">依赖注入（Dependency Injection, DI）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%9D%E8%B5%96%E5%80%92%E7%BD%AE%E5%8E%9F%E5%88%99%EF%BC%88Dependency-Inversion-Principle-DIP%EF%BC%89"><span class="toc-number">2.2.3.</span> <span class="toc-text">依赖倒置原则（Dependency Inversion Principle, DIP）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-IoC-%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.3.</span> <span class="toc-text">Spring IoC 的设计与实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Bean-%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E7%AE%A1%E7%90%86"><span class="toc-number">2.3.1.</span> <span class="toc-text">Bean 生命周期管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%EF%BC%88Dependency-Injection%EF%BC%89"><span class="toc-number">2.3.2.</span> <span class="toc-text">依赖注入（Dependency Injection）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Bean-%E7%9A%84%E4%BD%9C%E7%94%A8%E5%9F%9F%E7%AE%A1%E7%90%86"><span class="toc-number">2.3.3.</span> <span class="toc-text">Bean 的作用域管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86"><span class="toc-number">2.3.4.</span> <span class="toc-text">异常处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%A2%E5%90%91%E5%88%87%E9%9D%A2%E7%BC%96%E7%A8%8B%EF%BC%88AOP%EF%BC%89%E6%94%AF%E6%8C%81"><span class="toc-number">2.3.5.</span> <span class="toc-text">面向切面编程（AOP）支持</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E8%BD%BD"><span class="toc-number">2.3.6.</span> <span class="toc-text">配置文件加载</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#AOP"><span class="toc-number">3.</span> <span class="toc-text">AOP</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9D%A2%E5%90%91%E5%88%87%E9%9D%A2%E7%BC%96%E7%A8%8B%EF%BC%88AOP%EF%BC%89"><span class="toc-number">3.1.</span> <span class="toc-text">面向切面编程（AOP）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#AOP%E7%9A%84%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5"><span class="toc-number">3.1.1.</span> <span class="toc-text">AOP的核心概念</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E5%88%87%E9%9D%A2%EF%BC%88Aspect%EF%BC%89"><span class="toc-number">3.1.1.1.</span> <span class="toc-text">1. 切面（Aspect）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E8%BF%9E%E6%8E%A5%E7%82%B9%EF%BC%88Join-Point%EF%BC%89"><span class="toc-number">3.1.1.2.</span> <span class="toc-text">2. 连接点（Join Point）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E9%80%9A%E7%9F%A5%EF%BC%88Advice%EF%BC%89"><span class="toc-number">3.1.1.3.</span> <span class="toc-text">3. 通知（Advice）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E5%88%87%E7%82%B9%EF%BC%88Pointcut%EF%BC%89"><span class="toc-number">3.1.1.4.</span> <span class="toc-text">4. 切点（Pointcut）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-%E5%BC%95%E4%BB%8B%EF%BC%88Introduction%EF%BC%89"><span class="toc-number">3.1.1.5.</span> <span class="toc-text">5. 引介（Introduction）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-%E7%BB%87%E5%85%A5%EF%BC%88Weaving%EF%BC%89"><span class="toc-number">3.1.1.6.</span> <span class="toc-text">6. 织入（Weaving）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-AOP%E4%BB%A3%E7%90%86%EF%BC%88AOP-Proxy%EF%BC%89"><span class="toc-number">3.1.1.7.</span> <span class="toc-text">7. AOP代理（AOP Proxy）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-%E7%9B%AE%E6%A0%87%E5%AF%B9%E8%B1%A1%EF%BC%88Target-Object%EF%BC%89"><span class="toc-number">3.1.1.8.</span> <span class="toc-text">8. 目标对象（Target Object）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AOP%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">3.1.2.</span> <span class="toc-text">AOP的应用场景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AOP%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%9C%BA%E5%88%B6"><span class="toc-number">3.1.3.</span> <span class="toc-text">AOP的实现机制</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#JDK%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86"><span class="toc-number">3.1.3.1.</span> <span class="toc-text">JDK动态代理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#CGLIB%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86"><span class="toc-number">3.1.3.2.</span> <span class="toc-text">CGLIB动态代理</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B-1"><span class="toc-number">3.1.4.</span> <span class="toc-text">示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BD%95%E8%A6%81%E6%9C%89Spring-AOP"><span class="toc-number">3.2.</span> <span class="toc-text">为何要有Spring AOP</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-AOP-%E5%8E%9F%E7%90%86%EF%BC%9A%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86%E6%8A%80%E6%9C%AF%E7%9A%84%E5%BA%94%E7%94%A8"><span class="toc-number">3.3.</span> <span class="toc-text">Spring AOP 原理：动态代理技术的应用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#JDK-Proxy"><span class="toc-number">3.3.1.</span> <span class="toc-text">JDK Proxy</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CGLIB"><span class="toc-number">3.3.2.</span> <span class="toc-text">CGLIB</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Spring-AOP-%E7%9A%84%E9%80%89%E6%8B%A9%E7%AD%96%E7%95%A5"><span class="toc-number">3.3.3.</span> <span class="toc-text">Spring AOP 的选择策略</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86%E4%B8%8E%E9%9D%99%E6%80%81%E4%BB%A3%E7%90%86%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">3.4.</span> <span class="toc-text">动态代理与静态代理的区别</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%99%E6%80%81%E4%BB%A3%E7%90%86"><span class="toc-number">3.4.1.</span> <span class="toc-text">静态代理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86"><span class="toc-number">3.4.2.</span> <span class="toc-text">动态代理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8C%BA%E5%88%AB%E6%80%BB%E7%BB%93"><span class="toc-number">3.4.3.</span> <span class="toc-text">区别总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#AOP-%E5%AE%9E%E7%8E%B0%E5%B8%B8%E8%A7%81%E6%B3%A8%E8%A7%A3"><span class="toc-number">3.5.</span> <span class="toc-text">AOP 实现常见注解</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%8D%E5%B0%84%E7%9A%84%E7%89%B9%E6%80%A7%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">4.</span> <span class="toc-text">反射的特性及其应用场景</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%B9%E6%80%A7"><span class="toc-number">4.0.1.</span> <span class="toc-text">特性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">4.0.2.</span> <span class="toc-text">应用场景</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-Spring-%E6%A1%86%E6%9E%B6%E4%B8%AD%E7%9A%84%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%EF%BC%88DI%EF%BC%89%E5%92%8C%E6%8E%A7%E5%88%B6%E5%8F%8D%E8%BD%AC%EF%BC%88IoC%EF%BC%89"><span class="toc-number">4.0.2.1.</span> <span class="toc-text">1. Spring 框架中的依赖注入（DI）和控制反转（IoC）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86"><span class="toc-number">4.0.2.2.</span> <span class="toc-text">2. 动态代理</span></a></li></ol></li></ol></li></ol></li></ol>
-                </div>
-            
-            <hr />
-            <div itemprop="articleBody"><h1 id="理解Spring框架"><a href="#理解Spring框架" class="headerlink" title="理解Spring框架"></a>理解Spring框架</h1><p>Spring框架作为Java企业级应用开发的核心组件，其核心特性涵盖了多个关键领域，为开发者提供了强大的工具和抽象层，以简化复杂的企业级应用开发。以下Spring框架几个核心特性：</p>
+if (true) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.10/progress_bar/progress_bar.css"/><script async="async" src="https://cdn.cbd.int/pace-js@1.2.4/pace.min.js" data-pace-options="{ &quot;restartOnRequestAfter&quot;:false,&quot;eventLag&quot;:false}"></script><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><div id="nav-group"><span id="blog_name"><a id="site-name" href="/" accesskey="h"><div class="title">XIAOYAN</div><i class="anzhiyufont anzhiyu-icon-house-chimney"></i></a></span><div class="mask-name-container"><div id="name-container"><a id="page-name" href="javascript:anzhiyu.scrollToDest(0, 500)">PAGE_NAME</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 隧道</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/music/?id=12613265870&amp;server=netease"><i class="anzhiyufont anzhiyu-icon-music faa-tada" style="font-size: 0.9em;"></i><span> 音乐馆</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li></ul></div></div></div><div id="nav-right"><div class="nav-button" id="randomPost_button"><a class="site-page" onclick="toRandomPost()" title="随机前往一个文章" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-dice"></i></a></div><input id="center-console" type="checkbox"/><label class="widget" for="center-console" title="中控台" onclick="anzhiyu.switchConsole();"><i class="left"></i><i class="widget center"></i><i class="widget right"></i></label><div id="console"><div class="console-card-group-reward"><ul class="reward-all console-card"><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png" target="_blank"><img class="post-qr-code-img" alt="微信" src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png" target="_blank"><img class="post-qr-code-img" alt="支付宝" src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div><div class="console-card-group"><div class="console-card-group-left"><div class="console-card" id="card-newest-comments"><div class="card-content"><div class="author-content-item-tips">互动</div><span class="author-content-item-title"> 最新评论</span></div><div class="aside-list"><span>正在加载中...</span></div></div></div><div class="console-card-group-right"><div class="console-card tags"><div class="card-content"><div class="author-content-item-tips">兴趣点</div><span class="author-content-item-title">寻找你感兴趣的领域</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/AOP/" style="font-size: 1.05rem;">AOP<sup>1</sup></a><a href="/tags/Bean/" style="font-size: 1.05rem;">Bean<sup>1</sup></a><a href="/tags/DDD/" style="font-size: 1.05rem;">DDD<sup>1</sup></a><a href="/tags/IoC/" style="font-size: 1.05rem;">IoC<sup>1</sup></a><a href="/tags/Java8%E6%96%B0%E7%89%B9%E6%80%A7/" style="font-size: 1.05rem;">Java8新特性<sup>1</sup></a><a href="/tags/Java%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" style="font-size: 1.05rem;">Java基本概念<sup>1</sup></a><a href="/tags/List/" style="font-size: 1.05rem;">List<sup>1</sup></a><a href="/tags/Map/" style="font-size: 1.05rem;">Map<sup>2</sup></a><a href="/tags/MyBatis/" style="font-size: 1.05rem;">MyBatis<sup>1</sup></a><a href="/tags/MySQL%E5%9F%BA%E7%A1%80/" style="font-size: 1.05rem;">MySQL基础<sup>1</sup></a><a href="/tags/Object/" style="font-size: 1.05rem;">Object<sup>1</sup></a><a href="/tags/SQL%E8%B0%83%E4%BC%98/" style="font-size: 1.05rem;">SQL调优<sup>1</sup></a><a href="/tags/Set/" style="font-size: 1.05rem;">Set<sup>1</sup></a><a href="/tags/SpringBoot/" style="font-size: 1.05rem;">SpringBoot<sup>1</sup></a><a href="/tags/SpringCloud/" style="font-size: 1.05rem;">SpringCloud<sup>1</sup></a><a href="/tags/%E4%BA%8B%E5%8A%A1/" style="font-size: 1.05rem;">事务<sup>2</sup></a><a href="/tags/%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/" style="font-size: 1.05rem;">内存模型<sup>1</sup></a><a href="/tags/%E5%8F%8D%E5%B0%84/" style="font-size: 1.05rem;">反射<sup>1</sup></a><a href="/tags/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/" style="font-size: 1.05rem;">垃圾回收<sup>1</sup></a><a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 1.05rem;">多线程<sup>1</sup></a><a href="/tags/%E5%AF%B9%E8%B1%A1/" style="font-size: 1.05rem;">对象<sup>1</sup></a><a href="/tags/%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8/" style="font-size: 1.05rem;">并发安全<sup>1</sup></a><a href="/tags/%E5%BA%8F%E5%88%97%E5%8C%96/" style="font-size: 1.05rem;">序列化<sup>1</sup></a><a href="/tags/%E5%BC%82%E5%B8%B8/" style="font-size: 1.05rem;">异常<sup>1</sup></a><a href="/tags/%E6%8B%B7%E8%B4%9D/" style="font-size: 1.05rem;">拷贝<sup>1</sup></a><a href="/tags/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" style="font-size: 1.05rem;">数据类型<sup>1</sup></a><a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 1.05rem;">数据结构<sup>1</sup></a><a href="/tags/%E6%97%A5%E5%BF%97/" style="font-size: 1.05rem;">日志<sup>2</sup></a><a href="/tags/%E6%9F%A5%E8%AF%A2/" style="font-size: 1.05rem;">查询<sup>1</sup></a><a href="/tags/%E6%B3%9B%E5%9E%8B/" style="font-size: 1.05rem;">泛型<sup>1</sup></a><a href="/tags/%E6%B3%A8%E8%A7%A3/" style="font-size: 1.05rem;">注解<sup>1</sup></a><a href="/tags/%E7%AD%96%E7%95%A5/" style="font-size: 1.05rem;">策略<sup>1</sup></a><a href="/tags/%E7%B1%BB%E5%88%9D%E5%A7%8B%E5%8C%96/" style="font-size: 1.05rem;">类初始化<sup>1</sup></a><a href="/tags/%E7%B1%BB%E5%8A%A0%E8%BD%BD/" style="font-size: 1.05rem;">类加载<sup>1</sup></a><a href="/tags/%E7%B4%A2%E5%BC%95/" style="font-size: 1.05rem;">索引<sup>2</sup></a><a href="/tags/%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B/" style="font-size: 1.05rem;">线程模型<sup>1</sup></a><a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 1.05rem;">线程池<sup>1</sup></a><a href="/tags/%E9%94%81/" style="font-size: 1.05rem;">锁<sup>2</sup></a><a href="/tags/%E9%9B%86%E7%BE%A4/" style="font-size: 1.05rem;">集群<sup>1</sup></a><a href="/tags/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/" style="font-size: 1.05rem;">面向对象<sup>1</sup></a></div></div><hr/></div></div><div class="console-card history"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-box-archiv"></i><span>文章</span></div><div class="card-archives"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-archive"></i><span>归档</span></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/11/"><span class="card-archive-list-date">November 2024</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">2</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/10/"><span class="card-archive-list-date">October 2024</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">13</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/09/"><span class="card-archive-list-date">September 2024</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">25</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/07/"><span class="card-archive-list-date">July 2024</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">4</span><span>篇</span></div></a></li></ul></div><hr/></div></div></div><div class="button-group"><div class="console-btn-item"><a class="darkmode_switchbutton" title="显示模式切换" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-moon"></i></a></div><div class="console-btn-item" id="consoleHideAside" onclick="anzhiyu.hideAsideBtn()" title="边栏显示控制"><a class="asideSwitch"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></a></div><div class="console-btn-item" id="consoleMusic" onclick="anzhiyu.musicToggle()" title="音乐开关"><a class="music-switch"><i class="anzhiyufont anzhiyu-icon-music"></i></a></div></div><div class="console-mask" onclick="anzhiyu.hideConsole()" href="javascript:void(0);"></div></div><div class="nav-button" id="nav-totop"><a class="totopbtn" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i><span id="percent" onclick="anzhiyu.scrollToDest(0,500)">0</span></a></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" title="切换"><i class="anzhiyufont anzhiyu-icon-bars"></i></a></div></div></div></nav><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original">原创</a><span class="post-meta-categories"><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-inbox post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/" itemprop="url">编程语言</a><i class="anzhiyufont anzhiyu-icon-angle-right post-meta-separator"></i><i class="anzhiyufont anzhiyu-icon-inbox post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/" itemprop="url">Java</a><i class="anzhiyufont anzhiyu-icon-angle-right post-meta-separator"></i><i class="anzhiyufont anzhiyu-icon-inbox post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Spring/" itemprop="url">Spring</a></span><span class="article-meta tags"><a class="article-meta__tags" href="/tags/IoC/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>IoC</span></a><a class="article-meta__tags" href="/tags/AOP/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>AOP</span></a></span></div></div><h1 class="post-title" itemprop="name headline">Spring-基础（上）</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="anzhiyufont anzhiyu-icon-calendar-days post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" itemprop="dateCreated datePublished" datetime="2024-09-30T03:48:27.000Z" title="发表于 2024-09-30 11:48:27">2024-09-30</time><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-history post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" itemprop="dateCreated datePublished" datetime="2024-11-04T03:40:02.442Z" title="更新于 2024-11-04 11:40:02">2024-11-04</time></span></div><div class="meta-secondline"><span class="post-meta-separator">       </span><span class="post-meta-position" title="作者IP属地为桂林"><i class="anzhiyufont anzhiyu-icon-location-dot"></i>桂林</span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section><div id="post-top-cover"><img class="nolazyload" id="post-top-bg" src="https://spring.io/img/extra/why-spring.svg"></div></header><main id="blog-container"><div class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container" itemscope itemtype="http://example.com/2024/09/30/Spring-%E5%9F%BA%E7%A1%80%EF%BC%88%E4%B8%8A%EF%BC%89/"><header><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/" itemprop="url">编程语言</a><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/" itemprop="url">Java</a><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Spring/" itemprop="url">Spring</a><a href="/tags/IoC/" tabindex="-1" itemprop="url">IoC</a><a href="/tags/AOP/" tabindex="-1" itemprop="url">AOP</a><h1 id="CrawlerTitle" itemprop="name headline">Spring-基础（上）</h1><span itemprop="author" itemscope itemtype="http://schema.org/Person">xiaoyan</span><time itemprop="dateCreated datePublished" datetime="2024-09-30T03:48:27.000Z" title="发表于 2024-09-30 11:48:27">2024-09-30</time><time itemprop="dateCreated datePublished" datetime="2024-11-04T03:40:02.442Z" title="更新于 2024-11-04 11:40:02">2024-11-04</time></header><h1 id="理解Spring框架"><a href="#理解Spring框架" class="headerlink" title="理解Spring框架"></a>理解Spring框架</h1><p>Spring框架作为Java企业级应用开发的核心组件，其核心特性涵盖了多个关键领域，为开发者提供了强大的工具和抽象层，以简化复杂的企业级应用开发。以下Spring框架几个核心特性：</p>
 <p><strong>1.控制反转（IoC）容器</strong></p>
 <p>Spring的核心之一是其控制反转（Inversion of Control, IoC）容器。IoC容器通过反转对象的创建和管理职责，使得开发者能够专注于业务逻辑的实现，而非对象的生命周期管理。具体来说，开发者只需定义bean及其依赖关系，Spring容器会自动负责这些对象的创建、组装和管理。</p>
 <ul>
@@ -341,7 +355,7 @@
 </ul>
 <p>通过以上几个方面的深入设计和实现，可以构建一个功能完备、性能优越的 Spring IoC 容器，满足复杂应用场景的需求。</p>
 <h1 id="AOP"><a href="#AOP" class="headerlink" title="AOP"></a>AOP</h1><h2 id="面向切面编程（AOP）"><a href="#面向切面编程（AOP）" class="headerlink" title="面向切面编程（AOP）"></a>面向切面编程（AOP）</h2><p>面向切面编程（Aspect-Oriented Programming, AOP）是Spring框架的另一大核心特性，它允许开发者将横切关注点（如事务管理、日志记录、安全性等）模块化，从而提高代码的模块化程度和可维护性。AOP的核心思想是将<strong>核心业务逻辑</strong>与<strong>周边业务逻辑</strong>分离，并通过切面将它们编织在一起。</p>
-<h3 id="AOP的核心概念"><a href="#AOP的核心概念" class="headerlink" title="AOP的核心概念"></a>AOP的核心概念</h3><p><img src="https://cdn.xiaolincoding.com//picgo/1716791217083-132fe2ba-706a-4d8d-aef3-1617a2046585.png" alt="来源小林coding"></p>
+<h3 id="AOP的核心概念"><a href="#AOP的核心概念" class="headerlink" title="AOP的核心概念"></a>AOP的核心概念</h3><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.xiaolincoding.com//picgo/1716791217083-132fe2ba-706a-4d8d-aef3-1617a2046585.png" alt="来源小林coding"></p>
 <h4 id="1-切面（Aspect）"><a href="#1-切面（Aspect）" class="headerlink" title="1. 切面（Aspect）"></a>1. 切面（Aspect）</h4><p>切面是对横切关注点的模块化封装，通常包括通知（Advice）和切点（Pointcut）。切面定义了在哪些连接点（Join Point）上应用哪些通知。</p>
 <h4 id="2-连接点（Join-Point）"><a href="#2-连接点（Join-Point）" class="headerlink" title="2. 连接点（Join Point）"></a>2. 连接点（Join Point）</h4><p>连接点是程序执行过程中的一个特定点，例如方法调用、异常抛出等。在Spring AOP中，连接点仅支持方法级别的连接点。</p>
 <h4 id="3-通知（Advice）"><a href="#3-通知（Advice）" class="headerlink" title="3. 通知（Advice）"></a>3. 通知（Advice）</h4><p>通知定义了在切点处执行的行为。Spring AOP支持多种类型的通知，包括：</p>
@@ -626,427 +640,76 @@
 <li><p><strong>Spring AOP</strong>：Spring AOP 允许开发者定义切面（Aspect），将切面逻辑插入到原有的业务逻辑中进行增强，而不需要修改原有的代码。Spring AOP 通过动态代理和反射机制实现。</p>
 </li>
 </ul>
-</div>
-        </div>
-        
-        <footer class="kratos-entry-footer clearfix">
-            
-            
-            
-                <div class="post-actions text-center clearfix" id="post-actions">
-                
-                    <a class="donate" href="javascript:;" onclick="krOpenDonateModal()"><i class="fa fa-bitcoin"></i> 打赏</a>
-                
-                
-                    <a class="share" href="javascript:;" onclick="krOpenShareModal()"><i class="fa fa-share-alt"></i> 分享</a>
-                
-                </div>
-            
-            <div class="footer-tag clearfix">
-                <div class="pull-left">
-                <i class="fa fa-tags"></i>
-                    <a class="tag-none-link" href="/tags/AOP/" rel="tag">AOP</a>, <a class="tag-none-link" href="/tags/IoC/" rel="tag">IoC</a>
-                </div>
-                <div class="pull-date">
-                    <time datetime="2024-11-02T11:06:42.087Z" itemprop="dateModified">最后编辑：2024-11-02</time>
-                </div>
-            </div>
-        </footer>
-    </div>
-    
-        <nav class="navigation post-navigation clearfix" role="navigation">
-            
-            <div class="nav-previous clearfix">
-                <a title=" Redis-场景理解" href="/2024/09/27/Redis-场景理解/"><i class="fa fa-angle-left"></i> 上一篇</a>
-            </div>
-            
-            
-            <div class="nav-next clearfix">
-                <a title=" Spring-基础（下）" href="/2024/09/30/Spring-基础（下）/">下一篇 <i class="fa fa-angle-right"></i></a>
-            </div>
-            
-        </nav>
-    
-    
-</article>
+</article><div class="post-copyright"><div class="copyright-cc-box"><i class="anzhiyufont anzhiyu-icon-copyright"></i></div><div class="post-copyright__author_box"><a class="post-copyright__author_img" href="/" title="头像"><img class="post-copyright__author_img_back" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/images/user.jpg" title="头像" alt="头像"><img class="post-copyright__author_img_front" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/images/user.jpg" title="头像" alt="头像"></a><div class="post-copyright__author_name">xiaoyan</div><div class="post-copyright__author_desc">无限进步。</div></div><div class="post-copyright__post__info"><a class="post-copyright__original" title="该文章为原创文章，注意版权协议" href="http://example.com/2024/09/30/Spring-%E5%9F%BA%E7%A1%80%EF%BC%88%E4%B8%8A%EF%BC%89/">原创</a><a class="post-copyright-title"><span onclick="rm.copyPageUrl('http://example.com/2024/09/30/Spring-%E5%9F%BA%E7%A1%80%EF%BC%88%E4%B8%8A%EF%BC%89/')">Spring-基础（上）</span></a></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div class="rewardLeftButton"></div><div class="shareRight"><div class="share-link mobile"><div class="share-qrcode"><div class="share-button" title="使用手机访问这篇文章"><i class="anzhiyufont anzhiyu-icon-qrcode"></i></div><div class="share-main"><div class="share-main-all"><div id="qrcode" title="http://example.com/2024/09/30/Spring-%E5%9F%BA%E7%A1%80%EF%BC%88%E4%B8%8A%EF%BC%89/"></div><div class="reward-dec">使用手机访问这篇文章</div></div></div></div></div><div class="share-link weibo"><a class="share-button" target="_blank" href="https://service.weibo.com/share/share.php?title=Spring-基础（上）&amp;url=http://example.com/2024/09/30/Spring-%E5%9F%BA%E7%A1%80%EF%BC%88%E4%B8%8A%EF%BC%89/&amp;pic=https://spring.io/img/extra/why-spring.svg" rel="external nofollow noreferrer noopener"><i class="anzhiyufont anzhiyu-icon-weibo"></i></a></div><script>function copyCurrentPageUrl() {
+  var currentPageUrl = window.location.href;
+  var input = document.createElement("input");
+  input.setAttribute("value", currentPageUrl);
+  document.body.appendChild(input);
+  input.select();
+  input.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+  document.body.removeChild(input);
+}</script><div class="share-link copyurl"><div class="share-button" id="post-share-url" title="复制链接" onclick="copyCurrentPageUrl()"><i class="anzhiyufont anzhiyu-icon-link"></i></div></div></div></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">XIAOYAN</a>！</span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__box"><div class="post-meta__box__category-list"><a class="post-meta__box__categoryes" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/"><span class="categoryes-punctuation"> <i class="anzhiyufont anzhiyu-icon-inbox"></i></span>编程语言<span class="categoryesPageCount">21</span></a><a class="post-meta__box__categoryes" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/"><span class="categoryes-punctuation"> <i class="anzhiyufont anzhiyu-icon-inbox"></i></span>Java<span class="categoryesPageCount">20</span></a><a class="post-meta__box__categoryes" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Spring/"><span class="categoryes-punctuation"> <i class="anzhiyufont anzhiyu-icon-inbox"></i></span>Spring<span class="categoryesPageCount">5</span></a></div><div class="post-meta__box__tag-list"><a class="post-meta__box__tags" href="/tags/IoC/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>IoC<span class="tagsPageCount">1</span></a><a class="post-meta__box__tags" href="/tags/AOP/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>AOP<span class="tagsPageCount">1</span></a></div></div><div class="post_share"><div class="social-share" data-image="https://pic1.zhimg.com/v2-b76d79b11c3e8dd25f3c6abae8889a88_720w.jpg?source=172ae18b" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"/><script src="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer="defer"></script></div></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2024/09/27/Redis-%E5%9C%BA%E6%99%AF%E7%90%86%E8%A7%A3/"><img class="prev-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202409292052862.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Redis-场景理解</div></div></a></div><div class="next-post pull-right"><a href="/2024/09/30/Spring-%E5%9F%BA%E7%A1%80%EF%BC%88%E4%B8%8B%EF%BC%89/"><img class="next-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://spring.io/img/extra/why-spring.svg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Spring-基础（下）</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="author-info-avatar"><img class="avatar-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/images/user.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__description">是一只时时翻垃圾吃的宅子。</div><div class="author-info__bottom-group"><a class="author-info__bottom-group-left" href="/"><h1 class="author-info__name">xiaoyan</h1><div class="author-info__desc">无限进步。</div></a><div class="card-info-social-icons is-center"><a class="social-icon faa-parent animated-hover" href="https://github.com/xiaoyanfufu" target="_blank" title="Github"><i class="anzhiyufont anzhiyu-icon-github"></i></a><a class="social-icon faa-parent animated-hover" href="https://space.bilibili.com/483597064" target="_blank" title="BiliBili"><i class="anzhiyufont anzhiyu-icon-bilibili"></i></a></div></div></div></div><div class="card-widget anzhiyu-right-widget" id="card-wechat" onclick="null"><div id="flip-wrapper"><div id="flip-content"><div class="face" style="background: url(https://bu.dusays.com/2023/01/13/63c02edf44033.png) center center / 100% no-repeat"></div><div class="back face" style="background: url(https://bu.dusays.com/2023/05/13/645fa415e8694.png) center center / 100% no-repeat"></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-bars"></i><span>文章目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%90%86%E8%A7%A3Spring%E6%A1%86%E6%9E%B6"><span class="toc-number">1.</span> <span class="toc-text">理解Spring框架</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#IoC"><span class="toc-number">2.</span> <span class="toc-text">IoC</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%A7%E5%88%B6%E5%8F%8D%E8%BD%AC%EF%BC%88IoC%EF%BC%89"><span class="toc-number">2.1.</span> <span class="toc-text">控制反转（IoC）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#IoC%E7%9A%84%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5"><span class="toc-number">2.1.1.</span> <span class="toc-text">IoC的核心概念</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E6%8E%A7%E5%88%B6%E5%8F%8D%E8%BD%AC%EF%BC%88Inversion-of-Control%EF%BC%89"><span class="toc-number">2.1.1.1.</span> <span class="toc-text">1. 控制反转（Inversion of Control）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%EF%BC%88Dependency-Injection-DI%EF%BC%89"><span class="toc-number">2.1.1.2.</span> <span class="toc-text">2. 依赖注入（Dependency Injection, DI）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IoC%E5%AE%B9%E5%99%A8%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="toc-number">2.1.2.</span> <span class="toc-text">IoC容器的优势</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IoC%E5%AE%B9%E5%99%A8%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.1.3.</span> <span class="toc-text">IoC容器的实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B"><span class="toc-number">2.1.4.</span> <span class="toc-text">示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BE%9D%E8%B5%96%E5%80%92%E7%BD%AE%E3%80%81%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%E3%80%81%E6%8E%A7%E5%88%B6%E5%8F%8D%E8%BD%AC"><span class="toc-number">2.2.</span> <span class="toc-text">依赖倒置、依赖注入、控制反转</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%A7%E5%88%B6%E5%8F%8D%E8%BD%AC%EF%BC%88Inversion-of-Control-IoC%EF%BC%89"><span class="toc-number">2.2.1.</span> <span class="toc-text">控制反转（Inversion of Control, IoC）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%EF%BC%88Dependency-Injection-DI%EF%BC%89"><span class="toc-number">2.2.2.</span> <span class="toc-text">依赖注入（Dependency Injection, DI）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%9D%E8%B5%96%E5%80%92%E7%BD%AE%E5%8E%9F%E5%88%99%EF%BC%88Dependency-Inversion-Principle-DIP%EF%BC%89"><span class="toc-number">2.2.3.</span> <span class="toc-text">依赖倒置原则（Dependency Inversion Principle, DIP）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-IoC-%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.3.</span> <span class="toc-text">Spring IoC 的设计与实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Bean-%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E7%AE%A1%E7%90%86"><span class="toc-number">2.3.1.</span> <span class="toc-text">Bean 生命周期管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%EF%BC%88Dependency-Injection%EF%BC%89"><span class="toc-number">2.3.2.</span> <span class="toc-text">依赖注入（Dependency Injection）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Bean-%E7%9A%84%E4%BD%9C%E7%94%A8%E5%9F%9F%E7%AE%A1%E7%90%86"><span class="toc-number">2.3.3.</span> <span class="toc-text">Bean 的作用域管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86"><span class="toc-number">2.3.4.</span> <span class="toc-text">异常处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%A2%E5%90%91%E5%88%87%E9%9D%A2%E7%BC%96%E7%A8%8B%EF%BC%88AOP%EF%BC%89%E6%94%AF%E6%8C%81"><span class="toc-number">2.3.5.</span> <span class="toc-text">面向切面编程（AOP）支持</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E8%BD%BD"><span class="toc-number">2.3.6.</span> <span class="toc-text">配置文件加载</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#AOP"><span class="toc-number">3.</span> <span class="toc-text">AOP</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9D%A2%E5%90%91%E5%88%87%E9%9D%A2%E7%BC%96%E7%A8%8B%EF%BC%88AOP%EF%BC%89"><span class="toc-number">3.1.</span> <span class="toc-text">面向切面编程（AOP）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#AOP%E7%9A%84%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5"><span class="toc-number">3.1.1.</span> <span class="toc-text">AOP的核心概念</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E5%88%87%E9%9D%A2%EF%BC%88Aspect%EF%BC%89"><span class="toc-number">3.1.1.1.</span> <span class="toc-text">1. 切面（Aspect）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E8%BF%9E%E6%8E%A5%E7%82%B9%EF%BC%88Join-Point%EF%BC%89"><span class="toc-number">3.1.1.2.</span> <span class="toc-text">2. 连接点（Join Point）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E9%80%9A%E7%9F%A5%EF%BC%88Advice%EF%BC%89"><span class="toc-number">3.1.1.3.</span> <span class="toc-text">3. 通知（Advice）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E5%88%87%E7%82%B9%EF%BC%88Pointcut%EF%BC%89"><span class="toc-number">3.1.1.4.</span> <span class="toc-text">4. 切点（Pointcut）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-%E5%BC%95%E4%BB%8B%EF%BC%88Introduction%EF%BC%89"><span class="toc-number">3.1.1.5.</span> <span class="toc-text">5. 引介（Introduction）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-%E7%BB%87%E5%85%A5%EF%BC%88Weaving%EF%BC%89"><span class="toc-number">3.1.1.6.</span> <span class="toc-text">6. 织入（Weaving）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-AOP%E4%BB%A3%E7%90%86%EF%BC%88AOP-Proxy%EF%BC%89"><span class="toc-number">3.1.1.7.</span> <span class="toc-text">7. AOP代理（AOP Proxy）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-%E7%9B%AE%E6%A0%87%E5%AF%B9%E8%B1%A1%EF%BC%88Target-Object%EF%BC%89"><span class="toc-number">3.1.1.8.</span> <span class="toc-text">8. 目标对象（Target Object）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AOP%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">3.1.2.</span> <span class="toc-text">AOP的应用场景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AOP%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%9C%BA%E5%88%B6"><span class="toc-number">3.1.3.</span> <span class="toc-text">AOP的实现机制</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#JDK%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86"><span class="toc-number">3.1.3.1.</span> <span class="toc-text">JDK动态代理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#CGLIB%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86"><span class="toc-number">3.1.3.2.</span> <span class="toc-text">CGLIB动态代理</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B-1"><span class="toc-number">3.1.4.</span> <span class="toc-text">示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BD%95%E8%A6%81%E6%9C%89Spring-AOP"><span class="toc-number">3.2.</span> <span class="toc-text">为何要有Spring AOP</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-AOP-%E5%8E%9F%E7%90%86%EF%BC%9A%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86%E6%8A%80%E6%9C%AF%E7%9A%84%E5%BA%94%E7%94%A8"><span class="toc-number">3.3.</span> <span class="toc-text">Spring AOP 原理：动态代理技术的应用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#JDK-Proxy"><span class="toc-number">3.3.1.</span> <span class="toc-text">JDK Proxy</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CGLIB"><span class="toc-number">3.3.2.</span> <span class="toc-text">CGLIB</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Spring-AOP-%E7%9A%84%E9%80%89%E6%8B%A9%E7%AD%96%E7%95%A5"><span class="toc-number">3.3.3.</span> <span class="toc-text">Spring AOP 的选择策略</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86%E4%B8%8E%E9%9D%99%E6%80%81%E4%BB%A3%E7%90%86%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">3.4.</span> <span class="toc-text">动态代理与静态代理的区别</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%99%E6%80%81%E4%BB%A3%E7%90%86"><span class="toc-number">3.4.1.</span> <span class="toc-text">静态代理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86"><span class="toc-number">3.4.2.</span> <span class="toc-text">动态代理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8C%BA%E5%88%AB%E6%80%BB%E7%BB%93"><span class="toc-number">3.4.3.</span> <span class="toc-text">区别总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#AOP-%E5%AE%9E%E7%8E%B0%E5%B8%B8%E8%A7%81%E6%B3%A8%E8%A7%A3"><span class="toc-number">3.5.</span> <span class="toc-text">AOP 实现常见注解</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%8D%E5%B0%84%E7%9A%84%E7%89%B9%E6%80%A7%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">4.</span> <span class="toc-text">反射的特性及其应用场景</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%B9%E6%80%A7"><span class="toc-number">4.0.1.</span> <span class="toc-text">特性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">4.0.2.</span> <span class="toc-text">应用场景</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-Spring-%E6%A1%86%E6%9E%B6%E4%B8%AD%E7%9A%84%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%EF%BC%88DI%EF%BC%89%E5%92%8C%E6%8E%A7%E5%88%B6%E5%8F%8D%E8%BD%AC%EF%BC%88IoC%EF%BC%89"><span class="toc-number">4.0.2.1.</span> <span class="toc-text">1. Spring 框架中的依赖注入（DI）和控制反转（IoC）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86"><span class="toc-number">4.0.2.2.</span> <span class="toc-text">2. 动态代理</span></a></li></ol></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-history"></i><span>最近发布</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/11/03/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BC%98%E5%8C%96-%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/" title="数据库优化-分库分表"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://pic1.zhimg.com/v2-b76d79b11c3e8dd25f3c6abae8889a88_720w.jpg?source=172ae18b" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="数据库优化-分库分表"/></a><div class="content"><a class="title" href="/2024/11/03/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BC%98%E5%8C%96-%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/" title="数据库优化-分库分表">数据库优化-分库分表</a><time datetime="2024-11-03T08:20:54.000Z" title="发表于 2024-11-03 16:20:54">2024-11-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/11/03/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BC%98%E5%8C%96-%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB%E4%B8%8E%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB/" title="数据库优化-读写分离与冷热分离"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202411041125092.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="数据库优化-读写分离与冷热分离"/></a><div class="content"><a class="title" href="/2024/11/03/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BC%98%E5%8C%96-%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB%E4%B8%8E%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB/" title="数据库优化-读写分离与冷热分离">数据库优化-读写分离与冷热分离</a><time datetime="2024-11-03T08:18:25.000Z" title="发表于 2024-11-03 16:18:25">2024-11-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/10/28/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86/" title="操作系统-进程管理"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202410282316960.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="操作系统-进程管理"/></a><div class="content"><a class="title" href="/2024/10/28/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86/" title="操作系统-进程管理">操作系统-进程管理</a><time datetime="2024-10-28T14:52:35.000Z" title="发表于 2024-10-28 22:52:35">2024-10-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/10/27/%E5%88%86%E5%B8%83%E5%BC%8F-%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" title="分布式-分布式事务"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202410281041645.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="分布式-分布式事务"/></a><div class="content"><a class="title" href="/2024/10/27/%E5%88%86%E5%B8%83%E5%BC%8F-%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" title="分布式-分布式事务">分布式-分布式事务</a><time datetime="2024-10-27T13:08:20.000Z" title="发表于 2024-10-27 21:08:20">2024-10-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/10/21/%E5%88%86%E5%B8%83%E5%BC%8F-%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%EF%BC%88%E4%B8%8B%EF%BC%89/" title="分布式-服务治理（下）"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202410272103963.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="分布式-服务治理（下）"/></a><div class="content"><a class="title" href="/2024/10/21/%E5%88%86%E5%B8%83%E5%BC%8F-%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%EF%BC%88%E4%B8%8B%EF%BC%89/" title="分布式-服务治理（下）">分布式-服务治理（下）</a><time datetime="2024-10-21T07:24:49.000Z" title="发表于 2024-10-21 15:24:49">2024-10-21</time></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div id="footer-bar-tips"><div class="copyright">&copy;2024 By <a class="footer-bar-link" href="/" title="xiaoyan" target="_blank">xiaoyan</a></div></div><div id="footer-type-tips"></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/anzhiyu-c/hexo-theme-anzhiyu" title="主题">主题</a></div></div></div></footer></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="sidebar-site-data site-data is-center"><a href="/archives/" title="archive"><div class="headline">文章</div><div class="length-num">44</div></a><a href="/tags/" title="tag"><div class="headline">标签</div><div class="length-num">65</div></a><a href="/categories/" title="category"><div class="headline">分类</div><div class="length-num">17</div></a></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><a class="darkmode_switchbutton menu-child" href="javascript:void(0);" title="显示模式"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span>显示模式</span></a></div><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">网页</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://blog.anheyu.com/" title="博客"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/favicon.ico" alt="博客"/><span class="back-menu-item-text">博客</span></a></div></div><div class="back-menu-list-group"><div class="back-menu-list-title">项目</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://image.anheyu.com/" title="安知鱼图床"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://image.anheyu.com/favicon.ico" alt="安知鱼图床"/><span class="back-menu-item-text">安知鱼图床</span></a></div></div></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 隧道</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/music/?id=12613265870&amp;server=netease"><i class="anzhiyufont anzhiyu-icon-music faa-tada" style="font-size: 0.9em;"></i><span> 音乐馆</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li></ul></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/AOP/" style="font-size: 0.88rem;">AOP<sup>1</sup></a><a href="/tags/Bean/" style="font-size: 0.88rem;">Bean<sup>1</sup></a><a href="/tags/DDD/" style="font-size: 0.88rem;">DDD<sup>1</sup></a><a href="/tags/IoC/" style="font-size: 0.88rem;">IoC<sup>1</sup></a><a href="/tags/Java8%E6%96%B0%E7%89%B9%E6%80%A7/" style="font-size: 0.88rem;">Java8新特性<sup>1</sup></a><a href="/tags/Java%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" style="font-size: 0.88rem;">Java基本概念<sup>1</sup></a><a href="/tags/List/" style="font-size: 0.88rem;">List<sup>1</sup></a><a href="/tags/Map/" style="font-size: 0.88rem;">Map<sup>2</sup></a><a href="/tags/MyBatis/" style="font-size: 0.88rem;">MyBatis<sup>1</sup></a><a href="/tags/MySQL%E5%9F%BA%E7%A1%80/" style="font-size: 0.88rem;">MySQL基础<sup>1</sup></a><a href="/tags/Object/" style="font-size: 0.88rem;">Object<sup>1</sup></a><a href="/tags/SQL%E8%B0%83%E4%BC%98/" style="font-size: 0.88rem;">SQL调优<sup>1</sup></a><a href="/tags/Set/" style="font-size: 0.88rem;">Set<sup>1</sup></a><a href="/tags/SpringBoot/" style="font-size: 0.88rem;">SpringBoot<sup>1</sup></a><a href="/tags/SpringCloud/" style="font-size: 0.88rem;">SpringCloud<sup>1</sup></a><a href="/tags/%E4%BA%8B%E5%8A%A1/" style="font-size: 0.88rem;">事务<sup>2</sup></a><a href="/tags/%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/" style="font-size: 0.88rem;">内存模型<sup>1</sup></a><a href="/tags/%E5%8F%8D%E5%B0%84/" style="font-size: 0.88rem;">反射<sup>1</sup></a><a href="/tags/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/" style="font-size: 0.88rem;">垃圾回收<sup>1</sup></a><a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 0.88rem;">多线程<sup>1</sup></a><a href="/tags/%E5%AF%B9%E8%B1%A1/" style="font-size: 0.88rem;">对象<sup>1</sup></a><a href="/tags/%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8/" style="font-size: 0.88rem;">并发安全<sup>1</sup></a><a href="/tags/%E5%BA%8F%E5%88%97%E5%8C%96/" style="font-size: 0.88rem;">序列化<sup>1</sup></a><a href="/tags/%E5%BC%82%E5%B8%B8/" style="font-size: 0.88rem;">异常<sup>1</sup></a><a href="/tags/%E6%8B%B7%E8%B4%9D/" style="font-size: 0.88rem;">拷贝<sup>1</sup></a><a href="/tags/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" style="font-size: 0.88rem;">数据类型<sup>1</sup></a><a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 0.88rem;">数据结构<sup>1</sup></a><a href="/tags/%E6%97%A5%E5%BF%97/" style="font-size: 0.88rem;">日志<sup>2</sup></a><a href="/tags/%E6%9F%A5%E8%AF%A2/" style="font-size: 0.88rem;">查询<sup>1</sup></a><a href="/tags/%E6%B3%9B%E5%9E%8B/" style="font-size: 0.88rem;">泛型<sup>1</sup></a><a href="/tags/%E6%B3%A8%E8%A7%A3/" style="font-size: 0.88rem;">注解<sup>1</sup></a><a href="/tags/%E7%AD%96%E7%95%A5/" style="font-size: 0.88rem;">策略<sup>1</sup></a><a href="/tags/%E7%B1%BB%E5%88%9D%E5%A7%8B%E5%8C%96/" style="font-size: 0.88rem;">类初始化<sup>1</sup></a><a href="/tags/%E7%B1%BB%E5%8A%A0%E8%BD%BD/" style="font-size: 0.88rem;">类加载<sup>1</sup></a><a href="/tags/%E7%B4%A2%E5%BC%95/" style="font-size: 0.88rem;">索引<sup>2</sup></a><a href="/tags/%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B/" style="font-size: 0.88rem;">线程模型<sup>1</sup></a><a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 0.88rem;">线程池<sup>1</sup></a><a href="/tags/%E9%94%81/" style="font-size: 0.88rem;">锁<sup>2</sup></a><a href="/tags/%E9%9B%86%E7%BE%A4/" style="font-size: 0.88rem;">集群<sup>1</sup></a><a href="/tags/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/" style="font-size: 0.88rem;">面向对象<sup>1</sup></a></div></div><hr/></div></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="anzhiyufont anzhiyu-icon-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="anzhiyufont anzhiyu-icon-gear"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="anzhiyufont anzhiyu-icon-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></button></div></div><div id="nav-music"><a id="nav-music-hoverTips" onclick="anzhiyu.musicToggle()" accesskey="m">播放音乐</a><div id="console-music-bg"></div><meting-js id="8152976493" server="netease" type="playlist" mutex="true" preload="none" theme="var(--anzhiyu-main)" data-lrctype="0" order="random" volume="0.7"></meting-js></div><div id="rightMenu"><div class="rightMenu-group rightMenu-small"><div class="rightMenu-item" id="menu-backward"><i class="anzhiyufont anzhiyu-icon-arrow-left"></i></div><div class="rightMenu-item" id="menu-forward"><i class="anzhiyufont anzhiyu-icon-arrow-right"></i></div><div class="rightMenu-item" id="menu-refresh"><i class="anzhiyufont anzhiyu-icon-arrow-rotate-right" style="font-size: 1rem;"></i></div><div class="rightMenu-item" id="menu-top"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></div></div><div class="rightMenu-group rightMenu-line rightMenuPlugin"><div class="rightMenu-item" id="menu-copytext"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制选中文本</span></div><div class="rightMenu-item" id="menu-pastetext"><i class="anzhiyufont anzhiyu-icon-paste"></i><span>粘贴文本</span></div><a class="rightMenu-item" id="menu-commenttext"><i class="anzhiyufont anzhiyu-icon-comment-medical"></i><span>引用到评论</span></a><div class="rightMenu-item" id="menu-newwindow"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开</span></div><div class="rightMenu-item" id="menu-copylink"><i class="anzhiyufont anzhiyu-icon-link"></i><span>复制链接地址</span></div><div class="rightMenu-item" id="menu-copyimg"><i class="anzhiyufont anzhiyu-icon-images"></i><span>复制此图片</span></div><div class="rightMenu-item" id="menu-downloadimg"><i class="anzhiyufont anzhiyu-icon-download"></i><span>下载此图片</span></div><div class="rightMenu-item" id="menu-newwindowimg"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开图片</span></div><div class="rightMenu-item" id="menu-search"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>站内搜索</span></div><div class="rightMenu-item" id="menu-searchBaidu"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>百度搜索</span></div><div class="rightMenu-item" id="menu-music-toggle"><i class="anzhiyufont anzhiyu-icon-play"></i><span>播放音乐</span></div><div class="rightMenu-item" id="menu-music-back"><i class="anzhiyufont anzhiyu-icon-backward"></i><span>切换到上一首</span></div><div class="rightMenu-item" id="menu-music-forward"><i class="anzhiyufont anzhiyu-icon-forward"></i><span>切换到下一首</span></div><div class="rightMenu-item" id="menu-music-playlist" onclick="window.open(&quot;https://y.qq.com/n/ryqq/playlist/8802438608&quot;, &quot;_blank&quot;);" style="display: none;"><i class="anzhiyufont anzhiyu-icon-radio"></i><span>查看所有歌曲</span></div><div class="rightMenu-item" id="menu-music-copyMusicName"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制歌名</span></div></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item menu-link" id="menu-randomPost"><i class="anzhiyufont anzhiyu-icon-shuffle"></i><span>随便逛逛</span></a><a class="rightMenu-item menu-link" href="/categories/"><i class="anzhiyufont anzhiyu-icon-cube"></i><span>博客分类</span></a><a class="rightMenu-item menu-link" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags"></i><span>文章标签</span></a></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item" id="menu-copy" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制地址</span></a><a class="rightMenu-item" id="menu-commentBarrage" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-message"></i><span class="menu-commentBarrage-text">关闭热评</span></a><a class="rightMenu-item" id="menu-darkmode" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span class="menu-darkmode-text">深色模式</span></a><a class="rightMenu-item" id="menu-translate" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-language"></i><span>轉為繁體</span></a></div></div><div id="rightmenu-mask"></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.umd.js"></script><script src="https://cdn.cbd.int/instant.page@5.2.0/instantpage.js" type="module"></script><script src="https://cdn.cbd.int/vanilla-lazyload@17.8.5/dist/lazyload.iife.min.js"></script><script src="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.js"></script><canvas id="universe"></canvas><script async src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/dark/dark.js"></script><script async src="/anzhiyu/random.js"></script><div class="js-pjax"><input type="hidden" name="page-type" id="page-type" value="post"></div><script>var visitorMail = "";
+</script><script async data-pjax src="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/waterfall/waterfall.js"></script><script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/qrcodejs/1.0.0/qrcode.min.js"></script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.9/icon/ali_iconfont_css.css"><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/aplayer/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.cbd.int/anzhiyu-blog-static@1.0.1/js/APlayer.min.js"></script><script src="https://cdn.cbd.int/hexo-anzhiyu-music@1.0.1/assets/js/Meting2.min.js"></script><script src="https://cdn.cbd.int/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
 
-        
+document.addEventListener('pjax:send', function () {
+  // removeEventListener scroll 
+  anzhiyu.removeGlobalFnEvent('pjax')
+  anzhiyu.removeGlobalFnEvent('themeChange')
 
-            </section>
-
-            
-                
-
-<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
-    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
-    
-    
-                <aside id="krw-about" class="widget widget-kratos-about clearfix">
-    <div class="photo-background"></div>
-    <div class="photo-wrapper clearfix">
-        <div class="photo-wrapper-tip text-center">
-            <img class="about-photo" src="/images/user.jpg" alt="xiaoyan" loading="lazy" decoding="auto" />
-        </div>
-    </div>
-    <div class="textwidget">
-        <p class="text-center">是一只时时翻垃圾吃的宅子。</p>
-    </div>
-    <div class="site-meta">
-        <a class="meta-item" href="/archives/">
-            <span class="title">
-                文章
-            </span>
-            <span class="count">
-                44
-            </span>
-        </a>
-        <a class="meta-item" href="/categories/">
-            <span class="title">
-                分类
-            </span>
-            <span class="count">
-                17
-            </span>
-        </a>
-        <a class="meta-item" href="/tags/">
-            <span class="title">
-                标签
-            </span>
-            <span class="count">
-                65
-            </span>
-        </a>
-    </div>
-</aside>
-            
-                    <div class="sticky-area">
-                
-                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix toc-div-class" >
-    <div class="photo-background"></div>
-    <h4 class="widget-title no-after">
-        <i class="fa fa-compass"></i>
-        文章目录
-        <span class="toc-progress-bar" role="progressbar" aria-label="阅读进度："></span>
-    </h4>
-    <div class="textwidget">
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%90%86%E8%A7%A3Spring%E6%A1%86%E6%9E%B6"><span class="toc-number">1.</span> <span class="toc-text">理解Spring框架</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#IoC"><span class="toc-number">2.</span> <span class="toc-text">IoC</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%A7%E5%88%B6%E5%8F%8D%E8%BD%AC%EF%BC%88IoC%EF%BC%89"><span class="toc-number">2.1.</span> <span class="toc-text">控制反转（IoC）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#IoC%E7%9A%84%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5"><span class="toc-number">2.1.1.</span> <span class="toc-text">IoC的核心概念</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E6%8E%A7%E5%88%B6%E5%8F%8D%E8%BD%AC%EF%BC%88Inversion-of-Control%EF%BC%89"><span class="toc-number">2.1.1.1.</span> <span class="toc-text">1. 控制反转（Inversion of Control）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%EF%BC%88Dependency-Injection-DI%EF%BC%89"><span class="toc-number">2.1.1.2.</span> <span class="toc-text">2. 依赖注入（Dependency Injection, DI）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IoC%E5%AE%B9%E5%99%A8%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="toc-number">2.1.2.</span> <span class="toc-text">IoC容器的优势</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IoC%E5%AE%B9%E5%99%A8%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.1.3.</span> <span class="toc-text">IoC容器的实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B"><span class="toc-number">2.1.4.</span> <span class="toc-text">示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BE%9D%E8%B5%96%E5%80%92%E7%BD%AE%E3%80%81%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%E3%80%81%E6%8E%A7%E5%88%B6%E5%8F%8D%E8%BD%AC"><span class="toc-number">2.2.</span> <span class="toc-text">依赖倒置、依赖注入、控制反转</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%A7%E5%88%B6%E5%8F%8D%E8%BD%AC%EF%BC%88Inversion-of-Control-IoC%EF%BC%89"><span class="toc-number">2.2.1.</span> <span class="toc-text">控制反转（Inversion of Control, IoC）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%EF%BC%88Dependency-Injection-DI%EF%BC%89"><span class="toc-number">2.2.2.</span> <span class="toc-text">依赖注入（Dependency Injection, DI）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%9D%E8%B5%96%E5%80%92%E7%BD%AE%E5%8E%9F%E5%88%99%EF%BC%88Dependency-Inversion-Principle-DIP%EF%BC%89"><span class="toc-number">2.2.3.</span> <span class="toc-text">依赖倒置原则（Dependency Inversion Principle, DIP）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-IoC-%E7%9A%84%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.3.</span> <span class="toc-text">Spring IoC 的设计与实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Bean-%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E7%AE%A1%E7%90%86"><span class="toc-number">2.3.1.</span> <span class="toc-text">Bean 生命周期管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%EF%BC%88Dependency-Injection%EF%BC%89"><span class="toc-number">2.3.2.</span> <span class="toc-text">依赖注入（Dependency Injection）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Bean-%E7%9A%84%E4%BD%9C%E7%94%A8%E5%9F%9F%E7%AE%A1%E7%90%86"><span class="toc-number">2.3.3.</span> <span class="toc-text">Bean 的作用域管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86"><span class="toc-number">2.3.4.</span> <span class="toc-text">异常处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%A2%E5%90%91%E5%88%87%E9%9D%A2%E7%BC%96%E7%A8%8B%EF%BC%88AOP%EF%BC%89%E6%94%AF%E6%8C%81"><span class="toc-number">2.3.5.</span> <span class="toc-text">面向切面编程（AOP）支持</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E8%BD%BD"><span class="toc-number">2.3.6.</span> <span class="toc-text">配置文件加载</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#AOP"><span class="toc-number">3.</span> <span class="toc-text">AOP</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9D%A2%E5%90%91%E5%88%87%E9%9D%A2%E7%BC%96%E7%A8%8B%EF%BC%88AOP%EF%BC%89"><span class="toc-number">3.1.</span> <span class="toc-text">面向切面编程（AOP）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#AOP%E7%9A%84%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5"><span class="toc-number">3.1.1.</span> <span class="toc-text">AOP的核心概念</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E5%88%87%E9%9D%A2%EF%BC%88Aspect%EF%BC%89"><span class="toc-number">3.1.1.1.</span> <span class="toc-text">1. 切面（Aspect）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E8%BF%9E%E6%8E%A5%E7%82%B9%EF%BC%88Join-Point%EF%BC%89"><span class="toc-number">3.1.1.2.</span> <span class="toc-text">2. 连接点（Join Point）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E9%80%9A%E7%9F%A5%EF%BC%88Advice%EF%BC%89"><span class="toc-number">3.1.1.3.</span> <span class="toc-text">3. 通知（Advice）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E5%88%87%E7%82%B9%EF%BC%88Pointcut%EF%BC%89"><span class="toc-number">3.1.1.4.</span> <span class="toc-text">4. 切点（Pointcut）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-%E5%BC%95%E4%BB%8B%EF%BC%88Introduction%EF%BC%89"><span class="toc-number">3.1.1.5.</span> <span class="toc-text">5. 引介（Introduction）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-%E7%BB%87%E5%85%A5%EF%BC%88Weaving%EF%BC%89"><span class="toc-number">3.1.1.6.</span> <span class="toc-text">6. 织入（Weaving）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-AOP%E4%BB%A3%E7%90%86%EF%BC%88AOP-Proxy%EF%BC%89"><span class="toc-number">3.1.1.7.</span> <span class="toc-text">7. AOP代理（AOP Proxy）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-%E7%9B%AE%E6%A0%87%E5%AF%B9%E8%B1%A1%EF%BC%88Target-Object%EF%BC%89"><span class="toc-number">3.1.1.8.</span> <span class="toc-text">8. 目标对象（Target Object）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AOP%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">3.1.2.</span> <span class="toc-text">AOP的应用场景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AOP%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%9C%BA%E5%88%B6"><span class="toc-number">3.1.3.</span> <span class="toc-text">AOP的实现机制</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#JDK%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86"><span class="toc-number">3.1.3.1.</span> <span class="toc-text">JDK动态代理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#CGLIB%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86"><span class="toc-number">3.1.3.2.</span> <span class="toc-text">CGLIB动态代理</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B-1"><span class="toc-number">3.1.4.</span> <span class="toc-text">示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BD%95%E8%A6%81%E6%9C%89Spring-AOP"><span class="toc-number">3.2.</span> <span class="toc-text">为何要有Spring AOP</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-AOP-%E5%8E%9F%E7%90%86%EF%BC%9A%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86%E6%8A%80%E6%9C%AF%E7%9A%84%E5%BA%94%E7%94%A8"><span class="toc-number">3.3.</span> <span class="toc-text">Spring AOP 原理：动态代理技术的应用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#JDK-Proxy"><span class="toc-number">3.3.1.</span> <span class="toc-text">JDK Proxy</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CGLIB"><span class="toc-number">3.3.2.</span> <span class="toc-text">CGLIB</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Spring-AOP-%E7%9A%84%E9%80%89%E6%8B%A9%E7%AD%96%E7%95%A5"><span class="toc-number">3.3.3.</span> <span class="toc-text">Spring AOP 的选择策略</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86%E4%B8%8E%E9%9D%99%E6%80%81%E4%BB%A3%E7%90%86%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">3.4.</span> <span class="toc-text">动态代理与静态代理的区别</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%99%E6%80%81%E4%BB%A3%E7%90%86"><span class="toc-number">3.4.1.</span> <span class="toc-text">静态代理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86"><span class="toc-number">3.4.2.</span> <span class="toc-text">动态代理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8C%BA%E5%88%AB%E6%80%BB%E7%BB%93"><span class="toc-number">3.4.3.</span> <span class="toc-text">区别总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#AOP-%E5%AE%9E%E7%8E%B0%E5%B8%B8%E8%A7%81%E6%B3%A8%E8%A7%A3"><span class="toc-number">3.5.</span> <span class="toc-text">AOP 实现常见注解</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%8D%E5%B0%84%E7%9A%84%E7%89%B9%E6%80%A7%E5%8F%8A%E5%85%B6%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">4.</span> <span class="toc-text">反射的特性及其应用场景</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%B9%E6%80%A7"><span class="toc-number">4.0.1.</span> <span class="toc-text">特性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">4.0.2.</span> <span class="toc-text">应用场景</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-Spring-%E6%A1%86%E6%9E%B6%E4%B8%AD%E7%9A%84%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%EF%BC%88DI%EF%BC%89%E5%92%8C%E6%8E%A7%E5%88%B6%E5%8F%8D%E8%BD%AC%EF%BC%88IoC%EF%BC%89"><span class="toc-number">4.0.2.1.</span> <span class="toc-text">1. Spring 框架中的依赖注入（DI）和控制反转（IoC）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86"><span class="toc-number">4.0.2.2.</span> <span class="toc-text">2. 动态代理</span></a></li></ol></li></ol></li></ol></li></ol>
-    </div>
-</aside>
-                
-                
-  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
-    <h4 class="widget-title"><i class="fa fa-folder"></i>分类列表</h4>
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93-%E7%BC%93%E5%AD%98/">数据库&缓存</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93-%E7%BC%93%E5%AD%98/MySQL/">MySQL</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93-%E7%BC%93%E5%AD%98/Redis/">Redis</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93-%E7%BC%93%E5%AD%98/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BC%98%E5%8C%96/">数据库优化</a><span class="category-list-count">2</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9E%B6%E6%9E%84/">架构</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/">编程语言</a><span class="category-list-count">21</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/">Java</a><span class="category-list-count">20</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/JVM/">JVM</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Spring/">Spring</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/%E5%9F%BA%E7%A1%80/">基础</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">并发编程</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/%E9%9B%86%E5%90%88/">集合</a><span class="category-list-count">5</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Python/">Python</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/">计算机基础</a><span class="category-list-count">6</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a><span class="category-list-count">5</span></li></ul></li></ul>
-  </aside>
-
-
-            
-                
-  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
-    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
-      <div class="tag-clouds">
-        <a href="/tags/AOP/" style="font-size: 0.6em;">AOP</a> <a href="/tags/BASE/" style="font-size: 0.6em;">BASE</a> <a href="/tags/Bean/" style="font-size: 0.6em;">Bean</a> <a href="/tags/CAP/" style="font-size: 0.6em;">CAP</a> <a href="/tags/Cookie/" style="font-size: 0.6em;">Cookie</a> <a href="/tags/DDD/" style="font-size: 0.6em;">DDD</a> <a href="/tags/DNS/" style="font-size: 0.6em;">DNS</a> <a href="/tags/HTTP/" style="font-size: 0.6em;">HTTP</a> <a href="/tags/I-O/" style="font-size: 0.6em;">I/O</a> <a href="/tags/IoC/" style="font-size: 0.6em;">IoC</a> <a href="/tags/JWT/" style="font-size: 0.6em;">JWT</a> <a href="/tags/Java8%E6%96%B0%E7%89%B9%E6%80%A7/" style="font-size: 0.6em;">Java8新特性</a> <a href="/tags/Java%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" style="font-size: 0.6em;">Java基本概念</a> <a href="/tags/List/" style="font-size: 0.6em;">List</a> <a href="/tags/Map/" style="font-size: 0.8em;">Map</a> <a href="/tags/MyBatis/" style="font-size: 0.6em;">MyBatis</a> <a href="/tags/MySQL%E5%9F%BA%E7%A1%80/" style="font-size: 0.6em;">MySQL基础</a> <a href="/tags/Nginx/" style="font-size: 0.6em;">Nginx</a>
-      </div>
-  </aside>
-
-            
-                
-  <aside id="krw-posts" class="widget widget-kratos-posts">
-  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
-  <div class="tab-content">
-      <ul class="list-group">
-        
-        
-          
-          
-            <a class="list-group-item" href="/2024/11/03/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BC%98%E5%8C%96-%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/"><i class="fa fa-book"></i> 数据库优化-分库分表</a>
-            
-          
-        
-          
-          
-            <a class="list-group-item" href="/2024/11/03/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BC%98%E5%8C%96-%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB%E4%B8%8E%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB/"><i class="fa fa-book"></i> 数据库优化-读写分离与冷热分离</a>
-            
-          
-        
-          
-          
-            <a class="list-group-item" href="/2024/10/28/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86/"><i class="fa fa-book"></i> 操作系统-进程管理</a>
-            
-          
-        
-          
-          
-            <a class="list-group-item" href="/2024/10/27/%E5%88%86%E5%B8%83%E5%BC%8F-%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/"><i class="fa fa-book"></i> 分布式-分布式事务</a>
-            
-          
-        
-          
-          
-            <a class="list-group-item" href="/2024/10/21/%E5%88%86%E5%B8%83%E5%BC%8F-%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%EF%BC%88%E4%B8%8B%EF%BC%89/"><i class="fa fa-book"></i> 分布式-服务治理（下）</a>
-            
-          
-        
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-      </ul>
-  </div>
-  </aside>
-
-            
-    </div>
-</section>
-            
-
-        
-
-                </div>
-    </div>
-</div>
-
-<footer>
-    <div id="footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 col-md-offset-3 footer-list text-center">
-                    <ul class="kratos-social-icons">
-                        
-                    </ul>
-                    <ul class="kratos-copyright">
-                        <div>
-                            <li>&copy; 2024 XIAOYAN 版权所有.</li>
-                            <li>本站已运行<span id="kr-since">Loading...</span></li>
-                        </div>
-                        <div>
-                            <li>自豪地使用 <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a> 主题</li>
-                            <li>站点由 xiaoyan 用 <i class="fa fa-heart" style="color:#d43f57"></i> 搭建</li>
-                        </div>
-                        <!-- 额外的追加注入项 -->
-                        
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="kr-tool text-center">
-            <div class="tool">
-                
-                    <div class="box search-box">
-                        <a href="/search">
-                            <span class="fa fa-search"></span>
-                        </a>
-                    </div>
-                
-                <div class="box theme-box" id="theme-toggle">
-                    <span class="fa fa-adjust"></span>
-                </div>
-            </div>
-            <div id="gotop-box" class="box gotop-box">
-                <span class="fa fa-chevron-up"></span>
-            </div>
-        </div>
-    </div>
-</footer>
-</div>
-</div>
-
-
-    <div id="kr-donate-modal" class="kr-modal">
-    <div class="kr-modal-bg" onclick="krCloseDonateModal()"></div>
-    <div class="kr-modal-content">
-        <div class="kr-modal-header">
-            <div class="kr-modal-icon">
-                <i class="fa fa-bitcoin"></i>
-            </div>
-            <div class="kr-modal-title">打赏</div>
-            <button class="kr-modal-close" onclick="krCloseDonateModal()">
-                <i class="fa fa-times-circle"></i>
-            </button>
-        </div>
-        <div class="kr-modal-body">
-            <div class="kr-donate-message">请我喝一杯冰阔咯~</div>
-            <div class="kr-donate-qr" id="kr-donate-qr">
-                
-            </div>
-            <div class="kr-donate-platforms">
-                
-                    
-                        <button class="kr-donate-platform-button" style="color: #1677ff;" title="支付宝" onclick="krDonateModalShowPlatformQR('https://qr.alipay.com/fkx15009k7u0fqrj8auepdf', '#1677ff')">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-alipay">
-  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-  <path d="M19 3h-14a2 2 0 0 0 -2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2 -2v-14a2 2 0 0 0 -2 -2z" />
-  <path d="M7 7h10" />
-  <path d="M12 3v7" />
-  <path d="M21 17.314c-2.971 -1.923 -15 -8.779 -15 -1.864c0 1.716 1.52 2.55 2.985 2.55c3.512 0 6.814 -5.425 6.814 -8h-6.604" />
-</svg>
-
-                        </button>
-                    
-                
-                    
-                        <button class="kr-donate-platform-button" style="color: #38ad5a;" title="微信支付" onclick="krDonateModalShowPlatformQR('wxp://f2f0hR4eF9Ypa3tpzjWme9fQDyWW3PIGe3WG5oiIakWLmDs', '#38ad5a')">
-                            <i class="fa fa-wechat"></i>
-                        </button>
-                    
-                
-            </div>
-        </div>
-    </div>
-</div>
-<script defer src="/js/kr-modal/donate.min.js"></script>
-
-
-
-
-    <div id="kr-share-modal" class="kr-modal">
-    <div class="kr-modal-bg" onclick="krCloseShareModal()"></div>
-    <div class="kr-modal-content">
-        <div class="kr-modal-header">
-            <div class="kr-modal-icon">
-                <i class="fa fa-share-alt"></i>
-            </div>
-            <div class="kr-modal-title">分享</div>
-            <button class="kr-modal-close" onclick="krCloseShareModal()">
-                <i class="fa fa-times-circle"></i>
-            </button>
-        </div>
-        <div class="kr-modal-body">
-            <div class="kr-share-message">让兄弟萌也来瞅一瞅！</div>
-            <div class="kr-share-qr" id="kr-share-qr"></div>
-            <div class="kr-share-platforms">
-                
-                    <button class="kr-share-platform-button" style="color: #e6162d;" title="QQ" onclick="krShareModalOpenPlatform('')">
-                        <i class="fa fa-qq"></i>
-                    </button>
-                
-                    <button class="kr-share-platform-button" style="color: #25d366;" title="微信" onclick="krShareModalOpenPlatform('')">
-                        <i class="fa fa-weixin"></i>
-                    </button>
-                
-            </div>
-        </div>
-    </div>
-</div>
-<script defer src="/js/kr-modal/share.min.js"></script>
-
-
-
-<!-- 额外的追加注入项 -->
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
-<meting-js
-  server="netease"
-  type="playlist"
-  fixed="true"
-  order="random"
-  id="12613265870">
-</meting-js>
-
-
-
-        <script>
-    if (!window.kr) {
-        window.kr = {};
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
     }
-    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
-    window.kr.siteRoot = "/";
-</script>
+  }
 
+  typeof typed === 'object' && typed.destroy()
 
-  <script defer src="/vendors/nprogress@0.2.0/nprogress.js"></script>
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+})
 
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
 
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
 
-  <script defer src="/vendors/viewerjs@1.11.6/dist/viewer.min.js"></script>
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
 
+  typeof panguInit === 'function' && panguInit()
 
-<script defer src="/js/kr-core.min.js"></script>
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
 
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
 
-  <script defer src="/js/kr-pjax.min.js"></script>
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
 
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
 
-<!-- 额外的追加注入项 -->
-
-  <script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
-
-
-
-    </body>
-</html>
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script charset="UTF-8" src="https://cdn.cbd.int/anzhiyu-theme-static@1.1.5/accesskey/accesskey.js"></script></div><div id="popup-window"><div class="popup-window-title">通知</div><div class="popup-window-divider"></div><div class="popup-window-content"><div class="popup-tip">你好呀</div><div class="popup-link"><i class="anzhiyufont anzhiyu-icon-arrow-circle-right"></i></div></div></div></body></html>

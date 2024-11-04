@@ -1,194 +1,209 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-  <!-- 元数据 -->
-  <meta charset="utf-8">
-  
-    <link rel="icon" href="/images/earthstars.png">
-  
-  
-  <title>JVM-垃圾回收 | XIAOYAN</title>
-  <link rel="canonical" href="http://example.com/2024/10/05/Java-JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/">
-  <meta name="author" content="xiaoyan" />
-  <meta http-equiv="Cache-Control" content="no-transform" />
-  <meta http-equiv="Cache-Control" content="no-siteapp" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="robots" content="index,follow" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <meta name="format-detection" content="telphone=no, email=no" />
-  
-    <meta name="keywords" content="垃圾回收" />
-  
-  <meta name="description" content="Java中的垃圾回收机制垃圾回收（Garbage Collection, GC）是Java虚拟机（JVM）自动管理内存的一种机制。它负责自动回收那些不再被引用的对象所占用的内存，从而减少了内存泄漏和内存管理错误的可能性。垃圾回收机制通过多种方式触发，以确保内存的有效利用和系统的稳定性。 垃圾回收的基本概念1. 垃圾回收的目标垃圾回收的主要目标是：  自动内存管理：自动回收不再使用的对象，释放其占用">
-<meta property="og:type" content="article">
-<meta property="og:title" content="JVM-垃圾回收">
-<meta property="og:url" content="http://example.com/2024/10/05/Java-JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/index.html">
-<meta property="og:site_name" content="XIAOYAN">
-<meta property="og:description" content="Java中的垃圾回收机制垃圾回收（Garbage Collection, GC）是Java虚拟机（JVM）自动管理内存的一种机制。它负责自动回收那些不再被引用的对象所占用的内存，从而减少了内存泄漏和内存管理错误的可能性。垃圾回收机制通过多种方式触发，以确保内存的有效利用和系统的稳定性。 垃圾回收的基本概念1. 垃圾回收的目标垃圾回收的主要目标是：  自动内存管理：自动回收不再使用的对象，释放其占用">
-<meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://cdn.xiaolincoding.com//picgo/1718783586342-9da40db7-1dac-42ec-8148-81c10d8bfc04.png">
-<meta property="article:published_time" content="2024-10-05T00:29:26.000Z">
-<meta property="article:modified_time" content="2024-11-02T11:03:10.264Z">
-<meta property="article:author" content="xiaoyan">
-<meta property="article:tag" content="垃圾回收">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://cdn.xiaolincoding.com//picgo/1718783586342-9da40db7-1dac-42ec-8148-81c10d8bfc04.png">
-  
-  <!-- 样式表文件 -->
-  <link rel="stylesheet" id="kratos-css" href="/css/kr-core.min.css" media="all"></link>
-  
-    <link rel="stylesheet" id="highlight-css" href="/css/highlight/highlight.js/night-eighties.min.css" media="all"></link>
-  
-  <link rel="stylesheet" id="theme-light-css" href="/css/kr-theme/light.min.css" media="all"></link>
-  <link rel="stylesheet" id="theme-dark-css" href="/css/kr-theme/dark.min.css" media="(prefers-color-scheme: dark)"></link>
-  <script src="/js/kr-theme.min.js"></script>
-  <link rel="stylesheet" id="fontawe-css" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css" media="all"></link>
-  
-    <link rel="stylesheet" id="nprogress-css" href="/vendors/nprogress@0.2.0/nprogress.css" media="all"></link>
-  
-  
-    <link rel="stylesheet" href="/vendors/viewerjs@1.11.6/dist/viewer.min.css"></link>
-  
-  <!-- 不得不预先加载的一些JS文件 -->
-  
-    <script src="/vendors/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
-  
-  <!-- 自定义站点横幅和背景 -->
-  <style>
-    
-      .kratos-cover.kratos-cover-2 {
-        background-image: url('/images/wallpaper_light.png');
-      }
-      html[data-theme="dark"] .kratos-cover.kratos-cover-2 {
-        background-image: url('/images/wallpaper_dark.png');
-      }
-    
-    
-      @media(min-width:768px) {
-        body.custom-background {
-          background-image: url('/images/bg.webp');
+<!DOCTYPE html><html lang="zn-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><title>JVM-垃圾回收 | XIAOYAN</title><meta name="keywords" content="垃圾回收"><meta name="author" content="xiaoyan"><meta name="copyright" content="xiaoyan"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#f7f9fe"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-touch-fullscreen" content="yes"><meta name="apple-mobile-web-app-title" content="JVM-垃圾回收"><meta name="application-name" content="JVM-垃圾回收"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f7f9fe"><meta property="og:type" content="article"><meta property="og:title" content="JVM-垃圾回收"><meta property="og:url" content="http://example.com/2024/10/05/Java-JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/index.html"><meta property="og:site_name" content="XIAOYAN"><meta property="og:description" content="Java中的垃圾回收机制垃圾回收（Garbage Collection, GC）是Java虚拟机（JVM）自动管理内存的一种机制。它负责自动回收那些不再被引用的对象所占用的内存，从而减少了内存泄漏和内存管理错误的可能性。垃圾回收机制通过多种方式触发，以确保内存的有效利用和系统的稳定性。 垃圾回收的基"><meta property="og:locale" content="zn-CN"><meta property="og:image" content="https://cdn.xiaolincoding.com//picgo/1718783586342-9da40db7-1dac-42ec-8148-81c10d8bfc04.png"><meta property="article:author" content="xiaoyan"><meta property="article:tag"><meta name="twitter:card" content="summary"><meta name="twitter:image" content="https://cdn.xiaolincoding.com//picgo/1718783586342-9da40db7-1dac-42ec-8148-81c10d8bfc04.png"><meta name="description" content="Java中的垃圾回收机制垃圾回收（Garbage Collection, GC）是Java虚拟机（JVM）自动管理内存的一种机制。它负责自动回收那些不再被引用的对象所占用的内存，从而减少了内存泄漏和内存管理错误的可能性。垃圾回收机制通过多种方式触发，以确保内存的有效利用和系统的稳定性。 垃圾回收的基"><link rel="shortcut icon" href="/images/favicon.ico"><link rel="canonical" href="http://example.com/2024/10/05/Java-JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/"><link rel="preconnect" href="//cdn.cbd.int"/><meta name="google-site-verification" content="xxx"/><meta name="baidu-site-verification" content="code-xxx"/><meta name="msvalidate.01" content="xxx"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  linkPageTop: undefined,
+  peoplecanvas: {"enable":true,"img":"https://upload-bbs.miyoushe.com/upload/2024/07/27/125766904/ba62475f396df9de3316a08ed9e65d86_5680958632268053399..png"},
+  postHeadAiDescription: undefined,
+  diytitle: undefined,
+  LA51: undefined,
+  greetingBox: undefined,
+  twikooEnvId: '',
+  commentBarrageConfig:undefined,
+  music_page_default: "nav_music",
+  root: '/',
+  preloader: {"source":3},
+  friends_vue_info: undefined,
+  navMusic: true,
+  mainTone: undefined,
+  authorStatus: undefined,
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简","rightMenuMsgToTraditionalChinese":"转为繁体","rightMenuMsgToSimplifiedChinese":"转为简体"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":330},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    simplehomepage: true,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"copy":true,"copyrightEbable":false,"limitCount":50,"languages":{"author":"作者: xiaoyan","link":"链接: ","source":"来源: XIAOYAN","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。","copySuccess":"复制成功，复制和转载请标注本文地址"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#425AEF","bgDark":"#1f1f1f","position":"top-center"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.min.js',
+      css: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false,
+  shortcutKey: undefined,
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  configTitle: 'XIAOYAN',
+  title: 'JVM-垃圾回收',
+  postAI: '',
+  pageFillDescription: 'Java中的垃圾回收机制, 垃圾回收的基本概念, 1. 垃圾回收的目标, 2. 垃圾回收的基本原理, 垃圾回收的触发方式, 1. 内存不足时, 2. 手动请求, 3. JVM参数配置, 4. 对象数量或内存使用达到阈值, 垃圾回收器的类型, 判断垃圾的方法, 引用计数法, 可达性分析算法, 为何需要垃圾回收算法, 垃圾回收算法, 标记-清除算法（Mark-Sweep）, 复制算法（Copying）, 标记-整理算法（Mark-Compact）, 原理, 优点, 缺点, 分代回收算法（Generational Collection）, 垃圾回收器, 垃圾回收算法中的Stop-the-World阶段, 复制算法中的STW阶段, STW阶段分析, G1垃圾回收器中的STW阶段, 标记阶段停顿分析, 清理阶段停顿分析, 复制阶段停顿分析, Minor GC、Major GC和Full GC, Minor GC, 作用范围, 触发条件, 特点, Major GC, 作用范围, 触发条件, 特点, Full GC, 作用范围, 触发条件, 特点, CMS和G1垃圾收集器, 区别, 1. 使用范围不一样, 2. STW时间, 3. 垃圾碎片, 4. 垃圾回收过程不一样, 5. 浮动垃圾, 适用场景, G1回收器, G1回收器的特点, G1相比CMS的改进, GC只会对堆进行GC吗？, 1. 堆（Heap）, 作用, 垃圾回收, 2. 方法区（Method Area）, 作用, 垃圾回收, 3. 其他内存区域, 作用, 垃圾回收中的垃圾回收机制垃圾回收是虚拟机自动管理内存的一种机制它负责自动回收那些不再被引用的对象所占用的内存从而减少了内存泄漏和内存管理错误的可能性垃圾回收机制通过多种方式触发以确保内存的有效利用和系统的稳定性垃圾回收的基本概念垃圾回收的目标垃圾回收的主要目标是自动内存管理自动回收不再使用的对象释放其占用的内存减少内存泄漏防止程序因未释放不再使用的对象而导致内存泄漏提高程序稳定性通过自动内存管理减少因手动内存管理错误导致的程序崩溃垃圾回收的基本原理垃圾回收器通过以下步骤实现内存回收标记垃圾回收器首先标记所有活动对象即仍在使用的对象清除垃圾回收器清除未被标记的对象释放其占用的内存整理在某些垃圾回收算法中垃圾回收器会将存活的对象移动到内存的一端以减少内存碎片垃圾回收的触发方式垃圾回收可以通过多种方式触发具体包括内存不足时当检测到堆内存不足无法为新的对象分配内存时会自动触发垃圾回收机制这种情况下垃圾回收器会尝试回收不再使用的对象以释放内存空间手动请求虽然垃圾回收是自动的开发者可以通过调用以下方法建议进行垃圾回收需要注意的是这些方法只是建议进行垃圾回收并不能保证立即执行会根据当前的内存使用情况和垃圾回收策略来决定是否立即执行垃圾回收参数配置启动应用程序时可以通过设置参数来调整垃圾回收行为常见的参数包括设置最大堆内存大小设置初始堆内存大小启用垃圾回收器启用并发标记清除垃圾回收器这些参数可以影响垃圾回收的触发条件和行为从而优化内存管理和程序性能对象数量或内存使用达到阈值垃圾回收器内部实现了一些策略以监控对象的创建和内存的使用当对象数量或内存使用达到相应的阈值时垃圾回收器会触发垃圾回收这些阈值通常由垃圾回收器的算法和配置决定垃圾回收器的类型提供了多种垃圾回收器每种垃圾回收器适用于不同的应用场景和性能需求常见的垃圾回收器包括单线程垃圾回收器适用于单核处理器和小内存应用多线程垃圾回收器适用于多核处理器和大内存应用适用于大内存应用具有低延迟和高吞吐量的特点并发标记清除垃圾回收器适用于低延迟应用判断垃圾的方法在中判断对象是否是垃圾即不再被使用可以被垃圾回收器回收主要依据两种主流的垃圾回收算法实现引用计数法和可达性分析算法引用计数法原理引用计数法为每个对象分配一个引用计数器每当一个地方引用该对象时计数器加当引用失效时计数器减当计数器为时表示对象不再被任何对象引用可以被回收缺点循环引用问题无法解决循环引用问题即两个对象互相引用但不再被其他任何对象引用这时引用计数器不会为导致对象无法被回收从而造成内存泄漏可达性分析算法虚拟机主要采用可达性分析算法来判断对象是否是垃圾原理可达性分析算法从一组称为垃圾收集根的对象出发向下追溯它们引用的对象以及这些对象引用的其他对象以此类推如果一个对象在中没有任何引用链路相连即从出发无法到达该对象那么认为该对象不可达可以被回收对象对象包括以下几种虚拟机栈栈帧中的局部变量表中引用的对象当前方法栈帧中的局部变量引用的对象方法区中静态属性引用的对象类的静态变量引用的对象本地方法栈中引用的对象本地方法引用的对象活跃线程的引用当前正在运行的线程引用的对象为何需要垃圾回收算法虚拟机引入垃圾回收机制是为了解决内存管理的问题在传统的编程语言中开发人员需要手动分配和释放内存这容易导致内存泄漏内存溢出等问题作为一门高级编程语言旨在提供更简单更安全的编程环境因此引入了垃圾回收机制来自动管理内存垃圾回收机制的主要目标是自动检测和回收不再使用的对象从而释放它们所占用的内存具体来说垃圾回收机制有以下几个重要目标避免内存泄漏内存泄漏是指一些对象被分配了内存却无法被释放导致内存资源浪费垃圾回收机制通过自动检测不再使用的对象并回收其内存避免了内存泄漏的发生防止内存溢出内存溢出是指程序需要的内存超出了可用内存导致程序崩溃或异常垃圾回收机制通过及时回收不再使用的对象释放内存空间防止内存溢出的发生简化内存管理手动管理内存需要开发人员显式地分配和释放内存这不仅增加了编程的复杂性还容易引入错误垃圾回收机制自动管理内存简化了开发人员的内存管理工作使他们能够专注于业务逻辑的实现提高程序稳定性垃圾回收机制通过自动管理内存减少了因内存管理错误导致的程序崩溃和异常这提高了程序的稳定性和可靠性使应用程序能够在更广泛的场景下稳定运行垃圾回收算法垃圾回收算法是虚拟机中用于自动管理内存的关键机制不同的垃圾回收算法适用于不同的应用场景和性能需求以下是几种常见的垃圾回收算法及其原理和优缺点标记清除算法标记清除算法分为两个阶段标记阶段通过可达性分析标记出所有可以被清除的对象清除阶段对标记的对象进行统一回收释放其占用的内存优点简单直观实现简单易于理解和实现缺点效率问题标记和清除两个阶段的效率都不高尤其是在大型应用中内存碎片清除阶段后内存中会产生大量不连续的碎片导致内存利用率降低复制算法复制算法的原理是将内存分为两块每次申请内存时都使用其中一块当内存不够时将这一块内存中所有存活的对象复制到另一块内存中然后再把旧的一块全部清理掉优点解决内存碎片问题通过复制存活对象到另一块内存避免了内存碎片问题高效适用于对象存活率较低的场景复制过程高效缺点内存利用率低内存只使用了一半利用率严重不足不适合大内存应用对于大内存应用复制算法的开销较大标记整理算法原理标记整理算法的标记过程与标记清除算法一致但不立即进行清理而是将所有存活对象移动到内存的一端移动结束后清理掉剩余内存优点解决内存碎片问题通过整理存活对象避免了内存碎片问题适合老年代适用于老年代中对象存活率较高的场景缺点效率问题整理阶段的效率较低尤其是在大型应用中分代回收算法分代收集算法将内存划分为新生代和老年代分配的依据是对象的生命周期或者说是经历的次数对象创建时一般在新生代申请内存当经历一次后还存活那么对象的年龄当年龄超过一定值后一般默认是可以通过来设定如果该对象还存活就将该对象放进老年代垃圾回收器垃圾回收器是虚拟机中用于自动管理内存的关键组件不同的垃圾回收器采用不同的算法和策略以适应不同的应用场景和性能需求以下是几种常见的垃圾回收器及其特点收集器复制算法新生代单线程收集器收集器是新生代单线程收集器标记和清理过程都是单线程的简单高效适用于单核处理器和小内存应用实现简单效率较高收集器复制算法新生代并行收集器收集器是新生代并行收集器相当于收集器的多线程版本多线程并行通过多线程并行处理提高了垃圾回收的效率收集器复制算法新生代并行收集器收集器是新生代并行收集器追求高吞吐量高效利用资源高吞吐量适用于需要高吞吐量的应用场景如后台计算任务收集器标记整理算法老年代单线程收集器收集器是老年代单线程收集器标记和整理过程都是单线程的简单高效适用于单核处理器和小内存应用实现简单效率较高收集器标记整理算法老年代并行收集器收集器是老年代并行收集器追求高吞吐量高效利用资源高吞吐量适用于需要高吞吐量的应用场景如后台计算任务收集器标记清除算法老年代并行收集器收集器是老年代并行收集器以获取最短回收停顿时间为目标高并发低停顿时间追求最短停顿时间适用于需要低延迟的应用场景如服务器收集器标记整理算法堆并行收集器收集器是提供的一个新的收集器回收的是整个堆包括新生代和老年代分代收集不同于之前的收集器收集器采用分代收集策略适用于大内存应用低延迟追求低延迟和高吞吐量适用于需要高性能的应用场景垃圾回收器算法特点适用场景收集器复制算法新生代单线程收集器简单高效单核处理器小内存应用收集器复制算法新生代并行收集器多线程并行多核处理器小内存应用收集器复制算法新生代并行收集器追求高吞吐量高吞吐量应用如后台计算任务收集器标记整理算法老年代单线程收集器简单高效单核处理器小内存应用收集器标记整理算法老年代并行收集器追求高吞吐量高吞吐量应用如后台计算任务收集器标记清除算法老年代并行收集器追求最短回收停顿时间高并发低停顿时间低延迟应用如服务器收集器标记整理算法堆并行收集器分代收集策略追求低延迟和高吞吐量大内存应用高性能应用垃圾回收算法中的阶段在垃圾回收过程中阶段是指在执行垃圾回收时应用程序的所有线程都会暂停直到垃圾回收完成阶段的存在是为了确保垃圾回收器能够安全地执行内存管理和回收操作避免在垃圾回收过程中出现数据不一致或内存泄漏等问题复制算法中的阶段复制算法主要应用于新生代收集器是收集器默认的新生代收集器和垃圾回收器中复制算法可以分为三个阶段标记阶段通过可达性分析算法标记出可以被回收的对象转移阶段把活跃的对象转移到新的内存分区上重定位阶段因为对象转移内存地址发生了改变因此需要将指向对象的旧指针调整到新的地址上阶段分析标记阶段通常是的因为需要确保在标记过程中对象的引用关系不会发生变化转移阶段通常是的因为需要确保在转移过程中对象的引用关系不会发生变化重定位阶段通常是的因为需要确保在重定位过程中对象的引用关系不会发生变化垃圾回收器中的阶段垃圾回收器的混合回收过程可以分为标记阶段清理阶段和复制阶段标记阶段停顿分析初始标记阶段初始标记阶段是指从出发标记所有子节点的过程该阶段是的由于数量不多通常该阶段耗时较短并发标记阶段并发标记阶段是指从开始对堆中对象进行可达性分析找出存活对象因为该阶段是并行的也就是应用线程可以和线程同时活动因此不是的即使可达性分析耗时相对较长再标记阶段重新标记那些在并发阶段状态发生改变的对象此阶段是的清理阶段停顿分析清理阶段清点出有存活对象的分区和没有存活对象的分区该阶段不会立即清理垃圾对象也不会执行存活对象的复制该阶段是的复制阶段停顿分析转移阶段需要分配新的内存和复制对象转移阶段是的分配新内存耗时短但复制对象耗时长需要复制对象的成员变量对象的结构越复杂耗时越长可以看出垃圾回收器的停顿时间瓶颈主要在于转移阶段的和在中垃圾回收机制是自动管理内存的重要组成部分根据触发时机和作用范围垃圾回收可以分为和理解这些垃圾回收的类型及其特点对于优化应用程序的内存管理和性能具有重要意义作用范围只针对年轻代进行回收包括分区和分区触发条件当分区空间不足时会触发一次会将分区和分区的存活对象转移到另一个分区或老年代中特点频繁触发由于新生代中的对象生命周期较短通常触发的比较频繁高效的回收效率高因为大部分新生代对象都是短命对象回收后可以释放大量内存停顿时间短由于回收范围较小的停顿时间通常较短作用范围主要针对老年代进行回收但不仅限于老年代触发条件当老年代分区空间不足或者系统检测到新生代晋升到老年代的速度较快时可能会触发特点频率较低相比发生的频率更低因为老年代中的对象存活率较高耗时长每次需要的时间会更长因为老年代中的对象存活率更高回收过程更复杂停顿时间较长由于回收范围较大的停顿时间通常较长作用范围对整个堆包括年轻代老年代和永久代元空间进行回收触发条件的触发条件包括显式调用直接调用或方法时虽然不会立即进行回收但会尝试执行晋升失败后存活的新生代对象尝试晋升到老年代中若此时老年代分区没有足够的空间容纳存活对象则会触发对整个堆进行回收永久代元空间不足当永久代之前或元空间及之后内存不足时会触发特点昂贵操作是最昂贵的操作因为它需要停止所有工作的线程遍历整个堆内存来查找可以被回收的对象停顿时间长由于回收范围最大的停顿时间通常最长减少触发为了提高应用程序的性能应尽量减少的触发垃圾回收类型作用范围触发条件特点年轻代和分区空间不足频繁触发高效停顿时间短老年代老年代分区空间不足或新生代晋升速度较快频率较低耗时长停顿时间较长整个堆年轻代老年代永久代元空间显式调用晋升失败永久代元空间不足昂贵操作停顿时间长应尽量减少触发和垃圾收集器和是虚拟机中两种常见的垃圾收集器它们都实现了对内存的自动管理但在使用范围时间垃圾碎片垃圾回收过程和浮动垃圾处理等方面存在显著差异区别使用范围不一样收集器收集器是老年代收集器可以配合新生代收集器和一起使用主要用于老年代的垃圾回收通过并发标记和清除算法减少停顿时间收集器收集器可以单独对整个堆空间包括新生代和老年代进行收集不需要配合其他收集器采用分代收集策略适用于大内存应用具有低延迟和高吞吐量的特点时间收集器追求的是最少停顿时间通过并发标记和清除算法减少停顿时间但在某些情况下如并发模式失败时可能会退化为收集器导致较长的停顿时间收集器收集器可以预测垃圾回收停顿时间建立可预测的停顿时间模型通过将堆内存划分为多个区域并根据区域的使用情况和垃圾回收的优先级进行回收从而实现可预测的停顿时间垃圾碎片收集器采用的是标记清除算法进行回收可能会产生大量垃圾碎片垃圾碎片会导致内存利用率降低增加内存分配的复杂性收集器收集器采用标记整理算法进行垃圾回收会将存活的对象统一移动到内存的一端然后清除剩余的空间不会产生垃圾碎片通过整理存活对象避免了内存碎片问题垃圾回收过程不一样收集器的垃圾回收过程包括初始标记并发标记重新标记和并发清除四个阶段其中初始标记和重新标记阶段是的并发标记和并发清除阶段是并行的收集器的垃圾回收过程包括初始标记并发标记最终标记筛选回收和并发清理五个阶段其中初始标记最终标记和筛选回收阶段是的并发标记和并发清理阶段是并行的浮动垃圾收集器在并发清除阶段垃圾回收线程和应用线程是并行的二者同时工作会产生浮动垃圾即在垃圾回收过程中新产生的垃圾对象浮动垃圾过多时会退化为收集器导致效率降低必须预留一部分空间用于存放浮动垃圾收集器在筛选回收阶段同样是多个线程并发清除垃圾此时用户线程也会产生一部分垃圾对象但这部分可回收的垃圾对象并不会立即清理而是留到下次执行清理时才被回收通过延迟清理浮动垃圾避免了中的浮动垃圾问题特性收集器收集器使用范围老年代收集器配合新生代收集器使用整个堆空间收集器不需要配合其他收集器时间追求最少停顿时间但可能退化为可预测停顿时间模型垃圾碎片采用标记清除算法可能产生大量垃圾碎片采用标记整理算法不会产生垃圾碎片垃圾回收过程初始标记并发标记重新标记并发清除初始标记并发标记最终标记筛选回收并发清理浮动垃圾产生浮动垃圾过多时退化为延迟清理浮动垃圾避免浮动垃圾问题理解和垃圾收集器的区别和特点对于优化应用程序的内存管理和性能具有重要意义通过合理选择和配置垃圾收集器可以减少停顿时间避免内存碎片和浮动垃圾问题提高应用程序的稳定性和响应速度适用场景适用场景低延迟需求主要针对延迟敏感的应用程序老年代收集主要针对老年代的垃圾回收碎片化管理容易出现内存碎片可能需要定期进行来压缩空间适用场景大堆内存适用于需要管理大内存堆的场景能够应对级别的内存管理对内存碎片敏感能够通过紧凑整理来减少内存碎片降低内存碎片对性能的影响比较平衡的性能能够在控制较低时间的同时保持较高的吞吐量回收器回收器的特点回收器是虚拟机中的一种先进的垃圾收集器其最大的特点是引入了分区的思路弱化了年代的概念回收器通过合理利用垃圾收集各个周期的资源解决了其他收集器如的众多缺陷分区回收器将堆内存划分为多个大小相等的区域每个区域可以是新生代老年代或混合代这种分区的方式使得能够更灵活地管理内存避免了传统分代收集器中固定分代的限制弱化年代概念回收器弱化了年代的概念不再严格区分新生代和老年代通过动态调整每个区域的角色根据对象的存活时间和垃圾回收的需求灵活地进行垃圾回收混合收集回收器采用混合收集策略即在垃圾回收过程中同时回收新生代和老年代的区域这种混合收集的方式提高了垃圾回收的效率减少了停顿时间可预测的停顿时间回收器通过建立可预测的停顿时间模型可以根据应用程序的需求设置预期的停顿时间会根据设置的停顿时间动态调整垃圾回收的策略以确保垃圾回收过程不会对应用程序的性能产生过大的影响相比的改进算法改进采用标记清除算法可能会产生内存碎片内存碎片会导致内存利用率降低增加内存分配的复杂性采用标记整理算法解决了内存碎片问题通过整理存活对象将存活对象移动到内存的一端然后清除剩余的空间避免了内存碎片问题停顿时间可控追求最少停顿时间但在某些情况下如并发模式失败时可能会退化为收集器导致较长的停顿时间可以通过设置预期停顿时间来控制垃圾收集时间避免应用雪崩现象会根据设置的停顿时间动态调整垃圾回收的策略以确保垃圾回收过程不会对应用程序的性能产生过大的影响并行与并发在并发标记和并发清除阶段可以与应用线程并行执行但在初始标记和重新标记阶段是的能够更充分利用多核环境下的硬件优势来缩短的时间在并发标记和并发清理阶段可以与应用线程并行执行减少了停顿时间只会对堆进行吗的垃圾回收器不仅仅会对堆进行垃圾回收也会对其他内存区域进行垃圾回收虽然堆是垃圾回收的主要目标但方法区和其他内存区域同样需要进行垃圾回收以释放不再使用的内存资源堆作用堆是运行时内存管理的重要部分主要用于存放对象实例垃圾回收的重点是释放无用的对象实例以解除其占用的内存空间资源垃圾回收新生代包括区和区主要存放新创建的对象新生代的垃圾回收称为老年代存放经过多次垃圾回收后仍然存活的对象老年代的垃圾回收称为或方法区作用方法区用于存放类信息常量静态变量等数据方法区在之前称为永久代在及之后称为元空间垃圾回收类卸载方法区中的类信息在某些情况下会被卸载例如当一个类不再被引用且没有其他类依赖它时类卸载是方法区垃圾回收的一部分常量池回收方法区中的常量池也会进行垃圾回收回收不再使用的常量其他内存区域作用除了堆和方法区还包括其他内存区域如虚拟机栈本地方法栈和程序计数器垃圾回收虚拟机栈虚拟机栈用于存储方法的局部变量表操作数栈动态链接方法出口等信息虚拟机栈中的数据通常随着方法的执行和结束而自动管理不需要显式的垃圾回收本地方法栈本地方法栈用于存储本地方法的调用信息与虚拟机栈类似本地方法栈中的数据通常随着方法的执行和结束而自动管理程序计数器程序计数器用于存储当前线程所执行的字节码指令的地址程序计数器是线程私有的不需要垃圾回收',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-11-04 11:40:02',
+  postMainColor: '',
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
         }
-        html[data-theme="dark"] body.custom-background {
-          background-image: url('/images/bg.webp');
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#18171d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f7f9fe')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(e => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
         }
       }
     
-    
-      .widget-kratos-about .photo-background {
-        background-image: url('/images/default.webp');
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
       }
-      html[data-theme="dark"] .widget-kratos-about .photo-background {
-        background-image: url('/images/default.webp');
-      }
-    
-  </style>
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.3.0"></head><body data-type="anzhiyu"><div id="web_bg"></div><div id="an_music_bg"></div><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><img class="loading-img nolazyload" alt="加载头像" src="/images/star.png"/><div class="loading-image-dot"></div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.getElementById('loading-box').classList.add("loaded");
+  },
+  initLoading: () => {
+    document.getElementById('loading-box').classList.remove("loaded")
+  }
+}
+window.addEventListener('load',()=> { preloader.endLoading() })
+setTimeout(function(){preloader.endLoading();},10000)
 
-  <!-- 额外的追加注入项 -->
-  
-    <link rel="stylesheet" href="/css/custom.css">
-
-  
-<meta name="generator" content="Hexo 7.3.0"></head>
-
-    <body class="custom-background">
-        <div id="kratos-wrapper">
-    <div id="kratos-page">
-        <div id="kratos-header">
-            <header id="kratos-desktop-topnav" class="kratos-topnav">
-                <div class="container">
-                    <div class="nav-header">
-                        <nav id="kratos-menu-wrap">
-                            <ul id="kratos-primary-menu" class="sf-menu">
-                                
-                                    <li>
-                                        
-                                            <a href="/">
-                                        
-                                            
-                                                <i class="fa fa-home"></i>
-                                            
-                                            首页
-                                        </a>
-                                        
-                                    </li>
-                                
-                            </ul>
-                        </nav>
-                    </div>
-                </div>
-            </header>
-            <header id="kratos-mobile-topnav" class="kratos-topnav">
-                <div class="container">
-                    <div class="color-logo"><a href="/">XIAOYAN</a></div>
-                    <div id="kratos-nav-toggle-wrapper" class="nav-toggle">
-                        <a id="kratos-nav-toggle" class="kratos-nav-toggle">
-                            <i></i>
-                        </a>
-                    </div>
-                </div>
-            </header>
-        </div>
-        <div class="kratos-start kratos-hero-2">
-            <!-- <div class="kratos-overlay"></div> -->
-            <div class="kratos-cover kratos-cover-2 text-center">
-                <div class="desc desc2 animate-box">
-                    <a href="/">
-                        <h2>XIAOYAN</h2> <br />
-                        <span>山重水复疑无路，柳暗花明又一村。</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <div id="kratos-blog-post">
-            <div class="container">
-                <div id="main" class="row">
-
-
-        
-
-            
-
-            <section class="kr-main-col col-md-8">
-
-        
-
-            <article itemscope itemtype="https://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/05/Java-JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/">
-    <div class="kratos-hentry kratos-page-inner clearfix">
-        <header class="kratos-page-header">
-            
-                <h1 class="kratos-page-title text-center" itemprop="name headline">JVM-垃圾回收</h1>
-            
-            <ul class="kratos-page-meta text-center">
-                <li><time datetime="2024-10-05T00:29:26.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2024-10-05</time></li>
-                <li itemprop="author" itemscope itemtype="https://schema.org/Person">
-                    <i class="fa fa-user"></i> 作者 <span itemprop="name">xiaoyan</span>
-                </li>
-                
-                    <li>
-                        <i class="fa fa-edit"></i> 
-                        
-                        
-                            ~10.46K
-                        
-                        字
-                    </li>
-                
-                
-                
-            </ul>
-        </header>
-        <div class="kratos-page-content kr-post">
-            
-            
-            
-                <div class="kratos-post-inner-toc toc-div-class" >
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Java%E4%B8%AD%E7%9A%84%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6"><span class="toc-number">1.</span> <span class="toc-text">Java中的垃圾回收机制</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="toc-number">1.1.</span> <span class="toc-text">垃圾回收的基本概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%9A%84%E7%9B%AE%E6%A0%87"><span class="toc-number">1.1.1.</span> <span class="toc-text">1. 垃圾回收的目标</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86"><span class="toc-number">1.1.2.</span> <span class="toc-text">2. 垃圾回收的基本原理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%9A%84%E8%A7%A6%E5%8F%91%E6%96%B9%E5%BC%8F"><span class="toc-number">1.2.</span> <span class="toc-text">垃圾回收的触发方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%86%85%E5%AD%98%E4%B8%8D%E8%B6%B3%E6%97%B6"><span class="toc-number">1.2.1.</span> <span class="toc-text">1. 内存不足时</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%89%8B%E5%8A%A8%E8%AF%B7%E6%B1%82"><span class="toc-number">1.2.2.</span> <span class="toc-text">2. 手动请求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-JVM%E5%8F%82%E6%95%B0%E9%85%8D%E7%BD%AE"><span class="toc-number">1.2.3.</span> <span class="toc-text">3. JVM参数配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%AF%B9%E8%B1%A1%E6%95%B0%E9%87%8F%E6%88%96%E5%86%85%E5%AD%98%E4%BD%BF%E7%94%A8%E8%BE%BE%E5%88%B0%E9%98%88%E5%80%BC"><span class="toc-number">1.2.4.</span> <span class="toc-text">4. 对象数量或内存使用达到阈值</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E7%9A%84%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.3.</span> <span class="toc-text">垃圾回收器的类型</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%88%A4%E6%96%AD%E5%9E%83%E5%9C%BE%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-number">2.</span> <span class="toc-text">判断垃圾的方法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0%E6%B3%95"><span class="toc-number">2.1.</span> <span class="toc-text">引用计数法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%AF%E8%BE%BE%E6%80%A7%E5%88%86%E6%9E%90%E7%AE%97%E6%B3%95"><span class="toc-number">2.2.</span> <span class="toc-text">可达性分析算法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%BA%E4%BD%95%E9%9C%80%E8%A6%81%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AE%97%E6%B3%95"><span class="toc-number">3.</span> <span class="toc-text">为何需要垃圾回收算法</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AE%97%E6%B3%95"><span class="toc-number">4.</span> <span class="toc-text">垃圾回收算法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%87%E8%AE%B0-%E6%B8%85%E9%99%A4%E7%AE%97%E6%B3%95%EF%BC%88Mark-Sweep%EF%BC%89"><span class="toc-number">4.1.</span> <span class="toc-text">标记-清除算法（Mark-Sweep）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%8D%E5%88%B6%E7%AE%97%E6%B3%95%EF%BC%88Copying%EF%BC%89"><span class="toc-number">4.2.</span> <span class="toc-text">复制算法（Copying）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%87%E8%AE%B0-%E6%95%B4%E7%90%86%E7%AE%97%E6%B3%95%EF%BC%88Mark-Compact%EF%BC%89"><span class="toc-number">4.3.</span> <span class="toc-text">标记-整理算法（Mark-Compact）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E7%90%86"><span class="toc-number">4.3.1.</span> <span class="toc-text">原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%98%E7%82%B9"><span class="toc-number">4.3.2.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%BA%E7%82%B9"><span class="toc-number">4.3.3.</span> <span class="toc-text">缺点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E4%BB%A3%E5%9B%9E%E6%94%B6%E7%AE%97%E6%B3%95%EF%BC%88Generational-Collection%EF%BC%89"><span class="toc-number">4.4.</span> <span class="toc-text">分代回收算法（Generational Collection）</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8"><span class="toc-number">5.</span> <span class="toc-text">垃圾回收器</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AE%97%E6%B3%95%E4%B8%AD%E7%9A%84Stop-the-World%E9%98%B6%E6%AE%B5"><span class="toc-number">6.</span> <span class="toc-text">垃圾回收算法中的Stop-the-World阶段</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%8D%E5%88%B6%E7%AE%97%E6%B3%95%E4%B8%AD%E7%9A%84STW%E9%98%B6%E6%AE%B5"><span class="toc-number">6.1.</span> <span class="toc-text">复制算法中的STW阶段</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#STW%E9%98%B6%E6%AE%B5%E5%88%86%E6%9E%90"><span class="toc-number">6.1.1.</span> <span class="toc-text">STW阶段分析</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#G1%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E4%B8%AD%E7%9A%84STW%E9%98%B6%E6%AE%B5"><span class="toc-number">6.2.</span> <span class="toc-text">G1垃圾回收器中的STW阶段</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%87%E8%AE%B0%E9%98%B6%E6%AE%B5%E5%81%9C%E9%A1%BF%E5%88%86%E6%9E%90"><span class="toc-number">6.2.1.</span> <span class="toc-text">标记阶段停顿分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B8%85%E7%90%86%E9%98%B6%E6%AE%B5%E5%81%9C%E9%A1%BF%E5%88%86%E6%9E%90"><span class="toc-number">6.2.2.</span> <span class="toc-text">清理阶段停顿分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%8D%E5%88%B6%E9%98%B6%E6%AE%B5%E5%81%9C%E9%A1%BF%E5%88%86%E6%9E%90"><span class="toc-number">6.2.3.</span> <span class="toc-text">复制阶段停顿分析</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Minor-GC%E3%80%81Major-GC%E5%92%8CFull-GC"><span class="toc-number">7.</span> <span class="toc-text">Minor GC、Major GC和Full GC</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Minor-GC"><span class="toc-number">7.1.</span> <span class="toc-text">Minor GC</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%9C%E7%94%A8%E8%8C%83%E5%9B%B4"><span class="toc-number">7.1.1.</span> <span class="toc-text">作用范围</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A6%E5%8F%91%E6%9D%A1%E4%BB%B6"><span class="toc-number">7.1.2.</span> <span class="toc-text">触发条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%B9%E7%82%B9"><span class="toc-number">7.1.3.</span> <span class="toc-text">特点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Major-GC"><span class="toc-number">7.2.</span> <span class="toc-text">Major GC</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%9C%E7%94%A8%E8%8C%83%E5%9B%B4-1"><span class="toc-number">7.2.1.</span> <span class="toc-text">作用范围</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A6%E5%8F%91%E6%9D%A1%E4%BB%B6-1"><span class="toc-number">7.2.2.</span> <span class="toc-text">触发条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%B9%E7%82%B9-1"><span class="toc-number">7.2.3.</span> <span class="toc-text">特点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Full-GC"><span class="toc-number">7.3.</span> <span class="toc-text">Full GC</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%9C%E7%94%A8%E8%8C%83%E5%9B%B4-2"><span class="toc-number">7.3.1.</span> <span class="toc-text">作用范围</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A6%E5%8F%91%E6%9D%A1%E4%BB%B6-2"><span class="toc-number">7.3.2.</span> <span class="toc-text">触发条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%B9%E7%82%B9-2"><span class="toc-number">7.3.3.</span> <span class="toc-text">特点</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#CMS%E5%92%8CG1%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8"><span class="toc-number">8.</span> <span class="toc-text">CMS和G1垃圾收集器</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8C%BA%E5%88%AB"><span class="toc-number">8.1.</span> <span class="toc-text">区别</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%BD%BF%E7%94%A8%E8%8C%83%E5%9B%B4%E4%B8%8D%E4%B8%80%E6%A0%B7"><span class="toc-number">8.1.1.</span> <span class="toc-text">1. 使用范围不一样</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-STW%E6%97%B6%E9%97%B4"><span class="toc-number">8.1.2.</span> <span class="toc-text">2. STW时间</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%9E%83%E5%9C%BE%E7%A2%8E%E7%89%87"><span class="toc-number">8.1.3.</span> <span class="toc-text">3. 垃圾碎片</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E8%BF%87%E7%A8%8B%E4%B8%8D%E4%B8%80%E6%A0%B7"><span class="toc-number">8.1.4.</span> <span class="toc-text">4. 垃圾回收过程不一样</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E6%B5%AE%E5%8A%A8%E5%9E%83%E5%9C%BE"><span class="toc-number">8.1.5.</span> <span class="toc-text">5. 浮动垃圾</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">8.2.</span> <span class="toc-text">适用场景</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#G1%E5%9B%9E%E6%94%B6%E5%99%A8"><span class="toc-number">9.</span> <span class="toc-text">G1回收器</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#G1%E5%9B%9E%E6%94%B6%E5%99%A8%E7%9A%84%E7%89%B9%E7%82%B9"><span class="toc-number">9.1.</span> <span class="toc-text">G1回收器的特点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#G1%E7%9B%B8%E6%AF%94CMS%E7%9A%84%E6%94%B9%E8%BF%9B"><span class="toc-number">9.2.</span> <span class="toc-text">G1相比CMS的改进</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#GC%E5%8F%AA%E4%BC%9A%E5%AF%B9%E5%A0%86%E8%BF%9B%E8%A1%8CGC%E5%90%97%EF%BC%9F"><span class="toc-number">10.</span> <span class="toc-text">GC只会对堆进行GC吗？</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%A0%86%EF%BC%88Heap%EF%BC%89"><span class="toc-number">10.1.</span> <span class="toc-text">1. 堆（Heap）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%9C%E7%94%A8"><span class="toc-number">10.1.1.</span> <span class="toc-text">作用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6"><span class="toc-number">10.1.2.</span> <span class="toc-text">垃圾回收</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E6%96%B9%E6%B3%95%E5%8C%BA%EF%BC%88Method-Area%EF%BC%89"><span class="toc-number">10.2.</span> <span class="toc-text">2. 方法区（Method Area）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%9C%E7%94%A8-1"><span class="toc-number">10.2.1.</span> <span class="toc-text">作用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6-1"><span class="toc-number">10.2.2.</span> <span class="toc-text">垃圾回收</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%85%B6%E4%BB%96%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F"><span class="toc-number">10.3.</span> <span class="toc-text">3. 其他内存区域</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%9C%E7%94%A8-2"><span class="toc-number">10.3.1.</span> <span class="toc-text">作用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6-2"><span class="toc-number">10.3.2.</span> <span class="toc-text">垃圾回收</span></a></li></ol></li></ol></li></ol>
-                </div>
-            
-            <hr />
-            <div itemprop="articleBody"><h1 id="Java中的垃圾回收机制"><a href="#Java中的垃圾回收机制" class="headerlink" title="Java中的垃圾回收机制"></a>Java中的垃圾回收机制</h1><p>垃圾回收（Garbage Collection, GC）是Java虚拟机（JVM）自动管理内存的一种机制。它负责自动回收那些不再被引用的对象所占用的内存，从而减少了内存泄漏和内存管理错误的可能性。垃圾回收机制通过多种方式触发，以确保内存的有效利用和系统的稳定性。</p>
+if (true) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.10/progress_bar/progress_bar.css"/><script async="async" src="https://cdn.cbd.int/pace-js@1.2.4/pace.min.js" data-pace-options="{ &quot;restartOnRequestAfter&quot;:false,&quot;eventLag&quot;:false}"></script><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><div id="nav-group"><span id="blog_name"><a id="site-name" href="/" accesskey="h"><div class="title">XIAOYAN</div><i class="anzhiyufont anzhiyu-icon-house-chimney"></i></a></span><div class="mask-name-container"><div id="name-container"><a id="page-name" href="javascript:anzhiyu.scrollToDest(0, 500)">PAGE_NAME</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 隧道</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/music/?id=12613265870&amp;server=netease"><i class="anzhiyufont anzhiyu-icon-music faa-tada" style="font-size: 0.9em;"></i><span> 音乐馆</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li></ul></div></div></div><div id="nav-right"><div class="nav-button" id="randomPost_button"><a class="site-page" onclick="toRandomPost()" title="随机前往一个文章" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-dice"></i></a></div><input id="center-console" type="checkbox"/><label class="widget" for="center-console" title="中控台" onclick="anzhiyu.switchConsole();"><i class="left"></i><i class="widget center"></i><i class="widget right"></i></label><div id="console"><div class="console-card-group-reward"><ul class="reward-all console-card"><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png" target="_blank"><img class="post-qr-code-img" alt="微信" src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png" target="_blank"><img class="post-qr-code-img" alt="支付宝" src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div><div class="console-card-group"><div class="console-card-group-left"><div class="console-card" id="card-newest-comments"><div class="card-content"><div class="author-content-item-tips">互动</div><span class="author-content-item-title"> 最新评论</span></div><div class="aside-list"><span>正在加载中...</span></div></div></div><div class="console-card-group-right"><div class="console-card tags"><div class="card-content"><div class="author-content-item-tips">兴趣点</div><span class="author-content-item-title">寻找你感兴趣的领域</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/AOP/" style="font-size: 1.05rem;">AOP<sup>1</sup></a><a href="/tags/Bean/" style="font-size: 1.05rem;">Bean<sup>1</sup></a><a href="/tags/DDD/" style="font-size: 1.05rem;">DDD<sup>1</sup></a><a href="/tags/IoC/" style="font-size: 1.05rem;">IoC<sup>1</sup></a><a href="/tags/Java8%E6%96%B0%E7%89%B9%E6%80%A7/" style="font-size: 1.05rem;">Java8新特性<sup>1</sup></a><a href="/tags/Java%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" style="font-size: 1.05rem;">Java基本概念<sup>1</sup></a><a href="/tags/List/" style="font-size: 1.05rem;">List<sup>1</sup></a><a href="/tags/Map/" style="font-size: 1.05rem;">Map<sup>2</sup></a><a href="/tags/MyBatis/" style="font-size: 1.05rem;">MyBatis<sup>1</sup></a><a href="/tags/MySQL%E5%9F%BA%E7%A1%80/" style="font-size: 1.05rem;">MySQL基础<sup>1</sup></a><a href="/tags/Object/" style="font-size: 1.05rem;">Object<sup>1</sup></a><a href="/tags/SQL%E8%B0%83%E4%BC%98/" style="font-size: 1.05rem;">SQL调优<sup>1</sup></a><a href="/tags/Set/" style="font-size: 1.05rem;">Set<sup>1</sup></a><a href="/tags/SpringBoot/" style="font-size: 1.05rem;">SpringBoot<sup>1</sup></a><a href="/tags/SpringCloud/" style="font-size: 1.05rem;">SpringCloud<sup>1</sup></a><a href="/tags/%E4%BA%8B%E5%8A%A1/" style="font-size: 1.05rem;">事务<sup>2</sup></a><a href="/tags/%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/" style="font-size: 1.05rem;">内存模型<sup>1</sup></a><a href="/tags/%E5%8F%8D%E5%B0%84/" style="font-size: 1.05rem;">反射<sup>1</sup></a><a href="/tags/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/" style="font-size: 1.05rem;">垃圾回收<sup>1</sup></a><a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 1.05rem;">多线程<sup>1</sup></a><a href="/tags/%E5%AF%B9%E8%B1%A1/" style="font-size: 1.05rem;">对象<sup>1</sup></a><a href="/tags/%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8/" style="font-size: 1.05rem;">并发安全<sup>1</sup></a><a href="/tags/%E5%BA%8F%E5%88%97%E5%8C%96/" style="font-size: 1.05rem;">序列化<sup>1</sup></a><a href="/tags/%E5%BC%82%E5%B8%B8/" style="font-size: 1.05rem;">异常<sup>1</sup></a><a href="/tags/%E6%8B%B7%E8%B4%9D/" style="font-size: 1.05rem;">拷贝<sup>1</sup></a><a href="/tags/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" style="font-size: 1.05rem;">数据类型<sup>1</sup></a><a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 1.05rem;">数据结构<sup>1</sup></a><a href="/tags/%E6%97%A5%E5%BF%97/" style="font-size: 1.05rem;">日志<sup>2</sup></a><a href="/tags/%E6%9F%A5%E8%AF%A2/" style="font-size: 1.05rem;">查询<sup>1</sup></a><a href="/tags/%E6%B3%9B%E5%9E%8B/" style="font-size: 1.05rem;">泛型<sup>1</sup></a><a href="/tags/%E6%B3%A8%E8%A7%A3/" style="font-size: 1.05rem;">注解<sup>1</sup></a><a href="/tags/%E7%AD%96%E7%95%A5/" style="font-size: 1.05rem;">策略<sup>1</sup></a><a href="/tags/%E7%B1%BB%E5%88%9D%E5%A7%8B%E5%8C%96/" style="font-size: 1.05rem;">类初始化<sup>1</sup></a><a href="/tags/%E7%B1%BB%E5%8A%A0%E8%BD%BD/" style="font-size: 1.05rem;">类加载<sup>1</sup></a><a href="/tags/%E7%B4%A2%E5%BC%95/" style="font-size: 1.05rem;">索引<sup>2</sup></a><a href="/tags/%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B/" style="font-size: 1.05rem;">线程模型<sup>1</sup></a><a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 1.05rem;">线程池<sup>1</sup></a><a href="/tags/%E9%94%81/" style="font-size: 1.05rem;">锁<sup>2</sup></a><a href="/tags/%E9%9B%86%E7%BE%A4/" style="font-size: 1.05rem;">集群<sup>1</sup></a><a href="/tags/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/" style="font-size: 1.05rem;">面向对象<sup>1</sup></a></div></div><hr/></div></div><div class="console-card history"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-box-archiv"></i><span>文章</span></div><div class="card-archives"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-archive"></i><span>归档</span></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/11/"><span class="card-archive-list-date">November 2024</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">2</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/10/"><span class="card-archive-list-date">October 2024</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">13</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/09/"><span class="card-archive-list-date">September 2024</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">25</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/07/"><span class="card-archive-list-date">July 2024</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">4</span><span>篇</span></div></a></li></ul></div><hr/></div></div></div><div class="button-group"><div class="console-btn-item"><a class="darkmode_switchbutton" title="显示模式切换" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-moon"></i></a></div><div class="console-btn-item" id="consoleHideAside" onclick="anzhiyu.hideAsideBtn()" title="边栏显示控制"><a class="asideSwitch"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></a></div><div class="console-btn-item" id="consoleMusic" onclick="anzhiyu.musicToggle()" title="音乐开关"><a class="music-switch"><i class="anzhiyufont anzhiyu-icon-music"></i></a></div></div><div class="console-mask" onclick="anzhiyu.hideConsole()" href="javascript:void(0);"></div></div><div class="nav-button" id="nav-totop"><a class="totopbtn" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i><span id="percent" onclick="anzhiyu.scrollToDest(0,500)">0</span></a></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" title="切换"><i class="anzhiyufont anzhiyu-icon-bars"></i></a></div></div></div></nav><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original">原创</a><span class="post-meta-categories"><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-inbox post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/" itemprop="url">编程语言</a><i class="anzhiyufont anzhiyu-icon-angle-right post-meta-separator"></i><i class="anzhiyufont anzhiyu-icon-inbox post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/" itemprop="url">Java</a><i class="anzhiyufont anzhiyu-icon-angle-right post-meta-separator"></i><i class="anzhiyufont anzhiyu-icon-inbox post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/JVM/" itemprop="url">JVM</a></span><span class="article-meta tags"><a class="article-meta__tags" href="/tags/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>垃圾回收</span></a></span></div></div><h1 class="post-title" itemprop="name headline">JVM-垃圾回收</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="anzhiyufont anzhiyu-icon-calendar-days post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" itemprop="dateCreated datePublished" datetime="2024-10-05T00:29:26.000Z" title="发表于 2024-10-05 08:29:26">2024-10-05</time><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-history post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" itemprop="dateCreated datePublished" datetime="2024-11-04T03:40:02.418Z" title="更新于 2024-11-04 11:40:02">2024-11-04</time></span></div><div class="meta-secondline"><span class="post-meta-separator">       </span><span class="post-meta-position" title="作者IP属地为桂林"><i class="anzhiyufont anzhiyu-icon-location-dot"></i>桂林</span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section><div id="post-top-cover"><img class="nolazyload" id="post-top-bg" src="https://cdn.xiaolincoding.com//picgo/1718783586342-9da40db7-1dac-42ec-8148-81c10d8bfc04.png"></div></header><main id="blog-container"><div class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container" itemscope itemtype="http://example.com/2024/10/05/Java-JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/"><header><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/" itemprop="url">编程语言</a><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/" itemprop="url">Java</a><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/JVM/" itemprop="url">JVM</a><a href="/tags/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/" tabindex="-1" itemprop="url">垃圾回收</a><h1 id="CrawlerTitle" itemprop="name headline">JVM-垃圾回收</h1><span itemprop="author" itemscope itemtype="http://schema.org/Person">xiaoyan</span><time itemprop="dateCreated datePublished" datetime="2024-10-05T00:29:26.000Z" title="发表于 2024-10-05 08:29:26">2024-10-05</time><time itemprop="dateCreated datePublished" datetime="2024-11-04T03:40:02.418Z" title="更新于 2024-11-04 11:40:02">2024-11-04</time></header><h1 id="Java中的垃圾回收机制"><a href="#Java中的垃圾回收机制" class="headerlink" title="Java中的垃圾回收机制"></a>Java中的垃圾回收机制</h1><p>垃圾回收（Garbage Collection, GC）是Java虚拟机（JVM）自动管理内存的一种机制。它负责自动回收那些不再被引用的对象所占用的内存，从而减少了内存泄漏和内存管理错误的可能性。垃圾回收机制通过多种方式触发，以确保内存的有效利用和系统的稳定性。</p>
 <h2 id="垃圾回收的基本概念"><a href="#垃圾回收的基本概念" class="headerlink" title="垃圾回收的基本概念"></a>垃圾回收的基本概念</h2><h3 id="1-垃圾回收的目标"><a href="#1-垃圾回收的目标" class="headerlink" title="1. 垃圾回收的目标"></a>1. 垃圾回收的目标</h3><p>垃圾回收的主要目标是：</p>
 <ul>
 <li><strong>自动内存管理</strong>：自动回收不再使用的对象，释放其占用的内存。</li>
@@ -409,7 +424,7 @@
 <li><strong>重定位阶段</strong>：通常是STW的，因为需要确保在重定位过程中对象的引用关系不会发生变化。</li>
 </ul>
 <h2 id="G1垃圾回收器中的STW阶段"><a href="#G1垃圾回收器中的STW阶段" class="headerlink" title="G1垃圾回收器中的STW阶段"></a>G1垃圾回收器中的STW阶段</h2><p>G1垃圾回收器的混合回收过程可以分为标记阶段、清理阶段和复制阶段。</p>
-<p><img src="https://cdn.xiaolincoding.com//picgo/1718783586342-9da40db7-1dac-42ec-8148-81c10d8bfc04.png" alt="G1混合回收过程"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.xiaolincoding.com//picgo/1718783586342-9da40db7-1dac-42ec-8148-81c10d8bfc04.png" alt="G1混合回收过程"></p>
 <h3 id="标记阶段停顿分析"><a href="#标记阶段停顿分析" class="headerlink" title="标记阶段停顿分析"></a>标记阶段停顿分析</h3><ol>
 <li><strong>初始标记阶段</strong>：初始标记阶段是指从GC Roots出发标记所有子节点的过程，该阶段是STW的。由于GC Roots数量不多，通常该阶段耗时较短。</li>
 <li><strong>并发标记阶段</strong>：并发标记阶段是指从GC Roots开始对堆中对象进行可达性分析，找出存活对象。因为该阶段是并行的，也就是应用线程可以和GC线程同时活动，因此不是STW的，即使可达性分析耗时相对较长。</li>
@@ -602,427 +617,76 @@
 <li><strong>本地方法栈（Native Method Stack）</strong>：本地方法栈用于存储本地方法（Native Method）的调用信息。与虚拟机栈类似，本地方法栈中的数据通常随着方法的执行和结束而自动管理。</li>
 <li><strong>程序计数器（Program Counter Register）</strong>：程序计数器用于存储当前线程所执行的字节码指令的地址。程序计数器是线程私有的，不需要垃圾回收。</li>
 </ul>
-</div>
-        </div>
-        
-        <footer class="kratos-entry-footer clearfix">
-            
-            
-            
-                <div class="post-actions text-center clearfix" id="post-actions">
-                
-                    <a class="donate" href="javascript:;" onclick="krOpenDonateModal()"><i class="fa fa-bitcoin"></i> 打赏</a>
-                
-                
-                    <a class="share" href="javascript:;" onclick="krOpenShareModal()"><i class="fa fa-share-alt"></i> 分享</a>
-                
-                </div>
-            
-            <div class="footer-tag clearfix">
-                <div class="pull-left">
-                <i class="fa fa-tags"></i>
-                    <a class="tag-none-link" href="/tags/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/" rel="tag">垃圾回收</a>
-                </div>
-                <div class="pull-date">
-                    <time datetime="2024-11-02T11:03:10.264Z" itemprop="dateModified">最后编辑：2024-11-02</time>
-                </div>
-            </div>
-        </footer>
-    </div>
-    
-        <nav class="navigation post-navigation clearfix" role="navigation">
-            
-            <div class="nav-previous clearfix">
-                <a title=" JVM-类初始化与类加载" href="/2024/10/05/Java-JVM类初始化与类加载/"><i class="fa fa-angle-left"></i> 上一篇</a>
-            </div>
-            
-            
-            <div class="nav-next clearfix">
-                <a title=" 计算机网络-网络模型" href="/2024/10/12/计算机网络-网络模型/">下一篇 <i class="fa fa-angle-right"></i></a>
-            </div>
-            
-        </nav>
-    
-    
-</article>
+</article><div class="post-copyright"><div class="copyright-cc-box"><i class="anzhiyufont anzhiyu-icon-copyright"></i></div><div class="post-copyright__author_box"><a class="post-copyright__author_img" href="/" title="头像"><img class="post-copyright__author_img_back" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/images/user.jpg" title="头像" alt="头像"><img class="post-copyright__author_img_front" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/images/user.jpg" title="头像" alt="头像"></a><div class="post-copyright__author_name">xiaoyan</div><div class="post-copyright__author_desc">无限进步。</div></div><div class="post-copyright__post__info"><a class="post-copyright__original" title="该文章为原创文章，注意版权协议" href="http://example.com/2024/10/05/Java-JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/">原创</a><a class="post-copyright-title"><span onclick="rm.copyPageUrl('http://example.com/2024/10/05/Java-JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/')">JVM-垃圾回收</span></a></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div class="rewardLeftButton"></div><div class="shareRight"><div class="share-link mobile"><div class="share-qrcode"><div class="share-button" title="使用手机访问这篇文章"><i class="anzhiyufont anzhiyu-icon-qrcode"></i></div><div class="share-main"><div class="share-main-all"><div id="qrcode" title="http://example.com/2024/10/05/Java-JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/"></div><div class="reward-dec">使用手机访问这篇文章</div></div></div></div></div><div class="share-link weibo"><a class="share-button" target="_blank" href="https://service.weibo.com/share/share.php?title=JVM-垃圾回收&amp;url=http://example.com/2024/10/05/Java-JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/&amp;pic=https://cdn.xiaolincoding.com//picgo/1718783586342-9da40db7-1dac-42ec-8148-81c10d8bfc04.png" rel="external nofollow noreferrer noopener"><i class="anzhiyufont anzhiyu-icon-weibo"></i></a></div><script>function copyCurrentPageUrl() {
+  var currentPageUrl = window.location.href;
+  var input = document.createElement("input");
+  input.setAttribute("value", currentPageUrl);
+  document.body.appendChild(input);
+  input.select();
+  input.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+  document.body.removeChild(input);
+}</script><div class="share-link copyurl"><div class="share-button" id="post-share-url" title="复制链接" onclick="copyCurrentPageUrl()"><i class="anzhiyufont anzhiyu-icon-link"></i></div></div></div></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">XIAOYAN</a>！</span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__box"><div class="post-meta__box__category-list"><a class="post-meta__box__categoryes" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/"><span class="categoryes-punctuation"> <i class="anzhiyufont anzhiyu-icon-inbox"></i></span>编程语言<span class="categoryesPageCount">21</span></a><a class="post-meta__box__categoryes" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/"><span class="categoryes-punctuation"> <i class="anzhiyufont anzhiyu-icon-inbox"></i></span>Java<span class="categoryesPageCount">20</span></a><a class="post-meta__box__categoryes" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/JVM/"><span class="categoryes-punctuation"> <i class="anzhiyufont anzhiyu-icon-inbox"></i></span>JVM<span class="categoryesPageCount">3</span></a></div><div class="post-meta__box__tag-list"><a class="post-meta__box__tags" href="/tags/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>垃圾回收<span class="tagsPageCount">1</span></a></div></div><div class="post_share"><div class="social-share" data-image="https://pic1.zhimg.com/v2-b76d79b11c3e8dd25f3c6abae8889a88_720w.jpg?source=172ae18b" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"/><script src="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer="defer"></script></div></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2024/10/05/Java-JVM%E7%B1%BB%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%8E%E7%B1%BB%E5%8A%A0%E8%BD%BD/"><img class="prev-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202410051712703.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">JVM-类初始化与类加载</div></div></a></div><div class="next-post pull-right"><a href="/2024/10/12/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B/"><img class="next-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202410121052042.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">计算机网络-网络模型</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="author-info-avatar"><img class="avatar-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/images/user.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__description">是一只时时翻垃圾吃的宅子。</div><div class="author-info__bottom-group"><a class="author-info__bottom-group-left" href="/"><h1 class="author-info__name">xiaoyan</h1><div class="author-info__desc">无限进步。</div></a><div class="card-info-social-icons is-center"><a class="social-icon faa-parent animated-hover" href="https://github.com/xiaoyanfufu" target="_blank" title="Github"><i class="anzhiyufont anzhiyu-icon-github"></i></a><a class="social-icon faa-parent animated-hover" href="https://space.bilibili.com/483597064" target="_blank" title="BiliBili"><i class="anzhiyufont anzhiyu-icon-bilibili"></i></a></div></div></div></div><div class="card-widget anzhiyu-right-widget" id="card-wechat" onclick="null"><div id="flip-wrapper"><div id="flip-content"><div class="face" style="background: url(https://bu.dusays.com/2023/01/13/63c02edf44033.png) center center / 100% no-repeat"></div><div class="back face" style="background: url(https://bu.dusays.com/2023/05/13/645fa415e8694.png) center center / 100% no-repeat"></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-bars"></i><span>文章目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Java%E4%B8%AD%E7%9A%84%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6"><span class="toc-number">1.</span> <span class="toc-text">Java中的垃圾回收机制</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="toc-number">1.1.</span> <span class="toc-text">垃圾回收的基本概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%9A%84%E7%9B%AE%E6%A0%87"><span class="toc-number">1.1.1.</span> <span class="toc-text">1. 垃圾回收的目标</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86"><span class="toc-number">1.1.2.</span> <span class="toc-text">2. 垃圾回收的基本原理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%9A%84%E8%A7%A6%E5%8F%91%E6%96%B9%E5%BC%8F"><span class="toc-number">1.2.</span> <span class="toc-text">垃圾回收的触发方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%86%85%E5%AD%98%E4%B8%8D%E8%B6%B3%E6%97%B6"><span class="toc-number">1.2.1.</span> <span class="toc-text">1. 内存不足时</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%89%8B%E5%8A%A8%E8%AF%B7%E6%B1%82"><span class="toc-number">1.2.2.</span> <span class="toc-text">2. 手动请求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-JVM%E5%8F%82%E6%95%B0%E9%85%8D%E7%BD%AE"><span class="toc-number">1.2.3.</span> <span class="toc-text">3. JVM参数配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%AF%B9%E8%B1%A1%E6%95%B0%E9%87%8F%E6%88%96%E5%86%85%E5%AD%98%E4%BD%BF%E7%94%A8%E8%BE%BE%E5%88%B0%E9%98%88%E5%80%BC"><span class="toc-number">1.2.4.</span> <span class="toc-text">4. 对象数量或内存使用达到阈值</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E7%9A%84%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.3.</span> <span class="toc-text">垃圾回收器的类型</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%88%A4%E6%96%AD%E5%9E%83%E5%9C%BE%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-number">2.</span> <span class="toc-text">判断垃圾的方法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0%E6%B3%95"><span class="toc-number">2.1.</span> <span class="toc-text">引用计数法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%AF%E8%BE%BE%E6%80%A7%E5%88%86%E6%9E%90%E7%AE%97%E6%B3%95"><span class="toc-number">2.2.</span> <span class="toc-text">可达性分析算法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%BA%E4%BD%95%E9%9C%80%E8%A6%81%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AE%97%E6%B3%95"><span class="toc-number">3.</span> <span class="toc-text">为何需要垃圾回收算法</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AE%97%E6%B3%95"><span class="toc-number">4.</span> <span class="toc-text">垃圾回收算法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%87%E8%AE%B0-%E6%B8%85%E9%99%A4%E7%AE%97%E6%B3%95%EF%BC%88Mark-Sweep%EF%BC%89"><span class="toc-number">4.1.</span> <span class="toc-text">标记-清除算法（Mark-Sweep）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%8D%E5%88%B6%E7%AE%97%E6%B3%95%EF%BC%88Copying%EF%BC%89"><span class="toc-number">4.2.</span> <span class="toc-text">复制算法（Copying）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%87%E8%AE%B0-%E6%95%B4%E7%90%86%E7%AE%97%E6%B3%95%EF%BC%88Mark-Compact%EF%BC%89"><span class="toc-number">4.3.</span> <span class="toc-text">标记-整理算法（Mark-Compact）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E7%90%86"><span class="toc-number">4.3.1.</span> <span class="toc-text">原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%98%E7%82%B9"><span class="toc-number">4.3.2.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%BA%E7%82%B9"><span class="toc-number">4.3.3.</span> <span class="toc-text">缺点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E4%BB%A3%E5%9B%9E%E6%94%B6%E7%AE%97%E6%B3%95%EF%BC%88Generational-Collection%EF%BC%89"><span class="toc-number">4.4.</span> <span class="toc-text">分代回收算法（Generational Collection）</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8"><span class="toc-number">5.</span> <span class="toc-text">垃圾回收器</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AE%97%E6%B3%95%E4%B8%AD%E7%9A%84Stop-the-World%E9%98%B6%E6%AE%B5"><span class="toc-number">6.</span> <span class="toc-text">垃圾回收算法中的Stop-the-World阶段</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%8D%E5%88%B6%E7%AE%97%E6%B3%95%E4%B8%AD%E7%9A%84STW%E9%98%B6%E6%AE%B5"><span class="toc-number">6.1.</span> <span class="toc-text">复制算法中的STW阶段</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#STW%E9%98%B6%E6%AE%B5%E5%88%86%E6%9E%90"><span class="toc-number">6.1.1.</span> <span class="toc-text">STW阶段分析</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#G1%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E4%B8%AD%E7%9A%84STW%E9%98%B6%E6%AE%B5"><span class="toc-number">6.2.</span> <span class="toc-text">G1垃圾回收器中的STW阶段</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%87%E8%AE%B0%E9%98%B6%E6%AE%B5%E5%81%9C%E9%A1%BF%E5%88%86%E6%9E%90"><span class="toc-number">6.2.1.</span> <span class="toc-text">标记阶段停顿分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B8%85%E7%90%86%E9%98%B6%E6%AE%B5%E5%81%9C%E9%A1%BF%E5%88%86%E6%9E%90"><span class="toc-number">6.2.2.</span> <span class="toc-text">清理阶段停顿分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%8D%E5%88%B6%E9%98%B6%E6%AE%B5%E5%81%9C%E9%A1%BF%E5%88%86%E6%9E%90"><span class="toc-number">6.2.3.</span> <span class="toc-text">复制阶段停顿分析</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Minor-GC%E3%80%81Major-GC%E5%92%8CFull-GC"><span class="toc-number">7.</span> <span class="toc-text">Minor GC、Major GC和Full GC</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Minor-GC"><span class="toc-number">7.1.</span> <span class="toc-text">Minor GC</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%9C%E7%94%A8%E8%8C%83%E5%9B%B4"><span class="toc-number">7.1.1.</span> <span class="toc-text">作用范围</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A6%E5%8F%91%E6%9D%A1%E4%BB%B6"><span class="toc-number">7.1.2.</span> <span class="toc-text">触发条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%B9%E7%82%B9"><span class="toc-number">7.1.3.</span> <span class="toc-text">特点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Major-GC"><span class="toc-number">7.2.</span> <span class="toc-text">Major GC</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%9C%E7%94%A8%E8%8C%83%E5%9B%B4-1"><span class="toc-number">7.2.1.</span> <span class="toc-text">作用范围</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A6%E5%8F%91%E6%9D%A1%E4%BB%B6-1"><span class="toc-number">7.2.2.</span> <span class="toc-text">触发条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%B9%E7%82%B9-1"><span class="toc-number">7.2.3.</span> <span class="toc-text">特点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Full-GC"><span class="toc-number">7.3.</span> <span class="toc-text">Full GC</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%9C%E7%94%A8%E8%8C%83%E5%9B%B4-2"><span class="toc-number">7.3.1.</span> <span class="toc-text">作用范围</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A6%E5%8F%91%E6%9D%A1%E4%BB%B6-2"><span class="toc-number">7.3.2.</span> <span class="toc-text">触发条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%B9%E7%82%B9-2"><span class="toc-number">7.3.3.</span> <span class="toc-text">特点</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#CMS%E5%92%8CG1%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8"><span class="toc-number">8.</span> <span class="toc-text">CMS和G1垃圾收集器</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8C%BA%E5%88%AB"><span class="toc-number">8.1.</span> <span class="toc-text">区别</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%BD%BF%E7%94%A8%E8%8C%83%E5%9B%B4%E4%B8%8D%E4%B8%80%E6%A0%B7"><span class="toc-number">8.1.1.</span> <span class="toc-text">1. 使用范围不一样</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-STW%E6%97%B6%E9%97%B4"><span class="toc-number">8.1.2.</span> <span class="toc-text">2. STW时间</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%9E%83%E5%9C%BE%E7%A2%8E%E7%89%87"><span class="toc-number">8.1.3.</span> <span class="toc-text">3. 垃圾碎片</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E8%BF%87%E7%A8%8B%E4%B8%8D%E4%B8%80%E6%A0%B7"><span class="toc-number">8.1.4.</span> <span class="toc-text">4. 垃圾回收过程不一样</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E6%B5%AE%E5%8A%A8%E5%9E%83%E5%9C%BE"><span class="toc-number">8.1.5.</span> <span class="toc-text">5. 浮动垃圾</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">8.2.</span> <span class="toc-text">适用场景</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#G1%E5%9B%9E%E6%94%B6%E5%99%A8"><span class="toc-number">9.</span> <span class="toc-text">G1回收器</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#G1%E5%9B%9E%E6%94%B6%E5%99%A8%E7%9A%84%E7%89%B9%E7%82%B9"><span class="toc-number">9.1.</span> <span class="toc-text">G1回收器的特点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#G1%E7%9B%B8%E6%AF%94CMS%E7%9A%84%E6%94%B9%E8%BF%9B"><span class="toc-number">9.2.</span> <span class="toc-text">G1相比CMS的改进</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#GC%E5%8F%AA%E4%BC%9A%E5%AF%B9%E5%A0%86%E8%BF%9B%E8%A1%8CGC%E5%90%97%EF%BC%9F"><span class="toc-number">10.</span> <span class="toc-text">GC只会对堆进行GC吗？</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%A0%86%EF%BC%88Heap%EF%BC%89"><span class="toc-number">10.1.</span> <span class="toc-text">1. 堆（Heap）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%9C%E7%94%A8"><span class="toc-number">10.1.1.</span> <span class="toc-text">作用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6"><span class="toc-number">10.1.2.</span> <span class="toc-text">垃圾回收</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E6%96%B9%E6%B3%95%E5%8C%BA%EF%BC%88Method-Area%EF%BC%89"><span class="toc-number">10.2.</span> <span class="toc-text">2. 方法区（Method Area）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%9C%E7%94%A8-1"><span class="toc-number">10.2.1.</span> <span class="toc-text">作用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6-1"><span class="toc-number">10.2.2.</span> <span class="toc-text">垃圾回收</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%85%B6%E4%BB%96%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F"><span class="toc-number">10.3.</span> <span class="toc-text">3. 其他内存区域</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%9C%E7%94%A8-2"><span class="toc-number">10.3.1.</span> <span class="toc-text">作用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6-2"><span class="toc-number">10.3.2.</span> <span class="toc-text">垃圾回收</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-history"></i><span>最近发布</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/11/03/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BC%98%E5%8C%96-%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/" title="数据库优化-分库分表"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://pic1.zhimg.com/v2-b76d79b11c3e8dd25f3c6abae8889a88_720w.jpg?source=172ae18b" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="数据库优化-分库分表"/></a><div class="content"><a class="title" href="/2024/11/03/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BC%98%E5%8C%96-%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/" title="数据库优化-分库分表">数据库优化-分库分表</a><time datetime="2024-11-03T08:20:54.000Z" title="发表于 2024-11-03 16:20:54">2024-11-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/11/03/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BC%98%E5%8C%96-%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB%E4%B8%8E%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB/" title="数据库优化-读写分离与冷热分离"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202411041125092.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="数据库优化-读写分离与冷热分离"/></a><div class="content"><a class="title" href="/2024/11/03/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BC%98%E5%8C%96-%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB%E4%B8%8E%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB/" title="数据库优化-读写分离与冷热分离">数据库优化-读写分离与冷热分离</a><time datetime="2024-11-03T08:18:25.000Z" title="发表于 2024-11-03 16:18:25">2024-11-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/10/28/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86/" title="操作系统-进程管理"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202410282316960.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="操作系统-进程管理"/></a><div class="content"><a class="title" href="/2024/10/28/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86/" title="操作系统-进程管理">操作系统-进程管理</a><time datetime="2024-10-28T14:52:35.000Z" title="发表于 2024-10-28 22:52:35">2024-10-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/10/27/%E5%88%86%E5%B8%83%E5%BC%8F-%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" title="分布式-分布式事务"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202410281041645.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="分布式-分布式事务"/></a><div class="content"><a class="title" href="/2024/10/27/%E5%88%86%E5%B8%83%E5%BC%8F-%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" title="分布式-分布式事务">分布式-分布式事务</a><time datetime="2024-10-27T13:08:20.000Z" title="发表于 2024-10-27 21:08:20">2024-10-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/10/21/%E5%88%86%E5%B8%83%E5%BC%8F-%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%EF%BC%88%E4%B8%8B%EF%BC%89/" title="分布式-服务治理（下）"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202410272103963.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="分布式-服务治理（下）"/></a><div class="content"><a class="title" href="/2024/10/21/%E5%88%86%E5%B8%83%E5%BC%8F-%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%EF%BC%88%E4%B8%8B%EF%BC%89/" title="分布式-服务治理（下）">分布式-服务治理（下）</a><time datetime="2024-10-21T07:24:49.000Z" title="发表于 2024-10-21 15:24:49">2024-10-21</time></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div id="footer-bar-tips"><div class="copyright">&copy;2024 By <a class="footer-bar-link" href="/" title="xiaoyan" target="_blank">xiaoyan</a></div></div><div id="footer-type-tips"></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/anzhiyu-c/hexo-theme-anzhiyu" title="主题">主题</a></div></div></div></footer></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="sidebar-site-data site-data is-center"><a href="/archives/" title="archive"><div class="headline">文章</div><div class="length-num">44</div></a><a href="/tags/" title="tag"><div class="headline">标签</div><div class="length-num">65</div></a><a href="/categories/" title="category"><div class="headline">分类</div><div class="length-num">17</div></a></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><a class="darkmode_switchbutton menu-child" href="javascript:void(0);" title="显示模式"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span>显示模式</span></a></div><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">网页</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://blog.anheyu.com/" title="博客"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/favicon.ico" alt="博客"/><span class="back-menu-item-text">博客</span></a></div></div><div class="back-menu-list-group"><div class="back-menu-list-title">项目</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://image.anheyu.com/" title="安知鱼图床"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://image.anheyu.com/favicon.ico" alt="安知鱼图床"/><span class="back-menu-item-text">安知鱼图床</span></a></div></div></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 隧道</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/music/?id=12613265870&amp;server=netease"><i class="anzhiyufont anzhiyu-icon-music faa-tada" style="font-size: 0.9em;"></i><span> 音乐馆</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li></ul></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/AOP/" style="font-size: 0.88rem;">AOP<sup>1</sup></a><a href="/tags/Bean/" style="font-size: 0.88rem;">Bean<sup>1</sup></a><a href="/tags/DDD/" style="font-size: 0.88rem;">DDD<sup>1</sup></a><a href="/tags/IoC/" style="font-size: 0.88rem;">IoC<sup>1</sup></a><a href="/tags/Java8%E6%96%B0%E7%89%B9%E6%80%A7/" style="font-size: 0.88rem;">Java8新特性<sup>1</sup></a><a href="/tags/Java%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" style="font-size: 0.88rem;">Java基本概念<sup>1</sup></a><a href="/tags/List/" style="font-size: 0.88rem;">List<sup>1</sup></a><a href="/tags/Map/" style="font-size: 0.88rem;">Map<sup>2</sup></a><a href="/tags/MyBatis/" style="font-size: 0.88rem;">MyBatis<sup>1</sup></a><a href="/tags/MySQL%E5%9F%BA%E7%A1%80/" style="font-size: 0.88rem;">MySQL基础<sup>1</sup></a><a href="/tags/Object/" style="font-size: 0.88rem;">Object<sup>1</sup></a><a href="/tags/SQL%E8%B0%83%E4%BC%98/" style="font-size: 0.88rem;">SQL调优<sup>1</sup></a><a href="/tags/Set/" style="font-size: 0.88rem;">Set<sup>1</sup></a><a href="/tags/SpringBoot/" style="font-size: 0.88rem;">SpringBoot<sup>1</sup></a><a href="/tags/SpringCloud/" style="font-size: 0.88rem;">SpringCloud<sup>1</sup></a><a href="/tags/%E4%BA%8B%E5%8A%A1/" style="font-size: 0.88rem;">事务<sup>2</sup></a><a href="/tags/%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/" style="font-size: 0.88rem;">内存模型<sup>1</sup></a><a href="/tags/%E5%8F%8D%E5%B0%84/" style="font-size: 0.88rem;">反射<sup>1</sup></a><a href="/tags/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/" style="font-size: 0.88rem;">垃圾回收<sup>1</sup></a><a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 0.88rem;">多线程<sup>1</sup></a><a href="/tags/%E5%AF%B9%E8%B1%A1/" style="font-size: 0.88rem;">对象<sup>1</sup></a><a href="/tags/%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8/" style="font-size: 0.88rem;">并发安全<sup>1</sup></a><a href="/tags/%E5%BA%8F%E5%88%97%E5%8C%96/" style="font-size: 0.88rem;">序列化<sup>1</sup></a><a href="/tags/%E5%BC%82%E5%B8%B8/" style="font-size: 0.88rem;">异常<sup>1</sup></a><a href="/tags/%E6%8B%B7%E8%B4%9D/" style="font-size: 0.88rem;">拷贝<sup>1</sup></a><a href="/tags/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" style="font-size: 0.88rem;">数据类型<sup>1</sup></a><a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 0.88rem;">数据结构<sup>1</sup></a><a href="/tags/%E6%97%A5%E5%BF%97/" style="font-size: 0.88rem;">日志<sup>2</sup></a><a href="/tags/%E6%9F%A5%E8%AF%A2/" style="font-size: 0.88rem;">查询<sup>1</sup></a><a href="/tags/%E6%B3%9B%E5%9E%8B/" style="font-size: 0.88rem;">泛型<sup>1</sup></a><a href="/tags/%E6%B3%A8%E8%A7%A3/" style="font-size: 0.88rem;">注解<sup>1</sup></a><a href="/tags/%E7%AD%96%E7%95%A5/" style="font-size: 0.88rem;">策略<sup>1</sup></a><a href="/tags/%E7%B1%BB%E5%88%9D%E5%A7%8B%E5%8C%96/" style="font-size: 0.88rem;">类初始化<sup>1</sup></a><a href="/tags/%E7%B1%BB%E5%8A%A0%E8%BD%BD/" style="font-size: 0.88rem;">类加载<sup>1</sup></a><a href="/tags/%E7%B4%A2%E5%BC%95/" style="font-size: 0.88rem;">索引<sup>2</sup></a><a href="/tags/%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B/" style="font-size: 0.88rem;">线程模型<sup>1</sup></a><a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 0.88rem;">线程池<sup>1</sup></a><a href="/tags/%E9%94%81/" style="font-size: 0.88rem;">锁<sup>2</sup></a><a href="/tags/%E9%9B%86%E7%BE%A4/" style="font-size: 0.88rem;">集群<sup>1</sup></a><a href="/tags/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/" style="font-size: 0.88rem;">面向对象<sup>1</sup></a></div></div><hr/></div></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="anzhiyufont anzhiyu-icon-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="anzhiyufont anzhiyu-icon-gear"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="anzhiyufont anzhiyu-icon-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></button></div></div><div id="nav-music"><a id="nav-music-hoverTips" onclick="anzhiyu.musicToggle()" accesskey="m">播放音乐</a><div id="console-music-bg"></div><meting-js id="8152976493" server="netease" type="playlist" mutex="true" preload="none" theme="var(--anzhiyu-main)" data-lrctype="0" order="random" volume="0.7"></meting-js></div><div id="rightMenu"><div class="rightMenu-group rightMenu-small"><div class="rightMenu-item" id="menu-backward"><i class="anzhiyufont anzhiyu-icon-arrow-left"></i></div><div class="rightMenu-item" id="menu-forward"><i class="anzhiyufont anzhiyu-icon-arrow-right"></i></div><div class="rightMenu-item" id="menu-refresh"><i class="anzhiyufont anzhiyu-icon-arrow-rotate-right" style="font-size: 1rem;"></i></div><div class="rightMenu-item" id="menu-top"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></div></div><div class="rightMenu-group rightMenu-line rightMenuPlugin"><div class="rightMenu-item" id="menu-copytext"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制选中文本</span></div><div class="rightMenu-item" id="menu-pastetext"><i class="anzhiyufont anzhiyu-icon-paste"></i><span>粘贴文本</span></div><a class="rightMenu-item" id="menu-commenttext"><i class="anzhiyufont anzhiyu-icon-comment-medical"></i><span>引用到评论</span></a><div class="rightMenu-item" id="menu-newwindow"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开</span></div><div class="rightMenu-item" id="menu-copylink"><i class="anzhiyufont anzhiyu-icon-link"></i><span>复制链接地址</span></div><div class="rightMenu-item" id="menu-copyimg"><i class="anzhiyufont anzhiyu-icon-images"></i><span>复制此图片</span></div><div class="rightMenu-item" id="menu-downloadimg"><i class="anzhiyufont anzhiyu-icon-download"></i><span>下载此图片</span></div><div class="rightMenu-item" id="menu-newwindowimg"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开图片</span></div><div class="rightMenu-item" id="menu-search"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>站内搜索</span></div><div class="rightMenu-item" id="menu-searchBaidu"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>百度搜索</span></div><div class="rightMenu-item" id="menu-music-toggle"><i class="anzhiyufont anzhiyu-icon-play"></i><span>播放音乐</span></div><div class="rightMenu-item" id="menu-music-back"><i class="anzhiyufont anzhiyu-icon-backward"></i><span>切换到上一首</span></div><div class="rightMenu-item" id="menu-music-forward"><i class="anzhiyufont anzhiyu-icon-forward"></i><span>切换到下一首</span></div><div class="rightMenu-item" id="menu-music-playlist" onclick="window.open(&quot;https://y.qq.com/n/ryqq/playlist/8802438608&quot;, &quot;_blank&quot;);" style="display: none;"><i class="anzhiyufont anzhiyu-icon-radio"></i><span>查看所有歌曲</span></div><div class="rightMenu-item" id="menu-music-copyMusicName"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制歌名</span></div></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item menu-link" id="menu-randomPost"><i class="anzhiyufont anzhiyu-icon-shuffle"></i><span>随便逛逛</span></a><a class="rightMenu-item menu-link" href="/categories/"><i class="anzhiyufont anzhiyu-icon-cube"></i><span>博客分类</span></a><a class="rightMenu-item menu-link" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags"></i><span>文章标签</span></a></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item" id="menu-copy" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制地址</span></a><a class="rightMenu-item" id="menu-commentBarrage" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-message"></i><span class="menu-commentBarrage-text">关闭热评</span></a><a class="rightMenu-item" id="menu-darkmode" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span class="menu-darkmode-text">深色模式</span></a><a class="rightMenu-item" id="menu-translate" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-language"></i><span>轉為繁體</span></a></div></div><div id="rightmenu-mask"></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.umd.js"></script><script src="https://cdn.cbd.int/instant.page@5.2.0/instantpage.js" type="module"></script><script src="https://cdn.cbd.int/vanilla-lazyload@17.8.5/dist/lazyload.iife.min.js"></script><script src="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.js"></script><canvas id="universe"></canvas><script async src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/dark/dark.js"></script><script async src="/anzhiyu/random.js"></script><div class="js-pjax"><input type="hidden" name="page-type" id="page-type" value="post"></div><script>var visitorMail = "";
+</script><script async data-pjax src="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/waterfall/waterfall.js"></script><script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/qrcodejs/1.0.0/qrcode.min.js"></script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.9/icon/ali_iconfont_css.css"><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/aplayer/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.cbd.int/anzhiyu-blog-static@1.0.1/js/APlayer.min.js"></script><script src="https://cdn.cbd.int/hexo-anzhiyu-music@1.0.1/assets/js/Meting2.min.js"></script><script src="https://cdn.cbd.int/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
 
-        
+document.addEventListener('pjax:send', function () {
+  // removeEventListener scroll 
+  anzhiyu.removeGlobalFnEvent('pjax')
+  anzhiyu.removeGlobalFnEvent('themeChange')
 
-            </section>
-
-            
-                
-
-<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
-    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
-    
-    
-                <aside id="krw-about" class="widget widget-kratos-about clearfix">
-    <div class="photo-background"></div>
-    <div class="photo-wrapper clearfix">
-        <div class="photo-wrapper-tip text-center">
-            <img class="about-photo" src="/images/user.jpg" alt="xiaoyan" loading="lazy" decoding="auto" />
-        </div>
-    </div>
-    <div class="textwidget">
-        <p class="text-center">是一只时时翻垃圾吃的宅子。</p>
-    </div>
-    <div class="site-meta">
-        <a class="meta-item" href="/archives/">
-            <span class="title">
-                文章
-            </span>
-            <span class="count">
-                44
-            </span>
-        </a>
-        <a class="meta-item" href="/categories/">
-            <span class="title">
-                分类
-            </span>
-            <span class="count">
-                17
-            </span>
-        </a>
-        <a class="meta-item" href="/tags/">
-            <span class="title">
-                标签
-            </span>
-            <span class="count">
-                65
-            </span>
-        </a>
-    </div>
-</aside>
-            
-                    <div class="sticky-area">
-                
-                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix toc-div-class" >
-    <div class="photo-background"></div>
-    <h4 class="widget-title no-after">
-        <i class="fa fa-compass"></i>
-        文章目录
-        <span class="toc-progress-bar" role="progressbar" aria-label="阅读进度："></span>
-    </h4>
-    <div class="textwidget">
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Java%E4%B8%AD%E7%9A%84%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6"><span class="toc-number">1.</span> <span class="toc-text">Java中的垃圾回收机制</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="toc-number">1.1.</span> <span class="toc-text">垃圾回收的基本概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%9A%84%E7%9B%AE%E6%A0%87"><span class="toc-number">1.1.1.</span> <span class="toc-text">1. 垃圾回收的目标</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86"><span class="toc-number">1.1.2.</span> <span class="toc-text">2. 垃圾回收的基本原理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%9A%84%E8%A7%A6%E5%8F%91%E6%96%B9%E5%BC%8F"><span class="toc-number">1.2.</span> <span class="toc-text">垃圾回收的触发方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%86%85%E5%AD%98%E4%B8%8D%E8%B6%B3%E6%97%B6"><span class="toc-number">1.2.1.</span> <span class="toc-text">1. 内存不足时</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%89%8B%E5%8A%A8%E8%AF%B7%E6%B1%82"><span class="toc-number">1.2.2.</span> <span class="toc-text">2. 手动请求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-JVM%E5%8F%82%E6%95%B0%E9%85%8D%E7%BD%AE"><span class="toc-number">1.2.3.</span> <span class="toc-text">3. JVM参数配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%AF%B9%E8%B1%A1%E6%95%B0%E9%87%8F%E6%88%96%E5%86%85%E5%AD%98%E4%BD%BF%E7%94%A8%E8%BE%BE%E5%88%B0%E9%98%88%E5%80%BC"><span class="toc-number">1.2.4.</span> <span class="toc-text">4. 对象数量或内存使用达到阈值</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E7%9A%84%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.3.</span> <span class="toc-text">垃圾回收器的类型</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%88%A4%E6%96%AD%E5%9E%83%E5%9C%BE%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-number">2.</span> <span class="toc-text">判断垃圾的方法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0%E6%B3%95"><span class="toc-number">2.1.</span> <span class="toc-text">引用计数法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%AF%E8%BE%BE%E6%80%A7%E5%88%86%E6%9E%90%E7%AE%97%E6%B3%95"><span class="toc-number">2.2.</span> <span class="toc-text">可达性分析算法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%BA%E4%BD%95%E9%9C%80%E8%A6%81%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AE%97%E6%B3%95"><span class="toc-number">3.</span> <span class="toc-text">为何需要垃圾回收算法</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AE%97%E6%B3%95"><span class="toc-number">4.</span> <span class="toc-text">垃圾回收算法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%87%E8%AE%B0-%E6%B8%85%E9%99%A4%E7%AE%97%E6%B3%95%EF%BC%88Mark-Sweep%EF%BC%89"><span class="toc-number">4.1.</span> <span class="toc-text">标记-清除算法（Mark-Sweep）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%8D%E5%88%B6%E7%AE%97%E6%B3%95%EF%BC%88Copying%EF%BC%89"><span class="toc-number">4.2.</span> <span class="toc-text">复制算法（Copying）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%87%E8%AE%B0-%E6%95%B4%E7%90%86%E7%AE%97%E6%B3%95%EF%BC%88Mark-Compact%EF%BC%89"><span class="toc-number">4.3.</span> <span class="toc-text">标记-整理算法（Mark-Compact）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E7%90%86"><span class="toc-number">4.3.1.</span> <span class="toc-text">原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%98%E7%82%B9"><span class="toc-number">4.3.2.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%BA%E7%82%B9"><span class="toc-number">4.3.3.</span> <span class="toc-text">缺点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E4%BB%A3%E5%9B%9E%E6%94%B6%E7%AE%97%E6%B3%95%EF%BC%88Generational-Collection%EF%BC%89"><span class="toc-number">4.4.</span> <span class="toc-text">分代回收算法（Generational Collection）</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8"><span class="toc-number">5.</span> <span class="toc-text">垃圾回收器</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AE%97%E6%B3%95%E4%B8%AD%E7%9A%84Stop-the-World%E9%98%B6%E6%AE%B5"><span class="toc-number">6.</span> <span class="toc-text">垃圾回收算法中的Stop-the-World阶段</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%8D%E5%88%B6%E7%AE%97%E6%B3%95%E4%B8%AD%E7%9A%84STW%E9%98%B6%E6%AE%B5"><span class="toc-number">6.1.</span> <span class="toc-text">复制算法中的STW阶段</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#STW%E9%98%B6%E6%AE%B5%E5%88%86%E6%9E%90"><span class="toc-number">6.1.1.</span> <span class="toc-text">STW阶段分析</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#G1%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E4%B8%AD%E7%9A%84STW%E9%98%B6%E6%AE%B5"><span class="toc-number">6.2.</span> <span class="toc-text">G1垃圾回收器中的STW阶段</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%87%E8%AE%B0%E9%98%B6%E6%AE%B5%E5%81%9C%E9%A1%BF%E5%88%86%E6%9E%90"><span class="toc-number">6.2.1.</span> <span class="toc-text">标记阶段停顿分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B8%85%E7%90%86%E9%98%B6%E6%AE%B5%E5%81%9C%E9%A1%BF%E5%88%86%E6%9E%90"><span class="toc-number">6.2.2.</span> <span class="toc-text">清理阶段停顿分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%8D%E5%88%B6%E9%98%B6%E6%AE%B5%E5%81%9C%E9%A1%BF%E5%88%86%E6%9E%90"><span class="toc-number">6.2.3.</span> <span class="toc-text">复制阶段停顿分析</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Minor-GC%E3%80%81Major-GC%E5%92%8CFull-GC"><span class="toc-number">7.</span> <span class="toc-text">Minor GC、Major GC和Full GC</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Minor-GC"><span class="toc-number">7.1.</span> <span class="toc-text">Minor GC</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%9C%E7%94%A8%E8%8C%83%E5%9B%B4"><span class="toc-number">7.1.1.</span> <span class="toc-text">作用范围</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A6%E5%8F%91%E6%9D%A1%E4%BB%B6"><span class="toc-number">7.1.2.</span> <span class="toc-text">触发条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%B9%E7%82%B9"><span class="toc-number">7.1.3.</span> <span class="toc-text">特点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Major-GC"><span class="toc-number">7.2.</span> <span class="toc-text">Major GC</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%9C%E7%94%A8%E8%8C%83%E5%9B%B4-1"><span class="toc-number">7.2.1.</span> <span class="toc-text">作用范围</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A6%E5%8F%91%E6%9D%A1%E4%BB%B6-1"><span class="toc-number">7.2.2.</span> <span class="toc-text">触发条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%B9%E7%82%B9-1"><span class="toc-number">7.2.3.</span> <span class="toc-text">特点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Full-GC"><span class="toc-number">7.3.</span> <span class="toc-text">Full GC</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%9C%E7%94%A8%E8%8C%83%E5%9B%B4-2"><span class="toc-number">7.3.1.</span> <span class="toc-text">作用范围</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A6%E5%8F%91%E6%9D%A1%E4%BB%B6-2"><span class="toc-number">7.3.2.</span> <span class="toc-text">触发条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%B9%E7%82%B9-2"><span class="toc-number">7.3.3.</span> <span class="toc-text">特点</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#CMS%E5%92%8CG1%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8"><span class="toc-number">8.</span> <span class="toc-text">CMS和G1垃圾收集器</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8C%BA%E5%88%AB"><span class="toc-number">8.1.</span> <span class="toc-text">区别</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%BD%BF%E7%94%A8%E8%8C%83%E5%9B%B4%E4%B8%8D%E4%B8%80%E6%A0%B7"><span class="toc-number">8.1.1.</span> <span class="toc-text">1. 使用范围不一样</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-STW%E6%97%B6%E9%97%B4"><span class="toc-number">8.1.2.</span> <span class="toc-text">2. STW时间</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%9E%83%E5%9C%BE%E7%A2%8E%E7%89%87"><span class="toc-number">8.1.3.</span> <span class="toc-text">3. 垃圾碎片</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E8%BF%87%E7%A8%8B%E4%B8%8D%E4%B8%80%E6%A0%B7"><span class="toc-number">8.1.4.</span> <span class="toc-text">4. 垃圾回收过程不一样</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E6%B5%AE%E5%8A%A8%E5%9E%83%E5%9C%BE"><span class="toc-number">8.1.5.</span> <span class="toc-text">5. 浮动垃圾</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">8.2.</span> <span class="toc-text">适用场景</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#G1%E5%9B%9E%E6%94%B6%E5%99%A8"><span class="toc-number">9.</span> <span class="toc-text">G1回收器</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#G1%E5%9B%9E%E6%94%B6%E5%99%A8%E7%9A%84%E7%89%B9%E7%82%B9"><span class="toc-number">9.1.</span> <span class="toc-text">G1回收器的特点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#G1%E7%9B%B8%E6%AF%94CMS%E7%9A%84%E6%94%B9%E8%BF%9B"><span class="toc-number">9.2.</span> <span class="toc-text">G1相比CMS的改进</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#GC%E5%8F%AA%E4%BC%9A%E5%AF%B9%E5%A0%86%E8%BF%9B%E8%A1%8CGC%E5%90%97%EF%BC%9F"><span class="toc-number">10.</span> <span class="toc-text">GC只会对堆进行GC吗？</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%A0%86%EF%BC%88Heap%EF%BC%89"><span class="toc-number">10.1.</span> <span class="toc-text">1. 堆（Heap）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%9C%E7%94%A8"><span class="toc-number">10.1.1.</span> <span class="toc-text">作用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6"><span class="toc-number">10.1.2.</span> <span class="toc-text">垃圾回收</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E6%96%B9%E6%B3%95%E5%8C%BA%EF%BC%88Method-Area%EF%BC%89"><span class="toc-number">10.2.</span> <span class="toc-text">2. 方法区（Method Area）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%9C%E7%94%A8-1"><span class="toc-number">10.2.1.</span> <span class="toc-text">作用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6-1"><span class="toc-number">10.2.2.</span> <span class="toc-text">垃圾回收</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%85%B6%E4%BB%96%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F"><span class="toc-number">10.3.</span> <span class="toc-text">3. 其他内存区域</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%9C%E7%94%A8-2"><span class="toc-number">10.3.1.</span> <span class="toc-text">作用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6-2"><span class="toc-number">10.3.2.</span> <span class="toc-text">垃圾回收</span></a></li></ol></li></ol></li></ol>
-    </div>
-</aside>
-                
-                
-  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
-    <h4 class="widget-title"><i class="fa fa-folder"></i>分类列表</h4>
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93-%E7%BC%93%E5%AD%98/">数据库&缓存</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93-%E7%BC%93%E5%AD%98/MySQL/">MySQL</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93-%E7%BC%93%E5%AD%98/Redis/">Redis</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93-%E7%BC%93%E5%AD%98/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BC%98%E5%8C%96/">数据库优化</a><span class="category-list-count">2</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9E%B6%E6%9E%84/">架构</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/">编程语言</a><span class="category-list-count">21</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/">Java</a><span class="category-list-count">20</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/JVM/">JVM</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Spring/">Spring</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/%E5%9F%BA%E7%A1%80/">基础</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">并发编程</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/%E9%9B%86%E5%90%88/">集合</a><span class="category-list-count">5</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Python/">Python</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/">计算机基础</a><span class="category-list-count">6</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a><span class="category-list-count">5</span></li></ul></li></ul>
-  </aside>
-
-
-            
-                
-  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
-    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
-      <div class="tag-clouds">
-        <a href="/tags/AOP/" style="font-size: 0.6em;">AOP</a> <a href="/tags/BASE/" style="font-size: 0.6em;">BASE</a> <a href="/tags/Bean/" style="font-size: 0.6em;">Bean</a> <a href="/tags/CAP/" style="font-size: 0.6em;">CAP</a> <a href="/tags/Cookie/" style="font-size: 0.6em;">Cookie</a> <a href="/tags/DDD/" style="font-size: 0.6em;">DDD</a> <a href="/tags/DNS/" style="font-size: 0.6em;">DNS</a> <a href="/tags/HTTP/" style="font-size: 0.6em;">HTTP</a> <a href="/tags/I-O/" style="font-size: 0.6em;">I/O</a> <a href="/tags/IoC/" style="font-size: 0.6em;">IoC</a> <a href="/tags/JWT/" style="font-size: 0.6em;">JWT</a> <a href="/tags/Java8%E6%96%B0%E7%89%B9%E6%80%A7/" style="font-size: 0.6em;">Java8新特性</a> <a href="/tags/Java%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" style="font-size: 0.6em;">Java基本概念</a> <a href="/tags/List/" style="font-size: 0.6em;">List</a> <a href="/tags/Map/" style="font-size: 0.8em;">Map</a> <a href="/tags/MyBatis/" style="font-size: 0.6em;">MyBatis</a> <a href="/tags/MySQL%E5%9F%BA%E7%A1%80/" style="font-size: 0.6em;">MySQL基础</a> <a href="/tags/Nginx/" style="font-size: 0.6em;">Nginx</a>
-      </div>
-  </aside>
-
-            
-                
-  <aside id="krw-posts" class="widget widget-kratos-posts">
-  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
-  <div class="tab-content">
-      <ul class="list-group">
-        
-        
-          
-          
-            <a class="list-group-item" href="/2024/11/03/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BC%98%E5%8C%96-%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/"><i class="fa fa-book"></i> 数据库优化-分库分表</a>
-            
-          
-        
-          
-          
-            <a class="list-group-item" href="/2024/11/03/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BC%98%E5%8C%96-%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB%E4%B8%8E%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB/"><i class="fa fa-book"></i> 数据库优化-读写分离与冷热分离</a>
-            
-          
-        
-          
-          
-            <a class="list-group-item" href="/2024/10/28/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86/"><i class="fa fa-book"></i> 操作系统-进程管理</a>
-            
-          
-        
-          
-          
-            <a class="list-group-item" href="/2024/10/27/%E5%88%86%E5%B8%83%E5%BC%8F-%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/"><i class="fa fa-book"></i> 分布式-分布式事务</a>
-            
-          
-        
-          
-          
-            <a class="list-group-item" href="/2024/10/21/%E5%88%86%E5%B8%83%E5%BC%8F-%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%EF%BC%88%E4%B8%8B%EF%BC%89/"><i class="fa fa-book"></i> 分布式-服务治理（下）</a>
-            
-          
-        
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-      </ul>
-  </div>
-  </aside>
-
-            
-    </div>
-</section>
-            
-
-        
-
-                </div>
-    </div>
-</div>
-
-<footer>
-    <div id="footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 col-md-offset-3 footer-list text-center">
-                    <ul class="kratos-social-icons">
-                        
-                    </ul>
-                    <ul class="kratos-copyright">
-                        <div>
-                            <li>&copy; 2024 XIAOYAN 版权所有.</li>
-                            <li>本站已运行<span id="kr-since">Loading...</span></li>
-                        </div>
-                        <div>
-                            <li>自豪地使用 <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a> 主题</li>
-                            <li>站点由 xiaoyan 用 <i class="fa fa-heart" style="color:#d43f57"></i> 搭建</li>
-                        </div>
-                        <!-- 额外的追加注入项 -->
-                        
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="kr-tool text-center">
-            <div class="tool">
-                
-                    <div class="box search-box">
-                        <a href="/search">
-                            <span class="fa fa-search"></span>
-                        </a>
-                    </div>
-                
-                <div class="box theme-box" id="theme-toggle">
-                    <span class="fa fa-adjust"></span>
-                </div>
-            </div>
-            <div id="gotop-box" class="box gotop-box">
-                <span class="fa fa-chevron-up"></span>
-            </div>
-        </div>
-    </div>
-</footer>
-</div>
-</div>
-
-
-    <div id="kr-donate-modal" class="kr-modal">
-    <div class="kr-modal-bg" onclick="krCloseDonateModal()"></div>
-    <div class="kr-modal-content">
-        <div class="kr-modal-header">
-            <div class="kr-modal-icon">
-                <i class="fa fa-bitcoin"></i>
-            </div>
-            <div class="kr-modal-title">打赏</div>
-            <button class="kr-modal-close" onclick="krCloseDonateModal()">
-                <i class="fa fa-times-circle"></i>
-            </button>
-        </div>
-        <div class="kr-modal-body">
-            <div class="kr-donate-message">请我喝一杯冰阔咯~</div>
-            <div class="kr-donate-qr" id="kr-donate-qr">
-                
-            </div>
-            <div class="kr-donate-platforms">
-                
-                    
-                        <button class="kr-donate-platform-button" style="color: #1677ff;" title="支付宝" onclick="krDonateModalShowPlatformQR('https://qr.alipay.com/fkx15009k7u0fqrj8auepdf', '#1677ff')">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-alipay">
-  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-  <path d="M19 3h-14a2 2 0 0 0 -2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2 -2v-14a2 2 0 0 0 -2 -2z" />
-  <path d="M7 7h10" />
-  <path d="M12 3v7" />
-  <path d="M21 17.314c-2.971 -1.923 -15 -8.779 -15 -1.864c0 1.716 1.52 2.55 2.985 2.55c3.512 0 6.814 -5.425 6.814 -8h-6.604" />
-</svg>
-
-                        </button>
-                    
-                
-                    
-                        <button class="kr-donate-platform-button" style="color: #38ad5a;" title="微信支付" onclick="krDonateModalShowPlatformQR('wxp://f2f0hR4eF9Ypa3tpzjWme9fQDyWW3PIGe3WG5oiIakWLmDs', '#38ad5a')">
-                            <i class="fa fa-wechat"></i>
-                        </button>
-                    
-                
-            </div>
-        </div>
-    </div>
-</div>
-<script defer src="/js/kr-modal/donate.min.js"></script>
-
-
-
-
-    <div id="kr-share-modal" class="kr-modal">
-    <div class="kr-modal-bg" onclick="krCloseShareModal()"></div>
-    <div class="kr-modal-content">
-        <div class="kr-modal-header">
-            <div class="kr-modal-icon">
-                <i class="fa fa-share-alt"></i>
-            </div>
-            <div class="kr-modal-title">分享</div>
-            <button class="kr-modal-close" onclick="krCloseShareModal()">
-                <i class="fa fa-times-circle"></i>
-            </button>
-        </div>
-        <div class="kr-modal-body">
-            <div class="kr-share-message">让兄弟萌也来瞅一瞅！</div>
-            <div class="kr-share-qr" id="kr-share-qr"></div>
-            <div class="kr-share-platforms">
-                
-                    <button class="kr-share-platform-button" style="color: #e6162d;" title="QQ" onclick="krShareModalOpenPlatform('')">
-                        <i class="fa fa-qq"></i>
-                    </button>
-                
-                    <button class="kr-share-platform-button" style="color: #25d366;" title="微信" onclick="krShareModalOpenPlatform('')">
-                        <i class="fa fa-weixin"></i>
-                    </button>
-                
-            </div>
-        </div>
-    </div>
-</div>
-<script defer src="/js/kr-modal/share.min.js"></script>
-
-
-
-<!-- 额外的追加注入项 -->
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
-<meting-js
-  server="netease"
-  type="playlist"
-  fixed="true"
-  order="random"
-  id="12613265870">
-</meting-js>
-
-
-
-        <script>
-    if (!window.kr) {
-        window.kr = {};
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
     }
-    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
-    window.kr.siteRoot = "/";
-</script>
+  }
 
+  typeof typed === 'object' && typed.destroy()
 
-  <script defer src="/vendors/nprogress@0.2.0/nprogress.js"></script>
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+})
 
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
 
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
 
-  <script defer src="/vendors/viewerjs@1.11.6/dist/viewer.min.js"></script>
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
 
+  typeof panguInit === 'function' && panguInit()
 
-<script defer src="/js/kr-core.min.js"></script>
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
 
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
 
-  <script defer src="/js/kr-pjax.min.js"></script>
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
 
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
 
-<!-- 额外的追加注入项 -->
-
-  <script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
-
-
-
-    </body>
-</html>
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script charset="UTF-8" src="https://cdn.cbd.int/anzhiyu-theme-static@1.1.5/accesskey/accesskey.js"></script></div><div id="popup-window"><div class="popup-window-title">通知</div><div class="popup-window-divider"></div><div class="popup-window-content"><div class="popup-tip">你好呀</div><div class="popup-link"><i class="anzhiyufont anzhiyu-icon-arrow-circle-right"></i></div></div></div></body></html>

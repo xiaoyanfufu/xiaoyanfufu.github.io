@@ -1,196 +1,209 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-  <!-- 元数据 -->
-  <meta charset="utf-8">
-  
-    <link rel="icon" href="/images/earthstars.png">
-  
-  
-  <title>Spring-基础（下） | XIAOYAN</title>
-  <link rel="canonical" href="http://example.com/2024/09/30/Spring-%E5%9F%BA%E7%A1%80%EF%BC%88%E4%B8%8B%EF%BC%89/">
-  <meta name="author" content="xiaoyan" />
-  <meta http-equiv="Cache-Control" content="no-transform" />
-  <meta http-equiv="Cache-Control" content="no-siteapp" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="robots" content="index,follow" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <meta name="format-detection" content="telphone=no, email=no" />
-  
-    <meta name="keywords" content="Bean" />
-  
-  <meta name="description" content="Spring设计Spring 如何解决循环依赖什么是循环依赖？循环依赖（Circular Dependency）是指两个或多个类之间互相依赖，形成一个闭环。例如，类 A 依赖类 B，而类 B 又依赖类 A，从而形成依赖闭环。循环依赖在软件设计中是一个常见的问题，尤其是在使用依赖注入（Dependency Injection, DI）框架时。 循环依赖的三种情况在 Spring 中，循环依赖问题可以">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Spring-基础（下）">
-<meta property="og:url" content="http://example.com/2024/09/30/Spring-%E5%9F%BA%E7%A1%80%EF%BC%88%E4%B8%8B%EF%BC%89/index.html">
-<meta property="og:site_name" content="XIAOYAN">
-<meta property="og:description" content="Spring设计Spring 如何解决循环依赖什么是循环依赖？循环依赖（Circular Dependency）是指两个或多个类之间互相依赖，形成一个闭环。例如，类 A 依赖类 B，而类 B 又依赖类 A，从而形成依赖闭环。循环依赖在软件设计中是一个常见的问题，尤其是在使用依赖注入（Dependency Injection, DI）框架时。 循环依赖的三种情况在 Spring 中，循环依赖问题可以">
-<meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://cdn.xiaolincoding.com//picgo/1719570477922-ad595a67-be98-4272-9e13-8ad73dd75c13.png">
-<meta property="og:image" content="https://img-blog.csdnimg.cn/06abb9ae8d3146d38d3537c2d9209799.png">
-<meta property="og:image" content="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202410041218731.png">
-<meta property="article:published_time" content="2024-09-30T03:48:28.000Z">
-<meta property="article:modified_time" content="2024-11-02T11:06:49.629Z">
-<meta property="article:author" content="xiaoyan">
-<meta property="article:tag" content="Bean">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://cdn.xiaolincoding.com//picgo/1719570477922-ad595a67-be98-4272-9e13-8ad73dd75c13.png">
-  
-  <!-- 样式表文件 -->
-  <link rel="stylesheet" id="kratos-css" href="/css/kr-core.min.css" media="all"></link>
-  
-    <link rel="stylesheet" id="highlight-css" href="/css/highlight/highlight.js/night-eighties.min.css" media="all"></link>
-  
-  <link rel="stylesheet" id="theme-light-css" href="/css/kr-theme/light.min.css" media="all"></link>
-  <link rel="stylesheet" id="theme-dark-css" href="/css/kr-theme/dark.min.css" media="(prefers-color-scheme: dark)"></link>
-  <script src="/js/kr-theme.min.js"></script>
-  <link rel="stylesheet" id="fontawe-css" href="/vendors/font-awesome@4.7.0/css/font-awesome.min.css" media="all"></link>
-  
-    <link rel="stylesheet" id="nprogress-css" href="/vendors/nprogress@0.2.0/nprogress.css" media="all"></link>
-  
-  
-    <link rel="stylesheet" href="/vendors/viewerjs@1.11.6/dist/viewer.min.css"></link>
-  
-  <!-- 不得不预先加载的一些JS文件 -->
-  
-    <script src="/vendors/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
-  
-  <!-- 自定义站点横幅和背景 -->
-  <style>
-    
-      .kratos-cover.kratos-cover-2 {
-        background-image: url('/images/wallpaper_light.png');
-      }
-      html[data-theme="dark"] .kratos-cover.kratos-cover-2 {
-        background-image: url('/images/wallpaper_dark.png');
-      }
-    
-    
-      @media(min-width:768px) {
-        body.custom-background {
-          background-image: url('/images/bg.webp');
+<!DOCTYPE html><html lang="zn-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><title>Spring-基础（下） | XIAOYAN</title><meta name="keywords" content="Bean"><meta name="author" content="xiaoyan"><meta name="copyright" content="xiaoyan"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#f7f9fe"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-touch-fullscreen" content="yes"><meta name="apple-mobile-web-app-title" content="Spring-基础（下）"><meta name="application-name" content="Spring-基础（下）"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f7f9fe"><meta property="og:type" content="article"><meta property="og:title" content="Spring-基础（下）"><meta property="og:url" content="http://example.com/2024/09/30/Spring-%E5%9F%BA%E7%A1%80%EF%BC%88%E4%B8%8B%EF%BC%89/index.html"><meta property="og:site_name" content="XIAOYAN"><meta property="og:description" content="Spring设计Spring 如何解决循环依赖什么是循环依赖？循环依赖（Circular Dependency）是指两个或多个类之间互相依赖，形成一个闭环。例如，类 A 依赖类 B，而类 B 又依赖类 A，从而形成依赖闭环。循环依赖在软件设计中是一个常见的问题，尤其是在使用依赖注入（Dependen"><meta property="og:locale" content="zn-CN"><meta property="og:image" content="https://spring.io/img/extra/why-spring.svg"><meta property="article:author" content="xiaoyan"><meta property="article:tag"><meta name="twitter:card" content="summary"><meta name="twitter:image" content="https://spring.io/img/extra/why-spring.svg"><meta name="description" content="Spring设计Spring 如何解决循环依赖什么是循环依赖？循环依赖（Circular Dependency）是指两个或多个类之间互相依赖，形成一个闭环。例如，类 A 依赖类 B，而类 B 又依赖类 A，从而形成依赖闭环。循环依赖在软件设计中是一个常见的问题，尤其是在使用依赖注入（Dependen"><link rel="shortcut icon" href="/images/favicon.ico"><link rel="canonical" href="http://example.com/2024/09/30/Spring-%E5%9F%BA%E7%A1%80%EF%BC%88%E4%B8%8B%EF%BC%89/"><link rel="preconnect" href="//cdn.cbd.int"/><meta name="google-site-verification" content="xxx"/><meta name="baidu-site-verification" content="code-xxx"/><meta name="msvalidate.01" content="xxx"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  linkPageTop: undefined,
+  peoplecanvas: {"enable":true,"img":"https://upload-bbs.miyoushe.com/upload/2024/07/27/125766904/ba62475f396df9de3316a08ed9e65d86_5680958632268053399..png"},
+  postHeadAiDescription: undefined,
+  diytitle: undefined,
+  LA51: undefined,
+  greetingBox: undefined,
+  twikooEnvId: '',
+  commentBarrageConfig:undefined,
+  music_page_default: "nav_music",
+  root: '/',
+  preloader: {"source":3},
+  friends_vue_info: undefined,
+  navMusic: true,
+  mainTone: undefined,
+  authorStatus: undefined,
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简","rightMenuMsgToTraditionalChinese":"转为繁体","rightMenuMsgToSimplifiedChinese":"转为简体"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":330},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    simplehomepage: true,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"copy":true,"copyrightEbable":false,"limitCount":50,"languages":{"author":"作者: xiaoyan","link":"链接: ","source":"来源: XIAOYAN","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。","copySuccess":"复制成功，复制和转载请标注本文地址"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#425AEF","bgDark":"#1f1f1f","position":"top-center"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.min.js',
+      css: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false,
+  shortcutKey: undefined,
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  configTitle: 'XIAOYAN',
+  title: 'Spring-基础（下）',
+  postAI: '',
+  pageFillDescription: 'Spring设计, Spring 如何解决循环依赖, 什么是循环依赖？, 循环依赖的三种情况, Spring 如何解决循环依赖, 三级缓存策略详解, 一级缓存（singletonObjects）, 二级缓存（earlySingletonObjects）, 三级缓存（singletonFactories）, 三级缓存策略的工作流程, Spring 设计模式, 1. 工厂模式（Factory Pattern）, 2. 代理模式（Proxy Pattern）, 3. 单例模式（Singleton Pattern）, 4. 模板方法模式（Template Method Pattern）, 5. 装饰器模式（Decorator Pattern）, 6. 观察者模式（Observer Pattern）, 7. 适配器模式（Adapter Pattern）, Spring 常用注解, 1. @Autowired 注解, 2. @Component 注解, 3. @Configuration 注解, 4. @Bean 注解, 5. @Service 注解, 6. @Repository 注解, 7. @Controller 注解, 总结, Spring 扩展机制, 1. BeanFactoryPostProcessor, 2. BeanPostProcessor, 3. PropertySource, 4. Spring MVC中的HandlerInterceptor, 5. Spring MVC中的ControllerAdvice, 6. Spring Boot的自动配置, 7. 自定义注解, 事务管理, Spring事务失效场景分析, 1. 未捕获的异常, 2. 未受检异常, 3. 事务属性传递不当, 4. 多数据源配置不当, 5. 事务调用外部方法, 6. 非公有方法, Spring事务中调用this是否生效？, Spring事务的实现机制, 调用this是否生效？, 原因分析, 解决方案, Bean, Spring Bean的生命周期, Spring Bean的单例与多例模式, 单例模式（Singleton）, 默认行为, 优点, 多例模式（Prototype）, 配置方式, 行为, 优点, Spring Bean的作用域, 在Bean加载x2F销毁前后增加自定义逻辑, 1. 使用init-method和destroy-method, XML配置示例, Bean类实现, 2. 实现InitializingBean接口和DisposableBean接口, Bean类实现, 3. 使用@PostConstruct注解和@PreDestroy注解, Bean类实现, 4. 使用@Bean注解的initMethod属性和destroyMethod属性, Java配置示例, Bean类实现, Bean注入与XML注入, Bean注解注入, XML注入, Spring MVC, 了解MVC, Spring MVC的处理流程, HandlerMapping与HandlerAdapter, HandlerMapping, HandlerAdapter设计如何解决循环依赖什么是循环依赖循环依赖是指两个或多个类之间互相依赖形成一个闭环例如类依赖类而类又依赖类从而形成依赖闭环循环依赖在软件设计中是一个常见的问题尤其是在使用依赖注入框架时循环依赖的三种情况在中循环依赖问题可以分为以下三种情况使用构造参数传递依赖构成的循环依赖问题两个类通过构造器注入形成循环依赖使用方法传递依赖且是原型模式下构成的循环依赖问题两个类通过方法注入形成循环依赖并且的作用域是原型使用方法传递依赖且是单例模式下构成的循环依赖问题两个类通过方法注入形成循环依赖并且的作用域是单例如何解决循环依赖在中只有第三种情况单例模式下使用方法构成的循环依赖被解决了其他两种情况在遇到循环依赖问题时仍然会抛出相应的异常通过三级缓存来解决单例模式下使用方法构成的循环依赖问题具体步骤如下实例化在实例化时会先创建一个空的对象并将其放入一级缓存中属性赋值当发现存在循环依赖时会先将当前暴露给后续的依赖从而解决循环依赖问题这一步通过提前暴露来解决循环依赖初始化完成属性赋值后将实例化并放入二级缓存中依赖注入继续对进行依赖注入如果发现循环注入会将二级缓存中的对象取出完成初始化的实例三级缓存策略详解在中三级缓存策略是解决单例模式下使用方法构成的循环依赖问题的核心机制三级缓存采用的都是类型的缓存数据结构用于存储不同阶段的实例以下是对三级缓存策略的详细解释一级缓存一级缓存使用存放完全初始化好的单例也就是开箱即用的实例一级缓存存放在中的属性中数据结构其中是的名称是完全初始化好的实例作用存放已经完全初始化好的单例这些可以直接使用二级缓存二级缓存使用存放已经实例化但还未完全初始化的这些可能还没有进行属性注入等操作二级缓存存放在中的属性中数据结构其中是的名称是已经实例化但还未完全初始化的实例作用存放提前暴露的这些已经实例化但还未完全初始化用于解决循环依赖问题三级缓存三级缓存同样是一个类型的缓存存储的是对象这些对象可以生成早期的引用当一个正在创建过程中如果被其他依赖那么这个正在创建的就会通过这个来创建一个早期引用从而解决循环依赖问题三级缓存存放在中的属性中数据结构其中是的名称是对象用于生成早期的引用作用存放工厂用于创建提前暴露的解决循环依赖问题三级缓存策略的工作流程实例化在实例化时会先创建一个空的对象并将其放入三级缓存中提前暴露当发现存在循环依赖时会先将当前暴露给后续的依赖从而解决循环依赖问题这一步通过将工厂放入三级缓存中来实现属性赋值完成属性赋值后将实例化并放入二级缓存中依赖注入继续对进行依赖注入如果发现循环注入会将二级缓存中的对象取出完成初始化的实例完全初始化当完全初始化后将其放入一级缓存中并从二级缓存和三级缓存中移除设计模式框架是一个高度模块化和可扩展的框架它广泛使用了多种设计模式来实现其核心功能以下是中常用的一些设计模式及其应用场景工厂模式工厂模式是一种创建型设计模式用于创建对象而不指定具体的类使用工厂模式来创建和管理对象的核心接口之一用于创建和管理实例提供了基本的创建和获取功能是的子接口提供了更高级的功能如国际化事件发布等代理模式代理模式是一种结构型设计模式用于为其他对象提供一个代理以控制对这个对象的访问通过使用反射机制和动态代理来实现切面编程适用于被代理对象实现了接口的情况适用于被代理对象没有实现接口的情况单例模式单例模式是一种创建型设计模式确保一个类只有一个实例并提供一个全局访问点中默认的都是单例的单例容器中的默认是单例的即在整个应用中只有一个实例模板方法模式模板方法模式是一种行为型设计模式定义了一个算法的骨架并允许子类在不改变算法结构的情况下重新定义算法的某些步骤中的和等就是模板方法模式的典型应用提供了数据库操作的模板方法子类可以通过实现回调接口来定义具体的操作装饰器模式装饰器模式是一种结构型设计模式允许动态地向对象添加功能中的实现类如就是装饰器模式的典型应用观察者模式观察者模式是一种行为型设计模式定义了对象之间的一对多依赖关系当一个对象状态发生改变时所有依赖它的对象都会收到通知并自动更新事件驱动模型就是一个典型的观察者模式中的事件类用于定义事件中的监听器接口用于监听事件适配器模式适配器模式是一种结构型设计模式用于将一个类的接口转换成客户端所期望的另一个接口的增强和通知使用了适配器模式中的控制器层也使用了适配器模式中的适配器接口用于将通知适配为增强中的适配器接口用于将控制器适配为处理器常用注解框架提供了丰富的注解来简化配置和开发过程以下是一些常用的注解及其作用注解注解主要用于自动装配当容器中存在与注入属性类型匹配的时它会自动将注入到属性中类似于对象一样注解注解用于将一个类标记为中的当一个类被标记后会将该类实例化为一个并将其存放到容器中注解注解用于将一个类标记为的配置类配置类可以包含注解的方法用于定义和配置作为全局配置注解注解用于标记一个方法将该方法作为的工厂方法当一个方法被注解标记时会将该方法的返回值作为一个并将其添加到容器中如果自定义配置会经常用到该注解注解注解用于将一个类标记为服务层的组件它是注解的特例用于标记服务层的一般用于标记服务层的实现类注解注解通常用于标记一个类作为数据访问层的组件它也是注解的特例用于标记数据访问层的组件该注解开发过程中很容易忘记而导致无法访问数据库注解注解通常用于标记一个类作为控制层的组件它也是注解的特例用于标记控制层的总结框架提供了丰富的注解来简化配置和开发过程通过合理使用这些注解可以提高代码的可读性可维护性和可扩展性以下是这些注解的简要总结注解作用自动装配将类标记为将类标记为配置类将方法标记为工厂方法将类标记为服务层组件将类标记为数据访问层组件将类标记为控制层组件扩展机制框架提供了丰富的扩展机制使得开发者可以根据自己的需求定制和扩展的功能以下是一些常用的扩展点及其详细介绍允许在容器实例化之前修改的定义开发者可以通过实现该接口在实例化之前对定义进行自定义处理修改定义允许在实例化配置以及初始化的前后对其进行额外的处理开发者可以通过实现该接口在生命周期的关键点插入自定义逻辑初始化前的处理逻辑初始化后的处理逻辑用于定义不同的属性源如文件数据库等以便在应用中使用开发者可以通过自定义来加载和使用外部属性配置类中的用于拦截处理请求可以在请求处理前处理中和处理后执行特定逻辑开发者可以通过实现该接口在请求处理的不同阶段插入自定义逻辑请求处理前的逻辑请求处理中的逻辑请求处理后的逻辑中的用于全局处理控制器的异常数据绑定和校验开发者可以通过实现该接口在控制器处理请求时插入全局逻辑异常处理逻辑的自动配置提供了自动配置机制开发者可以通过创建配置类实现对框架和第三方库的自动配置自定义注解支持自定义注解开发者可以通过创建自定义注解来实现特定的功能事务管理事务失效场景分析在应用中事务管理是确保数据一致性和完整性的关键机制通过其事务管理模块特别是注解来实现事务操作然而事务失效的情况时有发生这通常是由于配置不当或代码实现中的细微问题所致以下是一些可能导致事务失效的典型场景及其深入分析未捕获的异常场景描述当一个异常未被捕获并且该异常未被处理或传播至事务边界之外时事务会失效深入分析在中默认情况下事务会在遇到未捕获的异常时自动回滚然而如果异常被捕获但未重新抛出或者异常被捕获后通过某种方式被吞噬事务管理器将无法感知到异常的发生从而导致事务无法回滚解决方案确保所有可能引发异常的代码路径都被正确处理并在必要时重新抛出异常以便事务管理器能够检测到异常并触发回滚操作未受检异常场景描述默认情况下会对未受检异常如及其子类进行回滚此时事务失效深入分析未受检异常通常表示程序逻辑中的错误或不可恢复的情况默认将这些异常视为事务失败的信号并触发回滚操作然而如果开发者未意识到这一点可能会在代码中无意间抛出未受检异常导致事务失效解决方案在编写代码时应尽量避免抛出未受检异常或者在必要时通过注解的属性显式指定哪些异常应触发回滚事务属性传递不当场景描述当事务内存在嵌套事务且传播了一定的属性时若传播的属性配置不当可能导致事务失效深入分析提供了多种事务传播行为如等这些行为决定了事务如何在方法调用链中传播如果传播行为配置不当可能会导致事务边界不明确从而引发事务失效解决方案仔细选择和配置事务传播行为确保每个方法调用链中的事务边界清晰且符合业务逻辑需求多数据源配置不当场景描述当事务操作涉及多个数据源时若配置文件不当可能导致事务失效深入分析在多数据源场景下需要明确指定每个事务操作所涉及的数据源如果配置不当可能会导致事务管理器无法正确识别和处理事务从而引发事务失效解决方案确保多数据源配置正确并在必要时使用注解的属性显式指定事务管理器事务调用外部方法场景描述当事务内调用其他方法且其他方法未使用标记可能导致事务失效深入分析在中事务是通过代理机制实现的如果一个事务方法调用了另一个未标记为事务的方法的事务代理将无法拦截该调用从而导致事务失效解决方案确保所有需要事务支持的方法都使用注解进行标记或者通过面向切面编程机制显式配置事务拦截非公有方法场景描述如果标记在私有方法或其他非公有方法上事务也会失效深入分析的事务管理依赖于代理机制而代理机制通常只能拦截公有方法的调用因此如果注解被应用于非公有方法如私有方法受保护方法或包级私有方法将无法创建事务代理从而导致事务失效解决方案将注解应用于公有方法或者通过机制显式配置事务拦截事务中调用是否生效在事务管理中调用是否生效是一个常见且重要的技术问题为了深入理解这一问题我们需要从事务的实现机制入手事务的实现机制事务管理的核心机制是通过面向切面编程实现的具体来说使用代理模式来拦截被注解标记的方法并在方法执行前后插入事务管理逻辑调用是否生效结论在事务中调用是不生效的原因分析代理对象与目标对象分离在中事务管理是通过代理对象实现的代理对象与目标对象即实际的业务逻辑类是分离的当一个方法被注解标记时会创建一个代理对象来拦截该方法的调用引用指向目标对象在目标对象的方法内部引用指向的是目标对象本身而不是代理对象因此当在目标对象的方法内部调用引用的其他方法时实际上是直接调用了目标对象的方法绕过了代理对象的事务管理逻辑示例代码事务管理生效事务管理不生效因为是通过调用的业务逻辑在上面的示例中被注解标记因此会为其创建一个代理对象然而当内部调用时实际上是直接调用了目标对象的绕过了代理对象的事务管理逻辑导致的事务管理不生效解决方案为了避免上述问题可以采用以下几种解决方案注入代理对象通过依赖注入的方式获取代理对象而不是直接使用引用注入代理对象事务管理生效通过代理对象调用事务管理生效业务逻辑使用切面通过切面显式配置事务拦截逻辑事务管理逻辑在事务管理中调用是不生效的因为引用指向的是目标对象而不是代理对象为了避免事务失效可以通过注入代理对象或使用切面来确保事务管理逻辑的正确执行的生命周期框架的核心之一是其强大的依赖注入和控制反转机制而的生命周期管理则是这一机制的重要组成部分理解的生命周期对于掌握框架的工作原理和优化应用性能至关重要以下是生命周期的详细步骤实例化容器启动时首先会查找并加载需要被管理的定义然后容器会根据定义创建实例实例化过程通常涉及调用的构造函数属性注入实例化之后容器会根据定义中的配置将依赖的引用和属性值注入到实例中这一过程通常通过调用的方法或直接设置字段值来完成实现接口如果实现了接口容器会在属性注入完成后调用方法将的名称通常是的传递给实现接口如果实现了接口容器会在阶段之后调用方法将实例传递给实现接口如果实现了接口容器会在阶段之后调用方法将实例传递给前置处理器如果实现了接口容器会在初始化之前调用方法这一阶段允许开发者在初始化之前对其进行自定义处理初始化在前置处理之后容器会进行的初始化实现接口如果实现了接口容器会调用方法自定义初始化方法如果定义中通过属性指定了初始化方法容器会调用该方法后置处理器在初始化之后容器会调用的方法这一阶段允许开发者在初始化之后对其进行自定义处理的使用此时已经完全初始化并准备好被使用将在应用上下文中驻留直至应用上下文被销毁的销毁当应用上下文被销毁时容器会进行的销毁处理实现接口如果实现了接口容器会调用方法自定义销毁方法如果定义中通过属性指定了销毁方法容器会调用该方法的单例与多例模式在框架中的实例化模式是一个重要的配置选项它决定了在应用中的创建和使用方式默认采用单例模式但也可以根据需要配置为多例模式以下是对这两种模式的详细解释及其生命周期的差异单例模式默认行为在中默认是单例的这意味着在整个应用上下文中每个定义只会创建一个实例并将其缓存起来当需要使用该时容器会从缓存中取出该实例而不是重新创建优点提高性能由于实例只创建一次减少了频繁创建和销毁对象的开销节省内存单例在整个应用中共享减少了内存占用提高复用率单例可以在多个地方重复使用减少了对象的创建和销毁次数多例模式配置方式要将配置为多例模式可以在定义中设置属性为例如或者在配置中行为在多例模式下每次请求该时容器都会创建一个新的实例这意味着每个请求都会得到一个独立的实例对于多例容器只负责创建实例并将实例交给使用者不会管理多例的完整生命周期优点隔离性每个请求都得到一个独立的实例避免了状态共享的问题灵活性适用于需要频繁创建和销毁对象的场景的作用域在框架中的作用域定义了其生命周期与可见性不同的作用域决定了容器如何管理这些实例包括它们的创建销毁以及是否被多个用户共享提供了多种作用域以满足不同的应用需求单例是的默认作用域在整个应用中只会创建一次实例容器在整个生命周期中管理该实例并将其缓存起来供多个用户共享这种作用域适用于无状态的如服务层层等以及需要全局共享的多例作用域下每次请求都会新建一个实例新的实例交由使用者后容器将不再管理该实例的后续生命周期这种作用域适用于有状态的如表单对象对话框等以及需要频繁创建和销毁的请求作用域在每个请求时生成一个新的实例仅在应用程序中有效适用于需要在单个请求中保持状态的会话作用域在范围内只会创建一个实例该实例仅在会话范围内共享这种作用域适用于需要在用户会话中保持状态的如用户购物车应用作用域在当前中仅存在一个实例适用于需要在整个应用中共享的如全局配置对象作用域在范围内仅存在一个实例适用于需要在会话中保持状态的还允许开发者自定义作用域通过实现接口来自定义的作用域这种自定义作用域适用于需要特殊生命周期管理的在加载销毁前后增加自定义逻辑在框架中开发者可以通过多种方式在加载和销毁前后增加自定义逻辑这些方式包括使用生命周期回调接口注解以及配置以下是详细的方法介绍使用和在配置中可以通过和属性指定的初始化和销毁方法配置示例类实现初始化逻辑销毁逻辑实现接口和接口提供了两个生命周期回调接口和通过实现这两个接口可以在初始化和销毁时执行自定义逻辑类实现初始化逻辑销毁逻辑使用注解和注解支持使用注解和来指定的初始化和销毁方法类实现初始化逻辑销毁逻辑使用注解的属性和属性在配置中可以使用注解的和属性来指定的初始化和销毁方法配置示例类实现初始化逻辑销毁逻辑注入与注入在框架中的注入方式主要有两种注解注入和注入这两种方式各有优缺点适用于不同的场景以下是对这两种注入方式的详细解释及其底层执行步骤注解注入注解注入是中常用的一种依赖注入方式通过在类和属性上使用特定的注解容器可以自动完成的注册和依赖注入执行步骤如下类路径扫描当容器启动时它会进行类路径扫描查找带有特定注解的类如等这些注解标记的类会被容器识别为候选注册定义找到的类会被注册到中容器会为其生成定义信息包括类的全限定名作用域依赖关系等依赖注入在对进行实例化时容器会检查属性中是否存在或注解如果有会根据注解的信息进行依赖注入注入方式可以是构造函数注入方法注入或字段注入注入注入是早期常用的依赖注入方式通过在配置文件中定义及其依赖关系容器可以完成的注册和依赖注入执行步骤如下定义解析容器通过类解析配置文件读取其中的标签以获取的定义信息解析后的信息包括类的全限定名作用域依赖关系初始化和销毁方法等注册定义解析后的信息将被注册到中容器会根据这些信息生成定义实例化和依赖注入当应用程序请求某个时容器会根据已有的定义使用反射机制创建该实例然后根据定义中的配置通过构造函数方法或字段声明注入等方式注入所需要的依赖了解是一种经典的软件设计模式广泛应用于开发和其他类型的应用程序中模式通过将应用程序的不同职责分离到三个独立的组件中提高了代码的可维护性可扩展性和可重用性模型模型是应用程序的核心部分负责处理业务逻辑和数据操作模型可以分为两类数据承载这些是实体对象如等专门用于承载业务数据它们通常对应数据库中的表结构包含数据的属性和方法业务处理这些是服务层或数据访问层对象如等专门用于处理用户发起的请求它们负责执行业务逻辑数据验证数据持久化等操作视图视图是用户界面负责向用户展示数据和接收用户的输入视图通常是等前端技术实现的页面或组件控制器控制器是模型和视图之间的桥梁负责处理用户请求并将其转发给相应的模型进行处理控制器根据模型的计算结果决定如何更新视图的处理流程是框架中的一个重要模块用于构建基于模式的应用程序的处理流程涵盖了从用户请求到最终响应的整个过程以下是对处理流程的详细解释用户发送请求到前端控制器用户通过浏览器或其他客户端发送请求到应用程序请求首先被前端控制器接收调用处理器映射器接收到请求后会调用处理器映射器以确定哪个处理器应该处理该请求处理器映射器生成处理器执行链根据请求的找到具体的处理器并生成一个处理器执行链该执行链包括处理器对象和处理器拦截器如果有配置获取处理器适配器根据处理器获取相应的处理器适配器处理器适配器负责执行处理器的方法处理器适配器执行处理器执行处理器的方法进行一系列处理操作如数据封装参数解析等处理器执行完成返回处理器执行完成后返回一个对象包含视图名称和模型数据将返回给将处理器返回的对象传递给调用视图解析器接收到后调用视图解析器根据视图名称解析出具体的视图对象解析视图并返回给解析视图名称找到对应的视图对象如等并将其返回给对视图进行渲染将模型数据传递给视图对象并调用视图对象的渲染方法生成最终的或其他格式的响应内容响应用户将渲染后的响应内容返回给用户完成整个请求处理流程与在框架中和是两个关键组件它们协同工作以处理用户请求并调用相应的控制器方法以下是对这两个组件的详细解释及其工作流程的主要作用是将请求映射到相应的控制器方法它根据请求的方法请求参数等信息确定哪个控制器方法应该处理该请求工作流程接收请求接收到请求调用调用请求其查找处理该请求的控制器方法查找处理器根据请求的方法等信息查找并返回一个对象该对象包含处理器和拦截器如果有配置返回将返回给的主要作用是调用处理器方法来处理请求它负责解析请求参数调用控制器方法处理返回值等操作工作流程接收接收到返回的获取根据处理器的类型获取相应的调用处理器方法调用处理器的方法进行请求处理处理返回值处理处理器方法的返回值生成对象返回将返回给和是框架中的两个关键组件它们协同工作以处理用户请求并调用相应的控制器方法负责将请求映射到控制器方法而负责调用控制器方法并处理返回值',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-11-04 11:40:02',
+  postMainColor: '',
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
         }
-        html[data-theme="dark"] body.custom-background {
-          background-image: url('/images/bg.webp');
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#18171d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f7f9fe')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(e => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
         }
       }
     
-    
-      .widget-kratos-about .photo-background {
-        background-image: url('/images/default.webp');
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
       }
-      html[data-theme="dark"] .widget-kratos-about .photo-background {
-        background-image: url('/images/default.webp');
-      }
-    
-  </style>
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.3.0"></head><body data-type="anzhiyu"><div id="web_bg"></div><div id="an_music_bg"></div><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><img class="loading-img nolazyload" alt="加载头像" src="/images/star.png"/><div class="loading-image-dot"></div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.getElementById('loading-box').classList.add("loaded");
+  },
+  initLoading: () => {
+    document.getElementById('loading-box').classList.remove("loaded")
+  }
+}
+window.addEventListener('load',()=> { preloader.endLoading() })
+setTimeout(function(){preloader.endLoading();},10000)
 
-  <!-- 额外的追加注入项 -->
-  
-    <link rel="stylesheet" href="/css/custom.css">
-
-  
-<meta name="generator" content="Hexo 7.3.0"></head>
-
-    <body class="custom-background">
-        <div id="kratos-wrapper">
-    <div id="kratos-page">
-        <div id="kratos-header">
-            <header id="kratos-desktop-topnav" class="kratos-topnav">
-                <div class="container">
-                    <div class="nav-header">
-                        <nav id="kratos-menu-wrap">
-                            <ul id="kratos-primary-menu" class="sf-menu">
-                                
-                                    <li>
-                                        
-                                            <a href="/">
-                                        
-                                            
-                                                <i class="fa fa-home"></i>
-                                            
-                                            首页
-                                        </a>
-                                        
-                                    </li>
-                                
-                            </ul>
-                        </nav>
-                    </div>
-                </div>
-            </header>
-            <header id="kratos-mobile-topnav" class="kratos-topnav">
-                <div class="container">
-                    <div class="color-logo"><a href="/">XIAOYAN</a></div>
-                    <div id="kratos-nav-toggle-wrapper" class="nav-toggle">
-                        <a id="kratos-nav-toggle" class="kratos-nav-toggle">
-                            <i></i>
-                        </a>
-                    </div>
-                </div>
-            </header>
-        </div>
-        <div class="kratos-start kratos-hero-2">
-            <!-- <div class="kratos-overlay"></div> -->
-            <div class="kratos-cover kratos-cover-2 text-center">
-                <div class="desc desc2 animate-box">
-                    <a href="/">
-                        <h2>XIAOYAN</h2> <br />
-                        <span>山重水复疑无路，柳暗花明又一村。</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <div id="kratos-blog-post">
-            <div class="container">
-                <div id="main" class="row">
-
-
-        
-
-            
-
-            <section class="kr-main-col col-md-8">
-
-        
-
-            <article itemscope itemtype="https://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/30/Spring-%E5%9F%BA%E7%A1%80%EF%BC%88%E4%B8%8B%EF%BC%89/">
-    <div class="kratos-hentry kratos-page-inner clearfix">
-        <header class="kratos-page-header">
-            
-                <h1 class="kratos-page-title text-center" itemprop="name headline">Spring-基础（下）</h1>
-            
-            <ul class="kratos-page-meta text-center">
-                <li><time datetime="2024-09-30T03:48:28.000Z" itemprop="datePublished"><i class="fa fa-calendar"></i> 2024-09-30</time></li>
-                <li itemprop="author" itemscope itemtype="https://schema.org/Person">
-                    <i class="fa fa-user"></i> 作者 <span itemprop="name">xiaoyan</span>
-                </li>
-                
-                    <li>
-                        <i class="fa fa-edit"></i> 
-                        
-                        
-                            ~22.31K
-                        
-                        字
-                    </li>
-                
-                
-                
-            </ul>
-        </header>
-        <div class="kratos-page-content kr-post">
-            
-            
-            
-                <div class="kratos-post-inner-toc toc-div-class" >
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Spring%E8%AE%BE%E8%AE%A1"><span class="toc-number">1.</span> <span class="toc-text">Spring设计</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96"><span class="toc-number">1.1.</span> <span class="toc-text">Spring 如何解决循环依赖</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96%EF%BC%9F"><span class="toc-number">1.1.1.</span> <span class="toc-text">什么是循环依赖？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96%E7%9A%84%E4%B8%89%E7%A7%8D%E6%83%85%E5%86%B5"><span class="toc-number">1.1.2.</span> <span class="toc-text">循环依赖的三种情况</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Spring-%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96-1"><span class="toc-number">1.1.3.</span> <span class="toc-text">Spring 如何解决循环依赖</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98%E7%AD%96%E7%95%A5%E8%AF%A6%E8%A7%A3"><span class="toc-number">1.2.</span> <span class="toc-text">三级缓存策略详解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E7%BA%A7%E7%BC%93%E5%AD%98%EF%BC%88singletonObjects%EF%BC%89"><span class="toc-number">1.2.1.</span> <span class="toc-text">一级缓存（singletonObjects）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E7%BA%A7%E7%BC%93%E5%AD%98%EF%BC%88earlySingletonObjects%EF%BC%89"><span class="toc-number">1.2.2.</span> <span class="toc-text">二级缓存（earlySingletonObjects）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98%EF%BC%88singletonFactories%EF%BC%89"><span class="toc-number">1.2.3.</span> <span class="toc-text">三级缓存（singletonFactories）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98%E7%AD%96%E7%95%A5%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="toc-number">1.2.4.</span> <span class="toc-text">三级缓存策略的工作流程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.3.</span> <span class="toc-text">Spring 设计模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F%EF%BC%88Factory-Pattern%EF%BC%89"><span class="toc-number">1.3.1.</span> <span class="toc-text">1. 工厂模式（Factory Pattern）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F%EF%BC%88Proxy-Pattern%EF%BC%89"><span class="toc-number">1.3.2.</span> <span class="toc-text">2. 代理模式（Proxy Pattern）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%EF%BC%88Singleton-Pattern%EF%BC%89"><span class="toc-number">1.3.3.</span> <span class="toc-text">3. 单例模式（Singleton Pattern）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E6%A8%A1%E6%9D%BF%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F%EF%BC%88Template-Method-Pattern%EF%BC%89"><span class="toc-number">1.3.4.</span> <span class="toc-text">4. 模板方法模式（Template Method Pattern）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E8%A3%85%E9%A5%B0%E5%99%A8%E6%A8%A1%E5%BC%8F%EF%BC%88Decorator-Pattern%EF%BC%89"><span class="toc-number">1.3.5.</span> <span class="toc-text">5. 装饰器模式（Decorator Pattern）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F%EF%BC%88Observer-Pattern%EF%BC%89"><span class="toc-number">1.3.6.</span> <span class="toc-text">6. 观察者模式（Observer Pattern）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F%EF%BC%88Adapter-Pattern%EF%BC%89"><span class="toc-number">1.3.7.</span> <span class="toc-text">7. 适配器模式（Adapter Pattern）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3"><span class="toc-number">1.4.</span> <span class="toc-text">Spring 常用注解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Autowired-%E6%B3%A8%E8%A7%A3"><span class="toc-number">1.4.1.</span> <span class="toc-text">1. @Autowired 注解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Component-%E6%B3%A8%E8%A7%A3"><span class="toc-number">1.4.2.</span> <span class="toc-text">2. @Component 注解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Configuration-%E6%B3%A8%E8%A7%A3"><span class="toc-number">1.4.3.</span> <span class="toc-text">3. @Configuration 注解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Bean-%E6%B3%A8%E8%A7%A3"><span class="toc-number">1.4.4.</span> <span class="toc-text">4. @Bean 注解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-Service-%E6%B3%A8%E8%A7%A3"><span class="toc-number">1.4.5.</span> <span class="toc-text">5. @Service 注解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-Repository-%E6%B3%A8%E8%A7%A3"><span class="toc-number">1.4.6.</span> <span class="toc-text">6. @Repository 注解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-Controller-%E6%B3%A8%E8%A7%A3"><span class="toc-number">1.4.7.</span> <span class="toc-text">7. @Controller 注解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">1.4.8.</span> <span class="toc-text">总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-%E6%89%A9%E5%B1%95%E6%9C%BA%E5%88%B6"><span class="toc-number">1.5.</span> <span class="toc-text">Spring 扩展机制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-BeanFactoryPostProcessor"><span class="toc-number">1.5.1.</span> <span class="toc-text">1. BeanFactoryPostProcessor</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-BeanPostProcessor"><span class="toc-number">1.5.2.</span> <span class="toc-text">2. BeanPostProcessor</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-PropertySource"><span class="toc-number">1.5.3.</span> <span class="toc-text">3. PropertySource</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Spring-MVC%E4%B8%AD%E7%9A%84HandlerInterceptor"><span class="toc-number">1.5.4.</span> <span class="toc-text">4. Spring MVC中的HandlerInterceptor</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-Spring-MVC%E4%B8%AD%E7%9A%84ControllerAdvice"><span class="toc-number">1.5.5.</span> <span class="toc-text">5. Spring MVC中的ControllerAdvice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-Spring-Boot%E7%9A%84%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE"><span class="toc-number">1.5.6.</span> <span class="toc-text">6. Spring Boot的自动配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B3%A8%E8%A7%A3"><span class="toc-number">1.5.7.</span> <span class="toc-text">7. 自定义注解</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8B%E5%8A%A1%E7%AE%A1%E7%90%86"><span class="toc-number">2.</span> <span class="toc-text">事务管理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring%E4%BA%8B%E5%8A%A1%E5%A4%B1%E6%95%88%E5%9C%BA%E6%99%AF%E5%88%86%E6%9E%90"><span class="toc-number">2.1.</span> <span class="toc-text">Spring事务失效场景分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%9C%AA%E6%8D%95%E8%8E%B7%E7%9A%84%E5%BC%82%E5%B8%B8"><span class="toc-number">2.1.1.</span> <span class="toc-text">1. 未捕获的异常</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%9C%AA%E5%8F%97%E6%A3%80%E5%BC%82%E5%B8%B8"><span class="toc-number">2.1.2.</span> <span class="toc-text">2. 未受检异常</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E4%BA%8B%E5%8A%A1%E5%B1%9E%E6%80%A7%E4%BC%A0%E9%80%92%E4%B8%8D%E5%BD%93"><span class="toc-number">2.1.3.</span> <span class="toc-text">3. 事务属性传递不当</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90%E9%85%8D%E7%BD%AE%E4%B8%8D%E5%BD%93"><span class="toc-number">2.1.4.</span> <span class="toc-text">4. 多数据源配置不当</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E4%BA%8B%E5%8A%A1%E8%B0%83%E7%94%A8%E5%A4%96%E9%83%A8%E6%96%B9%E6%B3%95"><span class="toc-number">2.1.5.</span> <span class="toc-text">5. 事务调用外部方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E9%9D%9E%E5%85%AC%E6%9C%89%E6%96%B9%E6%B3%95"><span class="toc-number">2.1.6.</span> <span class="toc-text">6. 非公有方法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring%E4%BA%8B%E5%8A%A1%E4%B8%AD%E8%B0%83%E7%94%A8this%E6%98%AF%E5%90%A6%E7%94%9F%E6%95%88%EF%BC%9F"><span class="toc-number">2.2.</span> <span class="toc-text">Spring事务中调用this是否生效？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Spring%E4%BA%8B%E5%8A%A1%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%9C%BA%E5%88%B6"><span class="toc-number">2.2.1.</span> <span class="toc-text">Spring事务的实现机制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B0%83%E7%94%A8this%E6%98%AF%E5%90%A6%E7%94%9F%E6%95%88%EF%BC%9F"><span class="toc-number">2.2.2.</span> <span class="toc-text">调用this是否生效？</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8E%9F%E5%9B%A0%E5%88%86%E6%9E%90"><span class="toc-number">2.2.2.1.</span> <span class="toc-text">原因分析</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="toc-number">2.2.3.</span> <span class="toc-text">解决方案</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Bean"><span class="toc-number">3.</span> <span class="toc-text">Bean</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-Bean%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="toc-number">3.1.</span> <span class="toc-text">Spring Bean的生命周期</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-Bean%E7%9A%84%E5%8D%95%E4%BE%8B%E4%B8%8E%E5%A4%9A%E4%BE%8B%E6%A8%A1%E5%BC%8F"><span class="toc-number">3.2.</span> <span class="toc-text">Spring Bean的单例与多例模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%EF%BC%88Singleton%EF%BC%89"><span class="toc-number">3.2.1.</span> <span class="toc-text">单例模式（Singleton）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%BB%98%E8%AE%A4%E8%A1%8C%E4%B8%BA"><span class="toc-number">3.2.1.1.</span> <span class="toc-text">默认行为</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%98%E7%82%B9"><span class="toc-number">3.2.1.2.</span> <span class="toc-text">优点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E4%BE%8B%E6%A8%A1%E5%BC%8F%EF%BC%88Prototype%EF%BC%89"><span class="toc-number">3.2.2.</span> <span class="toc-text">多例模式（Prototype）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%96%B9%E5%BC%8F"><span class="toc-number">3.2.2.1.</span> <span class="toc-text">配置方式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A1%8C%E4%B8%BA"><span class="toc-number">3.2.2.2.</span> <span class="toc-text">行为</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%98%E7%82%B9-1"><span class="toc-number">3.2.2.3.</span> <span class="toc-text">优点</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-Bean%E7%9A%84%E4%BD%9C%E7%94%A8%E5%9F%9F"><span class="toc-number">3.3.</span> <span class="toc-text">Spring Bean的作用域</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9C%A8Bean%E5%8A%A0%E8%BD%BD-%E9%94%80%E6%AF%81%E5%89%8D%E5%90%8E%E5%A2%9E%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89%E9%80%BB%E8%BE%91"><span class="toc-number">3.4.</span> <span class="toc-text">在Bean加载&#x2F;销毁前后增加自定义逻辑</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%BD%BF%E7%94%A8init-method%E5%92%8Cdestroy-method"><span class="toc-number">3.4.1.</span> <span class="toc-text">1. 使用init-method和destroy-method</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#XML%E9%85%8D%E7%BD%AE%E7%A4%BA%E4%BE%8B"><span class="toc-number">3.4.1.1.</span> <span class="toc-text">XML配置示例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Bean%E7%B1%BB%E5%AE%9E%E7%8E%B0"><span class="toc-number">3.4.1.2.</span> <span class="toc-text">Bean类实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%AE%9E%E7%8E%B0InitializingBean%E6%8E%A5%E5%8F%A3%E5%92%8CDisposableBean%E6%8E%A5%E5%8F%A3"><span class="toc-number">3.4.2.</span> <span class="toc-text">2. 实现InitializingBean接口和DisposableBean接口</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Bean%E7%B1%BB%E5%AE%9E%E7%8E%B0-1"><span class="toc-number">3.4.2.1.</span> <span class="toc-text">Bean类实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E4%BD%BF%E7%94%A8-PostConstruct%E6%B3%A8%E8%A7%A3%E5%92%8C-PreDestroy%E6%B3%A8%E8%A7%A3"><span class="toc-number">3.4.3.</span> <span class="toc-text">3. 使用@PostConstruct注解和@PreDestroy注解</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Bean%E7%B1%BB%E5%AE%9E%E7%8E%B0-2"><span class="toc-number">3.4.3.1.</span> <span class="toc-text">Bean类实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E4%BD%BF%E7%94%A8-Bean%E6%B3%A8%E8%A7%A3%E7%9A%84initMethod%E5%B1%9E%E6%80%A7%E5%92%8CdestroyMethod%E5%B1%9E%E6%80%A7"><span class="toc-number">3.4.4.</span> <span class="toc-text">4. 使用@Bean注解的initMethod属性和destroyMethod属性</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Java%E9%85%8D%E7%BD%AE%E7%A4%BA%E4%BE%8B"><span class="toc-number">3.4.4.1.</span> <span class="toc-text">Java配置示例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Bean%E7%B1%BB%E5%AE%9E%E7%8E%B0-3"><span class="toc-number">3.4.4.2.</span> <span class="toc-text">Bean类实现</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Bean%E6%B3%A8%E5%85%A5%E4%B8%8EXML%E6%B3%A8%E5%85%A5"><span class="toc-number">3.5.</span> <span class="toc-text">Bean注入与XML注入</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Bean%E6%B3%A8%E8%A7%A3%E6%B3%A8%E5%85%A5"><span class="toc-number">3.5.1.</span> <span class="toc-text">Bean注解注入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#XML%E6%B3%A8%E5%85%A5"><span class="toc-number">3.5.2.</span> <span class="toc-text">XML注入</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Spring-MVC"><span class="toc-number">4.</span> <span class="toc-text">Spring MVC</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%86%E8%A7%A3MVC"><span class="toc-number">4.1.</span> <span class="toc-text">了解MVC</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-MVC%E7%9A%84%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B"><span class="toc-number">4.2.</span> <span class="toc-text">Spring MVC的处理流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HandlerMapping%E4%B8%8EHandlerAdapter"><span class="toc-number">4.3.</span> <span class="toc-text">HandlerMapping与HandlerAdapter</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#HandlerMapping"><span class="toc-number">4.3.1.</span> <span class="toc-text">HandlerMapping</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HandlerAdapter"><span class="toc-number">4.3.2.</span> <span class="toc-text">HandlerAdapter</span></a></li></ol></li></ol></li></ol>
-                </div>
-            
-            <hr />
-            <div itemprop="articleBody"><h1 id="Spring设计"><a href="#Spring设计" class="headerlink" title="Spring设计"></a>Spring设计</h1><h2 id="Spring-如何解决循环依赖"><a href="#Spring-如何解决循环依赖" class="headerlink" title="Spring 如何解决循环依赖"></a>Spring 如何解决循环依赖</h2><h3 id="什么是循环依赖？"><a href="#什么是循环依赖？" class="headerlink" title="什么是循环依赖？"></a>什么是循环依赖？</h3><p>循环依赖（Circular Dependency）是指两个或多个类之间互相依赖，形成一个闭环。例如，类 A 依赖类 B，而类 B 又依赖类 A，从而形成依赖闭环。循环依赖在软件设计中是一个常见的问题，尤其是在使用依赖注入（Dependency Injection, DI）框架时。</p>
+if (true) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.10/progress_bar/progress_bar.css"/><script async="async" src="https://cdn.cbd.int/pace-js@1.2.4/pace.min.js" data-pace-options="{ &quot;restartOnRequestAfter&quot;:false,&quot;eventLag&quot;:false}"></script><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><div id="nav-group"><span id="blog_name"><a id="site-name" href="/" accesskey="h"><div class="title">XIAOYAN</div><i class="anzhiyufont anzhiyu-icon-house-chimney"></i></a></span><div class="mask-name-container"><div id="name-container"><a id="page-name" href="javascript:anzhiyu.scrollToDest(0, 500)">PAGE_NAME</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 隧道</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/music/?id=12613265870&amp;server=netease"><i class="anzhiyufont anzhiyu-icon-music faa-tada" style="font-size: 0.9em;"></i><span> 音乐馆</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li></ul></div></div></div><div id="nav-right"><div class="nav-button" id="randomPost_button"><a class="site-page" onclick="toRandomPost()" title="随机前往一个文章" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-dice"></i></a></div><input id="center-console" type="checkbox"/><label class="widget" for="center-console" title="中控台" onclick="anzhiyu.switchConsole();"><i class="left"></i><i class="widget center"></i><i class="widget right"></i></label><div id="console"><div class="console-card-group-reward"><ul class="reward-all console-card"><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png" target="_blank"><img class="post-qr-code-img" alt="微信" src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png" target="_blank"><img class="post-qr-code-img" alt="支付宝" src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div><div class="console-card-group"><div class="console-card-group-left"><div class="console-card" id="card-newest-comments"><div class="card-content"><div class="author-content-item-tips">互动</div><span class="author-content-item-title"> 最新评论</span></div><div class="aside-list"><span>正在加载中...</span></div></div></div><div class="console-card-group-right"><div class="console-card tags"><div class="card-content"><div class="author-content-item-tips">兴趣点</div><span class="author-content-item-title">寻找你感兴趣的领域</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/AOP/" style="font-size: 1.05rem;">AOP<sup>1</sup></a><a href="/tags/Bean/" style="font-size: 1.05rem;">Bean<sup>1</sup></a><a href="/tags/DDD/" style="font-size: 1.05rem;">DDD<sup>1</sup></a><a href="/tags/IoC/" style="font-size: 1.05rem;">IoC<sup>1</sup></a><a href="/tags/Java8%E6%96%B0%E7%89%B9%E6%80%A7/" style="font-size: 1.05rem;">Java8新特性<sup>1</sup></a><a href="/tags/Java%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" style="font-size: 1.05rem;">Java基本概念<sup>1</sup></a><a href="/tags/List/" style="font-size: 1.05rem;">List<sup>1</sup></a><a href="/tags/Map/" style="font-size: 1.05rem;">Map<sup>2</sup></a><a href="/tags/MyBatis/" style="font-size: 1.05rem;">MyBatis<sup>1</sup></a><a href="/tags/MySQL%E5%9F%BA%E7%A1%80/" style="font-size: 1.05rem;">MySQL基础<sup>1</sup></a><a href="/tags/Object/" style="font-size: 1.05rem;">Object<sup>1</sup></a><a href="/tags/SQL%E8%B0%83%E4%BC%98/" style="font-size: 1.05rem;">SQL调优<sup>1</sup></a><a href="/tags/Set/" style="font-size: 1.05rem;">Set<sup>1</sup></a><a href="/tags/SpringBoot/" style="font-size: 1.05rem;">SpringBoot<sup>1</sup></a><a href="/tags/SpringCloud/" style="font-size: 1.05rem;">SpringCloud<sup>1</sup></a><a href="/tags/%E4%BA%8B%E5%8A%A1/" style="font-size: 1.05rem;">事务<sup>2</sup></a><a href="/tags/%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/" style="font-size: 1.05rem;">内存模型<sup>1</sup></a><a href="/tags/%E5%8F%8D%E5%B0%84/" style="font-size: 1.05rem;">反射<sup>1</sup></a><a href="/tags/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/" style="font-size: 1.05rem;">垃圾回收<sup>1</sup></a><a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 1.05rem;">多线程<sup>1</sup></a><a href="/tags/%E5%AF%B9%E8%B1%A1/" style="font-size: 1.05rem;">对象<sup>1</sup></a><a href="/tags/%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8/" style="font-size: 1.05rem;">并发安全<sup>1</sup></a><a href="/tags/%E5%BA%8F%E5%88%97%E5%8C%96/" style="font-size: 1.05rem;">序列化<sup>1</sup></a><a href="/tags/%E5%BC%82%E5%B8%B8/" style="font-size: 1.05rem;">异常<sup>1</sup></a><a href="/tags/%E6%8B%B7%E8%B4%9D/" style="font-size: 1.05rem;">拷贝<sup>1</sup></a><a href="/tags/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" style="font-size: 1.05rem;">数据类型<sup>1</sup></a><a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 1.05rem;">数据结构<sup>1</sup></a><a href="/tags/%E6%97%A5%E5%BF%97/" style="font-size: 1.05rem;">日志<sup>2</sup></a><a href="/tags/%E6%9F%A5%E8%AF%A2/" style="font-size: 1.05rem;">查询<sup>1</sup></a><a href="/tags/%E6%B3%9B%E5%9E%8B/" style="font-size: 1.05rem;">泛型<sup>1</sup></a><a href="/tags/%E6%B3%A8%E8%A7%A3/" style="font-size: 1.05rem;">注解<sup>1</sup></a><a href="/tags/%E7%AD%96%E7%95%A5/" style="font-size: 1.05rem;">策略<sup>1</sup></a><a href="/tags/%E7%B1%BB%E5%88%9D%E5%A7%8B%E5%8C%96/" style="font-size: 1.05rem;">类初始化<sup>1</sup></a><a href="/tags/%E7%B1%BB%E5%8A%A0%E8%BD%BD/" style="font-size: 1.05rem;">类加载<sup>1</sup></a><a href="/tags/%E7%B4%A2%E5%BC%95/" style="font-size: 1.05rem;">索引<sup>2</sup></a><a href="/tags/%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B/" style="font-size: 1.05rem;">线程模型<sup>1</sup></a><a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 1.05rem;">线程池<sup>1</sup></a><a href="/tags/%E9%94%81/" style="font-size: 1.05rem;">锁<sup>2</sup></a><a href="/tags/%E9%9B%86%E7%BE%A4/" style="font-size: 1.05rem;">集群<sup>1</sup></a><a href="/tags/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/" style="font-size: 1.05rem;">面向对象<sup>1</sup></a></div></div><hr/></div></div><div class="console-card history"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-box-archiv"></i><span>文章</span></div><div class="card-archives"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-archive"></i><span>归档</span></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/11/"><span class="card-archive-list-date">November 2024</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">2</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/10/"><span class="card-archive-list-date">October 2024</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">13</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/09/"><span class="card-archive-list-date">September 2024</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">25</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/07/"><span class="card-archive-list-date">July 2024</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">4</span><span>篇</span></div></a></li></ul></div><hr/></div></div></div><div class="button-group"><div class="console-btn-item"><a class="darkmode_switchbutton" title="显示模式切换" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-moon"></i></a></div><div class="console-btn-item" id="consoleHideAside" onclick="anzhiyu.hideAsideBtn()" title="边栏显示控制"><a class="asideSwitch"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></a></div><div class="console-btn-item" id="consoleMusic" onclick="anzhiyu.musicToggle()" title="音乐开关"><a class="music-switch"><i class="anzhiyufont anzhiyu-icon-music"></i></a></div></div><div class="console-mask" onclick="anzhiyu.hideConsole()" href="javascript:void(0);"></div></div><div class="nav-button" id="nav-totop"><a class="totopbtn" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i><span id="percent" onclick="anzhiyu.scrollToDest(0,500)">0</span></a></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" title="切换"><i class="anzhiyufont anzhiyu-icon-bars"></i></a></div></div></div></nav><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original">原创</a><span class="post-meta-categories"><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-inbox post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/" itemprop="url">编程语言</a><i class="anzhiyufont anzhiyu-icon-angle-right post-meta-separator"></i><i class="anzhiyufont anzhiyu-icon-inbox post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/" itemprop="url">Java</a><i class="anzhiyufont anzhiyu-icon-angle-right post-meta-separator"></i><i class="anzhiyufont anzhiyu-icon-inbox post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Spring/" itemprop="url">Spring</a></span><span class="article-meta tags"><a class="article-meta__tags" href="/tags/Bean/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>Bean</span></a></span></div></div><h1 class="post-title" itemprop="name headline">Spring-基础（下）</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="anzhiyufont anzhiyu-icon-calendar-days post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" itemprop="dateCreated datePublished" datetime="2024-09-30T03:48:28.000Z" title="发表于 2024-09-30 11:48:28">2024-09-30</time><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-history post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" itemprop="dateCreated datePublished" datetime="2024-11-04T03:40:02.443Z" title="更新于 2024-11-04 11:40:02">2024-11-04</time></span></div><div class="meta-secondline"><span class="post-meta-separator">       </span><span class="post-meta-position" title="作者IP属地为桂林"><i class="anzhiyufont anzhiyu-icon-location-dot"></i>桂林</span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section><div id="post-top-cover"><img class="nolazyload" id="post-top-bg" src="https://spring.io/img/extra/why-spring.svg"></div></header><main id="blog-container"><div class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container" itemscope itemtype="http://example.com/2024/09/30/Spring-%E5%9F%BA%E7%A1%80%EF%BC%88%E4%B8%8B%EF%BC%89/"><header><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/" itemprop="url">编程语言</a><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/" itemprop="url">Java</a><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Spring/" itemprop="url">Spring</a><a href="/tags/Bean/" tabindex="-1" itemprop="url">Bean</a><h1 id="CrawlerTitle" itemprop="name headline">Spring-基础（下）</h1><span itemprop="author" itemscope itemtype="http://schema.org/Person">xiaoyan</span><time itemprop="dateCreated datePublished" datetime="2024-09-30T03:48:28.000Z" title="发表于 2024-09-30 11:48:28">2024-09-30</time><time itemprop="dateCreated datePublished" datetime="2024-11-04T03:40:02.443Z" title="更新于 2024-11-04 11:40:02">2024-11-04</time></header><h1 id="Spring设计"><a href="#Spring设计" class="headerlink" title="Spring设计"></a>Spring设计</h1><h2 id="Spring-如何解决循环依赖"><a href="#Spring-如何解决循环依赖" class="headerlink" title="Spring 如何解决循环依赖"></a>Spring 如何解决循环依赖</h2><h3 id="什么是循环依赖？"><a href="#什么是循环依赖？" class="headerlink" title="什么是循环依赖？"></a>什么是循环依赖？</h3><p>循环依赖（Circular Dependency）是指两个或多个类之间互相依赖，形成一个闭环。例如，类 A 依赖类 B，而类 B 又依赖类 A，从而形成依赖闭环。循环依赖在软件设计中是一个常见的问题，尤其是在使用依赖注入（Dependency Injection, DI）框架时。</p>
 <h3 id="循环依赖的三种情况"><a href="#循环依赖的三种情况" class="headerlink" title="循环依赖的三种情况"></a>循环依赖的三种情况</h3><p>在 Spring 中，循环依赖问题可以分为以下三种情况：</p>
 <ol>
 <li><strong>使用构造参数传递依赖构成的循环依赖问题</strong>：两个类通过构造器注入形成循环依赖。</li>
@@ -449,7 +462,7 @@
 <li><strong>实现DisposableBean接口</strong>：如果Bean实现了<code>DisposableBean</code>接口，Spring容器会调用<code>destroy()</code>方法。</li>
 <li><strong>自定义销毁方法</strong>：如果Bean定义中通过<code>destroy-method</code>属性指定了销毁方法，Spring容器会调用该方法。</li>
 </ul>
-<p><img src="https://cdn.xiaolincoding.com//picgo/1719570477922-ad595a67-be98-4272-9e13-8ad73dd75c13.png" alt="Spring Bean生命周期(图片来源小林coding)"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.xiaolincoding.com//picgo/1719570477922-ad595a67-be98-4272-9e13-8ad73dd75c13.png" alt="Spring Bean生命周期(图片来源小林coding)"></p>
 <h2 id="Spring-Bean的单例与多例模式"><a href="#Spring-Bean的单例与多例模式" class="headerlink" title="Spring Bean的单例与多例模式"></a>Spring Bean的单例与多例模式</h2><p>在Spring框架中，Bean的实例化模式是一个重要的配置选项，它决定了Bean在应用中的创建和使用方式。Spring默认采用单例（Singleton）模式，但也可以根据需要配置为多例（Prototype）模式。以下是对这两种模式的详细解释及其生命周期的差异。</p>
 <h3 id="单例模式（Singleton）"><a href="#单例模式（Singleton）" class="headerlink" title="单例模式（Singleton）"></a>单例模式（Singleton）</h3><h4 id="默认行为"><a href="#默认行为" class="headerlink" title="默认行为"></a>默认行为</h4><p>在Spring中，Bean默认是单例的。这意味着在整个应用上下文中，每个Bean定义只会创建一个实例，并将其缓存起来。当需要使用该Bean时，Spring容器会从缓存中取出该实例，而不是重新创建。</p>
 <h4 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h4><ul>
@@ -522,7 +535,7 @@
 </li>
 </ol>
 <h1 id="Spring-MVC"><a href="#Spring-MVC" class="headerlink" title="Spring MVC"></a>Spring MVC</h1><h2 id="了解MVC"><a href="#了解MVC" class="headerlink" title="了解MVC"></a>了解MVC</h2><p>MVC（Model-View-Controller）是一种经典的软件设计模式，广泛应用于Web开发和其他类型的应用程序中。MVC模式通过将应用程序的不同职责分离到三个独立的组件中，提高了代码的可维护性、可扩展性和可重用性。</p>
-<p><img src="https://img-blog.csdnimg.cn/06abb9ae8d3146d38d3537c2d9209799.png" alt="Spring MVC(图片来源网络)"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://img-blog.csdnimg.cn/06abb9ae8d3146d38d3537c2d9209799.png" alt="Spring MVC(图片来源网络)"></p>
 <ol>
 <li><strong>Model（模型）</strong></li>
 </ol>
@@ -540,7 +553,7 @@
 </ol>
 <p><strong>控制器</strong>是模型和视图之间的桥梁，负责处理用户请求并将其转发给相应的模型进行处理。控制器根据模型的计算结果，决定如何更新视图。</p>
 <h2 id="Spring-MVC的处理流程"><a href="#Spring-MVC的处理流程" class="headerlink" title="Spring MVC的处理流程"></a>Spring MVC的处理流程</h2><p>Spring MVC是Spring框架中的一个重要模块，用于构建基于MVC模式的Web应用程序。Spring MVC的处理流程涵盖了从用户请求到最终响应的整个过程。以下是对Spring MVC处理流程的详细解释：</p>
-<p><img src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202410041218731.png" alt="Spring MVC处理流程(图片来源网络)"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202410041218731.png" alt="Spring MVC处理流程(图片来源网络)"></p>
 <ol>
 <li><p><strong>用户发送请求到前端控制器（DispatcherServlet）</strong>：用户通过浏览器或其他客户端发送HTTP请求到Spring MVC应用程序。请求首先被前端控制器<code>DispatcherServlet</code>接收。</p>
 </li>
@@ -584,427 +597,76 @@
 <li><strong>返回ModelAndView</strong>：<code>HandlerAdapter</code>将<code>ModelAndView</code>返回给<code>DispatcherServlet</code>。</li>
 </ol>
 <p><code>HandlerMapping</code>和<code>HandlerAdapter</code>是Spring MVC框架中的两个关键组件，它们协同工作以处理用户请求并调用相应的控制器方法。<code>HandlerMapping</code>负责将请求映射到控制器方法，而<code>HandlerAdapter</code>负责调用控制器方法并处理返回值。</p>
-</div>
-        </div>
-        
-        <footer class="kratos-entry-footer clearfix">
-            
-            
-            
-                <div class="post-actions text-center clearfix" id="post-actions">
-                
-                    <a class="donate" href="javascript:;" onclick="krOpenDonateModal()"><i class="fa fa-bitcoin"></i> 打赏</a>
-                
-                
-                    <a class="share" href="javascript:;" onclick="krOpenShareModal()"><i class="fa fa-share-alt"></i> 分享</a>
-                
-                </div>
-            
-            <div class="footer-tag clearfix">
-                <div class="pull-left">
-                <i class="fa fa-tags"></i>
-                    <a class="tag-none-link" href="/tags/Bean/" rel="tag">Bean</a>
-                </div>
-                <div class="pull-date">
-                    <time datetime="2024-11-02T11:06:49.629Z" itemprop="dateModified">最后编辑：2024-11-02</time>
-                </div>
-            </div>
-        </footer>
-    </div>
-    
-        <nav class="navigation post-navigation clearfix" role="navigation">
-            
-            <div class="nav-previous clearfix">
-                <a title=" Spring-基础（上）" href="/2024/09/30/Spring-基础（上）/"><i class="fa fa-angle-left"></i> 上一篇</a>
-            </div>
-            
-            
-            <div class="nav-next clearfix">
-                <a title=" Spring Boot" href="/2024/09/30/Spring-SpringBoot/">下一篇 <i class="fa fa-angle-right"></i></a>
-            </div>
-            
-        </nav>
-    
-    
-</article>
+</article><div class="post-copyright"><div class="copyright-cc-box"><i class="anzhiyufont anzhiyu-icon-copyright"></i></div><div class="post-copyright__author_box"><a class="post-copyright__author_img" href="/" title="头像"><img class="post-copyright__author_img_back" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/images/user.jpg" title="头像" alt="头像"><img class="post-copyright__author_img_front" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/images/user.jpg" title="头像" alt="头像"></a><div class="post-copyright__author_name">xiaoyan</div><div class="post-copyright__author_desc">无限进步。</div></div><div class="post-copyright__post__info"><a class="post-copyright__original" title="该文章为原创文章，注意版权协议" href="http://example.com/2024/09/30/Spring-%E5%9F%BA%E7%A1%80%EF%BC%88%E4%B8%8B%EF%BC%89/">原创</a><a class="post-copyright-title"><span onclick="rm.copyPageUrl('http://example.com/2024/09/30/Spring-%E5%9F%BA%E7%A1%80%EF%BC%88%E4%B8%8B%EF%BC%89/')">Spring-基础（下）</span></a></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div class="rewardLeftButton"></div><div class="shareRight"><div class="share-link mobile"><div class="share-qrcode"><div class="share-button" title="使用手机访问这篇文章"><i class="anzhiyufont anzhiyu-icon-qrcode"></i></div><div class="share-main"><div class="share-main-all"><div id="qrcode" title="http://example.com/2024/09/30/Spring-%E5%9F%BA%E7%A1%80%EF%BC%88%E4%B8%8B%EF%BC%89/"></div><div class="reward-dec">使用手机访问这篇文章</div></div></div></div></div><div class="share-link weibo"><a class="share-button" target="_blank" href="https://service.weibo.com/share/share.php?title=Spring-基础（下）&amp;url=http://example.com/2024/09/30/Spring-%E5%9F%BA%E7%A1%80%EF%BC%88%E4%B8%8B%EF%BC%89/&amp;pic=https://spring.io/img/extra/why-spring.svg" rel="external nofollow noreferrer noopener"><i class="anzhiyufont anzhiyu-icon-weibo"></i></a></div><script>function copyCurrentPageUrl() {
+  var currentPageUrl = window.location.href;
+  var input = document.createElement("input");
+  input.setAttribute("value", currentPageUrl);
+  document.body.appendChild(input);
+  input.select();
+  input.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+  document.body.removeChild(input);
+}</script><div class="share-link copyurl"><div class="share-button" id="post-share-url" title="复制链接" onclick="copyCurrentPageUrl()"><i class="anzhiyufont anzhiyu-icon-link"></i></div></div></div></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">XIAOYAN</a>！</span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__box"><div class="post-meta__box__category-list"><a class="post-meta__box__categoryes" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/"><span class="categoryes-punctuation"> <i class="anzhiyufont anzhiyu-icon-inbox"></i></span>编程语言<span class="categoryesPageCount">21</span></a><a class="post-meta__box__categoryes" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/"><span class="categoryes-punctuation"> <i class="anzhiyufont anzhiyu-icon-inbox"></i></span>Java<span class="categoryesPageCount">20</span></a><a class="post-meta__box__categoryes" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Spring/"><span class="categoryes-punctuation"> <i class="anzhiyufont anzhiyu-icon-inbox"></i></span>Spring<span class="categoryesPageCount">5</span></a></div><div class="post-meta__box__tag-list"><a class="post-meta__box__tags" href="/tags/Bean/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>Bean<span class="tagsPageCount">1</span></a></div></div><div class="post_share"><div class="social-share" data-image="https://pic1.zhimg.com/v2-b76d79b11c3e8dd25f3c6abae8889a88_720w.jpg?source=172ae18b" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"/><script src="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer="defer"></script></div></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2024/09/30/Spring-%E5%9F%BA%E7%A1%80%EF%BC%88%E4%B8%8A%EF%BC%89/"><img class="prev-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://spring.io/img/extra/why-spring.svg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Spring-基础（上）</div></div></a></div><div class="next-post pull-right"><a href="/2024/09/30/Spring-SpringBoot/"><img class="next-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://ts1.cn.mm.bing.net/th/id/R-C.65c2ba6ee967ff5d49264727807ce0e2?rik=9OMwvi19owGYJQ&amp;riu=http%3a%2f%2fimg.skyheng.com%2fpicture%2fspringboot%2fspring_boot_icon.png&amp;ehk=V4kosVPO3PU%2f%2bTjRlv%2fzT77PpXdcbh%2bWam%2bGkPlpF%2fI%3d&amp;risl=&amp;pid=ImgRaw&amp;r=0" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Spring Boot</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="author-info-avatar"><img class="avatar-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/images/user.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__description">是一只时时翻垃圾吃的宅子。</div><div class="author-info__bottom-group"><a class="author-info__bottom-group-left" href="/"><h1 class="author-info__name">xiaoyan</h1><div class="author-info__desc">无限进步。</div></a><div class="card-info-social-icons is-center"><a class="social-icon faa-parent animated-hover" href="https://github.com/xiaoyanfufu" target="_blank" title="Github"><i class="anzhiyufont anzhiyu-icon-github"></i></a><a class="social-icon faa-parent animated-hover" href="https://space.bilibili.com/483597064" target="_blank" title="BiliBili"><i class="anzhiyufont anzhiyu-icon-bilibili"></i></a></div></div></div></div><div class="card-widget anzhiyu-right-widget" id="card-wechat" onclick="null"><div id="flip-wrapper"><div id="flip-content"><div class="face" style="background: url(https://bu.dusays.com/2023/01/13/63c02edf44033.png) center center / 100% no-repeat"></div><div class="back face" style="background: url(https://bu.dusays.com/2023/05/13/645fa415e8694.png) center center / 100% no-repeat"></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-bars"></i><span>文章目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Spring%E8%AE%BE%E8%AE%A1"><span class="toc-number">1.</span> <span class="toc-text">Spring设计</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96"><span class="toc-number">1.1.</span> <span class="toc-text">Spring 如何解决循环依赖</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96%EF%BC%9F"><span class="toc-number">1.1.1.</span> <span class="toc-text">什么是循环依赖？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96%E7%9A%84%E4%B8%89%E7%A7%8D%E6%83%85%E5%86%B5"><span class="toc-number">1.1.2.</span> <span class="toc-text">循环依赖的三种情况</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Spring-%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96-1"><span class="toc-number">1.1.3.</span> <span class="toc-text">Spring 如何解决循环依赖</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98%E7%AD%96%E7%95%A5%E8%AF%A6%E8%A7%A3"><span class="toc-number">1.2.</span> <span class="toc-text">三级缓存策略详解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E7%BA%A7%E7%BC%93%E5%AD%98%EF%BC%88singletonObjects%EF%BC%89"><span class="toc-number">1.2.1.</span> <span class="toc-text">一级缓存（singletonObjects）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E7%BA%A7%E7%BC%93%E5%AD%98%EF%BC%88earlySingletonObjects%EF%BC%89"><span class="toc-number">1.2.2.</span> <span class="toc-text">二级缓存（earlySingletonObjects）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98%EF%BC%88singletonFactories%EF%BC%89"><span class="toc-number">1.2.3.</span> <span class="toc-text">三级缓存（singletonFactories）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98%E7%AD%96%E7%95%A5%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="toc-number">1.2.4.</span> <span class="toc-text">三级缓存策略的工作流程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.3.</span> <span class="toc-text">Spring 设计模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F%EF%BC%88Factory-Pattern%EF%BC%89"><span class="toc-number">1.3.1.</span> <span class="toc-text">1. 工厂模式（Factory Pattern）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F%EF%BC%88Proxy-Pattern%EF%BC%89"><span class="toc-number">1.3.2.</span> <span class="toc-text">2. 代理模式（Proxy Pattern）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%EF%BC%88Singleton-Pattern%EF%BC%89"><span class="toc-number">1.3.3.</span> <span class="toc-text">3. 单例模式（Singleton Pattern）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E6%A8%A1%E6%9D%BF%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F%EF%BC%88Template-Method-Pattern%EF%BC%89"><span class="toc-number">1.3.4.</span> <span class="toc-text">4. 模板方法模式（Template Method Pattern）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E8%A3%85%E9%A5%B0%E5%99%A8%E6%A8%A1%E5%BC%8F%EF%BC%88Decorator-Pattern%EF%BC%89"><span class="toc-number">1.3.5.</span> <span class="toc-text">5. 装饰器模式（Decorator Pattern）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F%EF%BC%88Observer-Pattern%EF%BC%89"><span class="toc-number">1.3.6.</span> <span class="toc-text">6. 观察者模式（Observer Pattern）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F%EF%BC%88Adapter-Pattern%EF%BC%89"><span class="toc-number">1.3.7.</span> <span class="toc-text">7. 适配器模式（Adapter Pattern）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3"><span class="toc-number">1.4.</span> <span class="toc-text">Spring 常用注解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Autowired-%E6%B3%A8%E8%A7%A3"><span class="toc-number">1.4.1.</span> <span class="toc-text">1. @Autowired 注解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Component-%E6%B3%A8%E8%A7%A3"><span class="toc-number">1.4.2.</span> <span class="toc-text">2. @Component 注解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Configuration-%E6%B3%A8%E8%A7%A3"><span class="toc-number">1.4.3.</span> <span class="toc-text">3. @Configuration 注解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Bean-%E6%B3%A8%E8%A7%A3"><span class="toc-number">1.4.4.</span> <span class="toc-text">4. @Bean 注解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-Service-%E6%B3%A8%E8%A7%A3"><span class="toc-number">1.4.5.</span> <span class="toc-text">5. @Service 注解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-Repository-%E6%B3%A8%E8%A7%A3"><span class="toc-number">1.4.6.</span> <span class="toc-text">6. @Repository 注解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-Controller-%E6%B3%A8%E8%A7%A3"><span class="toc-number">1.4.7.</span> <span class="toc-text">7. @Controller 注解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">1.4.8.</span> <span class="toc-text">总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-%E6%89%A9%E5%B1%95%E6%9C%BA%E5%88%B6"><span class="toc-number">1.5.</span> <span class="toc-text">Spring 扩展机制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-BeanFactoryPostProcessor"><span class="toc-number">1.5.1.</span> <span class="toc-text">1. BeanFactoryPostProcessor</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-BeanPostProcessor"><span class="toc-number">1.5.2.</span> <span class="toc-text">2. BeanPostProcessor</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-PropertySource"><span class="toc-number">1.5.3.</span> <span class="toc-text">3. PropertySource</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Spring-MVC%E4%B8%AD%E7%9A%84HandlerInterceptor"><span class="toc-number">1.5.4.</span> <span class="toc-text">4. Spring MVC中的HandlerInterceptor</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-Spring-MVC%E4%B8%AD%E7%9A%84ControllerAdvice"><span class="toc-number">1.5.5.</span> <span class="toc-text">5. Spring MVC中的ControllerAdvice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-Spring-Boot%E7%9A%84%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE"><span class="toc-number">1.5.6.</span> <span class="toc-text">6. Spring Boot的自动配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B3%A8%E8%A7%A3"><span class="toc-number">1.5.7.</span> <span class="toc-text">7. 自定义注解</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8B%E5%8A%A1%E7%AE%A1%E7%90%86"><span class="toc-number">2.</span> <span class="toc-text">事务管理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring%E4%BA%8B%E5%8A%A1%E5%A4%B1%E6%95%88%E5%9C%BA%E6%99%AF%E5%88%86%E6%9E%90"><span class="toc-number">2.1.</span> <span class="toc-text">Spring事务失效场景分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%9C%AA%E6%8D%95%E8%8E%B7%E7%9A%84%E5%BC%82%E5%B8%B8"><span class="toc-number">2.1.1.</span> <span class="toc-text">1. 未捕获的异常</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%9C%AA%E5%8F%97%E6%A3%80%E5%BC%82%E5%B8%B8"><span class="toc-number">2.1.2.</span> <span class="toc-text">2. 未受检异常</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E4%BA%8B%E5%8A%A1%E5%B1%9E%E6%80%A7%E4%BC%A0%E9%80%92%E4%B8%8D%E5%BD%93"><span class="toc-number">2.1.3.</span> <span class="toc-text">3. 事务属性传递不当</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90%E9%85%8D%E7%BD%AE%E4%B8%8D%E5%BD%93"><span class="toc-number">2.1.4.</span> <span class="toc-text">4. 多数据源配置不当</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E4%BA%8B%E5%8A%A1%E8%B0%83%E7%94%A8%E5%A4%96%E9%83%A8%E6%96%B9%E6%B3%95"><span class="toc-number">2.1.5.</span> <span class="toc-text">5. 事务调用外部方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E9%9D%9E%E5%85%AC%E6%9C%89%E6%96%B9%E6%B3%95"><span class="toc-number">2.1.6.</span> <span class="toc-text">6. 非公有方法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring%E4%BA%8B%E5%8A%A1%E4%B8%AD%E8%B0%83%E7%94%A8this%E6%98%AF%E5%90%A6%E7%94%9F%E6%95%88%EF%BC%9F"><span class="toc-number">2.2.</span> <span class="toc-text">Spring事务中调用this是否生效？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Spring%E4%BA%8B%E5%8A%A1%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%9C%BA%E5%88%B6"><span class="toc-number">2.2.1.</span> <span class="toc-text">Spring事务的实现机制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B0%83%E7%94%A8this%E6%98%AF%E5%90%A6%E7%94%9F%E6%95%88%EF%BC%9F"><span class="toc-number">2.2.2.</span> <span class="toc-text">调用this是否生效？</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8E%9F%E5%9B%A0%E5%88%86%E6%9E%90"><span class="toc-number">2.2.2.1.</span> <span class="toc-text">原因分析</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="toc-number">2.2.3.</span> <span class="toc-text">解决方案</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Bean"><span class="toc-number">3.</span> <span class="toc-text">Bean</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-Bean%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="toc-number">3.1.</span> <span class="toc-text">Spring Bean的生命周期</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-Bean%E7%9A%84%E5%8D%95%E4%BE%8B%E4%B8%8E%E5%A4%9A%E4%BE%8B%E6%A8%A1%E5%BC%8F"><span class="toc-number">3.2.</span> <span class="toc-text">Spring Bean的单例与多例模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%EF%BC%88Singleton%EF%BC%89"><span class="toc-number">3.2.1.</span> <span class="toc-text">单例模式（Singleton）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%BB%98%E8%AE%A4%E8%A1%8C%E4%B8%BA"><span class="toc-number">3.2.1.1.</span> <span class="toc-text">默认行为</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%98%E7%82%B9"><span class="toc-number">3.2.1.2.</span> <span class="toc-text">优点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E4%BE%8B%E6%A8%A1%E5%BC%8F%EF%BC%88Prototype%EF%BC%89"><span class="toc-number">3.2.2.</span> <span class="toc-text">多例模式（Prototype）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%96%B9%E5%BC%8F"><span class="toc-number">3.2.2.1.</span> <span class="toc-text">配置方式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A1%8C%E4%B8%BA"><span class="toc-number">3.2.2.2.</span> <span class="toc-text">行为</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%98%E7%82%B9-1"><span class="toc-number">3.2.2.3.</span> <span class="toc-text">优点</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-Bean%E7%9A%84%E4%BD%9C%E7%94%A8%E5%9F%9F"><span class="toc-number">3.3.</span> <span class="toc-text">Spring Bean的作用域</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9C%A8Bean%E5%8A%A0%E8%BD%BD-%E9%94%80%E6%AF%81%E5%89%8D%E5%90%8E%E5%A2%9E%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89%E9%80%BB%E8%BE%91"><span class="toc-number">3.4.</span> <span class="toc-text">在Bean加载&#x2F;销毁前后增加自定义逻辑</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%BD%BF%E7%94%A8init-method%E5%92%8Cdestroy-method"><span class="toc-number">3.4.1.</span> <span class="toc-text">1. 使用init-method和destroy-method</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#XML%E9%85%8D%E7%BD%AE%E7%A4%BA%E4%BE%8B"><span class="toc-number">3.4.1.1.</span> <span class="toc-text">XML配置示例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Bean%E7%B1%BB%E5%AE%9E%E7%8E%B0"><span class="toc-number">3.4.1.2.</span> <span class="toc-text">Bean类实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%AE%9E%E7%8E%B0InitializingBean%E6%8E%A5%E5%8F%A3%E5%92%8CDisposableBean%E6%8E%A5%E5%8F%A3"><span class="toc-number">3.4.2.</span> <span class="toc-text">2. 实现InitializingBean接口和DisposableBean接口</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Bean%E7%B1%BB%E5%AE%9E%E7%8E%B0-1"><span class="toc-number">3.4.2.1.</span> <span class="toc-text">Bean类实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E4%BD%BF%E7%94%A8-PostConstruct%E6%B3%A8%E8%A7%A3%E5%92%8C-PreDestroy%E6%B3%A8%E8%A7%A3"><span class="toc-number">3.4.3.</span> <span class="toc-text">3. 使用@PostConstruct注解和@PreDestroy注解</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Bean%E7%B1%BB%E5%AE%9E%E7%8E%B0-2"><span class="toc-number">3.4.3.1.</span> <span class="toc-text">Bean类实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E4%BD%BF%E7%94%A8-Bean%E6%B3%A8%E8%A7%A3%E7%9A%84initMethod%E5%B1%9E%E6%80%A7%E5%92%8CdestroyMethod%E5%B1%9E%E6%80%A7"><span class="toc-number">3.4.4.</span> <span class="toc-text">4. 使用@Bean注解的initMethod属性和destroyMethod属性</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Java%E9%85%8D%E7%BD%AE%E7%A4%BA%E4%BE%8B"><span class="toc-number">3.4.4.1.</span> <span class="toc-text">Java配置示例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Bean%E7%B1%BB%E5%AE%9E%E7%8E%B0-3"><span class="toc-number">3.4.4.2.</span> <span class="toc-text">Bean类实现</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Bean%E6%B3%A8%E5%85%A5%E4%B8%8EXML%E6%B3%A8%E5%85%A5"><span class="toc-number">3.5.</span> <span class="toc-text">Bean注入与XML注入</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Bean%E6%B3%A8%E8%A7%A3%E6%B3%A8%E5%85%A5"><span class="toc-number">3.5.1.</span> <span class="toc-text">Bean注解注入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#XML%E6%B3%A8%E5%85%A5"><span class="toc-number">3.5.2.</span> <span class="toc-text">XML注入</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Spring-MVC"><span class="toc-number">4.</span> <span class="toc-text">Spring MVC</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%86%E8%A7%A3MVC"><span class="toc-number">4.1.</span> <span class="toc-text">了解MVC</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-MVC%E7%9A%84%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B"><span class="toc-number">4.2.</span> <span class="toc-text">Spring MVC的处理流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HandlerMapping%E4%B8%8EHandlerAdapter"><span class="toc-number">4.3.</span> <span class="toc-text">HandlerMapping与HandlerAdapter</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#HandlerMapping"><span class="toc-number">4.3.1.</span> <span class="toc-text">HandlerMapping</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HandlerAdapter"><span class="toc-number">4.3.2.</span> <span class="toc-text">HandlerAdapter</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-history"></i><span>最近发布</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/11/03/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BC%98%E5%8C%96-%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/" title="数据库优化-分库分表"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://pic1.zhimg.com/v2-b76d79b11c3e8dd25f3c6abae8889a88_720w.jpg?source=172ae18b" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="数据库优化-分库分表"/></a><div class="content"><a class="title" href="/2024/11/03/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BC%98%E5%8C%96-%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/" title="数据库优化-分库分表">数据库优化-分库分表</a><time datetime="2024-11-03T08:20:54.000Z" title="发表于 2024-11-03 16:20:54">2024-11-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/11/03/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BC%98%E5%8C%96-%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB%E4%B8%8E%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB/" title="数据库优化-读写分离与冷热分离"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202411041125092.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="数据库优化-读写分离与冷热分离"/></a><div class="content"><a class="title" href="/2024/11/03/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BC%98%E5%8C%96-%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB%E4%B8%8E%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB/" title="数据库优化-读写分离与冷热分离">数据库优化-读写分离与冷热分离</a><time datetime="2024-11-03T08:18:25.000Z" title="发表于 2024-11-03 16:18:25">2024-11-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/10/28/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86/" title="操作系统-进程管理"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202410282316960.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="操作系统-进程管理"/></a><div class="content"><a class="title" href="/2024/10/28/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86/" title="操作系统-进程管理">操作系统-进程管理</a><time datetime="2024-10-28T14:52:35.000Z" title="发表于 2024-10-28 22:52:35">2024-10-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/10/27/%E5%88%86%E5%B8%83%E5%BC%8F-%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" title="分布式-分布式事务"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202410281041645.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="分布式-分布式事务"/></a><div class="content"><a class="title" href="/2024/10/27/%E5%88%86%E5%B8%83%E5%BC%8F-%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" title="分布式-分布式事务">分布式-分布式事务</a><time datetime="2024-10-27T13:08:20.000Z" title="发表于 2024-10-27 21:08:20">2024-10-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/10/21/%E5%88%86%E5%B8%83%E5%BC%8F-%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%EF%BC%88%E4%B8%8B%EF%BC%89/" title="分布式-服务治理（下）"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://xiaoyanfufu-io.oss-cn-guangzhou.aliyuncs.com/blog/202410272103963.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="分布式-服务治理（下）"/></a><div class="content"><a class="title" href="/2024/10/21/%E5%88%86%E5%B8%83%E5%BC%8F-%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%EF%BC%88%E4%B8%8B%EF%BC%89/" title="分布式-服务治理（下）">分布式-服务治理（下）</a><time datetime="2024-10-21T07:24:49.000Z" title="发表于 2024-10-21 15:24:49">2024-10-21</time></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div id="footer-bar-tips"><div class="copyright">&copy;2024 By <a class="footer-bar-link" href="/" title="xiaoyan" target="_blank">xiaoyan</a></div></div><div id="footer-type-tips"></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/anzhiyu-c/hexo-theme-anzhiyu" title="主题">主题</a></div></div></div></footer></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="sidebar-site-data site-data is-center"><a href="/archives/" title="archive"><div class="headline">文章</div><div class="length-num">44</div></a><a href="/tags/" title="tag"><div class="headline">标签</div><div class="length-num">65</div></a><a href="/categories/" title="category"><div class="headline">分类</div><div class="length-num">17</div></a></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><a class="darkmode_switchbutton menu-child" href="javascript:void(0);" title="显示模式"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span>显示模式</span></a></div><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">网页</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://blog.anheyu.com/" title="博客"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/favicon.ico" alt="博客"/><span class="back-menu-item-text">博客</span></a></div></div><div class="back-menu-list-group"><div class="back-menu-list-title">项目</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://image.anheyu.com/" title="安知鱼图床"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://image.anheyu.com/favicon.ico" alt="安知鱼图床"/><span class="back-menu-item-text">安知鱼图床</span></a></div></div></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 隧道</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 我的</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/music/?id=12613265870&amp;server=netease"><i class="anzhiyufont anzhiyu-icon-music faa-tada" style="font-size: 0.9em;"></i><span> 音乐馆</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li></ul></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/AOP/" style="font-size: 0.88rem;">AOP<sup>1</sup></a><a href="/tags/Bean/" style="font-size: 0.88rem;">Bean<sup>1</sup></a><a href="/tags/DDD/" style="font-size: 0.88rem;">DDD<sup>1</sup></a><a href="/tags/IoC/" style="font-size: 0.88rem;">IoC<sup>1</sup></a><a href="/tags/Java8%E6%96%B0%E7%89%B9%E6%80%A7/" style="font-size: 0.88rem;">Java8新特性<sup>1</sup></a><a href="/tags/Java%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" style="font-size: 0.88rem;">Java基本概念<sup>1</sup></a><a href="/tags/List/" style="font-size: 0.88rem;">List<sup>1</sup></a><a href="/tags/Map/" style="font-size: 0.88rem;">Map<sup>2</sup></a><a href="/tags/MyBatis/" style="font-size: 0.88rem;">MyBatis<sup>1</sup></a><a href="/tags/MySQL%E5%9F%BA%E7%A1%80/" style="font-size: 0.88rem;">MySQL基础<sup>1</sup></a><a href="/tags/Object/" style="font-size: 0.88rem;">Object<sup>1</sup></a><a href="/tags/SQL%E8%B0%83%E4%BC%98/" style="font-size: 0.88rem;">SQL调优<sup>1</sup></a><a href="/tags/Set/" style="font-size: 0.88rem;">Set<sup>1</sup></a><a href="/tags/SpringBoot/" style="font-size: 0.88rem;">SpringBoot<sup>1</sup></a><a href="/tags/SpringCloud/" style="font-size: 0.88rem;">SpringCloud<sup>1</sup></a><a href="/tags/%E4%BA%8B%E5%8A%A1/" style="font-size: 0.88rem;">事务<sup>2</sup></a><a href="/tags/%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/" style="font-size: 0.88rem;">内存模型<sup>1</sup></a><a href="/tags/%E5%8F%8D%E5%B0%84/" style="font-size: 0.88rem;">反射<sup>1</sup></a><a href="/tags/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6/" style="font-size: 0.88rem;">垃圾回收<sup>1</sup></a><a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" style="font-size: 0.88rem;">多线程<sup>1</sup></a><a href="/tags/%E5%AF%B9%E8%B1%A1/" style="font-size: 0.88rem;">对象<sup>1</sup></a><a href="/tags/%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8/" style="font-size: 0.88rem;">并发安全<sup>1</sup></a><a href="/tags/%E5%BA%8F%E5%88%97%E5%8C%96/" style="font-size: 0.88rem;">序列化<sup>1</sup></a><a href="/tags/%E5%BC%82%E5%B8%B8/" style="font-size: 0.88rem;">异常<sup>1</sup></a><a href="/tags/%E6%8B%B7%E8%B4%9D/" style="font-size: 0.88rem;">拷贝<sup>1</sup></a><a href="/tags/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/" style="font-size: 0.88rem;">数据类型<sup>1</sup></a><a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 0.88rem;">数据结构<sup>1</sup></a><a href="/tags/%E6%97%A5%E5%BF%97/" style="font-size: 0.88rem;">日志<sup>2</sup></a><a href="/tags/%E6%9F%A5%E8%AF%A2/" style="font-size: 0.88rem;">查询<sup>1</sup></a><a href="/tags/%E6%B3%9B%E5%9E%8B/" style="font-size: 0.88rem;">泛型<sup>1</sup></a><a href="/tags/%E6%B3%A8%E8%A7%A3/" style="font-size: 0.88rem;">注解<sup>1</sup></a><a href="/tags/%E7%AD%96%E7%95%A5/" style="font-size: 0.88rem;">策略<sup>1</sup></a><a href="/tags/%E7%B1%BB%E5%88%9D%E5%A7%8B%E5%8C%96/" style="font-size: 0.88rem;">类初始化<sup>1</sup></a><a href="/tags/%E7%B1%BB%E5%8A%A0%E8%BD%BD/" style="font-size: 0.88rem;">类加载<sup>1</sup></a><a href="/tags/%E7%B4%A2%E5%BC%95/" style="font-size: 0.88rem;">索引<sup>2</sup></a><a href="/tags/%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B/" style="font-size: 0.88rem;">线程模型<sup>1</sup></a><a href="/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/" style="font-size: 0.88rem;">线程池<sup>1</sup></a><a href="/tags/%E9%94%81/" style="font-size: 0.88rem;">锁<sup>2</sup></a><a href="/tags/%E9%9B%86%E7%BE%A4/" style="font-size: 0.88rem;">集群<sup>1</sup></a><a href="/tags/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/" style="font-size: 0.88rem;">面向对象<sup>1</sup></a></div></div><hr/></div></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="anzhiyufont anzhiyu-icon-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="anzhiyufont anzhiyu-icon-gear"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="anzhiyufont anzhiyu-icon-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></button></div></div><div id="nav-music"><a id="nav-music-hoverTips" onclick="anzhiyu.musicToggle()" accesskey="m">播放音乐</a><div id="console-music-bg"></div><meting-js id="8152976493" server="netease" type="playlist" mutex="true" preload="none" theme="var(--anzhiyu-main)" data-lrctype="0" order="random" volume="0.7"></meting-js></div><div id="rightMenu"><div class="rightMenu-group rightMenu-small"><div class="rightMenu-item" id="menu-backward"><i class="anzhiyufont anzhiyu-icon-arrow-left"></i></div><div class="rightMenu-item" id="menu-forward"><i class="anzhiyufont anzhiyu-icon-arrow-right"></i></div><div class="rightMenu-item" id="menu-refresh"><i class="anzhiyufont anzhiyu-icon-arrow-rotate-right" style="font-size: 1rem;"></i></div><div class="rightMenu-item" id="menu-top"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></div></div><div class="rightMenu-group rightMenu-line rightMenuPlugin"><div class="rightMenu-item" id="menu-copytext"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制选中文本</span></div><div class="rightMenu-item" id="menu-pastetext"><i class="anzhiyufont anzhiyu-icon-paste"></i><span>粘贴文本</span></div><a class="rightMenu-item" id="menu-commenttext"><i class="anzhiyufont anzhiyu-icon-comment-medical"></i><span>引用到评论</span></a><div class="rightMenu-item" id="menu-newwindow"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开</span></div><div class="rightMenu-item" id="menu-copylink"><i class="anzhiyufont anzhiyu-icon-link"></i><span>复制链接地址</span></div><div class="rightMenu-item" id="menu-copyimg"><i class="anzhiyufont anzhiyu-icon-images"></i><span>复制此图片</span></div><div class="rightMenu-item" id="menu-downloadimg"><i class="anzhiyufont anzhiyu-icon-download"></i><span>下载此图片</span></div><div class="rightMenu-item" id="menu-newwindowimg"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开图片</span></div><div class="rightMenu-item" id="menu-search"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>站内搜索</span></div><div class="rightMenu-item" id="menu-searchBaidu"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>百度搜索</span></div><div class="rightMenu-item" id="menu-music-toggle"><i class="anzhiyufont anzhiyu-icon-play"></i><span>播放音乐</span></div><div class="rightMenu-item" id="menu-music-back"><i class="anzhiyufont anzhiyu-icon-backward"></i><span>切换到上一首</span></div><div class="rightMenu-item" id="menu-music-forward"><i class="anzhiyufont anzhiyu-icon-forward"></i><span>切换到下一首</span></div><div class="rightMenu-item" id="menu-music-playlist" onclick="window.open(&quot;https://y.qq.com/n/ryqq/playlist/8802438608&quot;, &quot;_blank&quot;);" style="display: none;"><i class="anzhiyufont anzhiyu-icon-radio"></i><span>查看所有歌曲</span></div><div class="rightMenu-item" id="menu-music-copyMusicName"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制歌名</span></div></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item menu-link" id="menu-randomPost"><i class="anzhiyufont anzhiyu-icon-shuffle"></i><span>随便逛逛</span></a><a class="rightMenu-item menu-link" href="/categories/"><i class="anzhiyufont anzhiyu-icon-cube"></i><span>博客分类</span></a><a class="rightMenu-item menu-link" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags"></i><span>文章标签</span></a></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item" id="menu-copy" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制地址</span></a><a class="rightMenu-item" id="menu-commentBarrage" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-message"></i><span class="menu-commentBarrage-text">关闭热评</span></a><a class="rightMenu-item" id="menu-darkmode" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span class="menu-darkmode-text">深色模式</span></a><a class="rightMenu-item" id="menu-translate" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-language"></i><span>轉為繁體</span></a></div></div><div id="rightmenu-mask"></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.umd.js"></script><script src="https://cdn.cbd.int/instant.page@5.2.0/instantpage.js" type="module"></script><script src="https://cdn.cbd.int/vanilla-lazyload@17.8.5/dist/lazyload.iife.min.js"></script><script src="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.js"></script><canvas id="universe"></canvas><script async src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/dark/dark.js"></script><script async src="/anzhiyu/random.js"></script><div class="js-pjax"><input type="hidden" name="page-type" id="page-type" value="post"></div><script>var visitorMail = "";
+</script><script async data-pjax src="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/waterfall/waterfall.js"></script><script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/qrcodejs/1.0.0/qrcode.min.js"></script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.9/icon/ali_iconfont_css.css"><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/aplayer/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.cbd.int/anzhiyu-blog-static@1.0.1/js/APlayer.min.js"></script><script src="https://cdn.cbd.int/hexo-anzhiyu-music@1.0.1/assets/js/Meting2.min.js"></script><script src="https://cdn.cbd.int/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
 
-        
+document.addEventListener('pjax:send', function () {
+  // removeEventListener scroll 
+  anzhiyu.removeGlobalFnEvent('pjax')
+  anzhiyu.removeGlobalFnEvent('themeChange')
 
-            </section>
-
-            
-                
-
-<section id="kratos-widget-area" class="col-md-4 hidden-xs hidden-sm">
-    <!-- 文章和页面根据splitter来分割，没有的话就从头开始设置为sticky -->
-    
-    
-                <aside id="krw-about" class="widget widget-kratos-about clearfix">
-    <div class="photo-background"></div>
-    <div class="photo-wrapper clearfix">
-        <div class="photo-wrapper-tip text-center">
-            <img class="about-photo" src="/images/user.jpg" alt="xiaoyan" loading="lazy" decoding="auto" />
-        </div>
-    </div>
-    <div class="textwidget">
-        <p class="text-center">是一只时时翻垃圾吃的宅子。</p>
-    </div>
-    <div class="site-meta">
-        <a class="meta-item" href="/archives/">
-            <span class="title">
-                文章
-            </span>
-            <span class="count">
-                44
-            </span>
-        </a>
-        <a class="meta-item" href="/categories/">
-            <span class="title">
-                分类
-            </span>
-            <span class="count">
-                17
-            </span>
-        </a>
-        <a class="meta-item" href="/tags/">
-            <span class="title">
-                标签
-            </span>
-            <span class="count">
-                65
-            </span>
-        </a>
-    </div>
-</aside>
-            
-                    <div class="sticky-area">
-                
-                    <aside id="krw-toc" class="widget widget-kratos-toc clearfix toc-div-class" >
-    <div class="photo-background"></div>
-    <h4 class="widget-title no-after">
-        <i class="fa fa-compass"></i>
-        文章目录
-        <span class="toc-progress-bar" role="progressbar" aria-label="阅读进度："></span>
-    </h4>
-    <div class="textwidget">
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Spring%E8%AE%BE%E8%AE%A1"><span class="toc-number">1.</span> <span class="toc-text">Spring设计</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96"><span class="toc-number">1.1.</span> <span class="toc-text">Spring 如何解决循环依赖</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96%EF%BC%9F"><span class="toc-number">1.1.1.</span> <span class="toc-text">什么是循环依赖？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96%E7%9A%84%E4%B8%89%E7%A7%8D%E6%83%85%E5%86%B5"><span class="toc-number">1.1.2.</span> <span class="toc-text">循环依赖的三种情况</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Spring-%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96-1"><span class="toc-number">1.1.3.</span> <span class="toc-text">Spring 如何解决循环依赖</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98%E7%AD%96%E7%95%A5%E8%AF%A6%E8%A7%A3"><span class="toc-number">1.2.</span> <span class="toc-text">三级缓存策略详解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E7%BA%A7%E7%BC%93%E5%AD%98%EF%BC%88singletonObjects%EF%BC%89"><span class="toc-number">1.2.1.</span> <span class="toc-text">一级缓存（singletonObjects）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E7%BA%A7%E7%BC%93%E5%AD%98%EF%BC%88earlySingletonObjects%EF%BC%89"><span class="toc-number">1.2.2.</span> <span class="toc-text">二级缓存（earlySingletonObjects）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98%EF%BC%88singletonFactories%EF%BC%89"><span class="toc-number">1.2.3.</span> <span class="toc-text">三级缓存（singletonFactories）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98%E7%AD%96%E7%95%A5%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="toc-number">1.2.4.</span> <span class="toc-text">三级缓存策略的工作流程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.3.</span> <span class="toc-text">Spring 设计模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F%EF%BC%88Factory-Pattern%EF%BC%89"><span class="toc-number">1.3.1.</span> <span class="toc-text">1. 工厂模式（Factory Pattern）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F%EF%BC%88Proxy-Pattern%EF%BC%89"><span class="toc-number">1.3.2.</span> <span class="toc-text">2. 代理模式（Proxy Pattern）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%EF%BC%88Singleton-Pattern%EF%BC%89"><span class="toc-number">1.3.3.</span> <span class="toc-text">3. 单例模式（Singleton Pattern）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E6%A8%A1%E6%9D%BF%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F%EF%BC%88Template-Method-Pattern%EF%BC%89"><span class="toc-number">1.3.4.</span> <span class="toc-text">4. 模板方法模式（Template Method Pattern）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E8%A3%85%E9%A5%B0%E5%99%A8%E6%A8%A1%E5%BC%8F%EF%BC%88Decorator-Pattern%EF%BC%89"><span class="toc-number">1.3.5.</span> <span class="toc-text">5. 装饰器模式（Decorator Pattern）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F%EF%BC%88Observer-Pattern%EF%BC%89"><span class="toc-number">1.3.6.</span> <span class="toc-text">6. 观察者模式（Observer Pattern）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F%EF%BC%88Adapter-Pattern%EF%BC%89"><span class="toc-number">1.3.7.</span> <span class="toc-text">7. 适配器模式（Adapter Pattern）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3"><span class="toc-number">1.4.</span> <span class="toc-text">Spring 常用注解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Autowired-%E6%B3%A8%E8%A7%A3"><span class="toc-number">1.4.1.</span> <span class="toc-text">1. @Autowired 注解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Component-%E6%B3%A8%E8%A7%A3"><span class="toc-number">1.4.2.</span> <span class="toc-text">2. @Component 注解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Configuration-%E6%B3%A8%E8%A7%A3"><span class="toc-number">1.4.3.</span> <span class="toc-text">3. @Configuration 注解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Bean-%E6%B3%A8%E8%A7%A3"><span class="toc-number">1.4.4.</span> <span class="toc-text">4. @Bean 注解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-Service-%E6%B3%A8%E8%A7%A3"><span class="toc-number">1.4.5.</span> <span class="toc-text">5. @Service 注解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-Repository-%E6%B3%A8%E8%A7%A3"><span class="toc-number">1.4.6.</span> <span class="toc-text">6. @Repository 注解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-Controller-%E6%B3%A8%E8%A7%A3"><span class="toc-number">1.4.7.</span> <span class="toc-text">7. @Controller 注解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">1.4.8.</span> <span class="toc-text">总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-%E6%89%A9%E5%B1%95%E6%9C%BA%E5%88%B6"><span class="toc-number">1.5.</span> <span class="toc-text">Spring 扩展机制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-BeanFactoryPostProcessor"><span class="toc-number">1.5.1.</span> <span class="toc-text">1. BeanFactoryPostProcessor</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-BeanPostProcessor"><span class="toc-number">1.5.2.</span> <span class="toc-text">2. BeanPostProcessor</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-PropertySource"><span class="toc-number">1.5.3.</span> <span class="toc-text">3. PropertySource</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Spring-MVC%E4%B8%AD%E7%9A%84HandlerInterceptor"><span class="toc-number">1.5.4.</span> <span class="toc-text">4. Spring MVC中的HandlerInterceptor</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-Spring-MVC%E4%B8%AD%E7%9A%84ControllerAdvice"><span class="toc-number">1.5.5.</span> <span class="toc-text">5. Spring MVC中的ControllerAdvice</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-Spring-Boot%E7%9A%84%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE"><span class="toc-number">1.5.6.</span> <span class="toc-text">6. Spring Boot的自动配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B3%A8%E8%A7%A3"><span class="toc-number">1.5.7.</span> <span class="toc-text">7. 自定义注解</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8B%E5%8A%A1%E7%AE%A1%E7%90%86"><span class="toc-number">2.</span> <span class="toc-text">事务管理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring%E4%BA%8B%E5%8A%A1%E5%A4%B1%E6%95%88%E5%9C%BA%E6%99%AF%E5%88%86%E6%9E%90"><span class="toc-number">2.1.</span> <span class="toc-text">Spring事务失效场景分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%9C%AA%E6%8D%95%E8%8E%B7%E7%9A%84%E5%BC%82%E5%B8%B8"><span class="toc-number">2.1.1.</span> <span class="toc-text">1. 未捕获的异常</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%9C%AA%E5%8F%97%E6%A3%80%E5%BC%82%E5%B8%B8"><span class="toc-number">2.1.2.</span> <span class="toc-text">2. 未受检异常</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E4%BA%8B%E5%8A%A1%E5%B1%9E%E6%80%A7%E4%BC%A0%E9%80%92%E4%B8%8D%E5%BD%93"><span class="toc-number">2.1.3.</span> <span class="toc-text">3. 事务属性传递不当</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90%E9%85%8D%E7%BD%AE%E4%B8%8D%E5%BD%93"><span class="toc-number">2.1.4.</span> <span class="toc-text">4. 多数据源配置不当</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E4%BA%8B%E5%8A%A1%E8%B0%83%E7%94%A8%E5%A4%96%E9%83%A8%E6%96%B9%E6%B3%95"><span class="toc-number">2.1.5.</span> <span class="toc-text">5. 事务调用外部方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E9%9D%9E%E5%85%AC%E6%9C%89%E6%96%B9%E6%B3%95"><span class="toc-number">2.1.6.</span> <span class="toc-text">6. 非公有方法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring%E4%BA%8B%E5%8A%A1%E4%B8%AD%E8%B0%83%E7%94%A8this%E6%98%AF%E5%90%A6%E7%94%9F%E6%95%88%EF%BC%9F"><span class="toc-number">2.2.</span> <span class="toc-text">Spring事务中调用this是否生效？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Spring%E4%BA%8B%E5%8A%A1%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%9C%BA%E5%88%B6"><span class="toc-number">2.2.1.</span> <span class="toc-text">Spring事务的实现机制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B0%83%E7%94%A8this%E6%98%AF%E5%90%A6%E7%94%9F%E6%95%88%EF%BC%9F"><span class="toc-number">2.2.2.</span> <span class="toc-text">调用this是否生效？</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8E%9F%E5%9B%A0%E5%88%86%E6%9E%90"><span class="toc-number">2.2.2.1.</span> <span class="toc-text">原因分析</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="toc-number">2.2.3.</span> <span class="toc-text">解决方案</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Bean"><span class="toc-number">3.</span> <span class="toc-text">Bean</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-Bean%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="toc-number">3.1.</span> <span class="toc-text">Spring Bean的生命周期</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-Bean%E7%9A%84%E5%8D%95%E4%BE%8B%E4%B8%8E%E5%A4%9A%E4%BE%8B%E6%A8%A1%E5%BC%8F"><span class="toc-number">3.2.</span> <span class="toc-text">Spring Bean的单例与多例模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%EF%BC%88Singleton%EF%BC%89"><span class="toc-number">3.2.1.</span> <span class="toc-text">单例模式（Singleton）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%BB%98%E8%AE%A4%E8%A1%8C%E4%B8%BA"><span class="toc-number">3.2.1.1.</span> <span class="toc-text">默认行为</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%98%E7%82%B9"><span class="toc-number">3.2.1.2.</span> <span class="toc-text">优点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E4%BE%8B%E6%A8%A1%E5%BC%8F%EF%BC%88Prototype%EF%BC%89"><span class="toc-number">3.2.2.</span> <span class="toc-text">多例模式（Prototype）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%96%B9%E5%BC%8F"><span class="toc-number">3.2.2.1.</span> <span class="toc-text">配置方式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A1%8C%E4%B8%BA"><span class="toc-number">3.2.2.2.</span> <span class="toc-text">行为</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%98%E7%82%B9-1"><span class="toc-number">3.2.2.3.</span> <span class="toc-text">优点</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-Bean%E7%9A%84%E4%BD%9C%E7%94%A8%E5%9F%9F"><span class="toc-number">3.3.</span> <span class="toc-text">Spring Bean的作用域</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9C%A8Bean%E5%8A%A0%E8%BD%BD-%E9%94%80%E6%AF%81%E5%89%8D%E5%90%8E%E5%A2%9E%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89%E9%80%BB%E8%BE%91"><span class="toc-number">3.4.</span> <span class="toc-text">在Bean加载&#x2F;销毁前后增加自定义逻辑</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%BD%BF%E7%94%A8init-method%E5%92%8Cdestroy-method"><span class="toc-number">3.4.1.</span> <span class="toc-text">1. 使用init-method和destroy-method</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#XML%E9%85%8D%E7%BD%AE%E7%A4%BA%E4%BE%8B"><span class="toc-number">3.4.1.1.</span> <span class="toc-text">XML配置示例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Bean%E7%B1%BB%E5%AE%9E%E7%8E%B0"><span class="toc-number">3.4.1.2.</span> <span class="toc-text">Bean类实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%AE%9E%E7%8E%B0InitializingBean%E6%8E%A5%E5%8F%A3%E5%92%8CDisposableBean%E6%8E%A5%E5%8F%A3"><span class="toc-number">3.4.2.</span> <span class="toc-text">2. 实现InitializingBean接口和DisposableBean接口</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Bean%E7%B1%BB%E5%AE%9E%E7%8E%B0-1"><span class="toc-number">3.4.2.1.</span> <span class="toc-text">Bean类实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E4%BD%BF%E7%94%A8-PostConstruct%E6%B3%A8%E8%A7%A3%E5%92%8C-PreDestroy%E6%B3%A8%E8%A7%A3"><span class="toc-number">3.4.3.</span> <span class="toc-text">3. 使用@PostConstruct注解和@PreDestroy注解</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Bean%E7%B1%BB%E5%AE%9E%E7%8E%B0-2"><span class="toc-number">3.4.3.1.</span> <span class="toc-text">Bean类实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E4%BD%BF%E7%94%A8-Bean%E6%B3%A8%E8%A7%A3%E7%9A%84initMethod%E5%B1%9E%E6%80%A7%E5%92%8CdestroyMethod%E5%B1%9E%E6%80%A7"><span class="toc-number">3.4.4.</span> <span class="toc-text">4. 使用@Bean注解的initMethod属性和destroyMethod属性</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Java%E9%85%8D%E7%BD%AE%E7%A4%BA%E4%BE%8B"><span class="toc-number">3.4.4.1.</span> <span class="toc-text">Java配置示例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Bean%E7%B1%BB%E5%AE%9E%E7%8E%B0-3"><span class="toc-number">3.4.4.2.</span> <span class="toc-text">Bean类实现</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Bean%E6%B3%A8%E5%85%A5%E4%B8%8EXML%E6%B3%A8%E5%85%A5"><span class="toc-number">3.5.</span> <span class="toc-text">Bean注入与XML注入</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Bean%E6%B3%A8%E8%A7%A3%E6%B3%A8%E5%85%A5"><span class="toc-number">3.5.1.</span> <span class="toc-text">Bean注解注入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#XML%E6%B3%A8%E5%85%A5"><span class="toc-number">3.5.2.</span> <span class="toc-text">XML注入</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Spring-MVC"><span class="toc-number">4.</span> <span class="toc-text">Spring MVC</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%86%E8%A7%A3MVC"><span class="toc-number">4.1.</span> <span class="toc-text">了解MVC</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-MVC%E7%9A%84%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B"><span class="toc-number">4.2.</span> <span class="toc-text">Spring MVC的处理流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HandlerMapping%E4%B8%8EHandlerAdapter"><span class="toc-number">4.3.</span> <span class="toc-text">HandlerMapping与HandlerAdapter</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#HandlerMapping"><span class="toc-number">4.3.1.</span> <span class="toc-text">HandlerMapping</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HandlerAdapter"><span class="toc-number">4.3.2.</span> <span class="toc-text">HandlerAdapter</span></a></li></ol></li></ol></li></ol>
-    </div>
-</aside>
-                
-                
-  <aside id="krw-categories" class="widget widget-kratos-categories clearfix">
-    <h4 class="widget-title"><i class="fa fa-folder"></i>分类列表</h4>
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93-%E7%BC%93%E5%AD%98/">数据库&缓存</a><span class="category-list-count">12</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93-%E7%BC%93%E5%AD%98/MySQL/">MySQL</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93-%E7%BC%93%E5%AD%98/Redis/">Redis</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93-%E7%BC%93%E5%AD%98/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BC%98%E5%8C%96/">数据库优化</a><span class="category-list-count">2</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9E%B6%E6%9E%84/">架构</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/">编程语言</a><span class="category-list-count">21</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/">Java</a><span class="category-list-count">20</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/JVM/">JVM</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/Spring/">Spring</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/%E5%9F%BA%E7%A1%80/">基础</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">并发编程</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Java/%E9%9B%86%E5%90%88/">集合</a><span class="category-list-count">5</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/Python/">Python</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/">计算机基础</a><span class="category-list-count">6</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a><span class="category-list-count">5</span></li></ul></li></ul>
-  </aside>
-
-
-            
-                
-  <aside id="krw-tags" class="widget widget-kratos-tags clearfix">
-    <h4 class="widget-title"><i class="fa fa-tags"></i>标签聚合</h4>
-      <div class="tag-clouds">
-        <a href="/tags/AOP/" style="font-size: 0.6em;">AOP</a> <a href="/tags/BASE/" style="font-size: 0.6em;">BASE</a> <a href="/tags/Bean/" style="font-size: 0.6em;">Bean</a> <a href="/tags/CAP/" style="font-size: 0.6em;">CAP</a> <a href="/tags/Cookie/" style="font-size: 0.6em;">Cookie</a> <a href="/tags/DDD/" style="font-size: 0.6em;">DDD</a> <a href="/tags/DNS/" style="font-size: 0.6em;">DNS</a> <a href="/tags/HTTP/" style="font-size: 0.6em;">HTTP</a> <a href="/tags/I-O/" style="font-size: 0.6em;">I/O</a> <a href="/tags/IoC/" style="font-size: 0.6em;">IoC</a> <a href="/tags/JWT/" style="font-size: 0.6em;">JWT</a> <a href="/tags/Java8%E6%96%B0%E7%89%B9%E6%80%A7/" style="font-size: 0.6em;">Java8新特性</a> <a href="/tags/Java%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/" style="font-size: 0.6em;">Java基本概念</a> <a href="/tags/List/" style="font-size: 0.6em;">List</a> <a href="/tags/Map/" style="font-size: 0.8em;">Map</a> <a href="/tags/MyBatis/" style="font-size: 0.6em;">MyBatis</a> <a href="/tags/MySQL%E5%9F%BA%E7%A1%80/" style="font-size: 0.6em;">MySQL基础</a> <a href="/tags/Nginx/" style="font-size: 0.6em;">Nginx</a>
-      </div>
-  </aside>
-
-            
-                
-  <aside id="krw-posts" class="widget widget-kratos-posts">
-  <h4 class="widget-title"><i class="fa fa-file"></i>最新文章</h4>
-  <div class="tab-content">
-      <ul class="list-group">
-        
-        
-          
-          
-            <a class="list-group-item" href="/2024/11/03/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BC%98%E5%8C%96-%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8/"><i class="fa fa-book"></i> 数据库优化-分库分表</a>
-            
-          
-        
-          
-          
-            <a class="list-group-item" href="/2024/11/03/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BC%98%E5%8C%96-%E8%AF%BB%E5%86%99%E5%88%86%E7%A6%BB%E4%B8%8E%E5%86%B7%E7%83%AD%E5%88%86%E7%A6%BB/"><i class="fa fa-book"></i> 数据库优化-读写分离与冷热分离</a>
-            
-          
-        
-          
-          
-            <a class="list-group-item" href="/2024/10/28/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86/"><i class="fa fa-book"></i> 操作系统-进程管理</a>
-            
-          
-        
-          
-          
-            <a class="list-group-item" href="/2024/10/27/%E5%88%86%E5%B8%83%E5%BC%8F-%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/"><i class="fa fa-book"></i> 分布式-分布式事务</a>
-            
-          
-        
-          
-          
-            <a class="list-group-item" href="/2024/10/21/%E5%88%86%E5%B8%83%E5%BC%8F-%E6%9C%8D%E5%8A%A1%E6%B2%BB%E7%90%86%EF%BC%88%E4%B8%8B%EF%BC%89/"><i class="fa fa-book"></i> 分布式-服务治理（下）</a>
-            
-          
-        
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-          
-            
-      </ul>
-  </div>
-  </aside>
-
-            
-    </div>
-</section>
-            
-
-        
-
-                </div>
-    </div>
-</div>
-
-<footer>
-    <div id="footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 col-md-offset-3 footer-list text-center">
-                    <ul class="kratos-social-icons">
-                        
-                    </ul>
-                    <ul class="kratos-copyright">
-                        <div>
-                            <li>&copy; 2024 XIAOYAN 版权所有.</li>
-                            <li>本站已运行<span id="kr-since">Loading...</span></li>
-                        </div>
-                        <div>
-                            <li>自豪地使用 <a href="https://github.com/Candinya/Kratos-Rebirth" target="_blank">Kratos:Rebirth</a> 主题</li>
-                            <li>站点由 xiaoyan 用 <i class="fa fa-heart" style="color:#d43f57"></i> 搭建</li>
-                        </div>
-                        <!-- 额外的追加注入项 -->
-                        
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="kr-tool text-center">
-            <div class="tool">
-                
-                    <div class="box search-box">
-                        <a href="/search">
-                            <span class="fa fa-search"></span>
-                        </a>
-                    </div>
-                
-                <div class="box theme-box" id="theme-toggle">
-                    <span class="fa fa-adjust"></span>
-                </div>
-            </div>
-            <div id="gotop-box" class="box gotop-box">
-                <span class="fa fa-chevron-up"></span>
-            </div>
-        </div>
-    </div>
-</footer>
-</div>
-</div>
-
-
-    <div id="kr-donate-modal" class="kr-modal">
-    <div class="kr-modal-bg" onclick="krCloseDonateModal()"></div>
-    <div class="kr-modal-content">
-        <div class="kr-modal-header">
-            <div class="kr-modal-icon">
-                <i class="fa fa-bitcoin"></i>
-            </div>
-            <div class="kr-modal-title">打赏</div>
-            <button class="kr-modal-close" onclick="krCloseDonateModal()">
-                <i class="fa fa-times-circle"></i>
-            </button>
-        </div>
-        <div class="kr-modal-body">
-            <div class="kr-donate-message">请我喝一杯冰阔咯~</div>
-            <div class="kr-donate-qr" id="kr-donate-qr">
-                
-            </div>
-            <div class="kr-donate-platforms">
-                
-                    
-                        <button class="kr-donate-platform-button" style="color: #1677ff;" title="支付宝" onclick="krDonateModalShowPlatformQR('https://qr.alipay.com/fkx15009k7u0fqrj8auepdf', '#1677ff')">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-alipay">
-  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-  <path d="M19 3h-14a2 2 0 0 0 -2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2 -2v-14a2 2 0 0 0 -2 -2z" />
-  <path d="M7 7h10" />
-  <path d="M12 3v7" />
-  <path d="M21 17.314c-2.971 -1.923 -15 -8.779 -15 -1.864c0 1.716 1.52 2.55 2.985 2.55c3.512 0 6.814 -5.425 6.814 -8h-6.604" />
-</svg>
-
-                        </button>
-                    
-                
-                    
-                        <button class="kr-donate-platform-button" style="color: #38ad5a;" title="微信支付" onclick="krDonateModalShowPlatformQR('wxp://f2f0hR4eF9Ypa3tpzjWme9fQDyWW3PIGe3WG5oiIakWLmDs', '#38ad5a')">
-                            <i class="fa fa-wechat"></i>
-                        </button>
-                    
-                
-            </div>
-        </div>
-    </div>
-</div>
-<script defer src="/js/kr-modal/donate.min.js"></script>
-
-
-
-
-    <div id="kr-share-modal" class="kr-modal">
-    <div class="kr-modal-bg" onclick="krCloseShareModal()"></div>
-    <div class="kr-modal-content">
-        <div class="kr-modal-header">
-            <div class="kr-modal-icon">
-                <i class="fa fa-share-alt"></i>
-            </div>
-            <div class="kr-modal-title">分享</div>
-            <button class="kr-modal-close" onclick="krCloseShareModal()">
-                <i class="fa fa-times-circle"></i>
-            </button>
-        </div>
-        <div class="kr-modal-body">
-            <div class="kr-share-message">让兄弟萌也来瞅一瞅！</div>
-            <div class="kr-share-qr" id="kr-share-qr"></div>
-            <div class="kr-share-platforms">
-                
-                    <button class="kr-share-platform-button" style="color: #e6162d;" title="QQ" onclick="krShareModalOpenPlatform('')">
-                        <i class="fa fa-qq"></i>
-                    </button>
-                
-                    <button class="kr-share-platform-button" style="color: #25d366;" title="微信" onclick="krShareModalOpenPlatform('')">
-                        <i class="fa fa-weixin"></i>
-                    </button>
-                
-            </div>
-        </div>
-    </div>
-</div>
-<script defer src="/js/kr-modal/share.min.js"></script>
-
-
-
-<!-- 额外的追加注入项 -->
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
-<meting-js
-  server="netease"
-  type="playlist"
-  fixed="true"
-  order="random"
-  id="12613265870">
-</meting-js>
-
-
-
-        <script>
-    if (!window.kr) {
-        window.kr = {};
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
     }
-    window.kr.notMobile = (!(navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)));
-    window.kr.siteRoot = "/";
-</script>
+  }
 
+  typeof typed === 'object' && typed.destroy()
 
-  <script defer src="/vendors/nprogress@0.2.0/nprogress.js"></script>
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+})
 
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
 
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
 
-  <script defer src="/vendors/viewerjs@1.11.6/dist/viewer.min.js"></script>
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
 
+  typeof panguInit === 'function' && panguInit()
 
-<script defer src="/js/kr-core.min.js"></script>
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
 
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
 
-  <script defer src="/js/kr-pjax.min.js"></script>
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
 
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
 
-<!-- 额外的追加注入项 -->
-
-  <script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
-
-
-
-    </body>
-</html>
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script charset="UTF-8" src="https://cdn.cbd.int/anzhiyu-theme-static@1.1.5/accesskey/accesskey.js"></script></div><div id="popup-window"><div class="popup-window-title">通知</div><div class="popup-window-divider"></div><div class="popup-window-content"><div class="popup-tip">你好呀</div><div class="popup-link"><i class="anzhiyufont anzhiyu-icon-arrow-circle-right"></i></div></div></div></body></html>
